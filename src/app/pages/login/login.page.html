@@ -5,5 +5,19 @@
 </ion-header>
 
 <ion-content padding>
+  <form [formGroup]="loginForm">
+    <ion-item>
+      <ion-label position="fixed">Username</ion-label>
+      <ion-input formControlName="username"></ion-input>
+    </ion-item>
 
+    <ion-item>
+      <ion-label position="fixed">Password</ion-label>
+      <ion-input type="password" formControlName="password"></ion-input>
+    </ion-item>
+
+    <ion-button shape="" color="primary" expand="block" [disabled]="!loginForm.valid" (click)="login()">Login</ion-button>
+
+    <ion-button shape="" fill="outline" color="primary" expand="block" routerLink="/register">Register</ion-button>
+  </form>
 </ion-content>
