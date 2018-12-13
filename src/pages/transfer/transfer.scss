@@ -1,0 +1,41 @@
+page-transfer {
+    ion-card{
+        padding: 15px;
+        overflow: hidden;
+        background-color: white !important;
+        // opacity: 0.9;
+        
+    }
+
+    #notification-icon{
+        display: flex;
+        margin-top: 35%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 35%;
+        background-repeat: repeat-x;
+    }
+
+
+
+    #noItem{
+        // text-align: center;
+        vertical-align: middle;
+        left: 34%;
+    font-size: 18px;
+    top: 47%;
+        position: absolute;
+        color: black;
+    }
+
+    #noItem-note{
+        // text-align: center;
+        vertical-align: middle;
+        // align-content: center;
+        left: 21%;
+        top: 55%;
+        position: absolute;
+        color: grey;
+    }
+}

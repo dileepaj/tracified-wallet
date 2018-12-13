@@ -1,0 +1,126 @@
+accordion-list {
+    .nomargin {
+        margin: 0 !important;
+    }
+
+    .list-md {
+        margin-bottom: 0; 
+    }
+
+    ion-note{
+        color: black !important;
+    }
+
+    #qty{
+        display: -webkit-inline-box;
+        // padding: 0 20px 0 0;
+    }
+    .pending{
+            ion-card{
+            padding: 0px 10px 0px 10px;
+            overflow: hidden;
+            background-color:  white !important;
+            // opacity: 0.9;
+
+            
+        }
+        .accordion-header{
+            background-color:  white !important;
+            // opacity: 0.9;
+
+        }
+        .accordion-content{
+            background-color:  white !important;
+            // opacity: 0.9;
+
+
+        }
+      }
+    .accepted{
+            ion-card{
+            padding: 0px 10px 0px 10px;
+            overflow: hidden;
+            background-color:  ghostwhite !important;
+            // opacity: 0.9;
+
+            
+        }
+        .accordion-header{
+            background-color:  ghostwhite !important;
+            // opacity: 0.9;
+
+        }
+        .accordion-content{
+            background-color:  ghostwhite !important;
+            // opacity: 0.9;
+
+
+        }
+      }
+    .rejected{
+            ion-card{
+            padding: 0px 10px 0px 10px;
+            overflow: hidden;
+            background-color: antiquewhite !important;
+            // opacity: 0.9;
+            
+        }
+        .accordion-header{
+            background-color: antiquewhite !important;
+            // opacity: 0.9;
+
+        }
+        .accordion-content{
+            background-color: antiquewhite !important;
+            // opacity: 0.9;
+
+
+        }
+    }
+    .accordion-header {
+        color: black;
+
+        .item-inner {
+            margin-left: 0 !important;
+        }
+
+        ion-icon {
+            transition: all .25s ease-in;
+            transform: rotate(0);
+        }
+    }
+
+    .active ion-icon {
+        transform: rotate(180deg);
+        #toggleicon{
+            padding: 0px 0px 0px 20px;
+        }
+    }
+
+    .accordion-content {
+        transition: 0.3s ease-in-out;
+        &.active {
+            padding: 0;
+        }
+    }
+
+    .label {
+        margin: 0px;
+    }
+
+    .item-md ion-icon[item-left], .item-md ion-icon[item-right], .item-md ion-icon[item-start], .item-md ion-icon[item-end] {
+        margin-left: 6px;
+        // padding-left: 10px;
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+
+    .list-header-md {
+        // padding-left: 16px;
+        margin-bottom: 0; 
+        min-height: 4.5rem;
+        border-top: 1px solid #dedede;
+        font-size: 1.4rem;
+        color: #757575;
+    }
+}

@@ -1,0 +1,37 @@
+<ion-list class="accordion-list">
+  <ion-list-header no-lines no-padding>
+    <div [ngClass]="{ 'accepted': status === 'ACCEPTED', 'rejected':   status === 'REJECTED', 'pending':   status === 'PENDING' }">
+        <ion-card>
+            <button ion-item no-padding  (click)="toggleAccordion()" class="accordion-header" [class.active]="expanded">
+      
+              <!-- {{ date }} {{ uname }} {{ oname }} {{ qty }} -->
+              <ion-row>
+                <ion-col left text-left>
+                  <ion-note>{{date}}</ion-note>
+                </ion-col>
+                <ion-col right text-right>
+                  <ion-note>{{uname}}</ion-note>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col left text-left>
+                  <h2>Item: {{oname}}</h2>
+                </ion-col>
+                <ion-col right text-right>
+                  <ion-row id="qty">
+                    <h1>{{qty}}</h1>
+                    <ion-icon id="toggleicon" item-right name="ios-arrow-up">
+                    </ion-icon>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
+      
+            </button>
+            <section #accordionContent [style.background]="contentColor" [class.active]="expanded" class="accordion-content">
+              <ng-content></ng-content>
+            </section>
+          </ion-card>
+    </div>
+
+  </ion-list-header>
+</ion-list>

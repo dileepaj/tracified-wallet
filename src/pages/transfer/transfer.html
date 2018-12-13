@@ -1,0 +1,44 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{ 'LIST_MASTER_TITLE' | translate }}</ion-title>
+
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <div *ngIf="currentItems[2]">
+    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
+  </div>
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="!currentItems[2]" id="noitemDiv">
+    <img id="notification-icon" src="../../assets/imgs/notifications-bell-button.png">
+    <h2 id="noItem"> NOTIFICATIONS </h2>
+    <ion-note id="noItem-note">No notifications available for this period</ion-note>
+  </div>
+
+  <ion-card *ngFor="let item of Searcheditems" (click)="openItem(item)">
+    <!-- <ion-avatar item-start>
+          <img [src]="item.profilePic" />
+        </ion-avatar> -->
+    <ion-row>
+      <ion-col left text-left>
+        <h2>Item : {{item.asset_code}}</h2>
+      </ion-col>
+      <ion-col right text-right>
+        <h2>{{item.balance}}</h2>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+
+</ion-content>

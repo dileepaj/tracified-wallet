@@ -1,0 +1,28 @@
+<ion-menu [content]="content">
+    <ion-header>
+        <ion-toolbar class="menu-toolbar">
+          <div text-center class="side-menu-card" padding>
+            <img src="assets/imgs/logo_v1.1_light.svg" class="tracified-logo" />
+            <div text-wrap class="tenant-name">{{company}}</div>
+            <div text-wrap class="user-type">{{userType}}</div>
+            <div text-wrap class="user-name">{{user}}</div>
+          </div>
+        </ion-toolbar>
+      </ion-header>
+    <!-- <ion-header>
+      <ion-toolbar>
+        <ion-title>Pages</ion-title> 
+      </ion-toolbar>
+    </ion-header> -->
+
+    <ion-content>
+      <ion-list>
+        <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+          <ion-icon name={{p.icon}}  item-start></ion-icon>
+          {{p.title}}
+        </button>
+      </ion-list>
+    </ion-content>
+
+  </ion-menu>
+  <ion-nav #content [root]="rootPage"></ion-nav>

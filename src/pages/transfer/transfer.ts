@@ -1,0 +1,154 @@
+import { Component } from '@angular/core';
+import { IonicPage, NavController, ModalController, LoadingController } from 'ionic-angular';
+import { Item } from '../../models/item';
+// import { Items } from '../../providers';
+import { Server, Transaction } from 'stellar-sdk';
+import { Items } from '../../providers/items/items';
+
+/**
+ * Generated class for the TransferPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+
+@IonicPage()
+@Component({
+  selector: 'page-transfer',
+  templateUrl: 'transfer.html',
+})
+export class TransferPage {
+  currentItems = [];
+  user: any;
+  loading;
+  isLoadingPresent: boolean;
+  receivers = [];
+  Searcheditems: any;
+  itemPresent: boolean;
+  searchTerm: any;
+
+  constructor(public navCtrl: NavController, public modalCtrl: ModalController, private loadingCtrl: LoadingController, public itemsProvider: Items) {
+    // this.currentItems = this.items.query();
+    this.user = JSON.parse(localStorage.getItem('_user'))
+    // this.user.PublicKey = 'GCZRSDPSU2TPDZMX4NFDE3OBQPACXVA4LH6E3LO3QXPBPONL4K6CTNBI';
+  }
+
+  /**
+   * The view loaded, let's query our items for the list
+   */
+  ionViewDidLoad() {
+    this.presentLoading();
+    this.getBalance();
+    this.loadReceivers();
+  }
+
+  ionViewDidEnter() {
+  
+  }
+
+  doRefresh(refresher) {
+    this.presentLoading();
+    console.log('Begin async operation', refresher);
+    this.getBalance();
+    // setTimeout(() => {
+    //   console.log('Async operation has ended');
+    refresher.complete();
+    // }, 2000);
+  }
+
+  /**
+   * Navigate to the detail page for this item.
+   */
+  openItem(item: Item) {
+    this.navCtrl.push('ItemDetailPage', {
+      item: item,
+      currentItems: this.currentItems,
+      receivers: this.receivers
+    });
+  }
+
+  setFilteredItems() {
+    this.Searcheditems = this.currentItems.filter((item) => {
+      return item.asset_code.toLowerCase().includes(this.searchTerm.toLowerCase());
+    });
+
+  }
+  
+  getBalance() {
+    let assets = [];
+
+    var server = new Server('https://horizon-testnet.stellar.org');
+    console.log(this.user)
+    try {
+      // the JS SDK uses promises for most actions, such as retrieving an account
+      server.loadAccount(this.user.PublicKey).then(function (account) {
+        // console.log('Balances for account: ' + JSON.stringify(account.balances));
+        account.balances.forEach(function (balance) {
+          // @ts-ignore
+          // console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
+          // @ts-ignore
+          assets.push({ 'asset_code': balance.asset_code, 'balance': balance.balance });
+        });
+        assets.pop();
+      });
+      this.currentItems = assets;
+      this.Searcheditems = this.currentItems;
+      // console.log(this.currentItems)
+      console.log(this.Searcheditems)
+      // this.setFilteredItems();
+    } catch (error) {
+      console.log(error);
+      if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+    }
+
+    
+    if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+  }
+
+  loadReceivers() {
+    console.log(this.user.PublicKey);
+    this.itemsProvider.querycocbysender(this.user.PublicKey).subscribe((resp) => {
+      // @ts-ignore
+      console.log(resp);
+      // @ts-ignore
+      this.receivers = resp;
+      console.log(this.receivers[0].Receiver);
+
+      // remove duplicates
+      this.receivers = this.receivers.reduce((arr, item) => {
+        let exists = !!arr.find(x => x.Receiver === item.Receiver);
+        if (!exists) {
+          arr.push(item);
+        }
+        return arr;
+      }, []);
+
+      console.log(this.receivers)
+      if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+
+    }, (err) => {
+      console.log('error in querying receivers')
+      if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+    });
+  }
+
+  presentLoading() {
+    this.isLoadingPresent = true;
+    this.loading = this.loadingCtrl.create({
+      dismissOnPageChange: false,
+      content: 'pleasewait'
+    });
+
+    this.loading.present();
+  }
+
+  dissmissLoading() {
+    this.isLoadingPresent = false;
+    this.loading.dismiss();
+  }
+
+}

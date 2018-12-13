@@ -1,0 +1,74 @@
+<ion-header>
+
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Received Items</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <div *ngIf="Citems">
+    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
+  </div>
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="!Citems" id="noitemDiv">
+    <img id="notification-icon" src="../../assets/imgs/notifications-bell-button.png">
+    <h2 id="noItem"> NOTIFICATIONS </h2>
+    <ion-note id="noItem-note">No notifications available for this period</ion-note>
+  </div>
+
+
+
+  <accordion-list *ngFor="let item of Searcheditems; let index = index" [status]="item.status" [date]="item.date"
+    [uname]="item.uname" [oname]="item.oname" [qty]="item.qty" textColor="#000000" hasMargin="false" headerColor="#ffffff"
+    [expanded]="index === 0">
+    <!-- <img [src]="item.imageUrl"> -->
+    <div *ngIf="item.status == 'PENDING';else status_Content" id="content">
+      <ion-row>
+        <ion-col left text-left>
+          <ion-note>{{item.validity}}</ion-note>
+        </ion-col>
+        <ion-col left text-left>
+          <!-- <ion-note>{{item.status}}</ion-note> -->
+          <ion-note>This request will be valid for {{item.time}} days.</ion-note>
+        </ion-col>
+      </ion-row>
+      <hr>
+      <ion-row>
+        <ion-col>
+          <button (click)="passwordPrompt(item,'accept')" id="accept" ion-button block outline>ACCEPT</button>
+        </ion-col>
+        <ion-col>
+          <button (click)="passwordPrompt(item,'reject')" id="reject" ion-button block outline>REJECT</button>
+        </ion-col>
+
+      </ion-row>
+    </div>
+    <ng-template #status_Content>
+      <div id="content">
+        <ion-row>
+          <ion-col left text-left>
+            <h2>Status</h2>
+          </ion-col>
+          <ion-col right text-right>
+            <h2>{{item.status}}</h2>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ng-template>
+  </accordion-list>
+
+  <!-- <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll> -->
+  
+</ion-content>
