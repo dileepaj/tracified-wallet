@@ -14,6 +14,11 @@ import { Settings, User, Api } from '../providers';
 import { MyApp } from './app.component';
 import { ItemReceivedPageModule } from '../pages/item-received/item-received.module';
 import { ItemSentPageModule } from '../pages/item-sent/item-sent.module';
+import { ConnectivityServiceProvider } from '../providers/connectivity-service/connectivity-service';
+import { Network } from '@ionic-native/network';
+import { ResetPasswordPageModule } from '../pages/reset-password/reset-password.module';
+import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { TabsPageModule } from '../pages/tabs/tabs.module';
 
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
@@ -44,8 +49,9 @@ export function provideSettings(storage: Storage) {
   imports: [
     BrowserModule, 
     HttpClientModule,
-    // ComponentsModule,
+    ResetPasswordPageModule,
     ItemReceivedPageModule,
+    TabsPageModule,
     ItemSentPageModule,
     TranslateModule.forRoot({
       loader: {
@@ -63,6 +69,7 @@ export function provideSettings(storage: Storage) {
   ],
   providers: [
     Api,
+    Network, 
     Items,
     User,
     Camera,
@@ -70,7 +77,9 @@ export function provideSettings(storage: Storage) {
     StatusBar,
     { provide: Settings, useFactory: provideSettings, deps: [Storage] },
     // Keep this to enable Ionic's runtime error handling during development
-    { provide: ErrorHandler, useClass: IonicErrorHandler }
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    ConnectivityServiceProvider,
+    AuthServiceProvider
   ]
 })
 export class AppModule { }
