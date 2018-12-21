@@ -57,23 +57,6 @@ export class LoginPage {
     this.menuCtrl.enable(true);
   }
 
-  // Attempt to login in through our User service
-  // doLogin() {
-  //   console.log(this.form.value);
-  //   this.user.login(this.form.value).subscribe((resp) => {
-  //     this.navCtrl.push(MainPage);
-  //   }, (err) => {
-  //     // this.navCtrl.push(MainPage);
-  //     // Unable to log in
-  //     let toast = this.toastCtrl.create({
-  //       message: this.loginErrorString,
-  //       duration: 3000,
-  //       position: 'bottom'
-  //     });
-  //     toast.present();
-  //   });
-  // }
-
   hideShowPassword() {
     this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
     this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
@@ -86,7 +69,6 @@ export class LoginPage {
         password: this.form.value.password,
         newPassword: 'none'
       };
-      // this.gotoPasswordResetPage(this.form.value.username, this.form.value.password);
 
       this.authService.validateUser(authmodel).then((res) => {
         console.log(res);
@@ -102,14 +84,15 @@ export class LoginPage {
         } else if (res.status === 205) {
           this.gotoPasswordResetPage(this.form.value.username, this.form.value.password);
         } else if (res.status === 403) {
-          // this.translate.get(['authenticationFailed', 'accountIsBlocked']).subscribe(text => {
           this.userError('authenticationFailed', 'accountIsBlocked');
-          // });
         } else {
-          // this.translate.get(['authenticationFailed', 'authenticationFailedDescription']).subscribe(text => {
           this.userError('authenticationFailed', 'authenticationFailedDescription');
-          // });
         }
+      })
+      .catch((error) => {
+        this.dissmissLoading();
+        this.userError('authenticationFailed', 'authenticationFailedDescription');
+        console.log(error);
       });
     } else {
       this.presentToast('noInternet');

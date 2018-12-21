@@ -34,8 +34,8 @@ export class User {
    * the user entered on the form.
    */
   login(accountInfo: any) {
-    let seq = this.api.delete('5bebb87e3300006200fbbfef', {'Content-Type': 'application/json'}, ).share();
-    // let seq = this.api.delete('5bf5209c3000006a007bbc30', {'Content-Type': 'application/json'}, ).share();
+    // let seq = this.api.delete('5bebb87e3300006200fbbfef', {'Content-Type': 'application/json'}, ).share();
+    let seq = this.api.delete('5bf5209c3000006a007bbc30', {'Content-Type': 'application/json'}, ).share();
 
     seq.subscribe((res: any) => {
       // If the API returned a successful response, mark the user as logged in

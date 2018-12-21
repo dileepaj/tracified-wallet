@@ -121,7 +121,27 @@ export class ItemReceivedPage {
         const oldDate: number = new Date(parsedTx.timeBounds.minTime * 1000);
         // @ts-ignore
         const newDate: number = new Date(parsedTx.timeBounds.maxTime * 1000);
-        
+
+        let itemArr = [];
+        parsedTx.operations.forEach(tansac => {
+          if (tansac.type == 'payment') {
+            console.log(tansac)
+            let i = 0;
+
+           let assetObj = {
+              "source": tansac.source,
+              "asset": tansac.asset.code,
+              "amount": tansac.amount
+            }
+
+            itemArr.push(assetObj);
+          }
+
+        });
+        console.log(itemArr)
+
+        const tempLast = itemArr.pop();
+
         const obj = {
           AcceptTxn: item.AcceptTxn,
           AcceptXdr: item.AcceptXdr,
@@ -129,11 +149,12 @@ export class ItemReceivedPage {
           RejectXdr: item.RejectXdr,
           // @ts-ignore
           date: oldDate.toLocaleString(),
-          uname: parsedTx.operations[3].source,
+          itemArr: itemArr,
+          uname: tempLast.source,
           // @ts-ignore
-          oname: parsedTx.operations[3].asset.code,
+          oname: tempLast.asset,
           // @ts-ignore
-          qty: parsedTx.operations[3].amount,
+          qty: tempLast.amount,
           // @ts-ignore
           validity: newDate.toLocaleString(),
           time: (Math.round((newDate - oldDate) / (1000 * 60 * 60 * 24))),
