@@ -39,7 +39,7 @@ export class ItemSentPage {
   }
 
   ionViewDidEnter() {
-    
+
   }
 
   doRefresh(refresher) {
@@ -61,8 +61,8 @@ export class ItemSentPage {
 
 
   loadCOCSent() {
-
     console.log(this.user.PublicKey);
+
     this.itemsProvider.querycocbysender(this.user.PublicKey).subscribe((resp) => {
       // @ts-ignore
       console.log(resp);
@@ -74,13 +74,26 @@ export class ItemSentPage {
         const oldDate: any = new Date(parsedTx.timeBounds.minTime * 1000);
         // @ts-ignore
         const newDate: any = new Date(parsedTx.timeBounds.maxTime * 1000);
-        console.log(parsedTx)
-        // console.log(parsedTx.timeBounds.maxTime)
-        // console.log(parsedTx.timeBounds.minTime)
-        // console.log(parsedTx.operations[3].asset.code)
-        // console.log(parsedTx.operations[3].amount)
-        // console.log('sender : ' + parsedTx.operations[3].source)
-        // console.log('receiver : ' + parsedTx.source)
+
+        let itemArr = [];
+        parsedTx.operations.forEach(tansac => {
+          if (tansac.type == 'payment') {
+            console.log(tansac)
+            let i = 0;
+
+            let assetObj = {
+              "source": tansac.source,
+              "asset": tansac.asset.code,
+              "amount": tansac.amount
+            }
+
+            itemArr.push(assetObj);
+          }
+
+        });
+        console.log(itemArr)
+
+        const tempLast = itemArr.pop();
         const obj = {
           AcceptTxn: item.AcceptTxn,
           AcceptXdr: item.AcceptXdr,
@@ -88,37 +101,33 @@ export class ItemSentPage {
           RejectXdr: item.RejectXdr,
           // @ts-ignore
           date: oldDate.toLocaleString(),
-          uname: parsedTx.source,
+          itemArr: itemArr,
+          uname: tempLast.source,
           // @ts-ignore
-          oname: parsedTx.operations[3].asset.code,
+          oname: tempLast.asset,
           // @ts-ignore
-          qty: parsedTx.operations[3].amount,
+          qty: tempLast.amount,
           // @ts-ignore
           validity: newDate.toLocaleString(),
           time: (Math.round((newDate - oldDate) / (1000 * 60 * 60 * 24))),
-          status: item.Status.toUpperCase()
+          status: item.Status
         }
-        console.log(obj)
+        // console.log(obj)
         Tempitems.push(obj)
-        console.log(Tempitems)
+        // console.log(Tempitems)
         this.items = Tempitems;
         this.setFilteredItems();
 
       });
 
-      // @ts-ignore
-      // console.log(this.receivers[0].Receiver);
-
-      // console.log(this.receivers)
-
     }, (err) => {
-      console.log('error in querying COCreceived')
+      console.log('error in querying COC Sent')
       if (this.isLoadingPresent) { this.dissmissLoading(); }
 
     });
 
     if (this.isLoadingPresent) { this.dissmissLoading(); }
-  
+
   }
 
   presentLoading() {

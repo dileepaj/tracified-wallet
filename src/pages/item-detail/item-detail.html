@@ -80,7 +80,7 @@
         </ion-list>
 
         <div id="button">
-          <button (click)="passwordPrompt()" id="cocButton" ion-button block outline>Transfer</button>
+          <button (click)="passwordPrompt()" id="cocButton" [disabled]="COCForm.invalid" ion-button block outline>Transfer</button>
         </div>
 
 

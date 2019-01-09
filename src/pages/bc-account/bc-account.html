@@ -18,14 +18,58 @@
 
 <ion-content padding>
   <ion-card *ngFor="let account of userAcc.MainAccounts">
-    <h5>PK: {{account.pk}}</h5>
-    <br>
-    <h5>SK: {{account.sk}}</h5>
+    <ion-item>
+      <ion-row>
+        <ion-col col-3 left text-left>
+          <h5 class="label">Name: </h5>
+        </ion-col>
+        <ion-col col-9 left text-left>
+          <h5>{{ account.AccountName}}</h5>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+    <ion-item>
+      <ion-row>
+        <ion-col col-3 left text-left>
+          <h5 class="label">Primary Key: </h5>
+        </ion-col>
+        <ion-col col-9 left text-left>
+          <h5>{{ account.pk}}</h5>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+    <ion-item>
+      <ion-row>
+        <ion-col col-3 left text-left>
+          <h5 class="label">Secret Key: </h5>
+        </ion-col>
+        <ion-col col-9 right text-left>
+          <h5>{{ account.sk}}</h5>
+        </ion-col>
+      </ion-row>
+    </ion-item>
+    <ion-item>
+      <ion-row>
+        <ion-col col-3 left text-left>
+          <h5 class="label">Sub Acc: </h5>
+        </ion-col>
+        <ion-col col-9 right text-left *ngFor="let subAccount of account.subAccounts">
+          <h5>{{subAccount}}</h5>
+        </ion-col>
+      </ion-row>
+    </ion-item>
 
-    <ion-card *ngFor="let account of account.subAccounts">
-      <ion-note>PK: {{account.pk}}</ion-note>
-      <br>
-      <ion-note>SK: {{account.sk}}</ion-note>
-    </ion-card>
+
+    <!-- <ion-card *ngFor="let subAccount of account.subAccounts">
+      <ion-note>PK: {{subAccount}}</ion-note>
+
+    </ion-card> -->
   </ion-card>
+
+  <ion-fab right bottom>
+    <button color="secondary" ion-fab (click)="goToAddAccount()" >
+      <ion-icon name="add"></ion-icon>
+    </button>
+
+  </ion-fab>
 </ion-content>

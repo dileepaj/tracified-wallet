@@ -1,6 +1,6 @@
 <ion-list class="accordion-list">
   <ion-list-header no-lines no-padding>
-    <div [ngClass]="{ 'accepted': status === 'ACCEPTED', 'rejected':   status === 'REJECTED', 'pending':   status === 'PENDING' }">
+    <div [ngClass]="{ 'accepted': status === 'accepted', 'rejected':   status === 'rejected', 'pending':   status === 'pending' }">
         <ion-card>
             <button ion-item no-padding  (click)="toggleAccordion()" class="accordion-header" [class.active]="expanded">
       

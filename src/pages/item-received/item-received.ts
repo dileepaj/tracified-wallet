@@ -4,6 +4,8 @@ import { Items } from '../../providers/items/items';
 // import { Transaction } from 'stellar-sdk';
 import { Network, Keypair, Transaction } from "stellar-base";
 Network.useTestNetwork();
+import { AES, enc } from "crypto-js";
+
 /**
  * Generated class for the ItemReceivedPage page.
  *
@@ -60,12 +62,9 @@ export class ItemReceivedPage {
         {
           text: 'Submit',
           handler: data => {
-            if (data) {
+            if (data.password != "") {
               console.log(data);
-              this.signXDR(item, buttonStatus, data.password);
-            } else {
-              // console.log(data);
-              // return data;
+              this.sendSignedXDR(item, buttonStatus, this.decyrptSecret(this.user.PrivateKey, data.password));
             }
           }
         }
@@ -81,19 +80,16 @@ export class ItemReceivedPage {
 
   }
 
-  // doInfinite(infiniteScroll) {
-  //   console.log('Begin async operation');
+  decyrptSecret(ciphertext, signer) {
+    // Decrypt
+    var decrypted = (AES.decrypt(ciphertext.toString(), signer)).toString(enc.Utf8);
 
-  //   setTimeout(() => {
-  //     for (let i = 0; i < this.items.length; i++) {
-  //       this.items.push( this.items.length );
-  //     }
+    console.log("signer => " + signer);
+    console.log("ciphertext => " + ciphertext);
+    console.log("plaintext => " + decrypted);
 
-  //     console.log('Async operation has ended');
-  //     infiniteScroll.complete();
-  //   }, 500);
-  // }
-
+    return decrypted;
+  }
 
   doRefresh(refresher) {
     this.presentLoading();
@@ -107,7 +103,6 @@ export class ItemReceivedPage {
 
   loadCOCReceived() {
     console.log(this.user.PublicKey);
-    // this.toast.present();
 
     this.itemsProvider.querycocbyReceiver(this.user.PublicKey).subscribe((resp) => {
       // @ts-ignore
@@ -128,7 +123,7 @@ export class ItemReceivedPage {
             console.log(tansac)
             let i = 0;
 
-           let assetObj = {
+            let assetObj = {
               "source": tansac.source,
               "asset": tansac.asset.code,
               "amount": tansac.amount
@@ -158,7 +153,14 @@ export class ItemReceivedPage {
           // @ts-ignore
           validity: newDate.toLocaleString(),
           time: (Math.round((newDate - oldDate) / (1000 * 60 * 60 * 24))),
-          status: item.Status.toUpperCase()
+          status: item.Status,
+          
+          Identifier: item.Identifier,
+          Receiver: item.Receiver,
+          Sender: item.Sender,
+          SequenceNo: item.SequenceNo,
+          SubAccount: item.SubAccount,
+          TxnHash: item.TxnHash
         }
         // console.log(obj)
         Tempitems.push(obj)
@@ -175,72 +177,62 @@ export class ItemReceivedPage {
   }
 
   signXDR(item, status, signerSK) {
-
-    try {
-      this.presentLoading();
+    return new Promise((resolve, reject) => {
       var sourceKeypair = Keypair.fromSecret(signerSK);
-      // Keypair.fromSecret(signerSK)
       if (status == 'accept') {
-        var sendItem = item
-        sendItem.status = 'accepted';
-        const parsedTx = new Transaction(sendItem.AcceptXdr)
+        item.status = 'accepted';
+        const parsedTx = new Transaction(item.AcceptXdr)
         parsedTx.sign(sourceKeypair)
         let x = parsedTx.toEnvelope().toXDR().toString('base64')
-        sendItem.AcceptXdr = x;
-        console.log(x);
-
+        item.AcceptXdr = x;
+        resolve(item);
       } else {
-        sendItem = item
-        sendItem.status = 'rejected';
-        const parsedTx = new Transaction(sendItem.RejectXdr)
+        item.status = 'rejected';
+        const parsedTx = new Transaction(item.RejectXdr)
         parsedTx.sign(sourceKeypair)
         let x = parsedTx.toEnvelope().toXDR().toString('base64')
-        sendItem.RejectXdr = x;
-        console.log(x)
-
+        item.RejectXdr = x;
+        // console.log(x)
+        resolve(item);
       }
+    }).catch(function (e) {
+      console.log(e);
+      // reject(e)
 
-      this.itemsProvider.updateStatusCOC(sendItem).subscribe((resp) => {
-        console.log(sendItem)
+    });
+  }
+
+  sendSignedXDR(item, status, signerSK) {
+    this.presentLoading();
+    this.signXDR(item, status, signerSK).then((obj) => {
+      this.itemsProvider.updateStatusCOC(obj).subscribe((resp) => {
+        console.log(obj)
         console.log(resp)
         // @ts-ignore
         if (resp.Body.Status == 'accepted') {
-          item.status = 'ACCEPTED';
-          if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-          // this.toast.present();
+          this.presentToast('Transaction Success!');
           // @ts-ignore
         } else if (resp.Body.Status == 'rejected') {
-          item.status = 'REJECTED';
-          // this.toast.present();
-          if (this.isLoadingPresent) { this.dissmissLoading(); }
-
+          this.presentToast('Transaction Success!');
         }
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
 
       }, (err) => {
         console.log(err);
-        item.status = 'PENDING';
+        item.status = 'pending';
         if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-        // this.toast.present();
-
-        //   this.navCtrl.push(MainPage);
-        //   // Unable to log in
-        //   let toast = this.toastCtrl.create({
-        //     message: this.loginErrorString,
-        //     duration: 3000,
-        //     position: 'bottom'
-        //   });
-        //   toast.present();
+        this.presentToast('Transaction Unsuccessfull');
       });
-    } catch (error) {
-      console.log(error)
-      if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-    }
-
+    }).catch(e => {
+      console.log(e)
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+        this.presentToast('Error! signing Transaction.');
+      }
+    })
   }
 
+  
   presentLoading() {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
@@ -256,8 +248,29 @@ export class ItemReceivedPage {
     this.loading.dismiss();
   }
 
+  presentToast(message) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 4000,
+      position: 'middle'
+    });
+    toast.present();
+  }
 }
 
+
+  // doInfinite(infiniteScroll) {
+  //   console.log('Begin async operation');
+
+  //   setTimeout(() => {
+  //     for (let i = 0; i < this.items.length; i++) {
+  //       this.items.push( this.items.length );
+  //     }
+
+  //     console.log('Async operation has ended');
+  //     infiniteScroll.complete();
+  //   }, 500);
+  // }
 
     // {
     //   date: 'today',

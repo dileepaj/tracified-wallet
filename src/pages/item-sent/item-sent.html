@@ -15,8 +15,7 @@
   </div>
 
   <ion-refresher (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
-      refreshingText="Refreshing...">
+    <ion-refresher-content pullingIcon="refresh" pullingText="" refreshingSpinner="circles" refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
 
@@ -32,6 +31,17 @@
     <!-- <img [src]="item.imageUrl"> -->
     <!-- <div *ngIf="item.status == 'pending';else status_Content" id="content"> -->
     <div id="content">
+      <ion-col left text-left *ngIf="item.itemArr.length > 0">
+        <h2>Transforming Items</h2>
+      </ion-col>
+      <ion-row *ngFor="let assetObj of item.itemArr">
+        <ion-col left text-left>
+          <h2>{{assetObj.asset}}</h2>
+        </ion-col>
+        <ion-col right text-left>
+          <h2>{{assetObj.amount}}</h2>
+        </ion-col>
+      </ion-row>
       <ion-row>
         <ion-col left text-left>
           <ion-note>{{item.validity}}</ion-note>

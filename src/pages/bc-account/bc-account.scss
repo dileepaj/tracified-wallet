@@ -1,3 +1,39 @@
 page-bc-account {
 
+    ion-item{
+        padding: 0px !important;
+        min-height: auto;
+
+    }
+
+    ion-card{
+        padding: 7px 2px 1px 7px;
+        font-size: 14.4px !important;
+    }
+
+    [padding] h5:first-child,{
+        margin-top: 0px !important ;
+    }
+
+    .label{
+        margin-top: 0px !important ;
+        font-weight: 500;
+    }
+
+    h5{
+        // padding-left: 4px;
+        // margin: 0px 0px 0px 4px !important;
+        overflow: inherit;
+        // font-weight: 400;
+    }
+
+    ion-fab{
+        top: auto !important;
+        // color: green;
+
+    }
+}
+
+ion-app.md [padding] .scroll-content {
+    padding: 10px !important;
 }

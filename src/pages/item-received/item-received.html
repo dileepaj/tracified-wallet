@@ -32,8 +32,8 @@
     [uname]="item.uname" [oname]="item.oname" [qty]="item.qty" textColor="#000000" hasMargin="false" headerColor="#ffffff"
     [expanded]="index === 0">
     <!-- <img [src]="item.imageUrl"> -->
-    <div *ngIf="item.status == 'PENDING';else status_Content" id="content">
-      <ion-col left text-left>
+    <div *ngIf="item.status == 'pending';else status_Content" id="content">
+      <ion-col left text-left *ngIf="item.itemArr.length > 0">
         <h2>Transforming Items</h2>
       </ion-col>
       <ion-row *ngFor="let assetObj of item.itemArr">
@@ -66,7 +66,7 @@
     </div>
     <ng-template #status_Content>
       <div id="content">
-        <ion-col left text-left>
+        <ion-col left text-left *ngIf="item.itemArr.length > 0">
           <h2>Transforming Items</h2>
         </ion-col>
         <ion-row *ngFor="let assetObj of item.itemArr">

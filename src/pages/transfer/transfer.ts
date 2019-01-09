@@ -5,13 +5,6 @@ import { Item } from '../../models/item';
 import { Server, Transaction } from 'stellar-sdk';
 import { Items } from '../../providers/items/items';
 
-/**
- * Generated class for the TransferPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @IonicPage()
 @Component({
   selector: 'page-transfer',
@@ -33,9 +26,6 @@ export class TransferPage {
     // this.user.PublicKey = 'GCZRSDPSU2TPDZMX4NFDE3OBQPACXVA4LH6E3LO3QXPBPONL4K6CTNBI';
   }
 
-  /**
-   * The view loaded, let's query our items for the list
-   */
   ionViewDidLoad() {
     this.presentLoading();
     this.getBalance();
@@ -56,9 +46,6 @@ export class TransferPage {
     // }, 2000);
   }
 
-  /**
-   * Navigate to the detail page for this item.
-   */
   openItem(item: Item) {
     this.navCtrl.push('ItemDetailPage', {
       item: item,
@@ -68,6 +55,7 @@ export class TransferPage {
   }
 
   setFilteredItems() {
+    // console.log(this.searchTerm)
     this.Searcheditems = this.currentItems.filter((item) => {
       return item.asset_code.toLowerCase().includes(this.searchTerm.toLowerCase());
     });
