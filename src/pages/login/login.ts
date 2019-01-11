@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IonicPage, NavController, ToastController, MenuController, AlertController, Toast, LoadingController } from 'ionic-angular';
 
-import { User } from '../../providers';
-import { MainPage } from '../';
+import { User, Api } from '../../providers';
+// import { MainPage } from '../';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { ResetPasswordPage } from '../reset-password/reset-password';
@@ -34,6 +34,7 @@ export class LoginPage {
     public menuCtrl: MenuController,
     public user: User,
     private authService: AuthServiceProvider,
+    private api: Api,
     private connectivity: ConnectivityServiceProvider,
     public toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
@@ -55,12 +56,9 @@ export class LoginPage {
   }
   ionViewWillLeave() {
     this.menuCtrl.enable(true);
+    this.getAccounts();
   }
 
-  hideShowPassword() {
-    this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
-    this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
-  }
   doLogin() {
     if (this.connectivity.onDevice) {
       this.presentLoading();
@@ -71,15 +69,10 @@ export class LoginPage {
       };
 
       this.authService.validateUser(authmodel).then((res) => {
-        console.log(res);
+        console.log(res.body.Token);
         this.dissmissLoading();
         if (res.status === 200) {
-          // this.authService.getUser(this.properties.userName)
-          // .then((token) => this.dataService.updateLocalProcessFlowDetails(token))
-          // .then((uiJSON) => this.dataService.updateLocalArtifactDetails(uiJSON.artifactIds))
-          // .then(() => this.dataService.updateLocalItemList())
-          // .then(() => console.log('Initial data update finsihed'));
-          // this.properties.scannerStatus === 'connected' ? this.navCtrl.setRoot(ExternalScannerPage) : this.navCtrl.setRoot(DeviceScannerPage);
+          localStorage.setItem('_token', JSON.stringify(res.body.Token))
           this.navCtrl.setRoot(TabsPage);
         } else if (res.status === 205) {
           this.gotoPasswordResetPage(this.form.value.username, this.form.value.password);
@@ -89,11 +82,11 @@ export class LoginPage {
           this.userError('authenticationFailed', 'authenticationFailedDescription');
         }
       })
-      .catch((error) => {
-        this.dissmissLoading();
-        this.userError('authenticationFailed', 'authenticationFailedDescription');
-        console.log(error);
-      });
+        .catch((error) => {
+          this.dissmissLoading();
+          this.userError('authenticationFailed', 'authenticationFailedDescription');
+          console.log(error);
+        });
     } else {
       this.presentToast('noInternet');
     }
@@ -105,6 +98,39 @@ export class LoginPage {
 
   gotoForgotPasswordPage() {
     this.navCtrl.push(ResetPasswordPage, { type: 'forgotPassword' });
+  }
+
+  getAccounts() {
+    if (this.connectivity.onDevice) {
+      this.presentLoading();
+
+      this.api.getBCAccount().then((res) => {
+        console.log(res);
+        this.dissmissLoading();
+        //@ts-ignore
+        if (res.status === 200) {
+          //@ts-ignore
+          const BCAccounts = res.body.accounts.accounts
+          localStorage.setItem('_BCAccounts', JSON.stringify(BCAccounts));
+
+        } else {
+          console.log('Error! requesting BC Accounts')
+          this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
+        }
+      })
+        .catch((error) => {
+          this.dissmissLoading();
+          this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
+          console.log(error);
+        });
+    } else {
+      this.presentToast('noInternet');
+    }
+  }
+
+  hideShowPassword() {
+    this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
+    this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
   }
 
   userError(title, message) {

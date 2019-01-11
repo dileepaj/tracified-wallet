@@ -28,10 +28,12 @@ export class ItemReceivedPage {
   Citems: any;
 
   items = [];
+  BCAccounts: any;
 
   constructor(public navCtrl: NavController, private alertCtrl: AlertController, private loadingCtrl: LoadingController,
     public toastCtrl: ToastController, public itemsProvider: Items) {
     this.user = JSON.parse(localStorage.getItem('_user'))
+    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
     // this.loadCOCReceived();
   }
 
@@ -64,7 +66,7 @@ export class ItemReceivedPage {
           handler: data => {
             if (data.password != "") {
               console.log(data);
-              this.sendSignedXDR(item, buttonStatus, this.decyrptSecret(this.user.PrivateKey, data.password));
+              this.sendSignedXDR(item, buttonStatus, this.decyrptSecret(this.BCAccounts[0].sk, data.password));
             }
           }
         }
@@ -102,9 +104,9 @@ export class ItemReceivedPage {
   }
 
   loadCOCReceived() {
-    console.log(this.user.PublicKey);
+    console.log(this.BCAccounts[0].pk);
 
-    this.itemsProvider.querycocbyReceiver(this.user.PublicKey).subscribe((resp) => {
+    this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe((resp) => {
       // @ts-ignore
       console.log(resp);
       this.Citems = resp;

@@ -25,9 +25,11 @@ export class ItemSentPage {
   loading;
   isLoadingPresent: boolean;
   Citems: any;
+  BCAccounts: any;
 
   constructor(public navCtrl: NavController, private alertCtrl: AlertController, private loadingCtrl: LoadingController, public itemsProvider: Items) {
     this.user = JSON.parse(localStorage.getItem('_user'))
+    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
     // this.loadCOCSent();
   }
 
@@ -61,9 +63,9 @@ export class ItemSentPage {
 
 
   loadCOCSent() {
-    console.log(this.user.PublicKey);
+    console.log(this.BCAccounts[0].pk);
 
-    this.itemsProvider.querycocbysender(this.user.PublicKey).subscribe((resp) => {
+    this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
       // @ts-ignore
       console.log(resp);
       this.Citems = resp;

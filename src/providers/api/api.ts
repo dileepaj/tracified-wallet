@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 /**
@@ -7,11 +7,18 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class Api {
   url: string = 'https://tracified-gateway.herokuapp.com';
-  // url: string = 'http://localhost:8030';
+  LocalAdminURL: string = 'http://localhost:5000';
   adminURL: string = 'http://staging.admin.api.tracified.com';
   loginurl: string = 'http://www.mocky.io/v2';
+  // token: string;
+  reqOpts: any;
 
   constructor(public http: HttpClient) {
+
+  }
+
+  ionViewDidLoad() {
+
   }
 
   get(endpoint: string, params?: any, reqOpts?: any) {
@@ -59,6 +66,30 @@ export class Api {
             // "PrivateKey": "U2FsdGVkX1/U7TxrrB+kzEiFPa9373k2TUQkRT5pFvUVJQRDURmUQi8Y9jQaSkceZp3kGoFraA1k8oITT8UK6/yjNNXNivug788HaSDJFzc="
           }
           localStorage.setItem('_user', JSON.stringify(user));
+
+          resolve(response);
+        },
+          error => {
+            console.log(error);
+            reject(error);
+          });
+    });
+  }
+
+  getBCAccount(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // console.log(JSON.parse(localStorage.getItem('_token')))
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+          'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+        })
+      }
+      this.http.get(this.LocalAdminURL + '/api/bc/keys', this.reqOpts)
+        .subscribe(response => {
+          // console.log(response);
 
           resolve(response);
         },

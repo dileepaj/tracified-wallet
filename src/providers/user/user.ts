@@ -3,6 +3,7 @@ import 'rxjs/add/operator/toPromise';
 import { Injectable } from '@angular/core';
 
 import { Api } from '../api/api';
+import { rejects } from 'assert';
 
 /**
  * Most apps have the concept of a User. This is a simple provider
@@ -28,29 +29,6 @@ export class User {
   _user: any;
 
   constructor(public api: Api) { }
-
-  /**
-   * Send a POST request to our login endpoint with the data
-   * the user entered on the form.
-   */
-  login(accountInfo: any) {
-    // let seq = this.api.delete('5bebb87e3300006200fbbfef', {'Content-Type': 'application/json'}, ).share();
-    let seq = this.api.delete('5bf5209c3000006a007bbc30', {'Content-Type': 'application/json'}, ).share();
-
-    seq.subscribe((res: any) => {
-      // If the API returned a successful response, mark the user as logged in
-      console.log(res)
-      if (res.status == 'success') {
-        this._loggedIn(res);
-      } else {
-        console.log("error in mocky!")
-      }
-    }, err => {
-      console.log('ERROR', err);
-    });
-
-    return seq;
-  }
 
   /**
    * Send a POST request to our signup endpoint with the data
