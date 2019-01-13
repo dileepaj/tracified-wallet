@@ -92,7 +92,7 @@ export class AddAccountPage {
                 this.dissmissLoading();
                 if (res.status === 200) {
                   console.log(res)
-                  // localStorage.setItem('_token', JSON.stringify(res.body.Token))
+                  this.presentToast('Blockchain Account added successfully!');
                   this.gotoBlockchainAccPage();
                 } else if (res.status === 205) {
 
@@ -237,39 +237,35 @@ export class AddAccountPage {
   }
 
   createAddress() {
-    return new Promise((resolve, reject) => {
-      var pair = Keypair.random();
-      pair.secret();
-      console.log(pair.publicKey())
-      pair.publicKey();
-      console.log(pair.secret())
-
-      get({
-        url: 'https://friendbot.stellar.org',
-        qs: { addr: pair.publicKey() },
-        json: true
-      }, function (error, response, body) {
-        if (error || response.statusCode !== 200) {
-          console.error('ERROR!', error || body);
-          reject(error);
-        }
-        else {
-          console.log('SUCCESS! You have a new account :)\n', body);
-
-          // // the JS SDK uses promises for most actions, such as retrieving an account
-          // server.loadAccount(pair.publicKey()).then(function (account) {
-          //   console.log('Balances for account: ' + pair.publicKey());
-          //   account.balances.forEach(function (balance) {
-          //     console.log('Type:', balance.asset_type, ', Balance:', balance.balance);
-          //   });
-          // });
-
-          resolve(pair);
-          // resolve({'pk': pair.publicKey(), 'sk': pair.secret()});
-
-        }
-      });
-    })
+    try {
+      return new Promise((resolve, reject) => {
+        var pair = Keypair.random();
+        pair.secret();
+        console.log(pair.publicKey())
+        pair.publicKey();
+        console.log(pair.secret())
+  
+        get({
+          url: 'https://friendbot.stellar.org',
+          qs: { addr: pair.publicKey() },
+          json: true
+        }, function (error, response, body) {
+          if (error || response.statusCode !== 200) {
+            console.error('ERROR!', error || body);
+            reject(error);
+          }
+          else {
+            console.log('SUCCESS! You have a new account :)\n', body);
+  
+            resolve(pair);
+  
+          }
+        });
+      })
+    } catch (error) {
+      console.log(error);
+      
+    }
 
   }
 
@@ -314,64 +310,73 @@ export class AddAccountPage {
 
 
   createMultipleTrustline(pair) {
-    return new Promise((resolve, reject) => {
-      var receivingKeys = pair;
-      server.loadAccount(receivingKeys.publicKey())
-        .then(function (account) {
-          const txBuilder = new TransactionBuilder(account)
-
-          // Create an object to represent the new asset
-          var Aple = new Asset('Aple', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-          // var Grap = new Asset('Grap', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-          // var Orng = new Asset('Orng', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-          // var Bana = new Asset('Bana', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-          // var Carr = new Asset('Carr', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-
-          // var assetArr = [Grap, Orng, Bana, Aple, Carr];
-          var assetArr = [Aple];
-          assetArr.forEach(element => {
-            // add operation
-            txBuilder.addOperation(Operation.changeTrust({
-              asset: element,
-              limit: '1000'
-            }))
-
-            const tx = txBuilder.build();
-            tx.sign(receivingKeys);
-            let XDR;
-            // console.log(tx);
-            console.log("XDR............");
-            console.log(tx.toEnvelope().toXDR('base64'));
-
-            server.submitTransaction(tx)
-              .then(function (transactionResult) {
-                console.log(transactionResult);
-              }).catch(function (err) {
-                console.log(err);
-              })
+    try {
+      return new Promise((resolve, reject) => {
+        var receivingKeys = pair;
+        server.loadAccount(receivingKeys.publicKey())
+          .then(function (account) {
+            const txBuilder = new TransactionBuilder(account)
+  
+            // Create an object to represent the new asset
+            var Aple = new Asset('Aple', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
+            // var Grap = new Asset('Grap', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
+            // var Orng = new Asset('Orng', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
+            // var Bana = new Asset('Bana', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
+            // var Carr = new Asset('Carr', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
+  
+            // var assetArr = [Grap, Orng, Bana, Aple, Carr];
+            var assetArr = [Aple];
+            assetArr.forEach(element => {
+              // add operation
+              txBuilder.addOperation(Operation.changeTrust({
+                asset: element,
+                limit: '10'
+              }))
+  
+              const tx = txBuilder.build();
+              tx.sign(receivingKeys);
+              let XDR;
+              // console.log(tx);
+              console.log("XDR............");
+              console.log(tx.toEnvelope().toXDR('base64'));
+  
+              server.submitTransaction(tx)
+                .then(function (transactionResult) {
+                  console.log(transactionResult);
+                }).catch(function (err) {
+                  console.log(err);
+                })
+            })
+            resolve();
           })
-          resolve();
-        })
-    })
+      })
+    } catch (error) {
+      console.log(error);
+      
+    }
 
   }
 
   encyrptSecret(secret, signer) {
-    return new Promise((resolve, reject) => {
-      // Encrypt
-      var ciphertext = AES.encrypt(secret, signer);
-
-      // // Decrypt
-      // var decrypted = AES.decrypt(ciphertext.toString(), signer);
-      // var plaintext = decrypted.toString(enc.Utf8);
-
-      console.log("secret => " + secret);
-      console.log("signer => " + signer);
-      console.log("ciphertext => " + ciphertext);
-      // console.log("plaintext => " + plaintext);
-
-      resolve(ciphertext.toString());
-    })
+    try {
+      return new Promise((resolve, reject) => {
+        // Encrypt
+        var ciphertext = AES.encrypt(secret, signer);
+  
+        // // Decrypt
+        // var decrypted = AES.decrypt(ciphertext.toString(), signer);
+        // var plaintext = decrypted.toString(enc.Utf8);
+  
+        console.log("secret => " + secret);
+        console.log("signer => " + signer);
+        console.log("ciphertext => " + ciphertext);
+        // console.log("plaintext => " + plaintext);
+  
+        resolve(ciphertext.toString());
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   hideShowPassword() {
