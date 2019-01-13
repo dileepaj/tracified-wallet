@@ -66,7 +66,7 @@ export class ItemReceivedPage {
           handler: data => {
             if (data.password != "") {
               console.log(data);
-              this.sendSignedXDR(item, buttonStatus, this.decyrptSecret(this.BCAccounts[0].sk, data.password));
+              this.sendSignedXDR(item, buttonStatus, this.decyrptSecret(this.BCAccounts[1].sk, data.password));
             }
           }
         }
@@ -104,78 +104,83 @@ export class ItemReceivedPage {
   }
 
   loadCOCReceived() {
-    console.log(this.BCAccounts[0].pk);
+    try {
+      // console.log(this.BCAccounts[0].pk);
 
-    this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe((resp) => {
-      // @ts-ignore
-      console.log(resp);
-      this.Citems = resp;
-      const Tempitems = []
-
-      this.Citems.forEach(item => {
-        const parsedTx = new Transaction(item.AcceptXdr)
+      this.itemsProvider.querycocbyReceiver(this.BCAccounts[1].pk).subscribe((resp) => {
         // @ts-ignore
-        const oldDate: number = new Date(parsedTx.timeBounds.minTime * 1000);
-        // @ts-ignore
-        const newDate: number = new Date(parsedTx.timeBounds.maxTime * 1000);
+        console.log(resp);
+        this.Citems = resp;
+        const Tempitems = []
 
-        let itemArr = [];
-        parsedTx.operations.forEach(tansac => {
-          if (tansac.type == 'payment') {
-            console.log(tansac)
-            let i = 0;
+        this.Citems.forEach(item => {
+          const parsedTx = new Transaction(item.AcceptXdr)
+          // @ts-ignore
+          const oldDate: number = new Date(parsedTx.timeBounds.minTime * 1000);
+          // @ts-ignore
+          const newDate: number = new Date(parsedTx.timeBounds.maxTime * 1000);
 
-            let assetObj = {
-              "source": tansac.source,
-              "asset": tansac.asset.code,
-              "amount": tansac.amount
+          let itemArr = [];
+          parsedTx.operations.forEach(tansac => {
+            if (tansac.type == 'payment') {
+              console.log(tansac)
+              let i = 0;
+
+              let assetObj = {
+                "source": tansac.source,
+                "asset": tansac.asset.code,
+                "amount": tansac.amount
+              }
+
+              itemArr.push(assetObj);
             }
 
-            itemArr.push(assetObj);
+          });
+          console.log(itemArr)
+
+          const tempLast = itemArr.pop();
+
+          const obj = {
+            AcceptTxn: item.AcceptTxn,
+            AcceptXdr: item.AcceptXdr,
+            RejectTxn: item.RejectTxn,
+            RejectXdr: item.RejectXdr,
+            // @ts-ignore
+            date: oldDate.toLocaleString(),
+            itemArr: itemArr,
+            uname: tempLast.source,
+            // @ts-ignore
+            oname: tempLast.asset,
+            // @ts-ignore
+            qty: tempLast.amount,
+            // @ts-ignore
+            validity: newDate.toLocaleString(),
+            time: (Math.round((newDate - oldDate) / (1000 * 60 * 60 * 24))),
+            status: item.Status,
+
+            Identifier: item.Identifier,
+            Receiver: item.Receiver,
+            Sender: item.Sender,
+            SequenceNo: item.SequenceNo,
+            SubAccount: item.SubAccount,
+            TxnHash: item.TxnHash
           }
-
+          // console.log(obj)
+          Tempitems.push(obj)
+          // console.log(Tempitems)
+          this.items = Tempitems;
+          this.setFilteredItems();
         });
-        console.log(itemArr)
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
 
-        const tempLast = itemArr.pop();
-
-        const obj = {
-          AcceptTxn: item.AcceptTxn,
-          AcceptXdr: item.AcceptXdr,
-          RejectTxn: item.RejectTxn,
-          RejectXdr: item.RejectXdr,
-          // @ts-ignore
-          date: oldDate.toLocaleString(),
-          itemArr: itemArr,
-          uname: tempLast.source,
-          // @ts-ignore
-          oname: tempLast.asset,
-          // @ts-ignore
-          qty: tempLast.amount,
-          // @ts-ignore
-          validity: newDate.toLocaleString(),
-          time: (Math.round((newDate - oldDate) / (1000 * 60 * 60 * 24))),
-          status: item.Status,
-          
-          Identifier: item.Identifier,
-          Receiver: item.Receiver,
-          Sender: item.Sender,
-          SequenceNo: item.SequenceNo,
-          SubAccount: item.SubAccount,
-          TxnHash: item.TxnHash
-        }
-        // console.log(obj)
-        Tempitems.push(obj)
-        // console.log(Tempitems)
-        this.items = Tempitems;
-        this.setFilteredItems();
+      }, (err) => {
+        console.log('error in querying COCreceived')
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
       });
+    } catch (error) {
+      console.log(error)
       if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-    }, (err) => {
-      console.log('error in querying COCreceived')
-      if (this.isLoadingPresent) { this.dissmissLoading(); }
-    });
+    }
   }
 
   signXDR(item, status, signerSK) {
@@ -234,7 +239,7 @@ export class ItemReceivedPage {
     })
   }
 
-  
+
   presentLoading() {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({

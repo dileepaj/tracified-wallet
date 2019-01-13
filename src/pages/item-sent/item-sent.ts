@@ -63,9 +63,10 @@ export class ItemSentPage {
 
 
   loadCOCSent() {
-    console.log(this.BCAccounts[0].pk);
+    try {
+      console.log(this.BCAccounts[1].pk);
 
-    this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
+    this.itemsProvider.querycocbysender(this.BCAccounts[1].pk).subscribe((resp) => {
       // @ts-ignore
       console.log(resp);
       this.Citems = resp;
@@ -129,6 +130,10 @@ export class ItemSentPage {
     });
 
     if (this.isLoadingPresent) { this.dissmissLoading(); }
+    } catch (error) {
+      console.log(error);
+      if (this.isLoadingPresent) { this.dissmissLoading(); }
+    }
 
   }
 

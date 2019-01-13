@@ -52,20 +52,42 @@ export class Api {
       this.http.post(this.adminURL + '/' + 'sign/login', body, reqOpts)
         .subscribe(response => {
           // console.log(response);
-          const user = {
-            "UserName": "Jhon",
-            "Email": "Jhon@gmail.com",
-            "Password": "passwordhash",
-            "AccountName": "admin",
-            // "PublicKey": "GCKUXI3JRJANYOF3AM35Z22FGUGYYUIEBPE5TTZ7P3G6XAEFGYZC2POM",
-            // "PrivateKey": "U2FsdGVkX19buyZyRq0pkT6vBEtAQ36e5y0ZiuUfdzpBFD7Tj3KgWVKBmnyixlF5mK9RaX+J1VUVZ9jMLcJ1fv1NAk/vjU0vgBcIiZhUCRs="
+          // const user = {
+          //   "UserName": "Jhon",
+          //   "Email": "Jhon@gmail.com",
+          //   "Password": "passwordhash",
+          //   "AccountName": "admin",
+          //   // "PublicKey": "GCKUXI3JRJANYOF3AM35Z22FGUGYYUIEBPE5TTZ7P3G6XAEFGYZC2POM",
+          //   // "PrivateKey": "U2FsdGVkX19buyZyRq0pkT6vBEtAQ36e5y0ZiuUfdzpBFD7Tj3KgWVKBmnyixlF5mK9RaX+J1VUVZ9jMLcJ1fv1NAk/vjU0vgBcIiZhUCRs="
 
-            "PublicKey": "GD4PIV4DVVKMJRJLERGTTNTKNG6Z67V7JFHYCJNWXMPR2DSQ5FDI2QCT",
-            "PrivateKey": "U2FsdGVkX19KzAegZaKEGdlktqrISd5Ks2C2/0Bm7dvj1z9wRQFdPr9JPI3ybo5aa63Zb5J/9zhZypNVU/E4HvFb4xMoh4qOHqN6fjTuE6g="
-            // "PublicKey": "GARYFJQY4YQ4V62KUPFSVKZLEZN7LHRDZJKUUWM456MFA2W3CM4XETFG",
-            // "PrivateKey": "U2FsdGVkX1/U7TxrrB+kzEiFPa9373k2TUQkRT5pFvUVJQRDURmUQi8Y9jQaSkceZp3kGoFraA1k8oITT8UK6/yjNNXNivug788HaSDJFzc="
-          }
-          localStorage.setItem('_user', JSON.stringify(user));
+          //   "PublicKey": "GD4PIV4DVVKMJRJLERGTTNTKNG6Z67V7JFHYCJNWXMPR2DSQ5FDI2QCT",
+          //   "PrivateKey": "U2FsdGVkX19KzAegZaKEGdlktqrISd5Ks2C2/0Bm7dvj1z9wRQFdPr9JPI3ybo5aa63Zb5J/9zhZypNVU/E4HvFb4xMoh4qOHqN6fjTuE6g="
+          //   // "PublicKey": "GARYFJQY4YQ4V62KUPFSVKZLEZN7LHRDZJKUUWM456MFA2W3CM4XETFG",
+          //   // "PrivateKey": "U2FsdGVkX1/U7TxrrB+kzEiFPa9373k2TUQkRT5pFvUVJQRDURmUQi8Y9jQaSkceZp3kGoFraA1k8oITT8UK6/yjNNXNivug788HaSDJFzc="
+          // }
+          // localStorage.setItem('_user', JSON.stringify(user));
+
+          resolve(response);
+        },
+          error => {
+            console.log(error);
+            reject(error);
+          });
+    });
+  }
+
+  getPreviousTXNID(Identifier): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+        })
+      }
+      this.http.get(this.url + '/transaction/lastTxn/' + Identifier, this.reqOpts)
+        .subscribe(response => {
+          // console.log(response);
 
           resolve(response);
         },
@@ -87,9 +109,82 @@ export class Api {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
         })
       }
-      this.http.get(this.LocalAdminURL + '/api/bc/keys', this.reqOpts)
+      this.http.get(this.adminURL + '/api/bc/keys', this.reqOpts)
         .subscribe(response => {
           // console.log(response);
+
+          resolve(response);
+        },
+          error => {
+            console.log(error);
+            reject(error);
+          });
+    });
+  }
+
+  addMainAccount(body): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // console.log(JSON.parse(localStorage.getItem('_token')))
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+          'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+        })
+      }
+      console.log(body);
+      this.http.post(this.adminURL + '/api/bc/key/main',body, this.reqOpts)
+        .subscribe(response => {
+          console.log(response);
+
+          resolve(response);
+        },
+          error => {
+            console.log(error);
+            reject(error);
+          });
+    });
+  }
+
+  addSubAccount(body): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // console.log(JSON.parse(localStorage.getItem('_token')))
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+          'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+        })
+      }
+      this.http.post(this.LocalAdminURL + '/api/bc/key/sub', body, this.reqOpts)
+        .subscribe(response => {
+          // console.log(response);
+
+          resolve(response);
+        },
+          error => {
+            console.log(error);
+            reject(error);
+          });
+    });
+  }
+
+  validateMainAccount(body): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // console.log(JSON.parse(localStorage.getItem('_token')))
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+          'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+        })
+      }
+      this.http.post(this.adminURL + '/api/bc/key/main/account',body, this.reqOpts)
+        .subscribe(response => {
+          console.log(response);
 
           resolve(response);
         },

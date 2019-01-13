@@ -7,6 +7,7 @@ import { AddAccountPage } from './add-account';
     AddAccountPage,
   ],
   imports: [
+    
     IonicPageModule.forChild(AddAccountPage),
   ],
   exports: [

@@ -19,10 +19,12 @@ export class TransferPage {
   Searcheditems: any;
   itemPresent: boolean;
   searchTerm: any;
+  BCAccounts: any;
 
   constructor(public navCtrl: NavController, public modalCtrl: ModalController, private loadingCtrl: LoadingController, public itemsProvider: Items) {
     // this.currentItems = this.items.query();
     this.user = JSON.parse(localStorage.getItem('_user'))
+    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
     // this.user.PublicKey = 'GCZRSDPSU2TPDZMX4NFDE3OBQPACXVA4LH6E3LO3QXPBPONL4K6CTNBI';
   }
 
@@ -66,10 +68,9 @@ export class TransferPage {
     let assets = [];
 
     var server = new Server('https://horizon-testnet.stellar.org');
-    console.log(this.user)
     try {
       // the JS SDK uses promises for most actions, such as retrieving an account
-      server.loadAccount(this.user.PublicKey).then(function (account) {
+      server.loadAccount(this.BCAccounts[1].pk).then(function (account) {
         // console.log('Balances for account: ' + JSON.stringify(account.balances));
         account.balances.forEach(function (balance) {
           // @ts-ignore
@@ -96,8 +97,9 @@ export class TransferPage {
   }
 
   loadReceivers() {
-    console.log(this.user.PublicKey);
-    this.itemsProvider.querycocbysender(this.user.PublicKey).subscribe((resp) => {
+  try {
+    console.log(this.BCAccounts[1].pk);
+    this.itemsProvider.querycocbysender(this.BCAccounts[1].pk).subscribe((resp) => {
       // @ts-ignore
       console.log(resp);
       // @ts-ignore
@@ -122,6 +124,11 @@ export class TransferPage {
       if (this.isLoadingPresent) { this.dissmissLoading(); }
 
     });
+  } catch (error) {
+    console.log(error);
+    if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+  }
   }
 
   presentLoading() {

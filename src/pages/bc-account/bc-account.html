@@ -1,9 +1,4 @@
-<!--
-  Generated template for the BcAccountPage page.
 
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
 
   <ion-navbar>
@@ -17,6 +12,22 @@
 
 
 <ion-content padding>
+  <!-- <div *ngIf="Citems">
+    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
+  </div> -->
+
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+      refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="userAcc.MainAccounts" id="noitemDiv">
+      <img id="notification-icon" src="../../assets/imgs/notifications-bell-button.png">
+      <h2 id="noItem"> ACCOUNTS </h2>
+      <ion-note id="noItem-note">No Accounts available for this period</ion-note>
+    </div>
+
   <ion-card *ngFor="let account of userAcc.MainAccounts">
     <ion-item>
       <ion-row>
@@ -67,7 +78,7 @@
   </ion-card>
 
   <ion-fab right bottom>
-    <button color="secondary" ion-fab (click)="goToAddAccount()" >
+    <button color="secondary" ion-fab (click)="goToAddAccount()">
       <ion-icon name="add"></ion-icon>
     </button>
 

@@ -40,6 +40,13 @@
 
           <ion-item id="rounded">
             <!-- <ion-label id="label" floating> Quantity </ion-label> -->
+            <ion-input class="textArea" id="identifier" type="text" placeholder="Identifier" [(ngModel)]="COCForm.identifier"
+              name="identifier"></ion-input>
+          </ion-item>
+          <ion-label stacked id="label">Identifier</ion-label>
+
+          <ion-item id="rounded">
+            <!-- <ion-label id="label" floating> Quantity </ion-label> -->
             <ion-input class="textArea" id="quantity" type="number" placeholder="Quantity" [(ngModel)]="COCForm.qty"
               name="qty"></ion-input>
           </ion-item>

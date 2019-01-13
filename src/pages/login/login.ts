@@ -9,6 +9,7 @@ import { ConnectivityServiceProvider } from '../../providers/connectivity-servic
 import { ResetPasswordPage } from '../reset-password/reset-password';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { TabsPage } from '../tabs/tabs';
+import { AddAccountPage } from '../add-account/add-account';
 
 @IonicPage()
 @Component({
@@ -52,11 +53,10 @@ export class LoginPage {
   }
 
   ionViewDidLoad() {
-    this.menuCtrl.enable(false);
+    // this.menuCtrl.enable(false);
   }
   ionViewWillLeave() {
     this.menuCtrl.enable(true);
-    this.getAccounts();
   }
 
   doLogin() {
@@ -68,17 +68,25 @@ export class LoginPage {
         newPassword: 'none'
       };
 
+      console.log(authmodel)
+
       this.authService.validateUser(authmodel).then((res) => {
-        console.log(res.body.Token);
-        this.dissmissLoading();
         if (res.status === 200) {
           localStorage.setItem('_token', JSON.stringify(res.body.Token))
-          this.navCtrl.setRoot(TabsPage);
+          try {
+            this.getAccounts()
+          } catch (error) {
+            console.log(error)
+            this.navCtrl.setRoot(TabsPage);
+          }
         } else if (res.status === 205) {
+          this.dissmissLoading();
           this.gotoPasswordResetPage(this.form.value.username, this.form.value.password);
         } else if (res.status === 403) {
+          this.dissmissLoading();
           this.userError('authenticationFailed', 'accountIsBlocked');
         } else {
+          this.dissmissLoading();
           this.userError('authenticationFailed', 'authenticationFailedDescription');
         }
       })
@@ -102,29 +110,40 @@ export class LoginPage {
 
   getAccounts() {
     if (this.connectivity.onDevice) {
-      this.presentLoading();
+      // this.presentLoading();
 
       this.api.getBCAccount().then((res) => {
         console.log(res);
         this.dissmissLoading();
         //@ts-ignore
-        if (res.status === 200) {
+        if (res.status === 200 && res.body.accounts.accounts) {
           //@ts-ignore
           const BCAccounts = res.body.accounts.accounts
           localStorage.setItem('_BCAccounts', JSON.stringify(BCAccounts));
-
+          this.navCtrl.setRoot(TabsPage);
         } else {
           console.log('Error! requesting BC Accounts')
-          this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
+          this.navCtrl.setRoot(TabsPage);
+          // this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
         }
       })
         .catch((error) => {
-          this.dissmissLoading();
-          this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
-          console.log(error);
+          if (error.status === 406) {
+            this.dissmissLoading();
+            console.log('Error! requesting BC Accounts')
+            this.navCtrl.setRoot(AddAccountPage);
+            // this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
+          } else {
+
+            this.dissmissLoading();
+            // this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
+            console.log(error);
+            this.navCtrl.setRoot(TabsPage);
+          }
         });
     } else {
       this.presentToast('noInternet');
+      this.navCtrl.setRoot(TabsPage);
     }
   }
 

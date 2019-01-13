@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams, AlertController, LoadingController
 import { Items } from '../../providers/items/items';
 import { Network, Operation, Server, TransactionBuilder, Asset, Keypair } from 'stellar-sdk';
 import { AES, enc } from "crypto-js";
+import { Api } from '../../providers';
+import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 
 @IonicPage()
 @Component({
@@ -18,16 +20,21 @@ export class ItemDetailPage {
   isLoadingPresent: boolean;
   // selectedItem: string;
   selectedReceiver: any;
-  COCForm: { selectedItem: string, qty: string, receiver: string, vaidity: Date, } = {
+  COCForm: { selectedItem: string, identifier: string, qty: string, receiver: string, vaidity: Date, } = {
     selectedItem: '',
+    identifier: '',
     qty: '',
     receiver: '',
     vaidity: new Date()
   };
+  BCAccounts: any;
   constructor(public navCtrl: NavController, private toastCtrl: ToastController,
+    private api: Api, private connectivity: ConnectivityServiceProvider,
     private loadingCtrl: LoadingController, navParams: NavParams, public itemsProvider: Items, private alertCtrl: AlertController) {
 
     this.user = JSON.parse(localStorage.getItem('_user'))
+    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
+
 
     this.item = navParams.get('item');
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
@@ -64,7 +71,7 @@ export class ItemDetailPage {
           handler: data => {
             if (data.password != "") {
               console.log(data);
-              this.doCOC(this.decyrptSecret(this.user.PrivateKey, data.password));
+              this.doCOC(this.decyrptSecret(this.BCAccounts[1].sk, data.password));
             } else {
               // console.log(data);
               // return data;
@@ -118,7 +125,7 @@ export class ItemDetailPage {
       console.log(availableArr);
 
       var matchingArr = subAccounts.filter(function (ml) {
-        return ml.available == false && receiver == ml.receiver
+        return ml.available == false && ml.receiver == receiver
       })
       console.log("matchingArr");
       console.log(matchingArr.length);
@@ -144,23 +151,22 @@ export class ItemDetailPage {
     this.presentLoading();
     console.log(this.COCForm);
     try {
-
-      this.COCVerification(signerSK).then((proofObj) => {
-        this.subAccountValidator(this.COCForm.receiver).then((subAccObj) => {
+      this.getPreviousTXNID(this.COCForm.identifier).then((PreviousTXNID) => {
+        this.COCVerification(PreviousTXNID, signerSK).then((proofObj) => {
           //@ts-ignore
-          this.AcceptBuild('PreviousTXNID', 'Identifier', proofObj, subAccObj.subAcc, signerSK).then((resolveObj) => {
+          this.AcceptBuild(PreviousTXNID, this.COCForm.identifier, proofObj, this.COCForm.receiver, signerSK).then((resolveObj) => {
             this.RejectBuild(signerSK).then((RejectXdr) => {
               const obj = {
-                "Sender": this.user.PublicKey,
+                "Sender": this.BCAccounts[1].pk,
                 "Receiver": this.COCForm.receiver,
                 //@ts-ignore
-                "SubAccount": subAccObj.subAcc,
+                "SubAccount": this.COCForm.receiver,
                 //@ts-ignore
                 "SeqNum": resolveObj.seqNum,
                 //@ts-ignore
                 "AcceptXdr": resolveObj.b64,
                 "RejectXdr": RejectXdr,
-                "Identifier": "Identifier1002030",
+                "Identifier": this.COCForm.identifier,
                 "Status": "pending"
               }
               console.log(obj)
@@ -190,35 +196,35 @@ export class ItemDetailPage {
                 console.log(e)
                 if (this.isLoadingPresent) {
                   this.dissmissLoading();
-                  this.presentToast('Error! transaction unsuccesfull.');
+                  this.presentToast('Error! Processing RejectBuild unsuccesfull.');
                 }
               })
           }).catch(e => {
             console.log(e)
             if (this.isLoadingPresent) {
               this.dissmissLoading();
-              this.presentToast('Error! transaction unsuccesfull.');
+              this.presentToast('Error! Processing AcceptBuild unsuccesfull.');
             }
           })
         }).catch(e => {
           console.log(e)
           if (this.isLoadingPresent) {
             this.dissmissLoading();
-            this.presentToast('Error! transaction unsuccesfull.');
+            this.presentToast('Error! COCVerification unsuccesfull.');
           }
         })
       }).catch(e => {
         console.log(e)
         if (this.isLoadingPresent) {
           this.dissmissLoading();
-          this.presentToast('Error! Processing COC Verification transaction failed.');
+          this.presentToast('Error! Processing getPreviousTXNID failed.');
         }
       })
     } catch (error) {
       console.log(error);
       if (this.isLoadingPresent) {
         this.dissmissLoading();
-        this.presentToast('Error! transaction unsuccesfull.');
+        this.presentToast('Error! COC transaction unsuccesfull.');
       }
     }
 
@@ -235,7 +241,7 @@ export class ItemDetailPage {
         const quantity = this.COCForm.qty;
         const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
-        const senderPublickKey = this.user.PublicKey;
+        const senderPublickKey = this.BCAccounts[1].pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
@@ -296,9 +302,9 @@ export class ItemDetailPage {
         let XDR;
         let b64;
         const receiver = this.COCForm.receiver;
-        const item = this.COCForm.selectedItem;
+        // const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
-        const senderPublickKey = this.user.PublicKey;
+        const senderPublickKey = this.BCAccounts[1].pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
@@ -338,19 +344,19 @@ export class ItemDetailPage {
       }
       // return b64;
     })
-
   }
 
-  async COCVerification(signerSK) {
+ COCVerification(PreviousTXNID, signerSK) {
     try {
       return new Promise((resolve, reject) => {
+        console.log(PreviousTXNID)
         var sourceKeypair = Keypair.fromSecret(signerSK);
         var server = new Server('https://horizon-testnet.stellar.org');
         server.loadAccount(sourceKeypair.publicKey())
           .then(function (account) {
             var transaction = new TransactionBuilder(account)
               .addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
-              .addOperation(Operation.manageData({ name: 'PreviousTXNID', value: "PreviousTXNID", }))
+              .addOperation(Operation.manageData({ name: 'PreviousTXNID', value: PreviousTXNID, }))
               .addOperation(Operation.manageData({ name: 'Identifier', value: "proof", }))
               .build();
             // sign the transaction
@@ -363,11 +369,43 @@ export class ItemDetailPage {
           })
           .catch(function (err) {
             console.log(err);
+            reject();
           });
       });
     }
     catch (err_1) {
       console.log(err_1);
+    }
+  }
+
+  getPreviousTXNID(Identifier) {
+    if (this.connectivity.onDevice) {
+      return new Promise((resolve, reject) => {
+        // this.presentLoading();
+
+        this.api.getPreviousTXNID(Identifier).then((res) => {
+          console.log(res.body)
+          // this.dissmissLoading();
+          if (res.status === 200) {
+            resolve(res.body.LastTxn);
+          } else if (res.status === 400) {
+            this.userError('getPreviousTXNID', 'Identifier mapping not found!');
+            reject();
+          } else {
+            this.dissmissLoading();
+            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            reject();
+          }
+        })
+          .catch((error) => {
+            this.dissmissLoading();
+            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            console.log(error);
+            reject();
+          });
+      })
+    } else {
+      this.presentToast('noInternet');
     }
   }
 
@@ -380,6 +418,16 @@ export class ItemDetailPage {
     console.log("plaintext => " + decrypted);
 
     return decrypted;
+  }
+
+  userError(title, message) {
+    let alert = this.alertCtrl.create();
+    alert.setTitle(title);
+    alert.setMessage(message);
+    alert.addButton({
+      text: 'OK'
+    });
+    alert.present();
   }
 
   presentLoading() {
