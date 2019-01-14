@@ -88,6 +88,7 @@ export class BcAccountPage {
   }
 
   getMainAccounts() {
+   try {
     if (this.connectivity.onDevice) {
       return new Promise((resolve, reject) => {
         this.presentLoading();
@@ -100,21 +101,28 @@ export class BcAccountPage {
             resolve();
           } else {
             this.userError('Main Account', 'Duplicate Main Account found!');
-            reject();
+            // reject();
           }
         })
           .catch((error) => {
             if (this.isLoadingPresent) {
               this.dissmissLoading();
             }
-            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            this.userError('Authentication Failed', 'Retrieving Blockchain Accounts failed');
             console.log(error);
-            reject();
+            // reject();
           });
       })
     } else {
       this.presentToast('noInternet');
     }
+   } catch (error) {
+    if (this.isLoadingPresent) {
+      this.dissmissLoading();
+    }
+     console.log(error);
+     
+   }
   }
 
   userError(title, message) {
@@ -127,30 +135,13 @@ export class BcAccountPage {
     alert.present();
   }
 
-  presentToast(message) {
-    if (this.toastInstance) {
-      return;
-    }
-
-    this.toastInstance = this.toastCtrl.create({
-      message: message,
-      duration: 2000,
-      position: 'middle'
-    });
-
-    this.toastInstance.onDidDismiss(() => {
-      this.toastInstance = null;
-    });
-    this.toastInstance.present();
-  }
-
   presentLoading() {
-    // this.translate.get(['pleasewait']).subscribe(text => {
+    this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
       content: 'pleasewait'
     });
-    // });
+
     this.loading.present();
   }
 
@@ -159,6 +150,14 @@ export class BcAccountPage {
     this.loading.dismiss();
   }
 
+  presentToast(message) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 4000,
+      position: 'middle'
+    });
+    toast.present();
+  }
 }
 
 

@@ -1,18 +1,18 @@
 page-tabs {
     .tabs-md .tabbar {
-        background: #28A745;
+        background: white;
         position: fixed;
     }
 
     .tabs-md .tab-button[aria-selected=true] {
-        color: white;
+        color: #28A745;
         padding: 0;
     }
     ion-icon {
         &[class*="custom-"] {
             margin: 0 5px 0 0;
             vertical-align: middle;
-            $sz: 20px;
+            $sz: 20px; 
             width: $sz;
             height: $sz;
         } // custom icons

@@ -71,7 +71,7 @@ export class ItemDetailPage {
           handler: data => {
             if (data.password != "") {
               console.log(data);
-              this.doCOC(this.decyrptSecret(this.BCAccounts[1].sk, data.password));
+              this.doCOC(this.decyrptSecret(this.BCAccounts[0].sk, data.password));
             } else {
               // console.log(data);
               // return data;
@@ -157,7 +157,7 @@ export class ItemDetailPage {
           this.AcceptBuild(PreviousTXNID, this.COCForm.identifier, proofObj, this.COCForm.receiver, signerSK).then((resolveObj) => {
             this.RejectBuild(signerSK).then((RejectXdr) => {
               const obj = {
-                "Sender": this.BCAccounts[1].pk,
+                "Sender": this.BCAccounts[0].pk,
                 "Receiver": this.COCForm.receiver,
                 //@ts-ignore
                 "SubAccount": this.COCForm.receiver,
@@ -241,7 +241,7 @@ export class ItemDetailPage {
         const quantity = this.COCForm.qty;
         const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
-        const senderPublickKey = this.BCAccounts[1].pk;
+        const senderPublickKey = this.BCAccounts[0].pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
@@ -304,7 +304,7 @@ export class ItemDetailPage {
         const receiver = this.COCForm.receiver;
         // const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
-        const senderPublickKey = this.BCAccounts[1].pk;
+        const senderPublickKey = this.BCAccounts[0].pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!

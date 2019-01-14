@@ -7,7 +7,8 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class Api {
   url: string = 'https://tracified-gateway.herokuapp.com';
-  LocalAdminURL: string = 'http://localhost:5000';
+  // LocalAdminURL: string = 'http://localhost:5000';
+  LocalAdminURL: string = 'http://192.168.20.32:5000';
   adminURL: string = 'http://staging.admin.api.tracified.com';
   loginurl: string = 'http://www.mocky.io/v2';
   // token: string;
@@ -49,7 +50,7 @@ export class Api {
 
   validateUser(body: any, reqOpts?: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.http.post(this.adminURL + '/' + 'sign/login', body, reqOpts)
+      this.http.post(this.LocalAdminURL + '/' + 'sign/login', body, reqOpts)
         .subscribe(response => {
           // console.log(response);
           // const user = {
@@ -109,7 +110,7 @@ export class Api {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
         })
       }
-      this.http.get(this.adminURL + '/api/bc/keys', this.reqOpts)
+      this.http.get(this.LocalAdminURL + '/api/bc/keys', this.reqOpts)
         .subscribe(response => {
           // console.log(response);
 
@@ -134,7 +135,7 @@ export class Api {
         })
       }
       console.log(body);
-      this.http.post(this.adminURL + '/api/bc/key/main',body, this.reqOpts)
+      this.http.post(this.LocalAdminURL + '/api/bc/key/main',body, this.reqOpts)
         .subscribe(response => {
           console.log(response);
 
@@ -182,7 +183,7 @@ export class Api {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
         })
       }
-      this.http.post(this.adminURL + '/api/bc/key/main/account',body, this.reqOpts)
+      this.http.post(this.LocalAdminURL + '/api/bc/key/main/account',body, this.reqOpts)
         .subscribe(response => {
           console.log(response);
 
@@ -198,7 +199,7 @@ export class Api {
   verifyEmail(body: any, reqOpts?: any): Promise<any> {
     let confirm = { 'confirmUser': body };
     return new Promise((resolve, reject) => {
-      this.http.post(this.adminURL + '/' + 'sign/forgetpassword', confirm, reqOpts)
+      this.http.post(this.LocalAdminURL + '/' + 'sign/forgetpassword', confirm, reqOpts)
         .subscribe(response => {
           console.log(response);
           resolve(response);
@@ -213,7 +214,7 @@ export class Api {
   resetPassword(body: any, reqOpts?: any): Promise<any> {
     let confirm = { 'confirmUser': body };
     return new Promise((resolve, reject) => {
-      this.http.post(this.adminURL + '/' + 'sign/forgetpassword', confirm, reqOpts)
+      this.http.post(this.LocalAdminURL + '/' + 'sign/forgetpassword', confirm, reqOpts)
         .subscribe(response => {
           console.log(response);
           resolve(response);

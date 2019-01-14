@@ -63,10 +63,10 @@ export class ItemSentPage {
 
 
   loadCOCSent() {
-    try {
-      console.log(this.BCAccounts[1].pk);
+    try { 
+      console.log(this.BCAccounts[0].pk);
 
-    this.itemsProvider.querycocbysender(this.BCAccounts[1].pk).subscribe((resp) => {
+    this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
       // @ts-ignore
       console.log(resp);
       this.Citems = resp;

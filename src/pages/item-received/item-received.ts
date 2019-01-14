@@ -66,7 +66,7 @@ export class ItemReceivedPage {
           handler: data => {
             if (data.password != "") {
               console.log(data);
-              this.sendSignedXDR(item, buttonStatus, this.decyrptSecret(this.BCAccounts[1].sk, data.password));
+              this.sendSignedXDR(item, buttonStatus, this.decyrptSecret(this.BCAccounts[0].sk, data.password));
             }
           }
         }
@@ -107,7 +107,7 @@ export class ItemReceivedPage {
     try {
       // console.log(this.BCAccounts[0].pk);
 
-      this.itemsProvider.querycocbyReceiver(this.BCAccounts[1].pk).subscribe((resp) => {
+      this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe((resp) => {
         // @ts-ignore
         console.log(resp);
         this.Citems = resp;

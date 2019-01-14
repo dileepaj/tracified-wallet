@@ -416,16 +416,18 @@ export class AddAccountPage {
   }
 
   presentLoading() {
-    // this.translate.get(['pleasewait']).subscribe(text => {
+    this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
       content: 'pleasewait'
     });
-    // });
+
     this.loading.present();
   }
 
   dissmissLoading() {
+    this.isLoadingPresent = false;
     this.loading.dismiss();
   }
+
 }

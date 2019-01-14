@@ -70,7 +70,7 @@ export class TransferPage {
     var server = new Server('https://horizon-testnet.stellar.org');
     try {
       // the JS SDK uses promises for most actions, such as retrieving an account
-      server.loadAccount(this.BCAccounts[1].pk).then(function (account) {
+      server.loadAccount(this.BCAccounts[0].pk).then(function (account) {
         // console.log('Balances for account: ' + JSON.stringify(account.balances));
         account.balances.forEach(function (balance) {
           // @ts-ignore
@@ -79,7 +79,7 @@ export class TransferPage {
           assets.push({ 'asset_code': balance.asset_code, 'balance': balance.balance });
         });
         assets.pop();
-      });
+      }); 
       this.currentItems = assets;
       this.Searcheditems = this.currentItems;
       // console.log(this.currentItems)
@@ -98,8 +98,8 @@ export class TransferPage {
 
   loadReceivers() {
   try {
-    console.log(this.BCAccounts[1].pk);
-    this.itemsProvider.querycocbysender(this.BCAccounts[1].pk).subscribe((resp) => {
+    console.log(this.BCAccounts[0].pk);
+    this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
       // @ts-ignore
       console.log(resp);
       // @ts-ignore
