@@ -71,7 +71,7 @@ export class ItemDetailPage {
           handler: data => {
             if (data.password != "") {
               console.log(data);
-              this.doCOC(this.decyrptSecret(this.BCAccounts[0].sk, data.password));
+              this.doCOC(this.decyrptSecret(this.BCAccounts[1].sk, data.password));
             } else {
               // console.log(data);
               // return data;
@@ -155,9 +155,9 @@ export class ItemDetailPage {
         this.COCVerification(PreviousTXNID, signerSK).then((proofObj) => {
           //@ts-ignore
           this.AcceptBuild(PreviousTXNID, this.COCForm.identifier, proofObj, this.COCForm.receiver, signerSK).then((resolveObj) => {
-            this.RejectBuild(signerSK).then((RejectXdr) => {
+            this.RejectBuild(proofObj, signerSK).then((RejectXdr) => {
               const obj = {
-                "Sender": this.BCAccounts[0].pk,
+                "Sender": this.BCAccounts[1].pk,
                 "Receiver": this.COCForm.receiver,
                 //@ts-ignore
                 "SubAccount": this.COCForm.receiver,
@@ -241,7 +241,7 @@ export class ItemDetailPage {
         const quantity = this.COCForm.qty;
         const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
-        const senderPublickKey = this.BCAccounts[0].pk;
+        const senderPublickKey = this.BCAccounts[1].pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
@@ -249,7 +249,7 @@ export class ItemDetailPage {
         // var maxTime = 1542860820;
         var sourceKeypair = Keypair.fromSecret(signerSK);
 
-        var asset = new Asset(item, 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
+        var asset = new Asset(item, 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
         var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
         Network.useTestNetwork();
         var server = new Server('https://horizon-testnet.stellar.org');
@@ -295,7 +295,7 @@ export class ItemDetailPage {
 
   }
 
-  RejectBuild(signerSK) {
+  RejectBuild(proofHash, signerSK) {
 
     return new Promise((resolve, reject) => {
       try {
@@ -304,7 +304,7 @@ export class ItemDetailPage {
         const receiver = this.COCForm.receiver;
         // const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
-        const senderPublickKey = this.BCAccounts[0].pk;
+        const senderPublickKey = this.BCAccounts[1].pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
@@ -315,15 +315,18 @@ export class ItemDetailPage {
         var sourceKeypair = Keypair.fromSecret(signerSK);
 
         // var asset = new Asset(item, 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-        var opts = { timebounds: { minTime: minTime, maxTime: maxTime }, bumpSequence: { bumpTo: '2284484514807850' } };
+        // var opts = { timebounds: { minTime: minTime, maxTime: maxTime }, bumpSequence: { bumpTo: '2284484514807850' } };
+        var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
         Network.useTestNetwork();
         var server = new Server('https://horizon-testnet.stellar.org');
         server.loadAccount(receiver)
           .then(function (account) {
             var transaction = new TransactionBuilder(account, opts)
               .addOperation(Operation.manageData({
-                name: 'acceptance', value: 'rejected', source: senderPublickKey
+                name: 'Status', value: 'rejected', source: senderPublickKey
               }))
+              .addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))
+
               .build();
             transaction.sign(sourceKeypair);
 
@@ -382,6 +385,8 @@ export class ItemDetailPage {
     if (this.connectivity.onDevice) {
       return new Promise((resolve, reject) => {
         // this.presentLoading();
+
+        //SHA256 the Identifier JSON
 
         this.api.getPreviousTXNID(Identifier).then((res) => {
           console.log(res.body)

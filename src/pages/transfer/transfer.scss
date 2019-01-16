@@ -38,4 +38,27 @@ page-transfer {
         position: absolute;
         color: grey;
     }
+
+    .card-md{
+        height: 95px;
+        border-radius: 4px !important;
+
+    }
+
+    .searchbar-md {
+        padding: 8px 8px 4px 8px;
+    }
+
+    .item{
+        margin: 16px 2px !important;
+        font-weight: 400;
+        font-size: 18px !important;
+
+    }
+
+    #item-bal{
+        margin: 15px 41px !important;
+        font-weight: 500;
+    }
+    
 }

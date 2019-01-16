@@ -35,3 +35,67 @@
     padding: 0px 0px 2px 0px;
 
 }
+ 
+.tracified-logo{
+    height: 59px;
+    width: 59px;
+}
+
+.tenant-name{
+    margin: 11px 0 0 0;
+}
+
+#company{
+    font-size: 30px;
+    color: white;
+}
+
+.list-md {
+    margin: -1px 0 16px;
+    padding-top: 24px;
+}
+
+#menu-title{
+    font-weight: 600;
+}
+
+.activeHighlight {
+    color: #28A745 !important;
+    background-color: #d4d4d48a !important;
+
+}
+
+ion-icon {
+    &[class*="custom-"] {
+        margin: 0 5px 0 0;
+        vertical-align: middle;
+        $sz: 20px; 
+        width: $sz;
+        height: $sz;
+    } // custom icons
+    &[class*="itemIcon"] {
+        background: url(../../assets/icon/items.svg) no-repeat 50% 50%;
+        background-size: contain;
+    }
+    &[class*="blockchain"] {
+        background: url(../../assets/icon/blockchain.svg) no-repeat 50% 50%;
+        background-size: contain;
+    }
+    &[class*="tutorial"] {
+        background: url(../../assets/icon/tutorial.svg) no-repeat 50% 50%;
+        background-size: contain;
+    }
+    &[class*="settings"] {
+        background: url(../../assets/icon/settings.svg) no-repeat 50% 50%;
+        background-size: contain;
+    }
+    &[class*="about"] {
+        background: url(../../assets/icon/about.svg) no-repeat 50% 50%;
+        background-size: contain;
+    }
+    &[class*="logout"] {
+        background: url(../../assets/icon/logout.svg) no-repeat 50% 50%;
+        background-size: contain;
+    }
+
+}

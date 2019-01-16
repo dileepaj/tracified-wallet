@@ -29,7 +29,7 @@
     [uname]="item.uname" [oname]="item.oname" [qty]="item.qty" textColor="#000000" hasMargin="false" headerColor="#ffffff"
     [expanded]="index === 0">
     <!-- <img [src]="item.imageUrl"> -->
-    <!-- <div *ngIf="item.status == 'pending';else status_Content" id="content"> -->
+    <div *ngIf="item.status == 'pending';else status_Content" id="content">
     <div id="content">
       <ion-col left text-left *ngIf="item.itemArr.length > 0">
         <h2>Transforming Items</h2>
@@ -48,7 +48,7 @@
         </ion-col>
         <ion-col left text-left>
           <!-- <ion-note>{{item.status}}</ion-note> -->
-          <ion-note>This request will be valid for {{item.time}} days.</ion-note>
+          <ion-note>This request will be valid till {{item.time}}</ion-note>
         </ion-col>
       </ion-row>
       <hr id="hr">
@@ -61,7 +61,8 @@
         </ion-col>
       </ion-row>
     </div>
-    <!-- <ng-template #status_Content>
+    </div>
+    <ng-template #status_Content>
       <div id="content">
         <ion-row>
           <ion-col left text-left>
@@ -72,6 +73,6 @@
           </ion-col>
         </ion-row>
       </div>
-    </ng-template> -->
+    </ng-template>
   </accordion-list>
 </ion-content>

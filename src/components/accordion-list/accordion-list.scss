@@ -5,19 +5,37 @@ accordion-list {
 
     .list-md {
         margin-bottom: 0; 
+        padding-top: 0px !important;
     }
 
     ion-note{
-        color: black !important;
+        color: #504f4f !important;
+        // opacity: 54%;
+        font-size: 12px;
+    }
+
+    .card-md {
+        margin: 6px 10px;
+        border-radius: 4px;    
+    }
+
+    .col {
+        padding: 6px !important;
     }
 
     #qty{
         display: -webkit-inline-box;
-        // padding: 0 20px 0 0;
-    }
-    .pending{
+   }
+
+   .item-md h1 {
+    margin: 0 0 2px;
+    font-size: 22px;
+    font-weight: normal;
+}
+    
+        .pending{
             ion-card{
-            padding: 0px 10px 0px 10px;
+            padding: 4px;
             overflow: hidden;
             background-color:  white !important;
             // opacity: 0.9;
@@ -38,7 +56,7 @@ accordion-list {
       }
     .accepted{
             ion-card{
-            padding: 0px 10px 0px 10px;
+            padding: 4px;
             overflow: hidden;
             background-color:  ghostwhite !important;
             // opacity: 0.9;
@@ -59,7 +77,7 @@ accordion-list {
       }
     .rejected{
             ion-card{
-            padding: 0px 10px 0px 10px;
+            padding: 4px;
             overflow: hidden;
             background-color: antiquewhite !important;
             // opacity: 0.9;
@@ -122,5 +140,25 @@ accordion-list {
         border-top: 1px solid #dedede;
         font-size: 1.4rem;
         color: #757575;
+    }
+
+    ion-icon {
+        &[class*="custom-"] {
+            margin: 0 5px 0 0;
+            vertical-align: middle;
+            $sz: 20px; 
+            width: $sz;
+            height: $sz;
+        } // custom icons
+        &[class*="timer"] {
+            background: url(../../assets/icon/timer.svg) no-repeat 50% 50%;
+            background-size: contain;
+        }
+
+    }
+
+    #timer-icon{
+        margin-left: 0px;
+        margin-right: 4px;
     }
 }

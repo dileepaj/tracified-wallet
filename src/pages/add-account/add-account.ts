@@ -318,7 +318,7 @@ export class AddAccountPage {
             const txBuilder = new TransactionBuilder(account)
   
             // Create an object to represent the new asset
-            var Aple = new Asset('Aple', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
+            var Aple = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
             // var Grap = new Asset('Grap', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
             // var Orng = new Asset('Orng', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
             // var Bana = new Asset('Bana', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');

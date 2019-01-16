@@ -4,10 +4,10 @@ page-tabs {
         position: fixed;
     }
 
-    .tabs-md .tab-button[aria-selected=true] {
-        color: #28A745;
-        padding: 0;
-    }
+.tabs-md .tab-button[aria-selected=true] {
+    color: #28A745 !important;
+    padding: 0;
+
     ion-icon {
         &[class*="custom-"] {
             margin: 0 5px 0 0;
@@ -27,8 +27,37 @@ page-tabs {
         &[class*="transfer"] {
             background: url(../../assets/icon/transfer.png) no-repeat 50% 50%;
             background-size: contain;
-        }
-    
+        }  
 
+    }
 }
+
+.tabs-md .tab-button[aria-selected=false] {
+    color: grey !important;
+    padding: 0;
+
+    ion-icon { 
+        &[class*="custom-"] {
+            margin: 0 5px 0 0;
+            vertical-align: middle;
+            $sz: 20px; 
+            width: $sz;
+            height: $sz;
+        } // custom icons
+        &[class*="received"] {
+            background: url(../../assets/icon/receivedFalse.png) no-repeat 50% 50%;
+            background-size: contain;
+        }
+        &[class*="sent"] {
+            background: url(../../assets/icon/sentFalse.png) no-repeat 50% 50%;
+            background-size: contain;
+        }
+        &[class*="transfer"] {
+            background: url(../../assets/icon/transferFalse.png) no-repeat 50% 50%;
+            background-size: contain;
+        }  
+
+    }
+}
+
 }

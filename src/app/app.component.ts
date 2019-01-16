@@ -11,21 +11,22 @@ import { Settings } from '../providers';
   templateUrl: 'app.html'
 })
 export class MyApp {
+  activePage: any;
   rootPage = FirstRunPage;
-  company = 'Test';
-  userType = 'Admin'
+  company = 'Tracified Wallet';
+  userType = 'Admin' 
   user = 'jack';
   
   @ViewChild(Nav) nav: Nav;
 
   pages: any[] = [
-    { icon: 'home', title: 'Items', component: 'TabsPage' },
-    { icon: 'document', title: 'Blockchain', component: 'BcAccountPage' },
-    { icon: 'information', title: 'Tutorial', component: 'TutorialPage' },
-    { icon: 'build', title: 'Settings', component: 'SettingsPage' },
-    { icon: 'ios-information-circle', title: 'About', component: 'ContentPage' },
-    { icon: 'ios-power', title: 'Login', component: 'LoginPage' }
-  ]
+    { icon: 'custom-itemIcon', title: 'Items', component: 'TabsPage' },
+    { icon: 'custom-blockchain', title: 'Blockchain', component: 'BcAccountPage' },
+    { icon: 'custom-tutorial', title: 'Tutorial', component: 'TutorialPage' },
+    { icon: 'custom-settings', title: 'Settings', component: 'SettingsPage' },
+    { icon: 'custom-about', title: 'About', component: 'ContentPage' },
+    { icon: 'custom-logout', title: 'Login', component: 'LoginPage' }
+  ] 
 
   constructor(private translate: TranslateService, platform: Platform, settings: Settings, private config: Config, private statusBar: StatusBar, private splashScreen: SplashScreen) {
     platform.ready().then(() => {
@@ -35,6 +36,12 @@ export class MyApp {
       this.splashScreen.hide();
     });
     this.initTranslate();
+
+    // console.log(this.nav.getActive().name);
+    
+    this.activePage = this.pages[0];
+    // ;
+
   }
 
   initTranslate() {
@@ -67,5 +74,11 @@ export class MyApp {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
     this.nav.setRoot(page.component);
+    this.activePage = page;
   }
+
+  checkActive(page){
+    return page == this.activePage;
+  }
+
 }

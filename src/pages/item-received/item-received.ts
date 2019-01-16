@@ -5,6 +5,7 @@ import { Items } from '../../providers/items/items';
 import { Network, Keypair, Transaction } from "stellar-base";
 Network.useTestNetwork();
 import { AES, enc } from "crypto-js";
+import Duration from "duration";
 
 /**
  * Generated class for the ItemReceivedPage page.
@@ -66,7 +67,7 @@ export class ItemReceivedPage {
           handler: data => {
             if (data.password != "") {
               console.log(data);
-              this.sendSignedXDR(item, buttonStatus, this.decyrptSecret(this.BCAccounts[0].sk, data.password));
+              this.sendSignedXDR(item, buttonStatus, this.decyrptSecret(this.BCAccounts[1].sk, data.password));
             }
           }
         }
@@ -105,11 +106,11 @@ export class ItemReceivedPage {
 
   loadCOCReceived() {
     try {
-      // console.log(this.BCAccounts[0].pk);
+      // console.log(this.BCAccounts[1].pk);
 
-      this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe((resp) => {
+      this.itemsProvider.querycocbyReceiver(this.BCAccounts[1].pk).subscribe((resp) => {
         // @ts-ignore
-        console.log(resp);
+        // console.log(resp);
         this.Citems = resp;
         const Tempitems = []
 
@@ -120,11 +121,23 @@ export class ItemReceivedPage {
           // @ts-ignore
           const newDate: number = new Date(parsedTx.timeBounds.maxTime * 1000);
 
+          // @ts-ignore
+          let now: number = new Date();
+          var sec_num = (now - oldDate) / 1000;
+          var days = Math.floor(sec_num / (3600 * 24));
+          var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
+          var minutes = Math.floor((sec_num - (days * (3600 * 24)) - (hours * 3600)) / 60);
+          // var seconds = Math.floor(sec_num - (days * (3600 * 24)) - (hours * 3600) - (minutes * 60));
+          // @ts-ignore
+          if (hours < 10) { hours = "0" + hours; }
+          // @ts-ignore
+          if (minutes < 10) { minutes = "0" + minutes; }
+
           let itemArr = [];
           parsedTx.operations.forEach(tansac => {
             if (tansac.type == 'payment') {
-              console.log(tansac)
-              let i = 0;
+              // console.log(tansac)
+              // let i = 0;
 
               let assetObj = {
                 "source": tansac.source,
@@ -136,7 +149,7 @@ export class ItemReceivedPage {
             }
 
           });
-          console.log(itemArr)
+          // console.log(itemArr)
 
           const tempLast = itemArr.pop();
 
@@ -146,7 +159,13 @@ export class ItemReceivedPage {
             RejectTxn: item.RejectTxn,
             RejectXdr: item.RejectXdr,
             // @ts-ignore
-            date: oldDate.toLocaleString(),
+            // date: days + 'd ' + hours + 'h ' + minutes + 'm ago',
+            date: {
+                    'days': days, 
+                    'hours' : hours,
+                    'minutes': minutes
+                    },
+            // date: oldDate.toLocaleString(),
             itemArr: itemArr,
             uname: tempLast.source,
             // @ts-ignore
@@ -155,7 +174,8 @@ export class ItemReceivedPage {
             qty: tempLast.amount,
             // @ts-ignore
             validity: newDate.toLocaleString(),
-            time: (Math.round((newDate - oldDate) / (1000 * 60 * 60 * 24))),
+            time: (new Duration(new Date(), new Date(newDate))).toString(1),
+            // time: (Math.round((newDate - oldDate) / (1000 * 60 * 60 * 24))),
             status: item.Status,
 
             Identifier: item.Identifier,

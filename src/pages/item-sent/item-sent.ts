@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, AlertController, LoadingController } from 'ionic-angular';
 import { Items } from '../../providers/items/items';
 import { Transaction } from 'stellar-sdk';
+import Duration from "duration";
 
 /**
  * Generated class for the ItemSentPage page.
@@ -63,73 +64,90 @@ export class ItemSentPage {
 
 
   loadCOCSent() {
-    try { 
-      console.log(this.BCAccounts[0].pk);
+    try {
+      console.log(this.BCAccounts[1].pk);
 
-    this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
-      // @ts-ignore
-      console.log(resp);
-      this.Citems = resp;
-      const Tempitems = []
-      this.Citems.forEach(item => {
-        const parsedTx = new Transaction(item.AcceptXdr)
+      this.itemsProvider.querycocbysender(this.BCAccounts[1].pk).subscribe((resp) => {
         // @ts-ignore
-        const oldDate: any = new Date(parsedTx.timeBounds.minTime * 1000);
-        // @ts-ignore
-        const newDate: any = new Date(parsedTx.timeBounds.maxTime * 1000);
+        console.log(resp);
+        this.Citems = resp;
+        const Tempitems = []
+        this.Citems.forEach(item => {
+          const parsedTx = new Transaction(item.AcceptXdr)
+          // @ts-ignore
+          const oldDate: any = new Date(parsedTx.timeBounds.minTime * 1000);
+          // @ts-ignore
+          const newDate: any = new Date(parsedTx.timeBounds.maxTime * 1000);
 
-        let itemArr = [];
-        parsedTx.operations.forEach(tansac => {
-          if (tansac.type == 'payment') {
-            console.log(tansac)
-            let i = 0;
+          // @ts-ignore
+          let now: number = new Date();
+          var sec_num = (now - oldDate) / 1000;
+          var days = Math.floor(sec_num / (3600 * 24));
+          var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
+          var minutes = Math.floor((sec_num - (days * (3600 * 24)) - (hours * 3600)) / 60);
+          // var seconds = Math.floor(sec_num - (days * (3600 * 24)) - (hours * 3600) - (minutes * 60));
+          // @ts-ignore
+          if (hours < 10) { hours = "0" + hours; }
+          // @ts-ignore
+          if (minutes < 10) { minutes = "0" + minutes; }
 
-            let assetObj = {
-              "source": tansac.source,
-              "asset": tansac.asset.code,
-              "amount": tansac.amount
+          let itemArr = [];
+          parsedTx.operations.forEach(tansac => {
+            if (tansac.type == 'payment') {
+              console.log(tansac)
+              let i = 0;
+
+              let assetObj = {
+                "source": tansac.source,
+                "asset": tansac.asset.code,
+                "amount": tansac.amount
+              }
+
+              itemArr.push(assetObj);
             }
 
-            itemArr.push(assetObj);
+          });
+          console.log(itemArr)
+
+          const tempLast = itemArr.pop();
+          const obj = {
+            AcceptTxn: item.AcceptTxn,
+            AcceptXdr: item.AcceptXdr,
+            RejectTxn: item.RejectTxn,
+            RejectXdr: item.RejectXdr,
+            // @ts-ignore
+            // date: oldDate.toLocaleString(),
+            date: {
+              'days': days, 
+              'hours' : hours,
+              'minutes': minutes
+              },
+            itemArr: itemArr,
+            uname: tempLast.source,
+            // @ts-ignore
+            oname: tempLast.asset,
+            // @ts-ignore
+            qty: tempLast.amount,
+            // @ts-ignore
+            validity: newDate.toLocaleString(),
+            time: (new Duration(new Date(), new Date(newDate))).toString(1),
+            status: item.Status
           }
+          // console.log(obj)
+          Tempitems.push(obj)
+          // console.log(Tempitems)
+          this.items = Tempitems;
+          this.setFilteredItems();
 
         });
-        console.log(itemArr)
 
-        const tempLast = itemArr.pop();
-        const obj = {
-          AcceptTxn: item.AcceptTxn,
-          AcceptXdr: item.AcceptXdr,
-          RejectTxn: item.RejectTxn,
-          RejectXdr: item.RejectXdr,
-          // @ts-ignore
-          date: oldDate.toLocaleString(),
-          itemArr: itemArr,
-          uname: tempLast.source,
-          // @ts-ignore
-          oname: tempLast.asset,
-          // @ts-ignore
-          qty: tempLast.amount,
-          // @ts-ignore
-          validity: newDate.toLocaleString(),
-          time: (Math.round((newDate - oldDate) / (1000 * 60 * 60 * 24))),
-          status: item.Status
-        }
-        // console.log(obj)
-        Tempitems.push(obj)
-        // console.log(Tempitems)
-        this.items = Tempitems;
-        this.setFilteredItems();
+      }, (err) => {
+        console.log('error in querying COC Sent')
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
 
       });
 
-    }, (err) => {
-      console.log('error in querying COC Sent')
       if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-    });
-
-    if (this.isLoadingPresent) { this.dissmissLoading(); }
     } catch (error) {
       console.log(error);
       if (this.isLoadingPresent) { this.dissmissLoading(); }

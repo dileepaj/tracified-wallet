@@ -50,18 +50,17 @@
         </ion-col>
         <ion-col left text-left>
           <!-- <ion-note>{{item.status}}</ion-note> -->
-          <ion-note>This request will be valid for {{item.time}} days.</ion-note>
+          <ion-note>This request will be valid till {{item.time}}</ion-note>
         </ion-col>
       </ion-row>
       <hr>
       <ion-row>
         <ion-col>
-          <button (click)="passwordPrompt(item,'accept')" id="accept" ion-button block outline>ACCEPT</button>
-        </ion-col>
-        <ion-col>
           <button (click)="passwordPrompt(item,'reject')" id="reject" ion-button block outline>REJECT</button>
         </ion-col>
-
+        <ion-col>
+          <button (click)="passwordPrompt(item,'accept')" id="accept" ion-button block color="secondary">ACCEPT</button>
+        </ion-col>
       </ion-row>
     </div>
     <ng-template #status_Content>
