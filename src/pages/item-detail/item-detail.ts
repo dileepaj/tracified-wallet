@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, AlertController, LoadingController
 import { Items } from '../../providers/items/items';
 import { Network, Operation, Server, TransactionBuilder, Asset, Keypair } from 'stellar-sdk';
 import { AES, enc } from "crypto-js";
+import { get } from 'request';
 import { Api } from '../../providers';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 var server = new Server('https://horizon-testnet.stellar.org');
@@ -40,11 +41,8 @@ export class ItemDetailPage {
     this.item = navParams.get('item');
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
     this.receivers = navParams.get('receivers');
+    this.subAccountStatus();
 
-    console.log(this.COCForm.selectedItem)
-    console.log(this.item)
-    console.log(this.currentItems)
-    console.log(this.receivers)
   }
 
   ionViewDidLoad() {
@@ -52,7 +50,6 @@ export class ItemDetailPage {
     if (this.receivers[0]) {
       this.selectedReceiver = this.receivers[0].Receivers;
     }
-
   }
 
   passwordPrompt() {
@@ -86,45 +83,14 @@ export class ItemDetailPage {
 
   subAccountValidator(receiver) {
     return new Promise((resolve, reject) => {
-      var subAccounts = [
-        {
-          receiver: "GD4PIV4DVVKMJRJLERGTTNTKNG6Z67V7JFHYCJNWXMPR2DSQ5FDI2QCT",
-          subAcc: "GDAFIFK6GFJBCBMYJNC5PVMC6AGTN4EDU34DOUBLK4S3YQAOLBLPWUH6",
-          seqNum: 6546484621,
-          available: true
-        },
-        {
-          receiver: "GCKUXI3JRJANYOF3AM35Z22FGUGYYUIEBPE5TTZ7P3G6XAEFGYZC2POM",
-          subAcc: "GBPBSQWA4WNTCVD3VULEUIT3QDTIOFVSFVU6BRK6AQFQURQBBNPK27PS",
-          seqNum: 0,
-          available: true
-        },
-        {
-          receiver: "GCKUXI3JRJANYOF3AM35Z22FGUGYYUIEBPE5TTZ7P3G6XAEFGYZC2POM",
-          subAcc: "GCNFOGGQ32EHZSL33JVH55GOTVXIGP5SALMQ26MERTLUTTJRFXYBI7NC",
-          seqNum: 0,
-          available: true
-        },
-        {
-          receiver: "GD4PIV4DVVKMJRJLERGTTNTKNG6Z67V7JFHYCJNWXMPR2DSQ5FDI2QCT",
-          subAcc: "GCNFOGGQ32EHZSL33JVH55GOTVXIGP5SALMQ26MERTLUTTJRFXYBI7NC",
-          seqNum: 0,
-          available: true
-        },
-        {
-          receiver: "GD4PIV4DVVKMJRJLERGTTNTKNG6Z67V7JFHYCJNWXMPR2DSQ5FDI2QCT",
-          subAcc: "GCNFOGGQ32EHZSL33JVH55GOTVXIGP5SALMQ26MERTLUTTJRFXYBI7NC",
-          seqNum: 0,
-          available: true
-        }
-      ]
+      var subAccounts = JSON.parse(localStorage.getItem('_subAccounts'));
+      console.log(subAccounts)
 
       var availableArr = subAccounts.filter(function (al) {
         return al.available == true
       })
       console.log("availableArr");
       console.log(availableArr);
-
       var matchingArr = subAccounts.filter(function (ml) {
         return ml.available == false && ml.receiver == receiver
       })
@@ -133,17 +99,41 @@ export class ItemDetailPage {
 
       if (availableArr.length > 0) {
         console.log("found available")
-        availableArr[0].available = false
+        // availableArr[0].available = false
         resolve(availableArr[0]);
       } else if (availableArr.length == 0 && matchingArr.length >= 1) {
         console.log("seq No ++")
-        matchingArr[0].available = false
+        // matchingArr[0].available = false
         resolve(matchingArr[0]);
       } else {
-        console.log("create new subAcc")
-        resolve({
-          subAcc: "GC4FNHE5ULNGHUWE3CQEZ43P6NYTO7CI4QT4KTRDI6AARWXKN7IT5E4J"
-        });
+        this.createAddress().then((pair) => {
+
+          this.multisignSubAccount(pair, this.BCAccounts[1].pk).then((pair) => {
+            this.addSubAccount(pair).then(() => {
+              console.log("create new subAcc")
+              //@ts-ignore
+              resolve({ subAccount: pair.publicKey(), sequenceNo: 0 });
+            }).catch(e => {
+              console.log(e)
+              if (this.isLoadingPresent) {
+                this.dissmissLoading();
+                this.presentToast('Error! COCVerification unsuccesfull.');
+              }
+            })
+          }).catch(e => {
+            console.log(e)
+            if (this.isLoadingPresent) {
+              this.dissmissLoading();
+              this.presentToast('Error! COCVerification unsuccesfull.');
+            }
+          })
+        }).catch(e => {
+          console.log(e)
+          if (this.isLoadingPresent) {
+            this.dissmissLoading();
+            this.presentToast('Error! COCVerification unsuccesfull.');
+          }
+        })
       }
     })
   }
@@ -154,57 +144,67 @@ export class ItemDetailPage {
     try {
       this.getPreviousTXNID(this.COCForm.identifier).then((PreviousTXNID) => {
         this.COCVerification(PreviousTXNID, signerSK).then((proofObj) => {
-          //@ts-ignore
-          this.AcceptBuild(PreviousTXNID, this.COCForm.identifier, proofObj, this.COCForm.receiver, signerSK).then((resolveObj) => {
-            this.RejectBuild(proofObj, signerSK).then((RejectXdr) => {
-              const obj = {
-                "Sender": this.BCAccounts[1].pk,
-                "Receiver": this.COCForm.receiver,
-                //@ts-ignore
-                "SubAccount": this.COCForm.receiver,
-                //@ts-ignore
-                "SeqNum": resolveObj.seqNum,
-                //@ts-ignore
-                "AcceptXdr": resolveObj.b64,
-                "RejectXdr": RejectXdr,
-                "Identifier": this.COCForm.identifier,
-                "Status": "pending"
-              }
-              console.log(obj)
-              this.itemsProvider.addCOC(obj).subscribe((resp) => {
-                // this.navCtrl.push(MainPage);
-                console.log(resp)
-                // @ts-ignore
-                if (resp.Message == "Success" && this.isLoadingPresent) {
-                  this.dissmissLoading();
-                  this.presentToast(this.item.asset_code + ' transfered succesfully.');
-                  //set local storage???
-                } else {
+          this.subAccountValidator(this.COCForm.receiver).then((subAcc) => {
+            console.log(subAcc);
+            //@ts-ignore
+            this.AcceptBuild(PreviousTXNID, this.COCForm.identifier, proofObj, subAcc.subAccount, subAcc.sequenceNo, signerSK).then((resolveObj) => {
+              //@ts-ignore
+              this.RejectBuild(proofObj, subAcc.subAccount, subAcc.sequenceNo, signerSK).then((RejectXdr) => {
+                const obj = {
+                  "Sender": this.BCAccounts[1].pk,
+                  "Receiver": this.COCForm.receiver,
+                  //@ts-ignore
+                  "SubAccount": subAcc.subAccount,
+                  //@ts-ignore
+                  "SeqNum": resolveObj.seqNum,
+                  //@ts-ignore
+                  "AcceptXdr": resolveObj.b64,
+                  "RejectXdr": RejectXdr,
+                  "Identifier": this.COCForm.identifier,
+                  "Status": "pending"
+                }
+                console.log(obj)
+                this.itemsProvider.addCOC(obj).subscribe((resp) => {
+                  // this.navCtrl.push(MainPage);
+                  console.log(resp)
+                  // @ts-ignore
+                  if (resp.Message == "Success" && this.isLoadingPresent) {
+                    this.dissmissLoading();
+                    this.presentToast(this.item.asset_code + ' transfered succesfully.');
+                    //set local storage???
+                  } else {
+                    if (this.isLoadingPresent) {
+                      this.dissmissLoading();
+                      this.presentToast('Error! transaction unsuccesfull.');
+                    }
+                  }
+                }, (err) => {
+                  console.log(err);
                   if (this.isLoadingPresent) {
                     this.dissmissLoading();
                     this.presentToast('Error! transaction unsuccesfull.');
                   }
-                }
-              }, (err) => {
-                console.log(err);
-                if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-                  this.presentToast('Error! transaction unsuccesfull.');
-                }
-              });
-            })
-              .catch(e => {
-                console.log(e)
-                if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-                  this.presentToast('Error! Processing RejectBuild unsuccesfull.');
-                }
+                });
               })
+                .catch(e => {
+                  console.log(e)
+                  if (this.isLoadingPresent) {
+                    this.dissmissLoading();
+                    this.presentToast('Error! Processing RejectBuild unsuccesfull.');
+                  }
+                })
+            }).catch(e => {
+              console.log(e)
+              if (this.isLoadingPresent) {
+                this.dissmissLoading();
+                this.presentToast('Error! Processing AcceptBuild unsuccesfull.');
+              }
+            })
           }).catch(e => {
             console.log(e)
             if (this.isLoadingPresent) {
               this.dissmissLoading();
-              this.presentToast('Error! Processing AcceptBuild unsuccesfull.');
+              this.presentToast('Error! subAccountValidator unsuccesfull.');
             }
           })
         }).catch(e => {
@@ -231,64 +231,44 @@ export class ItemDetailPage {
 
   }
 
-  createMultipleTrustline(pair) {
-    try {
-      return new Promise((resolve, reject) => {
-        var receivingKeys = pair;
-        server.loadAccount(receivingKeys.publicKey())
-          .then(function (account) {
-            const txBuilder = new TransactionBuilder(account)
+  subAccountStatus() {
+    if (this.connectivity.onDevice) {
+      this.presentLoading();
+      // console.log(this.BCAccounts[1].subAccounts)
+      const subAccount = {
+        "User": "UserNameNotVaildatingNow",
+        "SubAccounts": this.BCAccounts[1].subAccounts
+      };
 
-            // Create an object to represent the new asset
-            var Aple = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-            var Mango = new Asset('Mango', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-            var Banana = new Asset('Banana', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-            var Grapes = new Asset('Grapes', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+      this.api.subAccountStatus(subAccount).then((res) => {
+        console.log(res.body);
+        this.dissmissLoading();
+        if (res.status === 200) {
+          localStorage.setItem('_subAccounts', JSON.stringify(res.body))
 
-            // var assetArr = [Grap, Orng, Bana, Aple, Carr];
-            var assetArr = [Aple, Mango, Banana, Grapes];
-            assetArr.forEach(element => {
-              // add operation
-              txBuilder.addOperation(Operation.changeTrust({
-                asset: element,
-                limit: '10'
-              }))
-
-              const tx = txBuilder.build();
-              tx.sign(receivingKeys);
-              let XDR;
-              // console.log(tx);
-              console.log("XDR............");
-              console.log(tx.toEnvelope().toXDR('base64'));
-
-              server.submitTransaction(tx)
-                .then(function (transactionResult) {
-                  console.log(transactionResult);
-                }).catch(function (err) {
-                  console.log(err);
-                })
-            })
-            resolve();
-          })
+        } else {
+          this.userError('authenticationFailed', 'authenticationFailedDescription');
+        }
       })
-    } catch (error) {
-      console.log(error);
-
+        .catch((error) => {
+          this.dissmissLoading();
+          this.userError('authenticationFailed', 'authenticationFailedDescription');
+          console.log(error);
+        });
+    } else {
+      this.presentToast('noInternet');
     }
-
   }
 
   multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
-      var secondaryAddress = "GA3RFKVJ5KAY7H7JHN6WK2XEMQDRE54KONEW5HF6JG3MIGN4UTIIOSIC";
-
       server
-        .loadAccount('GBPBSQWA4WNTCVD3VULEUIT3QDTIOFVSFVU6BRK6AQFQURQBBNPK27PS')
+        .loadAccount(subAccount.publicKey())
         .then(function (account) {
           var transaction = new TransactionBuilder(account)
             .addOperation(Operation.setOptions({
               signer: {
-                ed25519PublicKey: secondaryAddress,
+                ed25519PublicKey: mainAccount,
                 weight: 2
               }
             }))
@@ -300,7 +280,7 @@ export class ItemDetailPage {
             }))
             .build();
 
-          transaction.sign(Keypair.fromSecret('SAFWINRZUI7KIOZ3UICQNXPNVSWDGACLUVXGZNGFWKDPSPRIJHNNYLP4')); // sign the transaction
+          transaction.sign(subAccount); // sign the transaction
           console.log(transaction);
 
 
@@ -308,14 +288,16 @@ export class ItemDetailPage {
         })
         .then(function (transactionResult) {
           console.log(transactionResult);
+          resolve()
         })
         .catch(function (err) {
           console.error(err);
+          reject()
         });
     })
   }
 
-  AcceptBuild(PreviousTXNID, Identifier, proofHash, subAcc, signerSK) {
+  AcceptBuild(PreviousTXNID, Identifier, proofHash, subAcc, sequenceNo, signerSK) {
 
     return new Promise((resolve, reject) => {
       try {
@@ -335,7 +317,12 @@ export class ItemDetailPage {
         var sourceKeypair = Keypair.fromSecret(signerSK);
 
         var asset = new Asset(item, 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-        var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+        var opts;
+        if (sequenceNo != 0) {
+          opts = { timebounds: { minTime: minTime, maxTime: maxTime }, bumpSequence: { bumpTo: sequenceNo } };
+        } else {
+          opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+        }
         Network.useTestNetwork();
         var server = new Server('https://horizon-testnet.stellar.org');
         server.loadAccount(subAcc)
@@ -380,13 +367,13 @@ export class ItemDetailPage {
 
   }
 
-  RejectBuild(proofHash, signerSK) {
+  RejectBuild(proofHash, subAcc, sequenceNo, signerSK) {
 
     return new Promise((resolve, reject) => {
       try {
         let XDR;
         let b64;
-        const receiver = this.COCForm.receiver;
+        const receiver = subAcc;
         // const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
         const senderPublickKey = this.BCAccounts[1].pk;
@@ -398,10 +385,13 @@ export class ItemDetailPage {
 
         // var maxTime = 1542860820;
         var sourceKeypair = Keypair.fromSecret(signerSK);
+        var opts;
+        if (sequenceNo != 0) {
+          opts = { timebounds: { minTime: minTime, maxTime: maxTime }, bumpSequence: { bumpTo: sequenceNo } };
 
-        // var asset = new Asset(item, 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-        // var opts = { timebounds: { minTime: minTime, maxTime: maxTime }, bumpSequence: { bumpTo: '2284484514807850' } };
-        var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+        } else {
+          opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+        }
         Network.useTestNetwork();
         var server = new Server('https://horizon-testnet.stellar.org');
         server.loadAccount(receiver)
@@ -434,7 +424,7 @@ export class ItemDetailPage {
     })
   }
 
- COCVerification(PreviousTXNID, signerSK) {
+  COCVerification(PreviousTXNID, signerSK) {
     try {
       return new Promise((resolve, reject) => {
         console.log(PreviousTXNID)
@@ -492,6 +482,74 @@ export class ItemDetailPage {
             this.userError('authenticationFailed', 'authenticationFailedDescription');
             console.log(error);
             reject();
+          });
+      })
+    } else {
+      this.presentToast('noInternet');
+    }
+  }
+
+  createAddress() {
+    try {
+      return new Promise((resolve, reject) => {
+        var pair = Keypair.random();
+        pair.secret();
+        console.log(pair.publicKey())
+        pair.publicKey();
+        console.log(pair.secret())
+
+        get({
+          url: 'https://friendbot.stellar.org',
+          qs: { addr: pair.publicKey() },
+          json: true
+        }, function (error, response, body) {
+          if (error || response.statusCode !== 200) {
+            console.error('ERROR!', error || body);
+            reject(error);
+          }
+          else {
+            console.log('SUCCESS! You have a new account :)\n', body);
+
+            resolve(pair);
+
+          }
+        });
+      })
+    } catch (error) {
+      console.log(error);
+
+    }
+
+  }
+
+  addSubAccount(subAcc) {
+
+    if (this.connectivity.onDevice) {
+      this.presentLoading();
+      return new Promise((resolve, reject) => {
+        const account = {
+          "account": {
+            "subKey": subAcc,
+            "pk": this.BCAccounts[1].pk
+          }
+        };
+
+        this.api.addSubAccount(account).then((res) => {
+          console.log(res.body);
+          this.dissmissLoading();
+          if (res.status === 200) {
+            this.presentToast('sub Account successfully added');
+            resolve();
+          } else if (res.status === 406) {
+            this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
+          } else {
+            this.userError('authenticationFailed', 'authenticationFailedDescription');
+          }
+        })
+          .catch((error) => {
+            this.dissmissLoading();
+            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            console.log(error);
           });
       })
     } else {

@@ -172,6 +172,29 @@ export class Api {
     });
   }
 
+  subAccountStatus(body): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // console.log(JSON.parse(localStorage.getItem('_token')))
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+        })
+      }
+      this.http.post(this.url + '/transaction/coc/subAccountStatus', body, this.reqOpts)
+        .subscribe(response => {
+          // console.log(response);
+
+          resolve(response);
+        },
+          error => {
+            console.log(error);
+            reject(error);
+          });
+    });
+  }
+
   validateMainAccount(body): Promise<any> {
     return new Promise((resolve, reject) => {
       // console.log(JSON.parse(localStorage.getItem('_token')))

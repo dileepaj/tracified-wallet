@@ -40,6 +40,7 @@ export class AddAccountPage {
   private toastInstance: Toast;
   loading;
   form: FormGroup;
+  BCAccounts: any;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public alertCtrl: AlertController,
@@ -53,6 +54,9 @@ export class AddAccountPage {
       password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required]))
       // password: new FormControl('', Validators.compose([Validators.maxLength(30), Validators.minLength(8), Validators.pattern('[a-zA-Z ]*'), Validators.required]))
     });
+
+    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
+
   }
 
   ionViewDidLoad() {
@@ -66,59 +70,77 @@ export class AddAccountPage {
       this.presentLoading();
       this.validateMainAccount().then(() => {
         this.createAddress().then((pair) => {
-          //@ts-ignore
-          publicKey = pair.publicKey()
-          //@ts-ignore
-          secretKey = pair.secret();
-          //@ts-ignore
-          console.log(publicKey)
-          console.log(secretKey)
-          this.createMultipleTrustline(pair).then(() => {
+          this.createAddress().then((pair2) => {
             //@ts-ignore
-            this.encyrptSecret(secretKey, this.form.value.password).then((ciphertext) => {
-              console.log(ciphertext);
-              const account = {
-                "account": {
-                  "mainAccount": {
-                    "accountName": this.form.value.username,
-                    //@ts-ignore
-                    "pk": publicKey,
-                    "sk": ciphertext,
-                    "subAccounts": []
+            publicKey = pair.publicKey()
+            //@ts-ignore
+            secretKey = pair.secret();
+            //@ts-ignore
+            console.log(publicKey)
+            console.log(secretKey)
+            this.createMultipleTrustline(pair).then(() => {
+              //@ts-ignore
+              this.multisignSubAccount(pair2, publicKey).then(() => {
+                //@ts-ignore
+                this.encyrptSecret(secretKey, this.form.value.password).then((ciphertext) => {
+                  console.log(ciphertext);
+                  const account = {
+                    "account": {
+                      "mainAccount": {
+                        "accountName": this.form.value.username,
+                        //@ts-ignore
+                        "pk": publicKey,
+                        "sk": ciphertext,
+                        //@ts-ignore
+                        "subAccounts": [pair2.publicKey()]
+                      }
+                    }
                   }
-                }
-              }
-              this.api.addMainAccount(account).then((res) => {
-                this.dissmissLoading();
-                if (res.status === 200) {
-                  console.log(res)
-                  this.presentToast('Blockchain Account added successfully!');
-                  this.gotoBlockchainAccPage();
-                } else if (res.status === 205) {
+                  this.api.addMainAccount(account).then((res) => {
+                    this.dissmissLoading();
+                    if (res.status === 200) {
+                      console.log(res)
+                      this.presentToast('Blockchain Account added successfully!');
+                      this.gotoBlockchainAccPage();
+                    } else if (res.status === 205) {
 
-                } else if (res.status === 403) {
-                  this.userError('authenticationFailed', 'accountIsBlocked');
-                } else {
-                  this.userError('authenticationFailed', 'authenticationFailedDescription');
+                    } else if (res.status === 403) {
+                      this.userError('authenticationFailed', 'accountIsBlocked');
+                    } else {
+                      this.userError('authenticationFailed', 'authenticationFailedDescription');
+                    }
+                  })
+                    .catch((error) => {
+                      this.dissmissLoading();
+                      this.userError('authenticationFailed', 'authenticationFailedDescription');
+                      console.log(error);
+                    });
+                }).catch(e => {
+                  console.log(e)
+                  if (this.isLoadingPresent) {
+                    this.dissmissLoading();
+                    this.presentToast('Error! encyrptSecret.');
+                  }
+                })
+              }).catch(e => {
+                console.log(e)
+                if (this.isLoadingPresent) {
+                  this.dissmissLoading();
+                  this.presentToast('Error! createMultipleTrustline.');
                 }
               })
-                .catch((error) => {
-                  this.dissmissLoading();
-                  this.userError('authenticationFailed', 'authenticationFailedDescription');
-                  console.log(error);
-                });
             }).catch(e => {
               console.log(e)
               if (this.isLoadingPresent) {
                 this.dissmissLoading();
-                this.presentToast('Error! encyrptSecret.');
+                this.presentToast('Error! createAddress.');
               }
             })
           }).catch(e => {
             console.log(e)
             if (this.isLoadingPresent) {
               this.dissmissLoading();
-              this.presentToast('Error! createMultipleTrustline.');
+              this.presentToast('Error! createAddress.');
             }
           })
         }).catch(e => {
@@ -142,35 +164,37 @@ export class AddAccountPage {
     }
   }
 
-  addSubAccount() {
+  addSubAccount(subAcc) {
+
     if (this.connectivity.onDevice) {
       this.presentLoading();
-      const account = {
-        "account": {
-          "subKey": "abcd1234",
-          "pk": "ssdvsdsvsqwwbgfbffddcccdfcdclddggg"
-        }
-      };
+      return new Promise((resolve, reject) => {
+        const account = {
+          "account": {
+            "subKey": subAcc,
+            "pk": this.BCAccounts[1].pk
+          }
+        };
 
-      this.api.addSubAccount(account).then((res) => {
-        console.log(res.body.Token);
-        this.dissmissLoading();
-        if (res.status === 200) {
-          localStorage.setItem('_token', JSON.stringify(res.body.Token))
-          this.gotoBlockchainAccPage();
-        } else if (res.status === 205) {
-
-        } else if (res.status === 403) {
-          this.userError('authenticationFailed', 'accountIsBlocked');
-        } else {
-          this.userError('authenticationFailed', 'authenticationFailedDescription');
-        }
-      })
-        .catch((error) => {
+        this.api.addSubAccount(account).then((res) => {
+          console.log(res.body);
           this.dissmissLoading();
-          this.userError('authenticationFailed', 'authenticationFailedDescription');
-          console.log(error);
-        });
+          if (res.status === 200) {
+            this.presentToast('sub Account successfully added');
+            resolve();
+
+          } else if (res.status === 406) {
+            this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
+          } else {
+            this.userError('authenticationFailed', 'authenticationFailedDescription');
+          }
+        })
+          .catch((error) => {
+            this.dissmissLoading();
+            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            console.log(error);
+          });
+      })
     } else {
       this.presentToast('noInternet');
     }
@@ -358,15 +382,13 @@ export class AddAccountPage {
 
   multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
-      var secondaryAddress = "GA3RFKVJ5KAY7H7JHN6WK2XEMQDRE54KONEW5HF6JG3MIGN4UTIIOSIC";
-
       server
-        .loadAccount('GBPBSQWA4WNTCVD3VULEUIT3QDTIOFVSFVU6BRK6AQFQURQBBNPK27PS')
+        .loadAccount(subAccount.publicKey())
         .then(function (account) {
           var transaction = new TransactionBuilder(account)
             .addOperation(Operation.setOptions({
               signer: {
-                ed25519PublicKey: secondaryAddress,
+                ed25519PublicKey: mainAccount,
                 weight: 2
               }
             }))
@@ -378,7 +400,7 @@ export class AddAccountPage {
             }))
             .build();
 
-          transaction.sign(Keypair.fromSecret('SAFWINRZUI7KIOZ3UICQNXPNVSWDGACLUVXGZNGFWKDPSPRIJHNNYLP4')); // sign the transaction
+          transaction.sign(subAccount); // sign the transaction
           console.log(transaction);
 
 
@@ -386,9 +408,11 @@ export class AddAccountPage {
         })
         .then(function (transactionResult) {
           console.log(transactionResult);
+          resolve()
         })
         .catch(function (err) {
           console.error(err);
+          reject()
         });
     })
   }
