@@ -123,15 +123,8 @@ export class ItemReceivedPage {
 
           // @ts-ignore
           let now: number = new Date();
-          var sec_num = (now - oldDate) / 1000;
-          var days = Math.floor(sec_num / (3600 * 24));
-          var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
-          var minutes = Math.floor((sec_num - (days * (3600 * 24)) - (hours * 3600)) / 60);
-          // var seconds = Math.floor(sec_num - (days * (3600 * 24)) - (hours * 3600) - (minutes * 60));
-          // @ts-ignore
-          if (hours < 10) { hours = "0" + hours; }
-          // @ts-ignore
-          if (minutes < 10) { minutes = "0" + minutes; }
+          var hoursAgo = this.timeDuration(now, oldDate);
+          var validTill = this.timeDuration(newDate, now);
 
           let itemArr = [];
           parsedTx.operations.forEach(tansac => {
@@ -141,6 +134,7 @@ export class ItemReceivedPage {
 
               let assetObj = {
                 "source": tansac.source,
+                "sourcename": this.BCAccounts[1].accountName,
                 "asset": tansac.asset.code,
                 "amount": tansac.amount
               }
@@ -160,11 +154,7 @@ export class ItemReceivedPage {
             RejectXdr: item.RejectXdr,
             // @ts-ignore
             // date: days + 'd ' + hours + 'h ' + minutes + 'm ago',
-            date: {
-                    'days': days, 
-                    'hours' : hours,
-                    'minutes': minutes
-                    },
+            date: hoursAgo,
             // date: oldDate.toLocaleString(),
             itemArr: itemArr,
             uname: tempLast.source,
@@ -174,7 +164,7 @@ export class ItemReceivedPage {
             qty: tempLast.amount,
             // @ts-ignore
             validity: newDate.toLocaleString(),
-            time: (new Duration(new Date(), new Date(newDate))).toString(1),
+            time: validTill,
             // time: (Math.round((newDate - oldDate) / (1000 * 60 * 60 * 24))),
             status: item.Status,
 
@@ -188,7 +178,7 @@ export class ItemReceivedPage {
           // console.log(obj)
           Tempitems.push(obj)
           // console.log(Tempitems)
-          this.items = Tempitems;
+          this.items = Tempitems.reverse();
           this.setFilteredItems();
         });
         if (this.isLoadingPresent) { this.dissmissLoading(); }
@@ -257,6 +247,25 @@ export class ItemReceivedPage {
         this.presentToast('Error! signing Transaction.');
       }
     })
+  }
+
+  timeDuration(now, oldDate) {
+    // @ts-ignore
+    var sec_num = (now - oldDate) / 1000;
+    var days = Math.floor(sec_num / (3600 * 24));
+    var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
+    var minutes = Math.floor((sec_num - (days * (3600 * 24)) - (hours * 3600)) / 60);
+    // var seconds = Math.floor(sec_num - (days * (3600 * 24)) - (hours * 3600) - (minutes * 60));
+    // @ts-ignore
+    if (hours < 10) { hours = "0" + hours; }
+    // @ts-ignore
+    if (minutes < 10) { minutes = "0" + minutes; }
+
+    return {
+      'days': days,
+      'hours': hours,
+      'minutes': minutes
+    };
   }
 
 

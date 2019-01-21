@@ -47,8 +47,10 @@
           <ion-note>{{item.validity}}</ion-note>
         </ion-col>
         <ion-col left text-left>
-          <!-- <ion-note>{{item.status}}</ion-note> -->
-          <ion-note>This request will be valid till {{item.time}}</ion-note>
+          <ion-note>This request will be valid till </ion-note>
+          <ion-note *ngIf='item.time.days'>{{item.time.days}}d </ion-note>
+          <ion-note *ngIf='item.time.hours !="00" '>{{item.time.hours}}h </ion-note>
+          <ion-note *ngIf='item.time.minutes'>{{item.time.minutes}}m</ion-note>
         </ion-col>
       </ion-row>
       <hr id="hr">

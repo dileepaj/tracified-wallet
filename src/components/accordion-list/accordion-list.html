@@ -13,9 +13,14 @@
               <ion-note *ngIf='date.minutes'>{{date.minutes}}m ago</ion-note>
             </ion-col>
             <ion-col right text-right>
-              <ion-note>From - {{uname}}</ion-note> 
+              <ion-note id="truncate" >{{uname}}</ion-note>
             </ion-col>
-          </ion-row>
+          </ion-row> 
+          <!-- <ion-row>
+            <ion-col right text-left>
+              <ion-note>From - {{uname}}</ion-note>
+            </ion-col>
+          </ion-row> -->
           <ion-row>
             <ion-col left text-left>
               <h2>Item : {{oname}}</h2>

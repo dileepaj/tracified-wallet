@@ -157,6 +157,13 @@ accordion-list {
 
     }
 
+    .truncate {
+         display: block; 
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     #timer-icon{
         margin-left: 0px;
         margin-right: 4px;

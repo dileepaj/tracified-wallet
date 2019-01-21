@@ -191,7 +191,7 @@ export class AddAccountPage {
           // this.dissmissLoading();
           if (res.status === 200 && res.body.status == false) {
             resolve();
-          } else{
+          } else {
             this.dissmissLoading();
             this.userError('Main Account', 'Duplicate Main Account found!');
             reject();
@@ -244,7 +244,7 @@ export class AddAccountPage {
         console.log(pair.publicKey())
         pair.publicKey();
         console.log(pair.secret())
-  
+
         get({
           url: 'https://friendbot.stellar.org',
           qs: { addr: pair.publicKey() },
@@ -256,15 +256,15 @@ export class AddAccountPage {
           }
           else {
             console.log('SUCCESS! You have a new account :)\n', body);
-  
+
             resolve(pair);
-  
+
           }
         });
       })
     } catch (error) {
       console.log(error);
-      
+
     }
 
   }
@@ -316,30 +316,29 @@ export class AddAccountPage {
         server.loadAccount(receivingKeys.publicKey())
           .then(function (account) {
             const txBuilder = new TransactionBuilder(account)
-  
+
             // Create an object to represent the new asset
             var Aple = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-            // var Grap = new Asset('Grap', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-            // var Orng = new Asset('Orng', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-            // var Bana = new Asset('Bana', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-            // var Carr = new Asset('Carr', 'GDOPTRADBVWJR6BMB6H5ACQTAVUS6XMT53CDNAJZLOSTIUICIW57ISMF');
-  
+            var Mango = new Asset('Mango', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+            var Banana = new Asset('Banana', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+            var Grapes = new Asset('Grapes', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+
             // var assetArr = [Grap, Orng, Bana, Aple, Carr];
-            var assetArr = [Aple];
+            var assetArr = [Aple, Mango, Banana, Grapes];
             assetArr.forEach(element => {
               // add operation
               txBuilder.addOperation(Operation.changeTrust({
                 asset: element,
                 limit: '10'
               }))
-  
+
               const tx = txBuilder.build();
               tx.sign(receivingKeys);
               let XDR;
               // console.log(tx);
               console.log("XDR............");
               console.log(tx.toEnvelope().toXDR('base64'));
-  
+
               server.submitTransaction(tx)
                 .then(function (transactionResult) {
                   console.log(transactionResult);
@@ -352,9 +351,46 @@ export class AddAccountPage {
       })
     } catch (error) {
       console.log(error);
-      
+
     }
 
+  }
+
+  multisignSubAccount(subAccount, mainAccount) {
+    return new Promise((resolve, reject) => {
+      var secondaryAddress = "GA3RFKVJ5KAY7H7JHN6WK2XEMQDRE54KONEW5HF6JG3MIGN4UTIIOSIC";
+
+      server
+        .loadAccount('GBPBSQWA4WNTCVD3VULEUIT3QDTIOFVSFVU6BRK6AQFQURQBBNPK27PS')
+        .then(function (account) {
+          var transaction = new TransactionBuilder(account)
+            .addOperation(Operation.setOptions({
+              signer: {
+                ed25519PublicKey: secondaryAddress,
+                weight: 2
+              }
+            }))
+            .addOperation(Operation.setOptions({
+              masterWeight: 0, // set master key weight
+              lowThreshold: 2,
+              medThreshold: 2, // a payment is medium threshold
+              highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
+            }))
+            .build();
+
+          transaction.sign(Keypair.fromSecret('SAFWINRZUI7KIOZ3UICQNXPNVSWDGACLUVXGZNGFWKDPSPRIJHNNYLP4')); // sign the transaction
+          console.log(transaction);
+
+
+          return server.submitTransaction(transaction);
+        })
+        .then(function (transactionResult) {
+          console.log(transactionResult);
+        })
+        .catch(function (err) {
+          console.error(err);
+        });
+    })
   }
 
   encyrptSecret(secret, signer) {
@@ -362,16 +398,16 @@ export class AddAccountPage {
       return new Promise((resolve, reject) => {
         // Encrypt
         var ciphertext = AES.encrypt(secret, signer);
-  
+
         // // Decrypt
         // var decrypted = AES.decrypt(ciphertext.toString(), signer);
         // var plaintext = decrypted.toString(enc.Utf8);
-  
+
         console.log("secret => " + secret);
         console.log("signer => " + signer);
         console.log("ciphertext => " + ciphertext);
         // console.log("plaintext => " + plaintext);
-  
+
         resolve(ciphertext.toString());
       })
     } catch (error) {
