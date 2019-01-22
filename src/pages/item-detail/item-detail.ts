@@ -5,8 +5,10 @@ import { Network, Operation, Server, TransactionBuilder, Asset, Keypair } from '
 import { AES, enc } from "crypto-js";
 import { get } from 'request';
 import { Api } from '../../providers';
+var StellarSdk = require('stellar-sdk')
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 var server = new Server('https://horizon-testnet.stellar.org');
+StellarSdk.Network.useTestNetwork();
 
 @IonicPage()
 @Component({
@@ -41,7 +43,7 @@ export class ItemDetailPage {
     this.item = navParams.get('item');
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
     this.receivers = navParams.get('receivers');
-    this.subAccountStatus();
+    // this.subAccountStatus();
 
   }
 
@@ -81,9 +83,10 @@ export class ItemDetailPage {
     alert.present();
   }
 
-  subAccountValidator(receiver) {
+  subAccountValidator(receiver, subAccountStatus) {
     return new Promise((resolve, reject) => {
-      var subAccounts = JSON.parse(localStorage.getItem('_subAccounts'));
+      // var subAccounts = JSON.parse(localStorage.getItem('_subAccounts'));
+      var subAccounts = subAccountStatus;
       console.log(subAccounts)
 
       var availableArr = subAccounts.filter(function (al) {
@@ -108,7 +111,7 @@ export class ItemDetailPage {
       } else {
         this.createAddress().then((pair) => {
 
-          this.multisignSubAccount(pair, this.BCAccounts[1].pk).then((pair) => {
+          this.multisignSubAccount(pair, this.BCAccounts[1].pk).then(() => {
             this.addSubAccount(pair).then(() => {
               console.log("create new subAcc")
               //@ts-ignore
@@ -117,14 +120,14 @@ export class ItemDetailPage {
               console.log(e)
               if (this.isLoadingPresent) {
                 this.dissmissLoading();
-                this.presentToast('Error! COCVerification unsuccesfull.');
+                this.presentToast('Error! Creating new sub account failed.');
               }
             })
           }).catch(e => {
             console.log(e)
             if (this.isLoadingPresent) {
               this.dissmissLoading();
-              this.presentToast('Error! COCVerification unsuccesfull.');
+              this.presentToast('Error! multisignSubAccount unsuccesfull.');
             }
           })
         }).catch(e => {
@@ -143,68 +146,77 @@ export class ItemDetailPage {
     console.log(this.COCForm);
     try {
       this.getPreviousTXNID(this.COCForm.identifier).then((PreviousTXNID) => {
-        this.COCVerification(PreviousTXNID, signerSK).then((proofObj) => {
-          this.subAccountValidator(this.COCForm.receiver).then((subAcc) => {
-            console.log(subAcc);
-            //@ts-ignore
-            this.AcceptBuild(PreviousTXNID, this.COCForm.identifier, proofObj, subAcc.subAccount, subAcc.sequenceNo, signerSK).then((resolveObj) => {
+        this.subAccountStatus().then((subAccountStatus) => {
+          this.COCVerification(PreviousTXNID, signerSK).then((proofObj) => {
+            this.subAccountValidator(this.COCForm.receiver, subAccountStatus).then((subAcc) => {
+              console.log(subAcc);
               //@ts-ignore
-              this.RejectBuild(proofObj, subAcc.subAccount, subAcc.sequenceNo, signerSK).then((RejectXdr) => {
-                const obj = {
-                  "Sender": this.BCAccounts[1].pk,
-                  "Receiver": this.COCForm.receiver,
-                  //@ts-ignore
-                  "SubAccount": subAcc.subAccount,
-                  //@ts-ignore
-                  "SeqNum": resolveObj.seqNum,
-                  //@ts-ignore
-                  "AcceptXdr": resolveObj.b64,
-                  "RejectXdr": RejectXdr,
-                  "Identifier": this.COCForm.identifier,
-                  "Status": "pending"
-                }
-                console.log(obj)
-                this.itemsProvider.addCOC(obj).subscribe((resp) => {
-                  // this.navCtrl.push(MainPage);
-                  console.log(resp)
-                  // @ts-ignore
-                  if (resp.Message == "Success" && this.isLoadingPresent) {
-                    this.dissmissLoading();
-                    this.presentToast(this.item.asset_code + ' transfered succesfully.');
-                    //set local storage???
-                  } else {
+              this.AcceptBuild(PreviousTXNID, this.COCForm.identifier, proofObj, subAcc.subAccount, subAcc, signerSK).then((resolveObj) => {
+                //@ts-ignore
+                this.RejectBuild(proofObj, subAcc.subAccount, subAcc, signerSK).then((RejectXdr) => {
+                  const obj = {
+                    "Sender": this.BCAccounts[1].pk,
+                    "Receiver": this.COCForm.receiver,
+                    //@ts-ignore
+                    "SubAccount": subAcc.subAccount,
+                    //@ts-ignore
+                    "SequenceNo": Number(resolveObj.seqNum + 2),
+                    // (subAcc) ? : ;
+                    //@ts-ignore
+                    "AcceptXdr": resolveObj.b64,
+                    "RejectXdr": RejectXdr,
+                    "Identifier": this.COCForm.identifier,
+                    "Status": "pending"
+                  }
+                  console.log(obj)
+                  this.itemsProvider.addCOC(obj).subscribe((resp) => {
+                    // this.navCtrl.push(MainPage);
+                    console.log(resp)
+                    // @ts-ignore
+                    if (resp.Message == "Success" && this.isLoadingPresent) {
+                      this.dissmissLoading();
+                      this.presentToast(this.item.asset_code + ' transfered succesfully.');
+                      //set local storage???
+                    } else {
+                      if (this.isLoadingPresent) {
+                        this.dissmissLoading();
+                        this.presentToast('Error! transaction unsuccesfull.');
+                      }
+                    }
+                  }, (err) => {
+                    console.log(err);
                     if (this.isLoadingPresent) {
                       this.dissmissLoading();
                       this.presentToast('Error! transaction unsuccesfull.');
                     }
-                  }
-                }, (err) => {
-                  console.log(err);
-                  if (this.isLoadingPresent) {
-                    this.dissmissLoading();
-                    this.presentToast('Error! transaction unsuccesfull.');
-                  }
-                });
-              })
-                .catch(e => {
-                  console.log(e)
-                  if (this.isLoadingPresent) {
-                    this.dissmissLoading();
-                    this.presentToast('Error! Processing RejectBuild unsuccesfull.');
-                  }
+                  });
                 })
+                  .catch(e => {
+                    console.log(e)
+                    if (this.isLoadingPresent) {
+                      this.dissmissLoading();
+                      this.presentToast('Error! Processing RejectBuild unsuccesfull.');
+                    }
+                  })
+              }).catch(e => {
+                console.log(e)
+                if (this.isLoadingPresent) {
+                  this.dissmissLoading();
+                  this.presentToast('Error! Processing AcceptBuild unsuccesfull.');
+                }
+              })
             }).catch(e => {
               console.log(e)
               if (this.isLoadingPresent) {
                 this.dissmissLoading();
-                this.presentToast('Error! Processing AcceptBuild unsuccesfull.');
+                this.presentToast('Error! subAccountValidator unsuccesfull.');
               }
             })
           }).catch(e => {
             console.log(e)
             if (this.isLoadingPresent) {
               this.dissmissLoading();
-              this.presentToast('Error! subAccountValidator unsuccesfull.');
+              this.presentToast('Error! COCVerification unsuccesfull.');
             }
           })
         }).catch(e => {
@@ -233,28 +245,30 @@ export class ItemDetailPage {
 
   subAccountStatus() {
     if (this.connectivity.onDevice) {
-      this.presentLoading();
-      // console.log(this.BCAccounts[1].subAccounts)
-      const subAccount = {
-        "User": "UserNameNotVaildatingNow",
-        "SubAccounts": this.BCAccounts[1].subAccounts
-      };
-
-      this.api.subAccountStatus(subAccount).then((res) => {
-        console.log(res.body);
-        this.dissmissLoading();
-        if (res.status === 200) {
-          localStorage.setItem('_subAccounts', JSON.stringify(res.body))
-
-        } else {
-          this.userError('authenticationFailed', 'authenticationFailedDescription');
-        }
+      // this.presentLoading();
+      return new Promise((resolve, reject) => {
+        const subAccount = {
+          "User": "UserNameNotVaildatingNow",
+          "SubAccounts": this.BCAccounts[1].subAccounts
+        };
+        console.log(subAccount)
+        this.api.subAccountStatus(subAccount).then((res) => {
+          console.log(res.body);
+          // this.dissmissLoading();
+          if (res.status === 200) {
+            // localStorage.setItem('_subAccounts', JSON.stringify(res.body))
+            resolve(res.body)
+          } else {
+            this.userError('authenticationFailed', 'authenticationFailedDescription');
+          }
+        })
+          .catch((error) => {
+            this.dissmissLoading();
+            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            console.log(error);
+          });
       })
-        .catch((error) => {
-          this.dissmissLoading();
-          this.userError('authenticationFailed', 'authenticationFailedDescription');
-          console.log(error);
-        });
+
     } else {
       this.presentToast('noInternet');
     }
@@ -281,13 +295,13 @@ export class ItemDetailPage {
             .build();
 
           transaction.sign(subAccount); // sign the transaction
-          console.log(transaction);
+          // console.log(transaction);
 
 
           return server.submitTransaction(transaction);
         })
         .then(function (transactionResult) {
-          console.log(transactionResult);
+          console.log(transactionResult.hash);
           resolve()
         })
         .catch(function (err) {
@@ -297,7 +311,7 @@ export class ItemDetailPage {
     })
   }
 
-  AcceptBuild(PreviousTXNID, Identifier, proofHash, subAcc, sequenceNo, signerSK) {
+  AcceptBuild(PreviousTXNID, Identifier, proofHash, subAcc, subAccObj, signerSK) {
 
     return new Promise((resolve, reject) => {
       try {
@@ -316,35 +330,38 @@ export class ItemDetailPage {
         // var maxTime = 1542860820;
         var sourceKeypair = Keypair.fromSecret(signerSK);
 
+        console.log(subAccObj);
+
         var asset = new Asset(item, 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-        var opts;
-        if (sequenceNo != 0) {
-          opts = { timebounds: { minTime: minTime, maxTime: maxTime }, bumpSequence: { bumpTo: sequenceNo } };
-        } else {
-          opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
-        }
-        Network.useTestNetwork();
-        var server = new Server('https://horizon-testnet.stellar.org');
+        var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+
+        // Network.useTestNetwork();
+        // var server = new Server('https://horizon-testnet.stellar.org');
         server.loadAccount(subAcc)
           .then(function (account) {
             var transaction = new TransactionBuilder(account, opts)
-              .addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
-              .addOperation(Operation.manageData({ name: 'PreviousTXNID', value: PreviousTXNID, }))
-              .addOperation(Operation.manageData({ name: 'Identifier', value: Identifier, }))
-              .addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }))
-              .addOperation(Operation.payment({
-                destination: receiver,
-                asset: asset,
-                amount: quantity,
-                source: senderPublickKey
-              }))
-              .build();
-            transaction.sign(sourceKeypair);
+            transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
+            transaction.addOperation(Operation.manageData({ name: 'PreviousTXNID', value: PreviousTXNID, }))
+            transaction.addOperation(Operation.manageData({ name: 'Identifier', value: Identifier, }))
+            transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }))
+            transaction.addOperation(Operation.payment({
+              destination: receiver,
+              asset: asset,
+              amount: quantity,
+              source: senderPublickKey
+            }))
+
+            if (!subAccObj.available) {
+              transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccObj.sequenceNo + 2) }))
+            }
+
+            const tx = transaction.build();
+            tx.sign(sourceKeypair);
 
             // Let's see the XDR (encoded in base64) of the transaction we just built
             // console.log("envelope =>  "+transaction.toEnvelope());
-            XDR = transaction.toEnvelope();
-            seqNum = transaction.sequence;
+            XDR = tx.toEnvelope();
+            seqNum = tx.sequence;
             b64 = XDR.toXDR('base64');
             console.log('XDR in base64 =>  ' + JSON.stringify(b64));
             const resolveObj = {
@@ -367,13 +384,13 @@ export class ItemDetailPage {
 
   }
 
-  RejectBuild(proofHash, subAcc, sequenceNo, signerSK) {
+  RejectBuild(proofHash, subAcc, subAccObj, signerSK) {
 
     return new Promise((resolve, reject) => {
       try {
         let XDR;
         let b64;
-        const receiver = subAcc;
+        // const receiver = subAcc;
         // const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
         const senderPublickKey = this.BCAccounts[1].pk;
@@ -382,19 +399,16 @@ export class ItemDetailPage {
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
         var maxTime = time.getTime() / 1000.0;
         console.log(maxTime)
+        // console.log(sequenceNo + 1);
 
         // var maxTime = 1542860820;
         var sourceKeypair = Keypair.fromSecret(signerSK);
-        var opts;
-        if (sequenceNo != 0) {
-          opts = { timebounds: { minTime: minTime, maxTime: maxTime }, bumpSequence: { bumpTo: sequenceNo } };
+        var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
-        } else {
-          opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
-        }
-        Network.useTestNetwork();
-        var server = new Server('https://horizon-testnet.stellar.org');
-        server.loadAccount(receiver)
+        // StellarSdk.Network.useTestNetwork();
+        // var server = new Server('https://horizon-testnet.stellar.org');
+        server.loadAccount(subAcc)
+          // var source = new StellarSdk.Account(receiver, "46316927324160");
           .then(function (account) {
             var transaction = new TransactionBuilder(account, opts)
               .addOperation(Operation.manageData({
@@ -402,12 +416,16 @@ export class ItemDetailPage {
               }))
               .addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))
 
-              .build();
-            transaction.sign(sourceKeypair);
+            if (!subAccObj.available) {
+              transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccObj.sequenceNo + 2) }))
+            }
+
+            const tx = transaction.build();
+            tx.sign(sourceKeypair);
 
             // Let's see the XDR (encoded in base64) of the transaction we just built
             // console.log("envelope =>  "+transaction.toEnvelope());
-            XDR = transaction.toEnvelope();
+            XDR = tx.toEnvelope();
             b64 = XDR.toXDR('base64');
             console.log('XDR in base64 =>  ' + JSON.stringify(b64));
 
@@ -420,22 +438,30 @@ export class ItemDetailPage {
       } catch (error) {
         console.log(error)
       }
-      // return b64;
     })
+
   }
 
   COCVerification(PreviousTXNID, signerSK) {
+    // console.log(this.COCForm);
+    const form = this.COCForm
+
     try {
       return new Promise((resolve, reject) => {
+
         console.log(PreviousTXNID)
         var sourceKeypair = Keypair.fromSecret(signerSK);
         var server = new Server('https://horizon-testnet.stellar.org');
         server.loadAccount(sourceKeypair.publicKey())
           .then(function (account) {
             var transaction = new TransactionBuilder(account)
-              .addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
+              .addOperation(Operation.manageData({ name: 'Transaction Type', value: '11', }))
               .addOperation(Operation.manageData({ name: 'PreviousTXNID', value: PreviousTXNID, }))
-              .addOperation(Operation.manageData({ name: 'Identifier', value: "proof", }))
+              .addOperation(Operation.manageData({ name: 'Identifier', value: form.identifier, }))
+              .addOperation(Operation.manageData({ name: 'Receiver', value: form.receiver, }))
+              .addOperation(Operation.manageData({ name: 'Asset', value: form.selectedItem, }))
+              .addOperation(Operation.manageData({ name: 'Amount', value: form.qty, }))
+              .addOperation(Operation.manageData({ name: 'MaxBound', value: JSON.stringify(form.vaidity), }))
               .build();
             // sign the transaction
             transaction.sign(sourceKeypair);
@@ -508,7 +534,7 @@ export class ItemDetailPage {
             reject(error);
           }
           else {
-            console.log('SUCCESS! You have a new account :)\n', body);
+            console.log('SUCCESS! You have a new account :)\n', body.hash);
 
             resolve(pair);
 
@@ -525,20 +551,23 @@ export class ItemDetailPage {
   addSubAccount(subAcc) {
 
     if (this.connectivity.onDevice) {
-      this.presentLoading();
+      // this.presentLoading();
       return new Promise((resolve, reject) => {
+        console.log(subAcc);
         const account = {
           "account": {
-            "subKey": subAcc,
+            "subKey": subAcc.publicKey(),
             "pk": this.BCAccounts[1].pk
           }
         };
 
         this.api.addSubAccount(account).then((res) => {
           console.log(res.body);
-          this.dissmissLoading();
+          // this.dissmissLoading();
           if (res.status === 200) {
             this.presentToast('sub Account successfully added');
+            this.BCAccounts[1].subAccounts.push(subAcc.publicKey())
+            localStorage.setItem('_BCAccounts', JSON.stringify(this.BCAccounts));
             resolve();
           } else if (res.status === 406) {
             this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');

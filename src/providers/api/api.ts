@@ -159,7 +159,7 @@ export class Api {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
         })
       }
-      this.http.post(this.LocalAdminURL + '/api/bc/key/sub', body, this.reqOpts)
+      this.http.put(this.LocalAdminURL + '/api/bc/key/sub', body, this.reqOpts)
         .subscribe(response => {
           // console.log(response);
 
