@@ -71,7 +71,7 @@ export class ItemDetailPage {
           handler: data => {
             if (data.password != "") {
               console.log(data);
-              this.doCOC(this.decyrptSecret(this.BCAccounts[1].sk, data.password));
+              this.doCOC(this.decyrptSecret(this.BCAccounts[0].sk, data.password));
             } else {
               // console.log(data);
               // return data;
@@ -111,7 +111,7 @@ export class ItemDetailPage {
       } else {
         this.createAddress().then((pair) => {
 
-          this.multisignSubAccount(pair, this.BCAccounts[1].pk).then(() => {
+          this.multisignSubAccount(pair, this.BCAccounts[0].pk).then(() => {
             this.addSubAccount(pair).then(() => {
               console.log("create new subAcc")
               //@ts-ignore
@@ -155,7 +155,7 @@ export class ItemDetailPage {
                 //@ts-ignore
                 this.RejectBuild(proofObj, subAcc.subAccount, subAcc, signerSK).then((RejectXdr) => {
                   const obj = {
-                    "Sender": this.BCAccounts[1].pk,
+                    "Sender": this.BCAccounts[0].pk,
                     "Receiver": this.COCForm.receiver,
                     //@ts-ignore
                     "SubAccount": subAcc.subAccount,
@@ -249,7 +249,7 @@ export class ItemDetailPage {
       return new Promise((resolve, reject) => {
         const subAccount = {
           "User": "UserNameNotVaildatingNow",
-          "SubAccounts": this.BCAccounts[1].subAccounts
+          "SubAccounts": this.BCAccounts[0].subAccounts
         };
         console.log(subAccount)
         this.api.subAccountStatus(subAccount).then((res) => {
@@ -322,7 +322,7 @@ export class ItemDetailPage {
         const quantity = this.COCForm.qty;
         const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
-        const senderPublickKey = this.BCAccounts[1].pk;
+        const senderPublickKey = this.BCAccounts[0].pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
@@ -393,7 +393,7 @@ export class ItemDetailPage {
         // const receiver = subAcc;
         // const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
-        const senderPublickKey = this.BCAccounts[1].pk;
+        const senderPublickKey = this.BCAccounts[0].pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
@@ -557,7 +557,7 @@ export class ItemDetailPage {
         const account = {
           "account": {
             "subKey": subAcc.publicKey(),
-            "pk": this.BCAccounts[1].pk
+            "pk": this.BCAccounts[0].pk
           }
         };
 
@@ -566,7 +566,7 @@ export class ItemDetailPage {
           // this.dissmissLoading();
           if (res.status === 200) {
             this.presentToast('sub Account successfully added');
-            this.BCAccounts[1].subAccounts.push(subAcc.publicKey())
+            this.BCAccounts[0].subAccounts.push(subAcc.publicKey())
             localStorage.setItem('_BCAccounts', JSON.stringify(this.BCAccounts));
             resolve();
           } else if (res.status === 406) {

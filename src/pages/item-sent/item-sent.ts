@@ -65,9 +65,9 @@ export class ItemSentPage {
 
   loadCOCSent() {
     try {
-      console.log(this.BCAccounts[1].pk);
+      console.log(this.BCAccounts[0].pk);
 
-      this.itemsProvider.querycocbysender(this.BCAccounts[1].pk).subscribe((resp) => {
+      this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
         // @ts-ignore
         console.log(resp);
         this.Citems = resp;
@@ -92,7 +92,7 @@ export class ItemSentPage {
 
               let assetObj = {
                 "source": tansac.source,
-                "sourcename": this.BCAccounts[1].accountName,
+                "sourcename": this.BCAccounts[0].accountName,
                 "asset": tansac.asset.code,
                 "amount": tansac.amount
               }

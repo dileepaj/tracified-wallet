@@ -172,7 +172,7 @@ export class AddAccountPage {
         const account = {
           "account": {
             "subKey": subAcc,
-            "pk": this.BCAccounts[1].pk
+            "pk": this.BCAccounts[0].pk
           }
         };
 

@@ -21,11 +21,11 @@ export class MyApp {
 
   pages: any[] = [
     { icon: 'custom-itemIcon', title: 'Items', component: 'TabsPage' },
-    { icon: 'custom-blockchain', title: 'Blockchain', component: 'BcAccountPage' },
+    { icon: 'custom-blockchain', title: 'Accounts', component: 'BcAccountPage' },
     { icon: 'custom-tutorial', title: 'Tutorial', component: 'TutorialPage' },
     { icon: 'custom-settings', title: 'Settings', component: 'SettingsPage' },
     { icon: 'custom-about', title: 'About', component: 'ContentPage' },
-    { icon: 'custom-logout', title: 'Login', component: 'LoginPage' }
+    { icon: 'custom-logout', title: 'Logout', component: 'LoginPage' }
   ] 
 
   constructor(private translate: TranslateService, platform: Platform, settings: Settings, private config: Config, private statusBar: StatusBar, private splashScreen: SplashScreen) {
