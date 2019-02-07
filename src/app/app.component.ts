@@ -6,6 +6,7 @@ import { Config, Nav, Platform } from 'ionic-angular';
 
 import { FirstRunPage } from '../pages';
 import { Settings } from '../providers';
+import { Properties } from '../shared/properties';
 
 @Component({
   templateUrl: 'app.html'
@@ -15,7 +16,7 @@ export class MyApp {
   rootPage = FirstRunPage;
   company = 'Tracified Wallet';
   userType = 'Admin' 
-  user = 'jack';
+  user: any;
   
   @ViewChild(Nav) nav: Nav;
 
@@ -28,7 +29,7 @@ export class MyApp {
     { icon: 'custom-logout', title: 'Logout', component: 'LoginPage' }
   ] 
 
-  constructor(private translate: TranslateService, platform: Platform, settings: Settings, private config: Config, private statusBar: StatusBar, private splashScreen: SplashScreen) {
+  constructor(private translate: TranslateService, private properties: Properties, platform: Platform, settings: Settings, private config: Config, private statusBar: StatusBar, private splashScreen: SplashScreen) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -41,6 +42,12 @@ export class MyApp {
     
     this.activePage = this.pages[0];
     // ;
+    console.log('app.component');
+    // console.log(this.properties.userName);
+    
+    // this.user = this.properties.userName;
+
+    this.user = JSON.parse(localStorage.getItem('_username'))
 
   }
 

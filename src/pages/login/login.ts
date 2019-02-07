@@ -74,7 +74,8 @@ export class LoginPage {
         if (res.status === 200) {
           localStorage.setItem('_token', JSON.stringify(res.body.Token))
           try {
-            this.getAccounts()
+            this.getAccounts();
+            this.authService.authorizeLocalProfile(res.body.Token);
           } catch (error) {
             console.log(error)
             this.navCtrl.setRoot(TabsPage);

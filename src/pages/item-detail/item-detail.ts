@@ -83,164 +83,156 @@ export class ItemDetailPage {
     alert.present();
   }
 
-  subAccountValidator(receiver, subAccountStatus) {
+  subAccountValidator(receiver) {
     return new Promise((resolve, reject) => {
-      // var subAccounts = JSON.parse(localStorage.getItem('_subAccounts'));
-      var subAccounts = subAccountStatus;
-      console.log(subAccounts)
 
-      var availableArr = subAccounts.filter(function (al) {
-        return al.available == true
-      })
-      console.log("availableArr");
-      console.log(availableArr);
-      var matchingArr = subAccounts.filter(function (ml) {
-        return ml.available == false && ml.receiver == receiver
-      })
-      console.log("matchingArr");
-      console.log(matchingArr.length);
-
-      if (availableArr.length > 0) {
-        console.log("found available")
-        // availableArr[0].available = false
-        resolve(availableArr[0]);
-      } else if (availableArr.length == 0 && matchingArr.length >= 1) {
-        console.log("seq No ++")
-        // matchingArr[0].available = false
-        resolve(matchingArr[0]);
-      } else {
-        this.createAddress().then((pair) => {
-
-          this.multisignSubAccount(pair, this.BCAccounts[0].pk).then(() => {
-            this.addSubAccount(pair).then(() => {
-              console.log("create new subAcc")
-              //@ts-ignore
-              resolve({ subAccount: pair.publicKey(), sequenceNo: 0 });
-            }).catch(e => {
-              console.log(e)
-              if (this.isLoadingPresent) {
-                this.dissmissLoading();
-                this.presentToast('Error! Creating new sub account failed.');
-              }
-            })
-          }).catch(e => {
-            console.log(e)
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-              this.presentToast('Error! multisignSubAccount unsuccesfull.');
-            }
-          })
-        }).catch(e => {
-          console.log(e)
-          if (this.isLoadingPresent) {
-            this.dissmissLoading();
-            this.presentToast('Error! COCVerification unsuccesfull.');
-          }
+      this.subAccountStatus().then((subAccounts: any) => {
+        var availableArr = subAccounts.filter(function (al) {
+          return al.available == true
         })
-      }
-    })
-  }
+        console.log("availableArr");
+        console.log(availableArr);
+        var matchingArr = subAccounts.filter(function (ml) {
+          return ml.available == false && ml.receiver == receiver
+        })
+        console.log("matchingArr");
+        console.log(matchingArr.length);
 
-  doCOC(signerSK) {
-    this.presentLoading();
-    console.log(this.COCForm);
-    try {
-      this.getPreviousTXNID(this.COCForm.identifier).then((PreviousTXNID) => {
-        this.subAccountStatus().then((subAccountStatus) => {
-          this.COCVerification(PreviousTXNID, signerSK).then((proofObj) => {
-            this.subAccountValidator(this.COCForm.receiver, subAccountStatus).then((subAcc) => {
-              console.log(subAcc);
-              //@ts-ignore
-              this.AcceptBuild(PreviousTXNID, this.COCForm.identifier, proofObj, subAcc.subAccount, subAcc, signerSK).then((resolveObj) => {
+        if (availableArr.length > 0) {
+          console.log("found available")
+          // availableArr[0].available = false
+          resolve(availableArr[0]);
+        } else if (availableArr.length == 0 && matchingArr.length >= 1) {
+          console.log("seq No ++")
+          // matchingArr[0].available = false
+          resolve(matchingArr[0]);
+        } else {
+          this.createAddress().then((pair) => {
+
+            this.multisignSubAccount(pair, this.BCAccounts[0].pk).then(() => {
+              this.addSubAccount(pair).then(() => {
+                console.log("create new subAcc")
                 //@ts-ignore
-                this.RejectBuild(proofObj, subAcc.subAccount, subAcc, signerSK).then((RejectXdr) => {
-                  const obj = {
-                    "Sender": this.BCAccounts[0].pk,
-                    "Receiver": this.COCForm.receiver,
-                    //@ts-ignore
-                    "SubAccount": subAcc.subAccount,
-                    //@ts-ignore
-                    "SequenceNo": Number(resolveObj.seqNum + 2),
-                    // (subAcc) ? : ;
-                    //@ts-ignore
-                    "AcceptXdr": resolveObj.b64,
-                    "RejectXdr": RejectXdr,
-                    "Identifier": this.COCForm.identifier,
-                    "Status": "pending"
-                  }
-                  console.log(obj)
-                  this.itemsProvider.addCOC(obj).subscribe((resp) => {
-                    // this.navCtrl.push(MainPage);
-                    console.log(resp)
-                    // @ts-ignore
-                    if (resp.Message == "Success" && this.isLoadingPresent) {
-                      this.dissmissLoading();
-                      this.presentToast(this.item.asset_code + ' transfered succesfully.');
-                      //set local storage???
-                    } else {
-                      if (this.isLoadingPresent) {
-                        this.dissmissLoading();
-                        this.presentToast('Error! transaction unsuccesfull.');
-                      }
-                    }
-                  }, (err) => {
-                    console.log(err);
-                    if (this.isLoadingPresent) {
-                      this.dissmissLoading();
-                      this.presentToast('Error! transaction unsuccesfull.');
-                    }
-                  });
-                })
-                  .catch(e => {
-                    console.log(e)
-                    if (this.isLoadingPresent) {
-                      this.dissmissLoading();
-                      this.presentToast('Error! Processing RejectBuild unsuccesfull.');
-                    }
-                  })
+                resolve({ subAccount: pair.publicKey(), sequenceNo: 0 });
               }).catch(e => {
                 console.log(e)
                 if (this.isLoadingPresent) {
                   this.dissmissLoading();
-                  this.presentToast('Error! Processing AcceptBuild unsuccesfull.');
+                  this.presentToast('Error! addSubAccount failed.');
                 }
               })
             }).catch(e => {
               console.log(e)
               if (this.isLoadingPresent) {
                 this.dissmissLoading();
-                this.presentToast('Error! subAccountValidator unsuccesfull.');
+                this.presentToast('Error! multisignSubAccount unsuccesfull.');
               }
             })
           }).catch(e => {
             console.log(e)
             if (this.isLoadingPresent) {
               this.dissmissLoading();
-              this.presentToast('Error! COCVerification unsuccesfull.');
+              this.presentToast('Error! createAddress unsuccesfull.');
             }
           })
-        }).catch(e => {
+        }
+      })
+        .catch(e => {
           console.log(e)
           if (this.isLoadingPresent) {
             this.dissmissLoading();
-            this.presentToast('Error! COCVerification unsuccesfull.');
+            this.presentToast('Error! subAccountStatus unsuccesfull.');
           }
         })
-      }).catch(e => {
-        console.log(e)
-        if (this.isLoadingPresent) {
-          this.dissmissLoading();
-          this.presentToast('Error! Processing getPreviousTXNID failed.');
-        }
-      })
-    } catch (error) {
-      console.log(error);
-      if (this.isLoadingPresent) {
-        this.dissmissLoading();
-        this.presentToast('Error! COC transaction unsuccesfull.');
-      }
-    }
+    })
+  }
 
+  doCOC(signerSK) {
+    this.presentLoading();
+    console.log(this.COCForm);
+
+    // Parallel
+    Promise.all([this.subAccountValidator(this.COCForm.receiver), this.COCVerification(signerSK), this.getPreviousTXNID(this.COCForm.identifier)])
+      .then((res2) => {
+        // console.log(res2);
+        //@ts-ignore
+        Promise.all([this.AcceptBuild(this.COCForm.identifier, res2[1], res2[0].subAccount, res2[0], signerSK), this.RejectBuild(res2[1], res2[0].subAccount, res2[0], signerSK)])
+          .then((res3) => {
+            // console.log(res3);
+            // console.log(res2);
+
+            return res3;
+          })
+          .then((res4) => {
+            
+            this.addCOC(res2, res4)
+            .catch((err)=>{
+              console.log(err)
+            });
+
+            // console.log(res4);
+            // console.log(res2);
+
+            console.log('done');
+          })
+          .catch((err) => {
+            console.log(err); // something bad happened
+          });
+      })
+      .catch((err) => {
+        console.log(err); // something bad happened
+      });
+
+  }
+
+  addCOC(res2, res4) {
+    if (this.connectivity.onDevice) {
+      // this.presentLoading();
+      return new Promise((resolve, reject) => {
+        const obj = {
+          "Sender": this.BCAccounts[0].pk,
+          "Receiver": this.COCForm.receiver,
+          //@ts-ignore
+          "SubAccount": res2[0].subAccount,
+          //@ts-ignore
+          "SequenceNo": Number(res4[0].seqNum + 2),
+          // (subAcc) ? : ;
+          //@ts-ignore
+          "AcceptXdr": res4[0].b64,
+          "RejectXdr": res4[1],
+          "Identifier": this.COCForm.identifier,
+          "Status": "pending"
+        }
+        console.log(obj)
+        this.itemsProvider.addCOC(obj).subscribe((resp) => {
+          // this.navCtrl.push(MainPage);
+          console.log(resp)
+          // @ts-ignore
+          if (resp.Message == "Success" && this.isLoadingPresent) {
+            this.dissmissLoading();
+            resolve();
+            this.presentToast(this.item.asset_code + ' transfered succesfully.');
+            //set local storage???
+          } else {
+            if (this.isLoadingPresent) {
+              this.dissmissLoading();
+              this.presentToast('Error! transaction unsuccesfull.');
+            }
+            reject();
+          }
+        }, (err) => {
+          console.log(err);
+          if (this.isLoadingPresent) {
+            this.dissmissLoading();
+            this.presentToast('Error! transaction unsuccesfull.');
+          }
+          reject();
+        });
+      })
+
+    } else {
+      this.presentToast('noInternet');
+    }
   }
 
   subAccountStatus() {
@@ -311,7 +303,7 @@ export class ItemDetailPage {
     })
   }
 
-  AcceptBuild(PreviousTXNID, Identifier, proofHash, subAcc, subAccObj, signerSK) {
+  AcceptBuild(Identifier, proofHash, subAcc, subAccObj, signerSK) {
 
     return new Promise((resolve, reject) => {
       try {
@@ -341,7 +333,6 @@ export class ItemDetailPage {
           .then(function (account) {
             var transaction = new TransactionBuilder(account, opts)
             transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
-            transaction.addOperation(Operation.manageData({ name: 'PreviousTXNID', value: PreviousTXNID, }))
             transaction.addOperation(Operation.manageData({ name: 'Identifier', value: Identifier, }))
             transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }))
             transaction.addOperation(Operation.payment({
@@ -442,21 +433,19 @@ export class ItemDetailPage {
 
   }
 
-  COCVerification(PreviousTXNID, signerSK) {
+  COCVerification(signerSK) {
     // console.log(this.COCForm);
     const form = this.COCForm
 
     try {
       return new Promise((resolve, reject) => {
 
-        console.log(PreviousTXNID)
         var sourceKeypair = Keypair.fromSecret(signerSK);
         var server = new Server('https://horizon-testnet.stellar.org');
         server.loadAccount(sourceKeypair.publicKey())
           .then(function (account) {
             var transaction = new TransactionBuilder(account)
               .addOperation(Operation.manageData({ name: 'Transaction Type', value: '11', }))
-              .addOperation(Operation.manageData({ name: 'PreviousTXNID', value: PreviousTXNID, }))
               .addOperation(Operation.manageData({ name: 'Identifier', value: form.identifier, }))
               .addOperation(Operation.manageData({ name: 'Receiver', value: form.receiver, }))
               .addOperation(Operation.manageData({ name: 'Asset', value: form.selectedItem, }))
