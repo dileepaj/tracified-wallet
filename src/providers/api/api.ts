@@ -77,6 +77,28 @@ export class Api {
     });
   }
 
+  getPublickey(body: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+          'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+        })
+      }
+      this.http.post(this.LocalAdminURL + '/' + 'api/bc/key/account/public', body, this.reqOpts)
+        .subscribe(response => {
+
+          resolve(response);
+        },
+          error => {
+            console.log(error);
+            reject(error);
+          });
+    });
+  }
+
   getPreviousTXNID(Identifier): Promise<any> {
     return new Promise((resolve, reject) => {
       this.reqOpts = {

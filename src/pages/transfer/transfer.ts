@@ -4,6 +4,7 @@ import { Item } from '../../models/item';
 // import { Items } from '../../providers';
 import { Server, Transaction } from 'stellar-sdk';
 import { Items } from '../../providers/items/items';
+import { ItemDetailPage } from '../item-detail/item-detail';
 
 @IonicPage()
 @Component({
@@ -35,7 +36,7 @@ export class TransferPage {
   }
 
   ionViewDidEnter() {
-  
+
   }
 
   doRefresh(refresher) {
@@ -49,7 +50,7 @@ export class TransferPage {
   }
 
   openItem(item: Item) {
-    this.navCtrl.push('ItemDetailPage', {
+    this.navCtrl.push(ItemDetailPage, {
       item: item,
       currentItems: this.currentItems,
       receivers: this.receivers
@@ -63,7 +64,7 @@ export class TransferPage {
     });
 
   }
-  
+
   getBalance() {
     let assets = [];
 
@@ -80,7 +81,7 @@ export class TransferPage {
           assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
         });
         assets.pop();
-      }); 
+      });
       this.currentItems = assets;
       this.Searcheditems = this.currentItems;
       // console.log(this.currentItems)
@@ -92,44 +93,47 @@ export class TransferPage {
 
     }
 
-    
+
     if (this.isLoadingPresent) { this.dissmissLoading(); }
 
   }
 
   loadReceivers() {
-  try {
-    console.log(this.BCAccounts[0].pk);
-    this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
-      // @ts-ignore
-      console.log(resp);
-      // @ts-ignore
-      this.receivers = resp;
-      console.log(this.receivers[0].Receiver);
+    try {
+      // console.log(this.BCAccounts[0].pk);
+      this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
+        // @ts-ignore
+        console.log(resp);
+        // @ts-ignore
+        this.receivers = resp;
+        // console.log(this.receivers[0].Receiver);
 
-      // remove duplicates
-      this.receivers = this.receivers.reduce((arr, item) => {
-        let exists = !!arr.find(x => x.Receiver === item.Receiver);
-        if (!exists) {
-          arr.push(item);
-        }
-        return arr;
-      }, []);
+        // remove duplicates
+        var obj = {};
+        for (var i = 0, len = this.receivers.length; i < len; i++)
+          obj[this.receivers[i]['Receiver']] = this.receivers[i];
 
-      console.log(this.receivers)
+        this.receivers = new Array();
+
+        for (var key in obj)
+          this.receivers.push(obj[key].Receiver);
+
+        console.log(this.receivers)
+
+        console.log(this.receivers)
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+
+      }, (err) => {
+        console.log('error in querying receivers')
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+      });
+    } catch (error) {
+      console.log(error);
       if (this.isLoadingPresent) { this.dissmissLoading(); }
 
-
-    }, (err) => {
-      console.log('error in querying receivers')
-      if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-    });
-  } catch (error) {
-    console.log(error);
-    if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-  }
+    }
   }
 
   presentLoading() {

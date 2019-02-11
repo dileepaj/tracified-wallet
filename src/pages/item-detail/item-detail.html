@@ -52,17 +52,36 @@
           </ion-item>
           <ion-label stacked id="label">Quantity</ion-label>
 
+          <!-- <ion-item>
+            <ion-label>Port</ion-label>
+            <ionic-selectable item-content 
+            [(ngModel)]="port" 
+            (ionInput)="setFilteredItems()"
+            [ngModelOptions]="{standalone: true}"
+            itemValueField="id" 
+            itemTextField="name" 
+            [items]="ports" 
+            [canSearch]="true"
+            (onChange)="portChange($event)">
+           </ionic-selectable>
+          </ion-item> -->
 
-          <div class="styled">
+          <ion-item text-wrap>
+            <select-searchable [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}" (ionInput)="setFilteredItems()" title=" Item" canSearch="true" [items]="receivers"
+              itemTextField="itemName" emptyMessage="No data"></select-searchable>
+          </ion-item>
+
+          <!-- <div class="styled">
             <ion-row>
               <ion-input id="receiverInput" type="text" placeholder="Receiver" [(ngModel)]="COCForm.receiver" name="receiver"></ion-input>
               
               <select float="right" id="receiverDropdown" [(ngModel)]="COCForm.receiver" onChange='' name="receiver">
-                <option id="options" *ngFor="let receiver of receivers">{{receiver.Receiver}}</option>
+                <option id="options" *ngFor="let receiver of receivers">{{receiver}}</option>
                 <option id="options" value="">Other</option>
               </select>
             </ion-row>
-          </div>
+          </div> -->
+
           <!-- <ion-item *ngIf="option == 'otherOptionValue'">
           <ion-label>Receiver</ion-label>
           <ion-input type="text" [(ngModel)]="COCForm.receiver" name="receiver"></ion-input>

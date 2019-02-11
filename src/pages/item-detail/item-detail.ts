@@ -9,13 +9,25 @@ var StellarSdk = require('stellar-sdk')
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 var server = new Server('https://horizon-testnet.stellar.org');
 StellarSdk.Network.useTestNetwork();
+import { IonicSelectableComponent } from 'ionic-selectable';
 
 @IonicPage()
+
+class Port {
+  public id: number;
+  public name: string;
+}
+
 @Component({
   selector: 'page-item-detail',
   templateUrl: 'item-detail.html'
 })
 export class ItemDetailPage {
+  ports: Port[];
+  port: Port;
+  selectedItem2: any;
+  itemRequired: any;
+  itemList: any = ['item1', 'item2', 'item3'];
   item: any;
   user: any;
   currentItems: any;
@@ -45,12 +57,20 @@ export class ItemDetailPage {
     this.receivers = navParams.get('receivers');
     // this.subAccountStatus();
 
+    this.ports = [
+      { id: 1, name: 'GDJJ2LQZR6EFGDQ5UQJTZDK2PUQC4IFI3R7P75IWKRBJHSQZSSHEA3MC' },
+      { id: 2, name: 'Vladivostok' },
+      { id: 3, name: 'Navlakhi' }
+    ];
+
+    this.itemList = this.receivers 
+
   }
 
   ionViewDidLoad() {
     this.COCForm.selectedItem = this.item.asset_code;
     if (this.receivers[0]) {
-      this.selectedReceiver = this.receivers[0].Receivers;
+      this.selectedReceiver = this.receivers[0];
     }
   }
 
@@ -81,6 +101,21 @@ export class ItemDetailPage {
       ]
     });
     alert.present();
+  }
+
+  portChange(event: {
+    component: IonicSelectableComponent,
+    value: any
+  }) {
+    console.log('port:', event.value);
+  }
+
+  setFilteredItems() {
+    console.log(this.port)
+    // this.port = this.currentItems.filter((item) => {
+    //   return item.asset_code.toLowerCase().includes(this.searchTerm.toLowerCase());
+    // });
+
   }
 
   subAccountValidator(receiver) {
@@ -164,11 +199,11 @@ export class ItemDetailPage {
             return res3;
           })
           .then((res4) => {
-            
+
             this.addCOC(res2, res4)
-            .catch((err)=>{
-              console.log(err)
-            });
+              .catch((err) => {
+                console.log(err)
+              });
 
             // console.log(res4);
             // console.log(res2);

@@ -3,12 +3,13 @@ import { IonicPageModule } from 'ionic-angular';
 import { TransferPage } from './transfer';
 import { TranslateModule } from '@ngx-translate/core';
 import { Items } from '../../providers/items/items';
+import { ItemDetailPageModule } from '../item-detail/item-detail.module';
 
 @NgModule({
   declarations: [
     TransferPage,
   ],
-  imports: [
+  imports: [ItemDetailPageModule,
     IonicPageModule.forChild(TransferPage),
     TranslateModule.forChild()
 

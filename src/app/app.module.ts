@@ -21,6 +21,9 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { TabsPageModule } from '../pages/tabs/tabs.module';
 import { AddAccountPageModule } from '../pages/add-account/add-account.module';
 import { Properties } from '../shared/properties';
+import { SelectSearchableModule } from '../components/search-dropdown/select-module';
+import { IonicSelectableModule } from 'ionic-selectable';
+import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
 
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
@@ -50,9 +53,12 @@ export function provideSettings(storage: Storage) {
   ],
   imports: [
     BrowserModule, 
+    IonicSelectableModule,
     HttpClientModule,
+    SelectSearchableModule,
     ResetPasswordPageModule,
     ItemReceivedPageModule,
+    ItemDetailPageModule,
     TabsPageModule,
     AddAccountPageModule,
     ItemSentPageModule,
