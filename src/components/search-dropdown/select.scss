@@ -50,7 +50,8 @@
         }
 
         .select-searchable-icon-inner {
-            margin-top: -2px;
+            top: 100%;
+            // margin-top: -2px;
             color: $select-ios-icon-color;
         }
 
@@ -68,7 +69,8 @@
         }
 
         .select-searchable-icon-inner {
-            margin-top: -3px;
+            top: 100%;
+            // margin-top: -3px;
             color: $select-md-icon-color;
         }
 

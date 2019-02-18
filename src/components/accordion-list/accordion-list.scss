@@ -108,7 +108,16 @@ accordion-list {
         }
     }
 
-    .active ion-icon {
+    #name{
+        margin-right: 7px;
+    }
+
+    #userIcon{
+        opacity: 0.5;
+        margin-left: 3px;
+    }
+
+    .active #toggleicon {
         transform: rotate(180deg);
         #toggleicon{
             padding: 0px 0px 0px 20px;

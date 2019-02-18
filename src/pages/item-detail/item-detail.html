@@ -40,8 +40,8 @@
 
           <ion-item id="rounded">
             <!-- <ion-label id="label" floating> Quantity </ion-label> -->
-            <ion-input class="textArea" id="identifier" type="text" placeholder="Identifier" [(ngModel)]="COCForm.identifier"
-              name="identifier"></ion-input>
+            <ion-input class="textArea" id="identifier" type="text" placeholder="Identifier"
+              [(ngModel)]="COCForm.identifier" name="identifier"></ion-input>
           </ion-item>
           <ion-label stacked id="label">Identifier</ion-label>
 
@@ -67,7 +67,8 @@
           </ion-item> -->
 
           <ion-item text-wrap>
-            <select-searchable [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}" (ionInput)="setFilteredItems()" title=" Item" canSearch="true" [items]="receivers"
+            <select-searchable class="textArea" [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}"
+              (ionInput)="setFilteredItems()" title=" Receiver" canSearch="true" [items]="receivers"
               itemTextField="itemName" emptyMessage="No data"></select-searchable>
           </ion-item>
 
@@ -98,15 +99,16 @@
 
           <ion-item id="rounded">
             <!-- <ion-label id="label" floating> Validity </ion-label> -->
-            <ion-datetime class="textArea" id="input" placeholder="Validity" displayFormat="YYYY-MM-DDTHH:mm:ssTZD" min="2018-11-29T06:25:48Z" max="2050"
-              [(ngModel)]="COCForm.vaidity" name="vaidity"></ion-datetime>
+            <ion-datetime class="textArea" id="input" placeholder="Validity" displayFormat="YYYY-MM-DDTHH:mm:ssTZD"
+              min="2018-11-29T06:25:48Z" max="2050" [(ngModel)]="COCForm.vaidity" name="vaidity"></ion-datetime>
           </ion-item>
           <ion-label stacked id="label">Validity</ion-label>
 
         </ion-list>
 
         <div id="button">
-          <button (click)="passwordPrompt()" id="cocButton" [disabled]="COCForm.invalid" ion-button block outline>Transfer</button>
+          <button (click)="passwordPrompt()" id="cocButton" [disabled]="COCForm.invalid" ion-button block
+            color="secondary">Transfer</button>
         </div>
 
 

@@ -12,8 +12,10 @@
               <ion-note *ngIf='date.hours !="00" '>{{date.hours}}h</ion-note>
               <ion-note *ngIf='date.minutes'>{{date.minutes}}m ago</ion-note>
             </ion-col>
-            <ion-col right text-right>
-              <ion-note id="truncate" >{{uname}}</ion-note>
+            <ion-col right text-right id="name">
+                <ion-note id="truncate" >{{uname}}</ion-note>
+                <ion-icon id="userIcon" name="person"></ion-icon>
+                <!-- <ion-icon name="contact"></ion-icon> -->
             </ion-col>
           </ion-row> 
           <!-- <ion-row>

@@ -3,6 +3,7 @@ import { IonicPage, NavController, AlertController, LoadingController } from 'io
 import { Items } from '../../providers/items/items';
 import { Transaction } from 'stellar-sdk';
 import Duration from "duration";
+import { Api } from '../../providers';
 
 /**
  * Generated class for the ItemSentPage page.
@@ -28,7 +29,7 @@ export class ItemSentPage {
   Citems: any;
   BCAccounts: any;
 
-  constructor(public navCtrl: NavController, private alertCtrl: AlertController, private loadingCtrl: LoadingController, public itemsProvider: Items) {
+  constructor(public navCtrl: NavController,  public api: Api, private alertCtrl: AlertController, private loadingCtrl: LoadingController, public itemsProvider: Items) {
     this.user = JSON.parse(localStorage.getItem('_user'))
     this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
     // this.loadCOCSent();
@@ -66,82 +67,140 @@ export class ItemSentPage {
   loadCOCSent() {
     try {
       console.log(this.BCAccounts[0].pk);
-
-      this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
-        // @ts-ignore
-        console.log(resp);
-        this.Citems = resp;
-        const Tempitems = []
-        this.Citems.forEach(item => {
-          const parsedTx = new Transaction(item.AcceptXdr)
+ 
+        this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
           // @ts-ignore
-          const oldDate: any = new Date(parsedTx.timeBounds.minTime * 1000);
-          // @ts-ignore
-          const newDate: any = new Date(parsedTx.timeBounds.maxTime * 1000);
-
-          // @ts-ignore
-          let now: number = new Date();
-          var hoursAgo = this.timeDuration(now, oldDate);
-          var validTill = this.timeDuration(newDate, now);
-
-          let itemArr = [];
-          parsedTx.operations.forEach(tansac => {
-            if (tansac.type == 'payment') {
-              console.log(tansac)
-              let i = 0;
-
-              let assetObj = {
-                "source": tansac.source,
-                "sourcename": this.BCAccounts[0].accountName,
-                "asset": tansac.asset.code,
-                "amount": tansac.amount
-              }
-
-              itemArr.push(assetObj);
-            }
-
-          });
-          console.log(itemArr)
-
-          const tempLast = itemArr.pop();
-          const obj = {
-            AcceptTxn: item.AcceptTxn,
-            AcceptXdr: item.AcceptXdr,
-            RejectTxn: item.RejectTxn,
-            RejectXdr: item.RejectXdr,
-            // @ts-ignore
-            // date: oldDate.toLocaleString(),
-            date: hoursAgo,
-            itemArr: itemArr,
-            uname: tempLast.source,
-            // @ts-ignore
-            oname: tempLast.asset,
-            // @ts-ignore
-            qty: tempLast.amount,
-            // @ts-ignore
-            validity: newDate.toLocaleString(),
-            time: validTill,
-            status: item.Status
-          }
-          // console.log(obj)
-          Tempitems.push(obj)
-          // console.log(Tempitems)
-          this.items = Tempitems.reverse();
-          this.setFilteredItems();
-
-        });
+          console.log(resp);
+          this.Citems = resp;
+          const Tempitems = []
+  
+          this.getNamesFromKeys(this.Citems)
+            .then((namedKeys) => {
+              this.Citems.forEach(item => {
+                const parsedTx = new Transaction(item.AcceptXdr)
+                // @ts-ignore
+                const oldDate: any = new Date(parsedTx.timeBounds.minTime * 1000);
+                // @ts-ignore
+                const newDate: any = new Date(parsedTx.timeBounds.maxTime * 1000);
+      
+                // @ts-ignore
+                let now: number = new Date();
+                var hoursAgo = this.timeDuration(now, oldDate);
+                var validTill = this.timeDuration(newDate, now);
+      
+                let itemArr = [];
+                parsedTx.operations.forEach(tansac => {
+                  if (tansac.type == 'payment') {
+                    console.log(tansac)
+                    let i = 0;
+      
+                    let assetObj = {
+                      "source": tansac.source,
+                      "sourcename": this.BCAccounts[0].accountName,
+                      "asset": tansac.asset.code,
+                      "amount": tansac.amount,
+                      "destination" : tansac.destination
+                    }
+      
+                    itemArr.push(assetObj);
+                  }
+      
+                });
+                console.log(itemArr)
+      
+                const tempLast = itemArr.pop();
+                const obj = {
+                  AcceptTxn: item.AcceptTxn,
+                  AcceptXdr: item.AcceptXdr,
+                  RejectTxn: item.RejectTxn,
+                  RejectXdr: item.RejectXdr,
+                  // @ts-ignore
+                  // date: oldDate.toLocaleString(),
+                  date: hoursAgo,
+                  itemArr: itemArr,
+                  uname: tempLast.destination,
+                  // @ts-ignore
+                  oname: tempLast.asset,
+                  // @ts-ignore
+                  qty: tempLast.amount,
+                  // @ts-ignore
+                  validity: newDate.toLocaleString(),
+                  time: validTill,
+                  status: item.Status
+                }
+                // console.log(obj)
+                Tempitems.push(obj)
+                // console.log(Tempitems)
+                this.items = Tempitems.reverse();
+                this.setFilteredItems();
+      
+              });
+              return namedKeys
+            })
+            .then((namedKeys) => {
+              console.log(namedKeys);
+              
+              this.items.forEach(element => {
+                //@ts-ignore
+                element.uname = namedKeys.find(o => element.uname === o.pk).accountName
+              });
+              
+              if (this.isLoadingPresent) { this.dissmissLoading(); }
+  
+            })
+            .catch((err) => {
+              console.log(err);
+              if (this.isLoadingPresent) { this.dissmissLoading(); }
+  
+            })
 
       }, (err) => {
         console.log('error in querying COC Sent')
         if (this.isLoadingPresent) { this.dissmissLoading(); }
 
       });
-
-      if (this.isLoadingPresent) { this.dissmissLoading(); }
     } catch (error) {
       console.log(error);
       if (this.isLoadingPresent) { this.dissmissLoading(); }
     }
+
+  }
+
+  getNamesFromKeys(receiverArr) {
+
+    return new Promise((resolve, reject) => {
+
+      // remove duplicates
+      var obj = {};
+      for (var i = 0, len = receiverArr.length; i < len; i++)
+        obj[receiverArr[i]['Receiver']] = receiverArr[i];
+
+      var receiverNames = new Array();
+
+      for (var key in obj)
+        receiverNames.push(obj[key].Receiver);
+
+      console.log(receiverNames)
+
+      const param = {
+        "account": {
+          "accounts": receiverNames
+        }
+      }
+
+      this.api.getNames(param).subscribe((resp) => {
+        //@ts-ignore
+        console.log(resp.body.pk);
+        //@ts-ignore
+        resolve(resp.body.pk)
+      }, (err) => {
+        console.log('error in querying names from public keys')
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
+        reject(err)
+
+      });
+    })
+
 
   }
 

@@ -416,7 +416,7 @@ export class ItemDetailPage {
       try {
         let XDR;
         let b64;
-        // const receiver = subAcc;
+        const receiver = this.COCForm.receiver;
         // const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
         const senderPublickKey = this.BCAccounts[0].pk;
@@ -438,7 +438,7 @@ export class ItemDetailPage {
           .then(function (account) {
             var transaction = new TransactionBuilder(account, opts)
               .addOperation(Operation.manageData({
-                name: 'Status', value: 'rejected', source: senderPublickKey
+                name: 'Status', value: 'rejected', source: receiver
               }))
               .addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))
 
@@ -612,13 +612,17 @@ export class ItemDetailPage {
 
   decyrptSecret(ciphertext, signer) {
     // Decrypt
-    var decrypted = (AES.decrypt(ciphertext.toString(), signer)).toString(enc.Utf8);
+    try {
+      var decrypted = (AES.decrypt(ciphertext.toString(), signer)).toString(enc.Utf8);
 
     console.log("signer => " + signer);
     console.log("ciphertext => " + ciphertext);
     console.log("plaintext => " + decrypted);
 
     return decrypted;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   userError(title, message) {

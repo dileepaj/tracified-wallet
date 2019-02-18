@@ -86,15 +86,14 @@ export class TransferPage {
       this.Searcheditems = this.currentItems;
       // console.log(this.currentItems)
       console.log(this.Searcheditems)
+      if (this.isLoadingPresent) { this.dissmissLoading(); }
+
       // this.setFilteredItems();
     } catch (error) {
       console.log(error);
       if (this.isLoadingPresent) { this.dissmissLoading(); }
 
     }
-
-
-    if (this.isLoadingPresent) { this.dissmissLoading(); }
 
   }
 
@@ -120,8 +119,7 @@ export class TransferPage {
 
         console.log(this.receivers)
 
-        console.log(this.receivers)
-        if (this.isLoadingPresent) { this.dissmissLoading(); }
+         if (this.isLoadingPresent) { this.dissmissLoading(); }
 
 
       }, (err) => {

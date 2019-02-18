@@ -353,7 +353,7 @@ export class AddAccountPage {
               // add operation
               txBuilder.addOperation(Operation.changeTrust({
                 asset: element,
-                limit: '10'
+                limit: '1000'
               }))
 
               const tx = txBuilder.build();

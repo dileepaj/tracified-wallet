@@ -16,7 +16,7 @@ export class Api {
 
   constructor(public http: HttpClient) {
 
-  } 
+  }
 
   ionViewDidLoad() {
 
@@ -157,7 +157,7 @@ export class Api {
         })
       }
       console.log(body);
-      this.http.post(this.LocalAdminURL + '/api/bc/key/main',body, this.reqOpts)
+      this.http.post(this.LocalAdminURL + '/api/bc/key/main', body, this.reqOpts)
         .subscribe(response => {
           console.log(response);
 
@@ -168,6 +168,20 @@ export class Api {
             reject(error);
           });
     });
+  }
+
+  getNames(body) {
+
+    this.reqOpts = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+      })
+    }
+    console.log(body);
+    return this.http.post(this.LocalAdminURL + '/api/bc/names/account/public', body, this.reqOpts)
   }
 
   addSubAccount(body): Promise<any> {
@@ -228,7 +242,7 @@ export class Api {
           'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
         })
       }
-      this.http.post(this.LocalAdminURL + '/api/bc/key/main/account',body, this.reqOpts)
+      this.http.post(this.LocalAdminURL + '/api/bc/key/main/account', body, this.reqOpts)
         .subscribe(response => {
           console.log(response);
 

@@ -13,8 +13,9 @@ page-item-detail {
 
   }
   #cocButton{
-    border: 1px solid #e0e0e0 !important;
-    color: #28A745;
+    border-color:#ccc;
+    color: white;
+    background-color: #28A745;
 }
 
   .item-input-has-focus, .input-has-focus {
@@ -66,7 +67,7 @@ page-item-detail {
   }
 
   #verticalAlign{
-    height:100%;
+    height: auto;
     position: relative;
   }
 
@@ -119,7 +120,7 @@ page-item-detail {
 
   ion-list{
     width: 350px;
-    margin-top: 50px !important;
+    margin-top: 10px !important;
 
   }
 
@@ -185,5 +186,5 @@ page-item-detail {
   text-input :touch-action {
     transform: none;
   }
-  
 }
+ 

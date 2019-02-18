@@ -6,6 +6,7 @@ import { Network, Keypair, Transaction } from "stellar-base";
 Network.useTestNetwork();
 import { AES, enc } from "crypto-js";
 import Duration from "duration";
+import { Api } from '../../providers';
 
 /**
  * Generated class for the ItemReceivedPage page.
@@ -31,7 +32,7 @@ export class ItemReceivedPage {
   items = [];
   BCAccounts: any;
 
-  constructor(public navCtrl: NavController, private alertCtrl: AlertController, private loadingCtrl: LoadingController,
+  constructor(public navCtrl: NavController, public api: Api, private alertCtrl: AlertController, private loadingCtrl: LoadingController,
     public toastCtrl: ToastController, public itemsProvider: Items) {
     this.user = JSON.parse(localStorage.getItem('_user'))
     this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
@@ -49,6 +50,201 @@ export class ItemReceivedPage {
   ionViewDidEnter() {
 
   }
+
+
+
+  loadCOCReceived() {
+    try {
+      // console.log(this.BCAccounts[0].pk);
+
+      this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe((resp) => {
+        // @ts-ignore
+        console.log(resp);
+        this.Citems = resp;
+        const Tempitems = []
+
+        this.getNamesFromKeys(this.Citems)
+          .then((namedKeys) => {
+            this.Citems.forEach(item => {
+              const parsedTx = new Transaction(item.AcceptXdr)
+              // @ts-ignore
+              const oldDate: number = new Date(parsedTx.timeBounds.minTime * 1000);
+              // @ts-ignore
+              const newDate: number = new Date(parsedTx.timeBounds.maxTime * 1000);
+
+              // @ts-ignore
+              let now: number = new Date();
+              var hoursAgo = this.timeDuration(now, oldDate);
+              var validTill = this.timeDuration(newDate, now);
+
+              let itemArr = [];
+              parsedTx.operations.forEach(tansac => {
+                if (tansac.type == 'payment') {
+
+                  let assetObj = {
+                    "source": tansac.source,
+                    "sourcename": this.BCAccounts[0].accountName,
+                    "asset": tansac.asset.code,
+                    "amount": tansac.amount
+                  }
+
+                  itemArr.push(assetObj);
+                }
+
+              });
+
+              const tempLast = itemArr.pop();
+
+              const obj = {
+                AcceptTxn: item.AcceptTxn,
+                AcceptXdr: item.AcceptXdr,
+                RejectTxn: item.RejectTxn,
+                RejectXdr: item.RejectXdr,
+                date: hoursAgo,
+                itemArr: itemArr,
+                uname: tempLast.source,
+                oname: tempLast.asset,
+                qty: tempLast.amount,
+                validity: newDate.toLocaleString(),
+                time: validTill,
+                status: item.Status,
+
+                Identifier: item.Identifier,
+                Receiver: item.Receiver,
+                Sender: item.Sender,
+                SequenceNo: item.SequenceNo,
+                SubAccount: item.SubAccount,
+                TxnHash: item.TxnHash
+              }
+              Tempitems.push(obj)
+              this.items = Tempitems.reverse();
+              // console.log(this.items)
+              this.setFilteredItems();
+            });
+            return namedKeys
+          })
+          .then((namedKeys) => {
+            console.log(namedKeys);
+            
+            this.items.forEach(element => {
+              //@ts-ignore
+              element.uname = namedKeys.find(o => element.uname === o.pk).accountName
+            });
+            
+            if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+          })
+          .catch((err) => {
+            console.log(err);
+            if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+          })
+
+
+      }, (err) => {
+        console.log('error in querying COCreceived')
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
+      });
+    } catch (error) {
+      console.log(error)
+      if (this.isLoadingPresent) { this.dissmissLoading(); }
+    }
+  }
+
+  signXDR(item, status, signerSK) {
+    return new Promise((resolve, reject) => {
+      var sourceKeypair = Keypair.fromSecret(signerSK);
+      if (status == 'accept') {
+        item.status = 'accepted';
+        const parsedTx = new Transaction(item.AcceptXdr)
+        parsedTx.sign(sourceKeypair)
+        let x = parsedTx.toEnvelope().toXDR().toString('base64')
+        item.AcceptXdr = x;
+        resolve(item);
+      } else {
+        item.status = 'rejected';
+        const parsedTx = new Transaction(item.RejectXdr)
+        parsedTx.sign(sourceKeypair)
+        let x = parsedTx.toEnvelope().toXDR().toString('base64')
+        item.RejectXdr = x;
+        console.log(item)
+        resolve(item);
+      }
+    }).catch(function (e) {
+      console.log(e);
+      // reject(e)
+
+    });
+  }
+
+  sendSignedXDR(item, status, signerSK) {
+    this.presentLoading();
+    this.signXDR(item, status, signerSK).then((obj) => {
+      console.log(obj)
+      this.itemsProvider.updateStatusCOC(obj).subscribe((resp) => {
+        console.log(resp)
+        // @ts-ignore
+        if (resp.Body.Status == 'accepted') {
+          this.presentToast('Transaction Success!');
+          // @ts-ignore
+        } else if (resp.Body.Status == 'rejected') {
+          this.presentToast('Transaction Success!');
+        }
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+      }, (err) => {
+        console.log(err);
+        item.status = 'pending';
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
+        this.presentToast('Transaction Unsuccessfull');
+      });
+    }).catch(e => {
+      console.log(e)
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+        this.presentToast('Error! signing Transaction.');
+      }
+    })
+  }
+
+  getNamesFromKeys(receiverArr) {
+
+    return new Promise((resolve, reject) => {
+
+      // remove duplicates
+      var obj = {};
+      for (var i = 0, len = receiverArr.length; i < len; i++)
+        obj[receiverArr[i]['Sender']] = receiverArr[i];
+
+      var receiverNames = new Array();
+
+      for (var key in obj)
+        receiverNames.push(obj[key].Sender);
+
+      console.log(receiverNames)
+
+      const param = {
+        "account": {
+          "accounts": receiverNames
+        }
+      }
+
+      this.api.getNames(param).subscribe((resp) => {
+        //@ts-ignore
+        console.log(resp.body.pk);
+        //@ts-ignore
+        resolve(resp.body.pk)
+      }, (err) => {
+        console.log('error in querying names from public keys')
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
+        reject(err)
+
+      });
+    })
+
+
+  }
+
 
   passwordPrompt(item, buttonStatus) {
     let alert = this.alertCtrl.create({
@@ -104,151 +300,6 @@ export class ItemReceivedPage {
     // }, 2000);
   }
 
-  loadCOCReceived() {
-    try {
-      // console.log(this.BCAccounts[0].pk);
-
-      this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe((resp) => {
-        // @ts-ignore
-        // console.log(resp);
-        this.Citems = resp;
-        const Tempitems = []
-
-        this.Citems.forEach(item => {
-          const parsedTx = new Transaction(item.AcceptXdr)
-          // @ts-ignore
-          const oldDate: number = new Date(parsedTx.timeBounds.minTime * 1000);
-          // @ts-ignore
-          const newDate: number = new Date(parsedTx.timeBounds.maxTime * 1000);
-
-          // @ts-ignore
-          let now: number = new Date();
-          var hoursAgo = this.timeDuration(now, oldDate);
-          var validTill = this.timeDuration(newDate, now);
-
-          let itemArr = [];
-          parsedTx.operations.forEach(tansac => {
-            if (tansac.type == 'payment') {
-              // console.log(tansac)
-              // let i = 0;
-
-              let assetObj = {
-                "source": tansac.source,
-                "sourcename": this.BCAccounts[0].accountName,
-                "asset": tansac.asset.code,
-                "amount": tansac.amount
-              }
-
-              itemArr.push(assetObj);
-            }
-
-          });
-          // console.log(itemArr)
-
-          const tempLast = itemArr.pop();
-
-          const obj = {
-            AcceptTxn: item.AcceptTxn,
-            AcceptXdr: item.AcceptXdr,
-            RejectTxn: item.RejectTxn,
-            RejectXdr: item.RejectXdr,
-            // @ts-ignore
-            // date: days + 'd ' + hours + 'h ' + minutes + 'm ago',
-            date: hoursAgo,
-            // date: oldDate.toLocaleString(),
-            itemArr: itemArr,
-            uname: tempLast.source,
-            // @ts-ignore
-            oname: tempLast.asset,
-            // @ts-ignore
-            qty: tempLast.amount,
-            // @ts-ignore
-            validity: newDate.toLocaleString(),
-            time: validTill,
-            // time: (Math.round((newDate - oldDate) / (1000 * 60 * 60 * 24))),
-            status: item.Status,
-
-            Identifier: item.Identifier,
-            Receiver: item.Receiver,
-            Sender: item.Sender,
-            SequenceNo: item.SequenceNo,
-            SubAccount: item.SubAccount,
-            TxnHash: item.TxnHash
-          }
-          // console.log(obj)
-          Tempitems.push(obj)
-          // console.log(Tempitems)
-          this.items = Tempitems.reverse();
-          this.setFilteredItems();
-        });
-        if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-      }, (err) => {
-        console.log('error in querying COCreceived')
-        if (this.isLoadingPresent) { this.dissmissLoading(); }
-      });
-    } catch (error) {
-      console.log(error)
-      if (this.isLoadingPresent) { this.dissmissLoading(); }
-    }
-  }
-
-  signXDR(item, status, signerSK) {
-    return new Promise((resolve, reject) => {
-      var sourceKeypair = Keypair.fromSecret(signerSK);
-      if (status == 'accept') {
-        item.status = 'accepted';
-        const parsedTx = new Transaction(item.AcceptXdr)
-        parsedTx.sign(sourceKeypair)
-        let x = parsedTx.toEnvelope().toXDR().toString('base64')
-        item.AcceptXdr = x;
-        resolve(item);
-      } else {
-        item.status = 'rejected';
-        const parsedTx = new Transaction(item.RejectXdr)
-        parsedTx.sign(sourceKeypair)
-        let x = parsedTx.toEnvelope().toXDR().toString('base64')
-        item.RejectXdr = x;
-        // console.log(x)
-        resolve(item);
-      }
-    }).catch(function (e) {
-      console.log(e);
-      // reject(e)
-
-    });
-  }
-
-  sendSignedXDR(item, status, signerSK) {
-    this.presentLoading();
-    this.signXDR(item, status, signerSK).then((obj) => {
-      this.itemsProvider.updateStatusCOC(obj).subscribe((resp) => {
-        console.log(obj)
-        console.log(resp)
-        // @ts-ignore
-        if (resp.Body.Status == 'accepted') {
-          this.presentToast('Transaction Success!');
-          // @ts-ignore
-        } else if (resp.Body.Status == 'rejected') {
-          this.presentToast('Transaction Success!');
-        }
-        if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-      }, (err) => {
-        console.log(err);
-        item.status = 'pending';
-        if (this.isLoadingPresent) { this.dissmissLoading(); }
-        this.presentToast('Transaction Unsuccessfull');
-      });
-    }).catch(e => {
-      console.log(e)
-      if (this.isLoadingPresent) {
-        this.dissmissLoading();
-        this.presentToast('Error! signing Transaction.');
-      }
-    })
-  }
-
   timeDuration(now, oldDate) {
     // @ts-ignore
     var sec_num = (now - oldDate) / 1000;
@@ -267,7 +318,6 @@ export class ItemReceivedPage {
       'minutes': minutes
     };
   }
-
 
   presentLoading() {
     this.isLoadingPresent = true;
@@ -293,59 +343,3 @@ export class ItemReceivedPage {
     toast.present();
   }
 }
-
-
-  // doInfinite(infiniteScroll) {
-  //   console.log('Begin async operation');
-
-  //   setTimeout(() => {
-  //     for (let i = 0; i < this.items.length; i++) {
-  //       this.items.push( this.items.length );
-  //     }
-
-  //     console.log('Async operation has ended');
-  //     infiniteScroll.complete();
-  //   }, 500);
-  // }
-
-    // {
-    //   date: 'today',
-    //   uname: 'jack',
-    //   oname: 'Apple',
-    //   qty: '10',
-    //   validity: 'VALIDITY',
-    //   time: '30-D',
-    //   status: 'pending'
-    // },
-    // {
-    //   date: 'yesterday',
-    //   uname: 'Murtaza',
-    //   oname: 'Orange',
-    //   qty: '10',
-    //   validity: 'VALIDITY',
-    //   time: '30-D', status: 'pending'
-    // },
-    // {
-    //   date: '12th November 2018',
-    //   uname: 'Azeem',
-    //   oname: 'Banana',
-    //   qty: '10',
-    //   validity: 'VALIDITY',
-    //   time: '30-D', status: 'pending'
-    // },
-    // {
-    //   date: 'today',
-    //   uname: 'Azkar',
-    //   oname: 'Grapes',
-    //   qty: '10',
-    //   validity: 'VALIDITY',
-    //   time: '30-D', status: 'pending'
-    // },
-    // {
-    //   date: 'today',
-    //   uname: 'Azkar',
-    //   oname: 'Apple',
-    //   qty: '10',
-    //   validity: 'VALIDITY',
-    //   time: '30-D', status: 'pending'
-    // },
