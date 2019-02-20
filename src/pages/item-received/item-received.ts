@@ -94,7 +94,8 @@ export class ItemReceivedPage {
               });
 
               const tempLast = itemArr.pop();
-
+              // if(itemArr.length>0) tempLast.source = itemArr[0].source
+              (itemArr.length>0)?tempLast.source = itemArr[0].source:null ;
               const obj = {
                 AcceptTxn: item.AcceptTxn,
                 AcceptXdr: item.AcceptXdr,
@@ -125,6 +126,7 @@ export class ItemReceivedPage {
           })
           .then((namedKeys) => {
             console.log(namedKeys);
+            console.log(this.items);
             
             this.items.forEach(element => {
               //@ts-ignore
