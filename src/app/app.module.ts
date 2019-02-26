@@ -8,6 +8,9 @@ import { IonicStorageModule, Storage } from '@ionic/storage';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+// import { Device } from 'ionic-native';
+import { DeviceDetectorModule, DeviceDetectorService } from 'ngx-device-detector';
+
 
 import { Items } from '../mocks/providers/items';
 import { Settings, User, Api } from '../providers';
@@ -24,6 +27,7 @@ import { Properties } from '../shared/properties';
 import { SelectSearchableModule } from '../components/search-dropdown/select-module';
 import { IonicSelectableModule } from 'ionic-selectable';
 import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
+import { Device } from '@ionic-native/device/ngx';
 
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
@@ -60,6 +64,7 @@ export function provideSettings(storage: Storage) {
     ItemReceivedPageModule,
     ItemDetailPageModule,
     TabsPageModule,
+    DeviceDetectorModule.forRoot(),
     AddAccountPageModule,
     ItemSentPageModule,
     TranslateModule.forRoot({
@@ -82,6 +87,8 @@ export function provideSettings(storage: Storage) {
     Network, 
     Items,
     User,
+    Device,
+    DeviceDetectorService,
     Camera,
     SplashScreen,
     StatusBar,

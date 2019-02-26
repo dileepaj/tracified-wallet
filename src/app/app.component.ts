@@ -3,6 +3,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Config, Nav, Platform } from 'ionic-angular';
+import { Device } from '@ionic-native/device/ngx';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 import { FirstRunPage } from '../pages';
 import { Settings } from '../providers';
@@ -11,13 +13,14 @@ import { Properties } from '../shared/properties';
 @Component({
   templateUrl: 'app.html'
 })
-export class MyApp {
+export class MyApp { 
   activePage: any;
   rootPage = FirstRunPage;
   company = 'Tracified Wallet';
-  userType = 'Admin' 
+  userType = 'Admin'
   user: any;
-  
+  deviceInfo = null;
+
   @ViewChild(Nav) nav: Nav;
 
   pages: any[] = [
@@ -27,9 +30,9 @@ export class MyApp {
     { icon: 'custom-settings', title: 'Settings', component: 'SettingsPage' },
     { icon: 'custom-about', title: 'About', component: 'ContentPage' },
     { icon: 'custom-logout', title: 'Logout', component: 'LoginPage' }
-  ] 
+  ]
 
-  constructor(private translate: TranslateService, private properties: Properties, platform: Platform, settings: Settings, private config: Config, private statusBar: StatusBar, private splashScreen: SplashScreen) {
+  constructor(private deviceService: DeviceDetectorService, private device: Device, private translate: TranslateService, private properties: Properties, platform: Platform, settings: Settings, private config: Config, private statusBar: StatusBar, private splashScreen: SplashScreen) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -39,16 +42,32 @@ export class MyApp {
     this.initTranslate();
 
     // console.log(this.nav.getActive().name);
-    
+
     this.activePage = this.pages[0];
     // ;
     console.log('app.component');
     // console.log(this.properties.userName);
-    
+
     // this.user = this.properties.userName;
 
     this.user = JSON.parse(localStorage.getItem('_username'))
 
+    
+    
+    this.epicFunction();
+
+  }
+  epicFunction() {
+    console.log('hello `Home` component');
+    this.deviceInfo = this.deviceService.getDeviceInfo();
+    const isMobile = this.deviceService.isMobile();
+    const isTablet = this.deviceService.isTablet();
+    const isDesktopDevice = this.deviceService.isDesktop();
+    console.log(this.deviceInfo);
+    console.log(this.deviceInfo.userAgent);
+    console.log(isMobile);  // returns if the device is a mobile device (android / iPhone / windows-phone etc)
+    console.log(isTablet);  // returns if the device us a tablet (iPad etc)
+    console.log(isDesktopDevice); // returns if the app is running on a Desktop browser.
   }
 
   initTranslate() {
@@ -84,7 +103,7 @@ export class MyApp {
     this.activePage = page;
   }
 
-  checkActive(page){
+  checkActive(page) {
     return page == this.activePage;
   }
 

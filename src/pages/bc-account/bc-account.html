@@ -1,4 +1,3 @@
-
 <ion-header>
 
   <ion-navbar>
@@ -23,10 +22,10 @@
   </ion-refresher>
 
   <div *ngIf="!userAcc" id="noitemDiv">
-      <img id="notification-icon" src="../../assets/imgs/notifications-bell-button.png">
-      <h2 id="noItem"> ACCOUNTS </h2>
-      <ion-note id="noItem-note">No Accounts available for this period</ion-note>
-    </div>
+    <img id="notification-icon" src="../../assets/imgs/notifications-bell-button.png">
+    <h2 id="noItem"> ACCOUNTS </h2>
+    <ion-note id="noItem-note">No Accounts available for this period</ion-note>
+  </div>
 
   <ion-card *ngFor="let account of userAcc">
     <ion-item>
@@ -42,7 +41,7 @@
     <ion-item>
       <ion-row>
         <ion-col col-3 left text-left>
-          <h5 class="label">Primary Key: </h5>
+          <h5 class="label">Publick Key: </h5>
         </ion-col>
         <ion-col col-9 left text-left>
           <h5>{{ account.pk}}</h5>
@@ -59,7 +58,7 @@
         </ion-col>
       </ion-row>
     </ion-item>
-    <ion-item>
+    <!-- <ion-item>
       <ion-row>
         <ion-col col-3 left text-left>
           <h5 class="label">Sub Acc: </h5>
@@ -68,13 +67,7 @@
           <h5>{{subAccount}}</h5>
         </ion-col>
       </ion-row>
-    </ion-item>
-
-
-    <!-- <ion-card *ngFor="let subAccount of account.subAccounts">
-      <ion-note>PK: {{subAccount}}</ion-note>
-
-    </ion-card> -->
+    </ion-item> -->
   </ion-card>
 
   <ion-fab right bottom>
