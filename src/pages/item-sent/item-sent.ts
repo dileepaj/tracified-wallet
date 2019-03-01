@@ -63,7 +63,12 @@ export class ItemSentPage {
 
   }
 
-
+    /**
+* @desc retrieve COC transaction from gateway
+* @param  
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   loadCOCSent() {
     try {
       console.log(this.BCAccounts[0].pk);
@@ -166,6 +171,12 @@ export class ItemSentPage {
 
   }
 
+      /**
+* @desc retrieve names against account public keys from admin   
+* @param stringArray $receiverArr - publick key array
+* @author Jaje thananjaje3@gmail.com
+* @return account names object for public keys
+*/
   getNamesFromKeys(receiverArr) {
 
     return new Promise((resolve, reject) => {

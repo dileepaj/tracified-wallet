@@ -13,7 +13,7 @@ import { Properties } from '../shared/properties';
 @Component({
   templateUrl: 'app.html'
 })
-export class MyApp { 
+export class MyApp {
   activePage: any;
   rootPage = FirstRunPage;
   company = 'Tracified Wallet';
@@ -23,6 +23,7 @@ export class MyApp {
 
   @ViewChild(Nav) nav: Nav;
 
+  //side menu pages
   pages: any[] = [
     { icon: 'custom-itemIcon', title: 'Items', component: 'TabsPage' },
     { icon: 'custom-blockchain', title: 'Accounts', component: 'BcAccountPage' },
@@ -41,23 +42,21 @@ export class MyApp {
     });
     this.initTranslate();
 
-    // console.log(this.nav.getActive().name);
-
     this.activePage = this.pages[0];
-    // ;
-    console.log('app.component');
-    // console.log(this.properties.userName);
-
-    // this.user = this.properties.userName;
 
     this.user = JSON.parse(localStorage.getItem('_username'))
 
-    
-    
-    this.epicFunction();
+    this.deviceDetails(); 
 
   }
-  epicFunction() {
+
+  /**
+* @desc retrieve device information from the device 
+* @param  
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
+  deviceDetails() {
     console.log('hello `Home` component');
     this.deviceInfo = this.deviceService.getDeviceInfo();
     const isMobile = this.deviceService.isMobile();
@@ -70,6 +69,12 @@ export class MyApp {
     console.log(isDesktopDevice); // returns if the app is running on a Desktop browser.
   }
 
+  /**
+* @desc Initialize the language translation
+* @param 
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   initTranslate() {
     // Set the default language for translation strings, and the current language.
     this.translate.setDefaultLang('en');
@@ -96,6 +101,12 @@ export class MyApp {
     });
   }
 
+  /**
+* @desc opens the passed page
+* @param string $page - the page to be displayed
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   openPage(page) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
@@ -103,7 +114,14 @@ export class MyApp {
     this.activePage = page;
   }
 
+  /**
+  * @desc checks and returns the current active page
+  * @param 
+  * @author Jaje thananjaje3@gmail.com
+  * @return page which is active
+*/
   checkActive(page) {
+    //get active page [logic]
     return page == this.activePage;
   }
 

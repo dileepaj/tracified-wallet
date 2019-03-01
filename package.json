@@ -32,6 +32,7 @@
     "@types/crypto-js": "^3.1.43",
     "@types/jsonwebtoken": "^8.3.0",
     "@types/stellar-sdk": "^0.10.4",
+    "build": "0.1.4",
     "cordova-android": "6.4.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.1.3",

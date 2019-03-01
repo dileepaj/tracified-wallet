@@ -41,6 +41,7 @@ export class AddAccountPage {
   loading;
   form: FormGroup;
   BCAccounts: any;
+
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public alertCtrl: AlertController,
@@ -48,11 +49,11 @@ export class AddAccountPage {
     private connectivity: ConnectivityServiceProvider,
     public toastCtrl: ToastController,
     private loadingCtrl: LoadingController) {
+
     this.form = new FormGroup({
       username: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
       strength: new FormControl(''),
       password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required]))
-      // password: new FormControl('', Validators.compose([Validators.maxLength(30), Validators.minLength(8), Validators.pattern('[a-zA-Z ]*'), Validators.required]))
     });
 
     this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
@@ -63,6 +64,12 @@ export class AddAccountPage {
     console.log('ionViewDidLoad AddAccountPage');
   }
 
+  /**
+* @desc handler function managing other promise function to add main account to admin 
+* @param  
+* @author Jaje thananjaje3@gmail.com
+* @return  
+*/
   addMainAccount() {
     var publicKey;
     var secretKey;
@@ -164,6 +171,12 @@ export class AddAccountPage {
     }
   }
 
+  /**
+* @desc add sub account public key to admin
+* @param string $subAcc - the subAcc will be mapped with main account
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   addSubAccount(subAcc) {
 
     if (this.connectivity.onDevice) {
@@ -200,6 +213,12 @@ export class AddAccountPage {
     }
   }
 
+  /**
+* @desc validate the main account name whether its already present (globally unique)  
+* @param string $username - the username as main account name
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   validateMainAccount() {
     if (this.connectivity.onDevice) {
       return new Promise((resolve, reject) => {
@@ -233,8 +252,13 @@ export class AddAccountPage {
     }
   }
 
+  /**
+* @desc check the time need to crack the password that user inputs  
+* @param string $StrengthPassword - StrengthPassword to check strength
+* @author Jaje thananjaje3@gmail.com
+* @return password strenth as time
+*/
   checkStrength() {
-    // console.log(this.form.valid)
     const hsimp = setup({
       calculation: {
         calcs: 40e9,
@@ -254,132 +278,91 @@ export class AddAccountPage {
     });
 
     this.PasswordStrength = hsimp(this.StrengthPassword).time;
-    // // this.form.value.strength = hsimp(this.strength).time;
-    // console.log("HowSecureIsMyPassword");
-    // console.log(hsimp("HowSecureIsMyPassword?"));
 
   }
 
+  /**
+* @desc communicate with stellar horizon to create and fund address.  
+* @param 
+* @author Jaje thananjaje3@gmail.com
+* @return object key pair
+*/
   createAddress() {
-    try {
-      return new Promise((resolve, reject) => {
-        var pair = Keypair.random();
-        pair.secret();
-        console.log(pair.publicKey())
-        pair.publicKey();
-        console.log(pair.secret())
-
-        get({
-          url: 'https://friendbot.stellar.org',
-          qs: { addr: pair.publicKey() },
-          json: true
-        }, function (error, response, body) {
-          if (error || response.statusCode !== 200) {
-            console.error('ERROR!', error || body);
-            reject(error);
-          }
-          else {
-            console.log('SUCCESS! You have a new account :)\n', body);
-
-            resolve(pair);
-
-          }
-        });
-      })
-    } catch (error) {
-      console.log(error);
-
-    }
-
-  }
-
-  createTrustline(pair) {
     return new Promise((resolve, reject) => {
-      // Keys for accounts to issue and receive the new asset
-      var issuingKeys = Keypair
-        .fromSecret('SBIGRT2A5VONIWTKOTDRW6TFABDAC7GG4COE3LQBR6I6B7UPR3WBDIXU');
-      var receivingKeys = pair;
+      //generate address pair
+      var pair = Keypair.random();
 
-      // var receivingKeys = StellarSdk.Keypair
-      //   .fromSecret('SDNW4TVMRPTO7NPSBYHYA2ESHOWQLQLOVDN3AKW6Q65YOVT7DIC3KYPO');
+      //funds address with XLM
+      get({
+        url: 'https://friendbot.stellar.org',
+        qs: { addr: pair.publicKey() },
+        json: true
+      }, function (error, response, body) {
+        if (error || response.statusCode !== 200) {
+          console.error('ERROR!', error || body);
+          reject(error);
+        }
+        else {
+          console.log('SUCCESS! You have a new account :)\n', body);
 
-      // Create an object to represent the new asset
-      var Aple = new Asset('Aple', issuingKeys.publicKey());
+          resolve(pair);
 
-      // First, the receiving account must trust the asset
-      server.loadAccount(receivingKeys.publicKey())
-        .then(function (receiver) {
-          var transaction = new TransactionBuilder(receiver)
-            // The `changeTrust` operation creates (or alters) a trustline
-            // The `limit` parameter below is optional
-            .addOperation(Operation.changeTrust({
-              asset: Aple,
-              limit: '10'
-            }))
-            .build();
-          transaction.sign(receivingKeys);
-          server.submitTransaction(transaction);
-        })
-        .then(() => {
-          //  this.encyrptSecret(pair.secret(), password);
-          // this.navCtrl.push(BcAccountPage, { "name": name, "publicKey": pair.publicKey(), "secretKey": this.encyrptSecret(pair.secret(), "this.form") });
-          resolve()
-        })
-        .catch(function (error) {
-          console.log('Error!', error);
-          reject();
-        });
+        }
+      });
     })
   }
 
-
+  /**
+* @desc create trust line for multipe assets dynamically for a Stellar account  
+* @param object $pair - the public and secret key pair
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   createMultipleTrustline(pair) {
-    try {
-      return new Promise((resolve, reject) => {
-        var receivingKeys = pair;
-        server.loadAccount(receivingKeys.publicKey())
-          .then(function (account) {
-            const txBuilder = new TransactionBuilder(account)
+    return new Promise((resolve, reject) => {
+      var receivingKeys = pair;
+      server.loadAccount(receivingKeys.publicKey())
+        .then(function (account) {
+          const txBuilder = new TransactionBuilder(account)
 
-            // Create an object to represent the new asset
-            var Aple = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-            var Mango = new Asset('Mango', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-            var Banana = new Asset('Banana', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-            var Grapes = new Asset('Grapes', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+          // Create an object to represent the new asset
+          var Aple = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+          var Mango = new Asset('Mango', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+          var Banana = new Asset('Banana', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+          var Grapes = new Asset('Grapes', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
 
-            // var assetArr = [Grap, Orng, Bana, Aple, Carr];
-            var assetArr = [Aple, Mango, Banana, Grapes];
-            assetArr.forEach(element => {
-              // add operation
-              txBuilder.addOperation(Operation.changeTrust({
-                asset: element,
-                limit: '1000'
-              }))
+          var assetArr = [Aple, Mango, Banana, Grapes];
+          assetArr.forEach(element => {
+            // add operation
+            txBuilder.addOperation(Operation.changeTrust({
+              asset: element,
+              limit: '1000'
+            }))
 
-              const tx = txBuilder.build();
-              tx.sign(receivingKeys);
-              let XDR;
-              // console.log(tx);
-              console.log("XDR............");
-              console.log(tx.toEnvelope().toXDR('base64'));
+            const tx = txBuilder.build();
+            tx.sign(receivingKeys);
+            console.log("XDR............");
+            console.log(tx.toEnvelope().toXDR('base64'));
 
-              server.submitTransaction(tx)
-                .then(function (transactionResult) {
-                  console.log(transactionResult);
-                }).catch(function (err) {
-                  console.log(err);
-                })
-            })
-            resolve();
+            server.submitTransaction(tx)
+              .then(function (transactionResult) {
+                console.log(transactionResult);
+              }).catch(function (err) {
+                console.log(err);
+              })
           })
-      })
-    } catch (error) {
-      console.log(error);
-
-    }
-
+          resolve();
+        })
+    })
   }
 
+  /**
+* @desc making sub account signable by main account (multi-signature transaction)  
+* @param object $subAccount - the public and secret key pair of sub account
+* @param string $mainAccount - the public key of main account
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
       server
@@ -417,20 +400,22 @@ export class AddAccountPage {
     })
   }
 
+  /**
+* @desc encrypt the secret key with the signer   
+* @param string $secret - the secret to be encrypted
+* @param string $signer - the signer to encrypt the secret
+* @author Jaje thananjaje3@gmail.com
+* @return encrypted secret chiper
+*/
   encyrptSecret(secret, signer) {
     try {
       return new Promise((resolve, reject) => {
         // Encrypt
         var ciphertext = AES.encrypt(secret, signer);
 
-        // // Decrypt
-        // var decrypted = AES.decrypt(ciphertext.toString(), signer);
-        // var plaintext = decrypted.toString(enc.Utf8);
-
         console.log("secret => " + secret);
         console.log("signer => " + signer);
         console.log("ciphertext => " + ciphertext);
-        // console.log("plaintext => " + plaintext);
 
         resolve(ciphertext.toString());
       })
@@ -457,7 +442,7 @@ export class AddAccountPage {
     });
     alert.present();
   }
-
+ 
   presentToast(message) {
     if (this.toastInstance) {
       return;
@@ -474,7 +459,7 @@ export class AddAccountPage {
     });
     this.toastInstance.present();
   }
-
+ 
   presentLoading() {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
@@ -484,7 +469,7 @@ export class AddAccountPage {
 
     this.loading.present();
   }
-
+ 
   dissmissLoading() {
     this.isLoadingPresent = false;
     this.loading.dismiss();

@@ -52,20 +52,6 @@
           </ion-item>
           <ion-label stacked id="label">Quantity</ion-label>
 
-          <!-- <ion-item>
-            <ion-label>Port</ion-label>
-            <ionic-selectable item-content 
-            [(ngModel)]="port" 
-            (ionInput)="setFilteredItems()"
-            [ngModelOptions]="{standalone: true}"
-            itemValueField="id" 
-            itemTextField="name" 
-            [items]="ports" 
-            [canSearch]="true"
-            (onChange)="portChange($event)">
-           </ionic-selectable>
-          </ion-item> -->
-
           <ion-item text-wrap>
             <select-searchable class="textArea" [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}"
               (ionInput)="setFilteredItems()" title=" Receiver" canSearch="true" [items]="receivers"

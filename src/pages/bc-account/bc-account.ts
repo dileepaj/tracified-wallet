@@ -46,6 +46,12 @@ export class BcAccountPage {
     // }, 2000);
   }
 
+    /**
+* @desc retrieve blockchain main accounts from admin 
+* @param 
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   getMainAccounts() {
    try {
     if (this.connectivity.onDevice) {

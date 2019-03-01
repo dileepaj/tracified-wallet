@@ -30,6 +30,12 @@ export class AccordionListComponent {
     }
   }
 
+    /**
+* @desc toggles the accordian when clicked
+* @param 
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   toggleAccordion() {
     this.expanded = !this.expanded;
     const newHeight = this.expanded ? '100%' : '0px';

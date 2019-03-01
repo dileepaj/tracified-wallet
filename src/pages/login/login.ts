@@ -55,10 +55,18 @@ export class LoginPage {
   ionViewDidLoad() {
     // this.menuCtrl.enable(false);
   }
+
   ionViewWillLeave() {
     this.menuCtrl.enable(true);
   }
 
+      /**
+* @desc perform login authentication to admin API  
+* @param string $username
+* @param string $password 
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   doLogin() {
     if (this.connectivity.onDevice) {
       this.presentLoading();
@@ -109,6 +117,12 @@ export class LoginPage {
     this.navCtrl.push(ResetPasswordPage, { type: 'forgotPassword' });
   }
 
+      /**
+* @desc retrieve blockchain accounts from admin backend  
+* @param 
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   getAccounts() {
     if (this.connectivity.onDevice) {
       // this.presentLoading();

@@ -9,25 +9,17 @@ var StellarSdk = require('stellar-sdk')
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 var server = new Server('https://horizon-testnet.stellar.org');
 StellarSdk.Network.useTestNetwork();
-import { IonicSelectableComponent } from 'ionic-selectable';
 
 @IonicPage()
-
-class Port {
-  public id: number;
-  public name: string;
-}
 
 @Component({
   selector: 'page-item-detail',
   templateUrl: 'item-detail.html'
 })
 export class ItemDetailPage {
-  ports: Port[];
-  port: Port;
   selectedItem2: any;
   itemRequired: any;
-  itemList: any = ['item1', 'item2', 'item3'];
+  itemList: any = [];
   item: any;
   user: any;
   currentItems: any;
@@ -55,15 +47,8 @@ export class ItemDetailPage {
     this.item = navParams.get('item');
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
     this.receivers = navParams.get('receivers');
-    // this.subAccountStatus();
 
-    this.ports = [
-      { id: 1, name: 'GDJJ2LQZR6EFGDQ5UQJTZDK2PUQC4IFI3R7P75IWKRBJHSQZSSHEA3MC' },
-      { id: 2, name: 'Vladivostok' },
-      { id: 3, name: 'Navlakhi' }
-    ];
-
-    this.itemList = this.receivers 
+    this.itemList = this.receivers
 
   }
 
@@ -74,6 +59,12 @@ export class ItemDetailPage {
     }
   }
 
+  /**
+* @desc opens modal to enter decrpting passphrase  
+* @param 
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   passwordPrompt() {
     let alert = this.alertCtrl.create({
       cssClass: 'submitPassword',
@@ -103,21 +94,12 @@ export class ItemDetailPage {
     alert.present();
   }
 
-  portChange(event: {
-    component: IonicSelectableComponent,
-    value: any
-  }) {
-    console.log('port:', event.value);
-  }
-
-  setFilteredItems() {
-    console.log(this.port)
-    // this.port = this.currentItems.filter((item) => {
-    //   return item.asset_code.toLowerCase().includes(this.searchTerm.toLowerCase());
-    // });
-
-  }
-
+  /**
+* @desc validates and provides available sub account to build the XDR (if nothing is available it will create one)
+* @param string $receiver
+* @author Jaje thananjaje3@gmail.com
+* @return object which contains available sub account public key 
+*/
   subAccountValidator(receiver) {
     return new Promise((resolve, reject) => {
 
@@ -182,6 +164,12 @@ export class ItemDetailPage {
     })
   }
 
+  /**
+* @desc handler function manages other async function to do COC  
+* @param string $signerSK - the public key of main account
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   doCOC(signerSK) {
     this.presentLoading();
     console.log(this.COCForm);
@@ -220,6 +208,13 @@ export class ItemDetailPage {
 
   }
 
+  /**
+* @desc send the COC object to gateway  
+* @param object $res2 - previous Txn ID
+* @param object $res4 - accept build and reject build XDRs
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   addCOC(res2, res4) {
     if (this.connectivity.onDevice) {
       // this.presentLoading();
@@ -270,6 +265,13 @@ export class ItemDetailPage {
     }
   }
 
+  /**
+* @desc retrieving sub acoount status from gateway  
+* @param object $subAccount - the public and secret key pair of sub account
+* @param string $mainAccount - the public key of main account
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   subAccountStatus() {
     if (this.connectivity.onDevice) {
       // this.presentLoading();
@@ -301,6 +303,13 @@ export class ItemDetailPage {
     }
   }
 
+  /**
+* @desc making sub account signable by main account (multi-signature transaction)  
+* @param object $subAccount - the public and secret key pair of sub account
+* @param string $mainAccount - the public key of main account
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
       server
@@ -338,6 +347,16 @@ export class ItemDetailPage {
     })
   }
 
+  /**
+* @desc Building acceptance XDR  
+* @param string $Identifier 
+* @param string $proofHash 
+* @param string $subAcc - sub account public key need to build the XDR
+* @param object $subAccObj 
+* @param object $signerSK - the public and secret key pair of main account
+* @author Jaje thananjaje3@gmail.com
+* @return sequence number and acceptance XDR
+*/
   AcceptBuild(Identifier, proofHash, subAcc, subAccObj, signerSK) {
 
     return new Promise((resolve, reject) => {
@@ -431,6 +450,15 @@ export class ItemDetailPage {
 
   }
 
+  /**
+* @desc Building rejectance XDR  
+* @param string $proofHash 
+* @param string $subAcc - sub account public key need to build the XDR
+* @param object $subAccObj 
+* @param object $signerSK - the public and secret key pair of main account
+* @author Jaje thananjaje3@gmail.com
+* @return sequence number and rejectance XDR
+*/
   RejectBuild(proofHash, subAcc, subAccObj, signerSK) {
 
     return new Promise((resolve, reject) => {
@@ -489,6 +517,12 @@ export class ItemDetailPage {
 
   }
 
+  /**
+* @desc making a blockchain transaction to prove COC has been made
+* @param object $signerSK - the public and secret key pair of main account
+* @author Jaje thananjaje3@gmail.com
+* @return Txn hash to be added in COCAcceptBuild & COC RejectBiuld
+*/
   COCVerification(signerSK) {
     // console.log(this.COCForm);
     const form = this.COCForm
@@ -527,6 +561,12 @@ export class ItemDetailPage {
     }
   }
 
+  /**
+* @desc retrieve previous transaction ID from gateway   
+* @param string $Identifier 
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   getPreviousTXNID(Identifier) {
     if (this.connectivity.onDevice) {
       return new Promise((resolve, reject) => {
@@ -560,6 +600,12 @@ export class ItemDetailPage {
     }
   }
 
+  /**
+* @desc communicate with stellar horizon to create and fund address.  
+* @param 
+* @author Jaje thananjaje3@gmail.com
+* @return object key pair
+*/
   createAddress() {
     try {
       return new Promise((resolve, reject) => {
@@ -593,6 +639,12 @@ export class ItemDetailPage {
 
   }
 
+  /**
+* @desc add sub account public key to admin
+* @param string $subAcc - the subAcc will be mapped with main account
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   addSubAccount(subAcc) {
 
     if (this.connectivity.onDevice) {
@@ -631,16 +683,23 @@ export class ItemDetailPage {
     }
   }
 
+  /**
+ * @desc decyrpt the secret key with the signer   
+ * @param string $ciphertext - the chiper to be decyrpted
+ * @param string $signer - the signer to decyrpt the secret
+ * @author Jaje thananjaje3@gmail.com
+ * @return decyrpted plain text
+ */
   decyrptSecret(ciphertext, signer) {
     // Decrypt
     try {
       var decrypted = (AES.decrypt(ciphertext.toString(), signer)).toString(enc.Utf8);
 
-    console.log("signer => " + signer);
-    console.log("ciphertext => " + ciphertext);
-    console.log("plaintext => " + decrypted);
+      console.log("signer => " + signer);
+      console.log("ciphertext => " + ciphertext);
+      console.log("plaintext => " + decrypted);
 
-    return decrypted;
+      return decrypted;
     } catch (error) {
       console.log(error);
     }

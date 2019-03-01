@@ -90,6 +90,12 @@ export class SelectSearchablePage {
         this.selectedItems.push(item);
     }
 
+        /**
+* @desc get public key from admin (name - public key mapping)  
+* @param string $name - the name to be mapped with public key
+* @author Jaje thananjaje3@gmail.com
+* @return public key as a string
+*/
     getPublickey(name) {
         if (this.connectivity.onDevice) {
             this.presentLoading();

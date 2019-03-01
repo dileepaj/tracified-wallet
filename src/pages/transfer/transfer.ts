@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, ModalController, LoadingController } from 'ionic-angular';
-import { Item } from '../../models/item';
-// import { Items } from '../../providers';
 import { Server, Transaction } from 'stellar-sdk';
 import { Items } from '../../providers/items/items';
 import { ItemDetailPage } from '../item-detail/item-detail';
@@ -15,6 +13,7 @@ export class TransferPage {
   currentItems = [];
   user: any;
   loading;
+  Item: any;
   isLoadingPresent: boolean;
   receivers = [];
   Searcheditems: any;
@@ -49,7 +48,7 @@ export class TransferPage {
     // }, 2000);
   }
 
-  openItem(item: Item) {
+  openItem(item) {
     this.navCtrl.push(ItemDetailPage, {
       item: item,
       currentItems: this.currentItems,
@@ -65,13 +64,19 @@ export class TransferPage {
 
   }
 
+  /**
+* @desc retrieve asset balance from Stellar horizon by passing public key  
+* @param string $pk - the public key of main account
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   getBalance() {
     let assets = [];
 
     var server = new Server('https://horizon-testnet.stellar.org');
-    try {
-      // the JS SDK uses promises for most actions, such as retrieving an account
-      server.loadAccount(this.BCAccounts[0].pk).then(function (account) {
+    // the JS SDK uses promises for most actions, such as retrieving an account
+    server.loadAccount(this.BCAccounts[0].pk)
+      .then(function (account) {
         // console.log('Balances for account: ' + JSON.stringify(account.balances));
         account.balances.forEach(function (balance) {
           // @ts-ignore
@@ -81,22 +86,22 @@ export class TransferPage {
           assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
         });
         assets.pop();
+      })
+      .catch(function (err) {
+        console.error(err);
       });
-      this.currentItems = assets;
-      this.Searcheditems = this.currentItems;
-      // console.log(this.currentItems)
-      console.log(this.Searcheditems)
-      if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-      // this.setFilteredItems();
-    } catch (error) {
-      console.log(error);
-      if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-    }
-
+    this.currentItems = assets;
+    this.Searcheditems = this.currentItems;
+    console.log(this.Searcheditems)
+    if (this.isLoadingPresent) { this.dissmissLoading(); }
   }
 
+  /**
+* @desc retrieve receivers from the gateway   
+* @param string $pk - the public key of main account
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   loadReceivers() {
     try {
       // console.log(this.BCAccounts[0].pk);
@@ -119,7 +124,7 @@ export class TransferPage {
 
         console.log(this.receivers)
 
-         if (this.isLoadingPresent) { this.dissmissLoading(); }
+        if (this.isLoadingPresent) { this.dissmissLoading(); }
 
 
       }, (err) => {

@@ -12,7 +12,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { DeviceDetectorModule, DeviceDetectorService } from 'ngx-device-detector';
 
 
-import { Items } from '../mocks/providers/items';
+// import { Items } from '../mocks/providers/items';
 import { Settings, User, Api } from '../providers';
 import { MyApp } from './app.component';
 import { ItemReceivedPageModule } from '../pages/item-received/item-received.module';
@@ -85,7 +85,7 @@ export function provideSettings(storage: Storage) {
     Api,
     Properties,
     Network, 
-    Items,
+    // Items,
     User,
     Device,
     DeviceDetectorService,

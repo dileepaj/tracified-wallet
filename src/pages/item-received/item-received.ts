@@ -51,8 +51,12 @@ export class ItemReceivedPage {
 
   }
 
-
-
+    /**
+* @desc retrieve COC transaction from gateway
+* @param  
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   loadCOCReceived() {
     try {
       // console.log(this.BCAccounts[0].pk);
@@ -153,6 +157,14 @@ export class ItemReceivedPage {
     }
   }
 
+    /**
+* @desc sign the acceptance or rejectance XDR   
+* @param string $status - accept or reject status
+* @param object $item 
+* @param object $signerSK - the public and secret key pair of main account
+* @author Jaje thananjaje3@gmail.com
+* @return item object which containes signed XDR
+*/
   signXDR(item, status, signerSK) {
     return new Promise((resolve, reject) => {
       var sourceKeypair = Keypair.fromSecret(signerSK);
@@ -179,6 +191,14 @@ export class ItemReceivedPage {
     });
   }
 
+    /**
+* @desc send sign XDR transaction and object to gateway
+* @param string $status - accept or reject status
+* @param object $item 
+* @param object $signerSK - the public and secret key pair of main account
+* @author Jaje thananjaje3@gmail.com
+* @return 
+*/
   sendSignedXDR(item, status, signerSK) {
     this.presentLoading();
     this.signXDR(item, status, signerSK).then((obj) => {
@@ -209,6 +229,12 @@ export class ItemReceivedPage {
     })
   }
 
+    /**
+* @desc retrieve names against account public keys from admin   
+* @param stringArray $receiverArr - publick key array
+* @author Jaje thananjaje3@gmail.com
+* @return account names object for public keys
+*/
   getNamesFromKeys(receiverArr) {
 
     return new Promise((resolve, reject) => {
@@ -247,6 +273,24 @@ export class ItemReceivedPage {
 
   }
 
+  timeDuration(now, oldDate) {
+    // @ts-ignore
+    var sec_num = (now - oldDate) / 1000;
+    var days = Math.floor(sec_num / (3600 * 24));
+    var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
+    var minutes = Math.floor((sec_num - (days * (3600 * 24)) - (hours * 3600)) / 60);
+    // var seconds = Math.floor(sec_num - (days * (3600 * 24)) - (hours * 3600) - (minutes * 60));
+    // @ts-ignore
+    if (hours < 10) { hours = "0" + hours; }
+    // @ts-ignore
+    if (minutes < 10) { minutes = "0" + minutes; }
+
+    return {
+      'days': days,
+      'hours': hours,
+      'minutes': minutes
+    };
+  }
 
   passwordPrompt(item, buttonStatus) {
     let alert = this.alertCtrl.create({
@@ -300,25 +344,6 @@ export class ItemReceivedPage {
     //   console.log('Async operation has ended');
     refresher.complete();
     // }, 2000);
-  }
-
-  timeDuration(now, oldDate) {
-    // @ts-ignore
-    var sec_num = (now - oldDate) / 1000;
-    var days = Math.floor(sec_num / (3600 * 24));
-    var hours = Math.floor((sec_num - (days * (3600 * 24))) / 3600);
-    var minutes = Math.floor((sec_num - (days * (3600 * 24)) - (hours * 3600)) / 60);
-    // var seconds = Math.floor(sec_num - (days * (3600 * 24)) - (hours * 3600) - (minutes * 60));
-    // @ts-ignore
-    if (hours < 10) { hours = "0" + hours; }
-    // @ts-ignore
-    if (minutes < 10) { minutes = "0" + minutes; }
-
-    return {
-      'days': days,
-      'hours': hours,
-      'minutes': minutes
-    };
   }
 
   presentLoading() {
