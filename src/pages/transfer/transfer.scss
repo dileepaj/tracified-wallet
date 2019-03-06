@@ -1,0 +1,64 @@
+page-transfer {
+    ion-card{
+        padding: 15px;
+        overflow: hidden;
+        background-color: white !important;
+        // opacity: 0.9;
+        
+    }
+
+    #notification-icon{
+        display: flex;
+        margin-top: 35%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 35%;
+        background-repeat: repeat-x;
+    }
+
+
+
+    #noItem{
+        // text-align: center;
+        vertical-align: middle;
+        left: 34%;
+    font-size: 18px;
+    top: 47%;
+        position: absolute;
+        color: black;
+    }
+
+    #noItem-note{
+        // text-align: center;
+        vertical-align: middle;
+        // align-content: center;
+        left: 21%;
+        top: 55%;
+        position: absolute;
+        color: grey;
+    }
+
+    .card-md{
+        height: 95px;
+        border-radius: 4px !important;
+
+    }
+
+    .searchbar-md {
+        padding: 8px 8px 4px 8px;
+    }
+
+    .item{
+        margin: 16px 2px !important;
+        font-weight: 400;
+        font-size: 18px !important;
+
+    }
+
+    #item-bal{
+        margin: 15px 41px !important;
+        font-weight: 500;
+    }
+    
+}

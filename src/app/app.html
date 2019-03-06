@@ -1,0 +1,34 @@
+<ion-menu [content]="content">
+
+  <ion-header>
+    <ion-toolbar class="menu-toolbar">
+      <div text-center class="side-menu-card" padding>
+        <img src="assets/img/appicon.png" class="tracified-logo" />
+        <div text-wrap class="tenant-name">
+          <h5 id="company">{{company}}</h5>
+        </div>
+        <!-- <div text-wrap class="user-type">{{userType}}</div> -->
+        <div text-wrap class="user-name">{{user}}</div>
+      </div>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-list>
+      <button menuClose [class.activeHighlight]="checkActive(p)" ion-item *ngFor="let p of pages" (click)="openPage(p)">
+        <ion-icon name={{p.icon}} item-start></ion-icon>
+        <ion-icon name='checkmark-circle-outline' *ngIf="checkActive(p)" item-end></ion-icon>
+        <h2 id="menu-title">{{p.title}}</h2>
+      </button>
+    </ion-list>
+  </ion-content>
+  
+  <!-- <ion-footer>
+      <ion-toolbar>
+        <ion-title>Version 1.0</ion-title>
+      </ion-toolbar>
+    </ion-footer> -->
+
+</ion-menu>
+
+<ion-nav #content [root]="rootPage"></ion-nav>

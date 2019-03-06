@@ -1,5 +1,7 @@
 {
-  "name": "tracified_wallet",
-  "integrations": {},
-  "type": "angular"
+  "name": "tracified-wallet",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
 }

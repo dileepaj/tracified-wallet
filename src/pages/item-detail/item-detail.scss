@@ -1,0 +1,190 @@
+page-item-detail {
+  ion-list{
+    padding: 3px;
+  }
+  ion-item{
+    padding: 10px !important;
+    border-radius: 3px !important;
+    border: 1px solid #e0e0e0 !important;
+    // color: black !important;
+    // border: #28A745;
+    // border: 5px;
+    // font-size: 2.2em;
+
+  }
+  #cocButton{
+    border-color:#ccc;
+    color: white;
+    background-color: #28A745;
+}
+
+  .item-input-has-focus, .input-has-focus {
+    
+    // border-color: #28A745 !important;
+    // border: 5px !important;
+  }
+  #dropdown{
+    border: transparent;
+    width: -webkit-fill-available;
+    border-bottom: 12px;
+    padding: 10px;
+    height: 40px;
+    overflow: hidden;
+}
+  .styled select {
+    background: transparent;
+    width: 150px;
+    font-size: 16px;
+    border: transparent;
+    padding: 10px !important;
+    height: 42px;
+}
+
+  .styled {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    overflow: hidden;
+    background:transparent;
+    // padding-bottom: 5px;
+    // margin-bottom: 10px;
+  }
+
+.label-md[stacked]{
+    margin: 2px 0px 25px 10px;
+}
+
+  #options{
+    display: -webkit-inline-box;
+    color: green;
+  }
+  .list{
+    margin:auto;
+  }
+
+  ion-label{
+    // padding: 5px !important;
+
+  }
+
+  #verticalAlign{
+    height: auto;
+    position: relative;
+  }
+
+  .textArea{
+    margin: 0px 0px 23px -5px !important;
+  }
+
+  ion-datetime{
+    padding: 13px 8px 13px 8px !important;
+  }
+
+  #quantity .input-has-value{
+    border: none !important;
+    color: red !important;
+  }
+  
+  #receiverInput {
+    margin: 0px 0px 0px 5px; 
+    padding: 0;
+    font-size: initial;
+    width: calc(100% - 8px - 8px);
+}
+
+#button{
+  margin: 30px;
+}
+ 
+.input-has-focus .label[floating] {
+    color: #28A745 ;
+  }
+
+  .input-has-value .label[floating] {
+    color: #28A745 ;
+  }
+
+  .item-input .label-md, .item-select .label-md, .item-datetime .label-md {
+    color: Black;
+  }
+
+  
+
+  #rounded {
+    width: 100%;
+    height: 100px;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+    border-radius: 10px;
+    // margin-bottom: 10px;  
+  }
+
+  ion-list{
+    width: 350px;
+    margin-top: 10px !important;
+
+  }
+
+  #receiverDropdown{
+    width: 20px !important;
+  }
+
+  #container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+
+    // width: 350px;
+    // // margin-left: auto;
+    // // margin-right: auto;
+    // vertical-align: middle; 
+    // left: 7%;
+    // top: 10%;
+    // position: absolute;
+
+  } 
+
+
+  // .label[floating],
+  // .label[stacked],
+  // .input-has-focus .label[floating] {
+  //   color: black ;
+  // }
+
+  .item-md.item-input.item-input-has-focus .item-inner, .item-md.item-input.input-has-focus .item-inner{
+    border-bottom-color: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+  }
+
+  .list-md .item-block .item-inner{
+    border-bottom: none !important;
+  }
+  
+  .item-block{
+    height: 20px !important;
+    display: flex !important;
+  }
+
+  // .item-md.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner, .item-md.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner {
+  //   box-shadow: none;
+  //   -webkit-box-shadow: none;
+  //   border-bottom-color: white;
+  //   border-bottom-width: 1px;
+
+  //  }
+
+  // .item-md.item-input.item-input-has-focus .item-inner, .item-md.item-input.item-input-has-focus .item-inner {
+  //   box-shadow: none;
+  //   -webkit-box-shadow: none;
+  //   border-bottom-color: white;
+  //   border-bottom-width: 2px;
+  //  }
+
+  text-input :touch-action {
+    transform: none;
+  }
+}
+ 
