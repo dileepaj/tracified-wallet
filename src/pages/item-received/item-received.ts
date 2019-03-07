@@ -51,7 +51,7 @@ export class ItemReceivedPage {
 
   }
 
-    /**
+  /**
 * @desc retrieve COC transaction from gateway
 * @param  
 * @author Jaje thananjaje3@gmail.com
@@ -62,93 +62,100 @@ export class ItemReceivedPage {
       // console.log(this.BCAccounts[0].pk);
 
       this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe((resp) => {
-        // @ts-ignore
-        console.log(resp);
-        this.Citems = resp;
-        const Tempitems = []
+        if (resp != null) {
+          // @ts-ignore
+          console.log(resp);
+          this.Citems = resp;
+          const Tempitems = []
 
-        this.getNamesFromKeys(this.Citems)
-          .then((namedKeys) => {
-            this.Citems.forEach(item => {
-              const parsedTx = new Transaction(item.AcceptXdr)
-              // @ts-ignore
-              const oldDate: number = new Date(parsedTx.timeBounds.minTime * 1000);
-              // @ts-ignore
-              const newDate: number = new Date(parsedTx.timeBounds.maxTime * 1000);
+          this.getNamesFromKeys(this.Citems)
+            .then((namedKeys) => {
+              this.Citems.forEach(item => {
+                const parsedTx = new Transaction(item.AcceptXdr)
+                // @ts-ignore
+                const oldDate: number = new Date(parsedTx.timeBounds.minTime * 1000);
+                // @ts-ignore
+                const newDate: number = new Date(parsedTx.timeBounds.maxTime * 1000);
 
-              // @ts-ignore
-              let now: number = new Date();
-              var hoursAgo = this.timeDuration(now, oldDate);
-              var validTill = this.timeDuration(newDate, now);
+                // @ts-ignore
+                let now: number = new Date();
+                var hoursAgo = this.timeDuration(now, oldDate);
+                var validTill = this.timeDuration(newDate, now);
 
-              let itemArr = [];
-              parsedTx.operations.forEach(tansac => {
-                if (tansac.type == 'payment') {
+                let itemArr = [];
+                parsedTx.operations.forEach(tansac => {
+                  if (tansac.type == 'payment') {
 
-                  let assetObj = {
-                    "source": tansac.source,
-                    "sourcename": this.BCAccounts[0].accountName,
-                    "asset": tansac.asset.code,
-                    "amount": tansac.amount
+                    let assetObj = {
+                      "source": tansac.source,
+                      "sourcename": this.BCAccounts[0].accountName,
+                      "asset": tansac.asset.code,
+                      "amount": tansac.amount
+                    }
+
+                    itemArr.push(assetObj);
                   }
 
-                  itemArr.push(assetObj);
-                }
+                });
 
+                const tempLast = itemArr.pop();
+                // if(itemArr.length>0) tempLast.source = itemArr[0].source
+                (itemArr.length > 0) ? tempLast.source = itemArr[0].source : null;
+                const obj = {
+                  AcceptTxn: item.AcceptTxn,
+                  AcceptXdr: item.AcceptXdr,
+                  RejectTxn: item.RejectTxn,
+                  RejectXdr: item.RejectXdr,
+                  date: hoursAgo,
+                  itemArr: itemArr,
+                  uname: tempLast.source,
+                  oname: tempLast.asset,
+                  qty: tempLast.amount,
+                  validity: newDate.toLocaleString(),
+                  time: validTill,
+                  status: item.Status,
+
+                  Identifier: item.Identifier,
+                  Receiver: item.Receiver,
+                  Sender: item.Sender,
+                  SequenceNo: item.SequenceNo,
+                  SubAccount: item.SubAccount,
+                  TxnHash: item.TxnHash
+                }
+                Tempitems.push(obj)
+                this.items = Tempitems.reverse();
+                // console.log(this.items)
+                this.setFilteredItems();
+              });
+              return namedKeys
+            })
+            .then((namedKeys) => {
+              console.log(namedKeys);
+              console.log(this.items);
+
+              this.items.forEach(element => {
+                //@ts-ignore
+                element.uname = namedKeys.find(o => element.uname === o.pk).accountName
               });
 
-              const tempLast = itemArr.pop();
-              // if(itemArr.length>0) tempLast.source = itemArr[0].source
-              (itemArr.length>0)?tempLast.source = itemArr[0].source:null ;
-              const obj = {
-                AcceptTxn: item.AcceptTxn,
-                AcceptXdr: item.AcceptXdr,
-                RejectTxn: item.RejectTxn,
-                RejectXdr: item.RejectXdr,
-                date: hoursAgo,
-                itemArr: itemArr,
-                uname: tempLast.source,
-                oname: tempLast.asset,
-                qty: tempLast.amount,
-                validity: newDate.toLocaleString(),
-                time: validTill,
-                status: item.Status,
+              if (this.isLoadingPresent) { this.dissmissLoading(); }
 
-                Identifier: item.Identifier,
-                Receiver: item.Receiver,
-                Sender: item.Sender,
-                SequenceNo: item.SequenceNo,
-                SubAccount: item.SubAccount,
-                TxnHash: item.TxnHash
-              }
-              Tempitems.push(obj)
-              this.items = Tempitems.reverse();
-              // console.log(this.items)
-              this.setFilteredItems();
-            });
-            return namedKeys
-          })
-          .then((namedKeys) => {
-            console.log(namedKeys);
-            console.log(this.items);
-            
-            this.items.forEach(element => {
-              //@ts-ignore
-              element.uname = namedKeys.find(o => element.uname === o.pk).accountName
-            });
-            
-            if (this.isLoadingPresent) { this.dissmissLoading(); }
+            })
+            .catch((err) => {
+              console.log(err);
+              if (this.isLoadingPresent) { this.dissmissLoading(); }
 
-          })
-          .catch((err) => {
-            console.log(err);
-            if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-          })
+            })
 
 
+        } else {
+          console.log('error in querying COCreceived')
+          if (this.isLoadingPresent) { this.dissmissLoading(); }
+        }
       }, (err) => {
-        console.log('error in querying COCreceived')
+        // console.log('error in querying COCreceived')
+        console.log(err.error.Status)
+
         if (this.isLoadingPresent) { this.dissmissLoading(); }
       });
     } catch (error) {
@@ -157,7 +164,7 @@ export class ItemReceivedPage {
     }
   }
 
-    /**
+  /**
 * @desc sign the acceptance or rejectance XDR   
 * @param string $status - accept or reject status
 * @param object $item 
@@ -191,7 +198,7 @@ export class ItemReceivedPage {
     });
   }
 
-    /**
+  /**
 * @desc send sign XDR transaction and object to gateway
 * @param string $status - accept or reject status
 * @param object $item 
@@ -229,7 +236,7 @@ export class ItemReceivedPage {
     })
   }
 
-    /**
+  /**
 * @desc retrieve names against account public keys from admin   
 * @param stringArray $receiverArr - publick key array
 * @author Jaje thananjaje3@gmail.com

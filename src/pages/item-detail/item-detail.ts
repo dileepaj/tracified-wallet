@@ -378,10 +378,11 @@ export class ItemDetailPage {
 
         console.log(subAccObj);
 
-        var asset = new Asset(item, 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-        var asset2 = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-        var asset3 = new Asset('Grapes', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-        var asset4 = new Asset('Mango', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+        // var asset = new Asset(item, 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+        var asset = new Asset(item, 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
+        // var asset2 = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+        // var asset3 = new Asset('Grapes', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+        // var asset4 = new Asset('Mango', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
         var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
         // Network.useTestNetwork();
@@ -398,24 +399,24 @@ export class ItemDetailPage {
               amount: quantity,
               source: senderPublickKey
             }))
-            transaction.addOperation(Operation.payment({
-              destination: receiver,
-              asset: asset2,
-              amount: '50',
-              source: senderPublickKey
-            }))
-            transaction.addOperation(Operation.payment({
-              destination: receiver,
-              asset: asset3,
-              amount: '70',
-              source: senderPublickKey
-            }))
-            transaction.addOperation(Operation.payment({
-              destination: senderPublickKey,
-              asset: asset4,
-              amount: '100',
-              source: receiver
-            }))
+            // transaction.addOperation(Operation.payment({
+            //   destination: receiver,
+            //   asset: asset2,
+            //   amount: '50',
+            //   source: senderPublickKey
+            // }))
+            // transaction.addOperation(Operation.payment({
+            //   destination: receiver,
+            //   asset: asset3,
+            //   amount: '70',
+            //   source: senderPublickKey
+            // }))
+            // transaction.addOperation(Operation.payment({
+            //   destination: senderPublickKey,
+            //   asset: asset4,
+            //   amount: '100',
+            //   source: receiver
+            // }))
 
             if (!subAccObj.available) {
               transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccObj.sequenceNo + 2) }))

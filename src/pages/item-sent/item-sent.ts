@@ -29,7 +29,7 @@ export class ItemSentPage {
   Citems: any;
   BCAccounts: any;
 
-  constructor(public navCtrl: NavController,  public api: Api, private alertCtrl: AlertController, private loadingCtrl: LoadingController, public itemsProvider: Items) {
+  constructor(public navCtrl: NavController, public api: Api, private alertCtrl: AlertController, private loadingCtrl: LoadingController, public itemsProvider: Items) {
     this.user = JSON.parse(localStorage.getItem('_user'))
     this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
     // this.loadCOCSent();
@@ -63,7 +63,7 @@ export class ItemSentPage {
 
   }
 
-    /**
+  /**
 * @desc retrieve COC transaction from gateway
 * @param  
 * @author Jaje thananjaje3@gmail.com
@@ -72,13 +72,14 @@ export class ItemSentPage {
   loadCOCSent() {
     try {
       console.log(this.BCAccounts[0].pk);
- 
-        this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
+
+      this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
+        if (resp != null) {
           // @ts-ignore
           console.log(resp);
           this.Citems = resp;
           const Tempitems = []
-  
+
           this.getNamesFromKeys(this.Citems)
             .then((namedKeys) => {
               this.Citems.forEach(item => {
@@ -87,32 +88,32 @@ export class ItemSentPage {
                 const oldDate: any = new Date(parsedTx.timeBounds.minTime * 1000);
                 // @ts-ignore
                 const newDate: any = new Date(parsedTx.timeBounds.maxTime * 1000);
-      
+
                 // @ts-ignore
                 let now: number = new Date();
                 var hoursAgo = this.timeDuration(now, oldDate);
                 var validTill = this.timeDuration(newDate, now);
-      
+
                 let itemArr = [];
                 parsedTx.operations.forEach(tansac => {
                   if (tansac.type == 'payment') {
                     console.log(tansac)
                     let i = 0;
-      
+
                     let assetObj = {
                       "source": tansac.source,
                       "sourcename": this.BCAccounts[0].accountName,
                       "asset": tansac.asset.code,
                       "amount": tansac.amount,
-                      "destination" : tansac.destination
+                      "destination": tansac.destination
                     }
-      
+
                     itemArr.push(assetObj);
                   }
-      
+
                 });
                 console.log(itemArr)
-      
+
                 const tempLast = itemArr.pop();
                 const obj = {
                   AcceptTxn: item.AcceptTxn,
@@ -138,29 +139,34 @@ export class ItemSentPage {
                 // console.log(Tempitems)
                 this.items = Tempitems.reverse();
                 this.setFilteredItems();
-      
+
               });
               return namedKeys
             })
             .then((namedKeys) => {
               console.log(namedKeys);
-              
+
               this.items.forEach(element => {
                 //@ts-ignore
                 element.uname = namedKeys.find(o => element.uname === o.pk).accountName
               });
-              
+
               if (this.isLoadingPresent) { this.dissmissLoading(); }
-  
+
             })
             .catch((err) => {
               console.log(err);
               if (this.isLoadingPresent) { this.dissmissLoading(); }
-  
-            })
 
+            })
+        } else {
+          console.log('zero COC Sent')
+          if (this.isLoadingPresent) { this.dissmissLoading(); }
+
+        }
       }, (err) => {
-        console.log('error in querying COC Sent')
+        // console.log('error in querying COC Sent')
+        console.log(err.error.Status)
         if (this.isLoadingPresent) { this.dissmissLoading(); }
 
       });
@@ -171,7 +177,7 @@ export class ItemSentPage {
 
   }
 
-      /**
+  /**
 * @desc retrieve names against account public keys from admin   
 * @param stringArray $receiverArr - publick key array
 * @author Jaje thananjaje3@gmail.com
