@@ -326,12 +326,21 @@ export class AddAccountPage {
           const txBuilder = new TransactionBuilder(account)
 
           // Create an object to represent the new asset
-          var Aple = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-          var Mango = new Asset('Mango', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-          var Banana = new Asset('Banana', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-          var Grapes = new Asset('Grapes', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+          // var Aple = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+          // var Mango = new Asset('Mango', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+          // var Banana = new Asset('Banana', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
+          // var Grapes = new Asset('Grapes', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
 
-          var assetArr = [Aple, Mango, Banana, Grapes];
+          // var assetArr = [Aple, Mango, Banana, Grapes];
+
+          var Aple = new Asset('Apple', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
+          var Mango = new Asset('Mango', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
+          var Banana = new Asset('Sugar', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
+          var Milk = new Asset('Milk1', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
+          var Yoghurt = new Asset('Yoghurt', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
+
+
+          var assetArr = [Aple, Mango, Banana, Milk,Yoghurt];
           assetArr.forEach(element => {
             // add operation
             txBuilder.addOperation(Operation.changeTrust({
