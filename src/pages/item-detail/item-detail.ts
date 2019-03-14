@@ -175,7 +175,9 @@ export class ItemDetailPage {
     console.log(this.COCForm);
 
     // Parallel
-    Promise.all([this.subAccountValidator(this.COCForm.receiver), this.COCVerification(signerSK), this.getPreviousTXNID(this.COCForm.identifier)])
+    Promise.all([this.subAccountValidator(this.COCForm.receiver), this.COCVerification(signerSK), 
+      // this.getPreviousTXNID(this.COCForm.identifier)
+    ])
       .then((res2) => {
         // console.log(res2);
         //@ts-ignore
