@@ -15,8 +15,8 @@ accordion-list {
     }
 
     .card-md {
-        margin: 6px 10px;
-        border-radius: 4px;    
+        margin: 6px auto;
+        border-radius: 0px;    
     }
 
     .col {
@@ -29,9 +29,15 @@ accordion-list {
 
    .item-md h1 {
     margin: 0 0 2px;
-    font-size: 22px;
-    font-weight: normal;
+    font-size: 1.2rem;
+    font-weight: 400;
 }
+
+.item-md h2 {
+    font-weight: 400;
+    color: #000;
+}
+    
     
         .pending{
             ion-card{
@@ -56,9 +62,9 @@ accordion-list {
       }
     .accepted{
             ion-card{
-            padding: 4px;
+            padding: 2px;
             overflow: hidden;
-            background-color:  ghostwhite !important;
+            background-color:  white !important;
             // opacity: 0.9;
 
             
@@ -105,6 +111,7 @@ accordion-list {
         ion-icon {
             transition: all .25s ease-in;
             transform: rotate(0);
+            font-size: 1em;
         }
     }
 
@@ -135,6 +142,9 @@ accordion-list {
         margin: 0px;
     }
 
+    .item-md {
+        background: #ededed;
+    }
     .item-md ion-icon[item-left], .item-md ion-icon[item-right], .item-md ion-icon[item-start], .item-md ion-icon[item-end] {
         margin-left: 6px;
         // padding-left: 10px;
@@ -155,7 +165,7 @@ accordion-list {
         &[class*="custom-"] {
             margin: 0 5px 0 0;
             vertical-align: middle;
-            $sz: 20px; 
+            $sz: 16px; 
             width: $sz;
             height: $sz;
         } // custom icons

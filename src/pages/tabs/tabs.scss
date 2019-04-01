@@ -7,6 +7,7 @@ page-tabs {
 .tabs-md .tab-button[aria-selected=true] {
     color: #28A745 !important;
     padding: 0;
+    
 
     ion-icon {
         &[class*="custom-"] {
@@ -30,6 +31,10 @@ page-tabs {
         }  
 
     }
+}
+
+.tabs-md .tab-button-text {
+    font-size: 1rem;
 }
 
 .tabs-md .tab-button[aria-selected=false] {
