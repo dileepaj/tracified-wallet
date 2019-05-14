@@ -87,4 +87,5 @@
     <allow-navigation href="*" />
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
     <engine name="android" spec="6.4.0" />
+    <engine name="browser" spec="6.0.0" />
 </widget>

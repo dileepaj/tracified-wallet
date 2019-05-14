@@ -11,8 +11,11 @@
 
 <ion-content>
   <div *ngIf="Citems">
+    <div class="search">
     <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
   </div>
+  </div>
+
 
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
