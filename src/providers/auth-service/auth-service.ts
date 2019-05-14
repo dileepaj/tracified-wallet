@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as jwt from 'jsonwebtoken';
 import { Api } from '../api/api';
 import { ConnectivityServiceProvider } from '../connectivity-service/connectivity-service';
-import { ToastController } from 'ionic-angular';
+import { ToastController, Events } from 'ionic-angular';
 import { AES, enc } from 'crypto-js';
 import { Properties } from '../../shared/properties';
 
@@ -15,6 +15,7 @@ export class AuthServiceProvider {
     private apiService: Api,
     private connectivityService: ConnectivityServiceProvider,
     private toastCtrl: ToastController, private properties: Properties,
+    private events: Events
     ) {
     console.log('Hello AuthServiceProvider Provider');
 
@@ -137,9 +138,9 @@ export class AuthServiceProvider {
       this.checkTokenExpire(decryptedToken).then((notExpired) => {
         if (notExpired) {
           const decoded: any = jwt.decode(decryptedToken, { complete: true });
-          // console.log(decoded.payload);
-          // this.properties.userName = decoded.payload['username'];
+          this.properties.userName = JSON.stringify(decoded.payload['username']);
           localStorage.setItem('_username', JSON.stringify(decoded.payload['username']));
+          this.events.publish('dislayName', this.properties.userName);
           resolve(true);
         } else if (!notExpired) {
           // this.presentToast();

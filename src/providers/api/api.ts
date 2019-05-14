@@ -7,23 +7,14 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class Api {
   url: string = 'https://tracified-gateway.herokuapp.com';
-  // url: string = 'http://localhost:8000';
-
-  // LocalAdminURL: string = 'http://localhost:5000';
-  AdminURL: string = 'http://192.168.20.24:5000';
   LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
   loginurl: string = 'http://www.mocky.io/v2';
-  // token: string;
   reqOpts: any;
 
 
-  constructor(public http: HttpClient) {
+  constructor(public http: HttpClient) { }
 
-  }
-
-  ionViewDidLoad() {
-
-  }
+  ionViewDidLoad() { }
 
   get(endpoint: string, params?: any, reqOpts?: any) {
     if (!reqOpts) {

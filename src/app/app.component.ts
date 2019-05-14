@@ -9,6 +9,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { FirstRunPage } from '../pages';
 import { Settings } from '../providers';
 import { Properties } from '../shared/properties';
+import { Events } from 'ionic-angular';
 
 @Component({
   templateUrl: 'app.html'
@@ -33,20 +34,28 @@ export class MyApp {
     { icon: 'custom-logout', title: 'Logout', component: 'LoginPage' }
   ]
 
-  constructor(private deviceService: DeviceDetectorService, private device: Device, private translate: TranslateService, private properties: Properties, platform: Platform, settings: Settings, private config: Config, private statusBar: StatusBar, private splashScreen: SplashScreen) {
+  constructor(
+    private deviceService: DeviceDetectorService, 
+    private device: Device, 
+    private translate: TranslateService, 
+    private properties: Properties, 
+    platform: Platform, 
+    settings: Settings, 
+    private config: Config, 
+    private statusBar: StatusBar, 
+    private splashScreen: SplashScreen,
+    private events: Events
+    ) {
     platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
     });
     this.initTranslate();
-
     this.activePage = this.pages[0];
-
-    this.user = JSON.parse(localStorage.getItem('_username'))
-
+    this.user = JSON.parse(localStorage.getItem('_username'));
     this.deviceDetails(); 
+
+    this.events.subscribe('dislayName', (name) => {this.user = name; });
 
   }
 
@@ -62,11 +71,6 @@ export class MyApp {
     const isMobile = this.deviceService.isMobile();
     const isTablet = this.deviceService.isTablet();
     const isDesktopDevice = this.deviceService.isDesktop();
-    console.log(this.deviceInfo);
-    console.log(this.deviceInfo.userAgent);
-    console.log(isMobile);  // returns if the device is a mobile device (android / iPhone / windows-phone etc)
-    console.log(isTablet);  // returns if the device us a tablet (iPad etc)
-    console.log(isDesktopDevice); // returns if the app is running on a Desktop browser.
   }
 
   /**

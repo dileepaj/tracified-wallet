@@ -3,7 +3,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { IonicPage, NavController, ToastController, MenuController, AlertController, Toast, LoadingController } from 'ionic-angular';
 
 import { User, Api } from '../../providers';
-// import { MainPage } from '../';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { ResetPasswordPage } from '../reset-password/reset-password';
@@ -117,7 +116,7 @@ export class LoginPage {
     this.navCtrl.push(ResetPasswordPage, { type: 'forgotPassword' });
   }
 
-      /**
+/**
 * @desc retrieve blockchain accounts from admin backend  
 * @param 
 * @author Jaje thananjaje3@gmail.com
@@ -125,14 +124,10 @@ export class LoginPage {
 */
   getAccounts() {
     if (this.connectivity.onDevice) {
-      // this.presentLoading();
-
       this.api.getBCAccount().then((res) => {
         console.log(res);
         this.dissmissLoading();
-        //@ts-ignore
         if (res.status === 200 && res.body.accounts.accounts) {
-          //@ts-ignore
           const BCAccounts = res.body.accounts.accounts
           localStorage.setItem('_BCAccounts', JSON.stringify(BCAccounts));
           this.navCtrl.setRoot(TabsPage);
