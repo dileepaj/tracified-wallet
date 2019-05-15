@@ -6,17 +6,19 @@ import { Config, Nav, Platform } from 'ionic-angular';
 import { Device } from '@ionic-native/device/ngx';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
-import { FirstRunPage } from '../pages';
-import { Settings } from '../providers';
 import { Properties } from '../shared/properties';
 import { Events } from 'ionic-angular';
+import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { TabsPage } from '../pages/tabs/tabs';
+import { LoginPage } from '../pages/login/login';
+import { StorageServiceProvider } from '../providers/storage-service/storage-service';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   activePage: any;
-  rootPage = FirstRunPage;
+  rootPage;
   company = 'Tracified Wallet';
   userType = 'Admin'
   user: any;
@@ -39,23 +41,36 @@ export class MyApp {
     private device: Device, 
     private translate: TranslateService, 
     private properties: Properties, 
-    platform: Platform, 
-    settings: Settings, 
+    platform: Platform,
     private config: Config, 
     private statusBar: StatusBar, 
     private splashScreen: SplashScreen,
-    private events: Events
+    private events: Events,
+    private authService: AuthServiceProvider,
+    private storageService: StorageServiceProvider
     ) {
     platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
     });
+
+    console.log("App Comp constructor");
     this.initTranslate();
     this.activePage = this.pages[0];
-    this.user = JSON.parse(localStorage.getItem('_username'));
     this.deviceDetails(); 
 
     this.events.subscribe('dislayName', (name) => {this.user = name; });
+
+    this.authService.authorizeLocalProfile().then((res) => {
+      console.log("App component: Local Profile");
+      if(res) {
+        this.rootPage = TabsPage
+      } else {
+        this.rootPage = LoginPage
+      }
+    }).catch(() => {
+
+    });
 
   }
 
@@ -66,7 +81,6 @@ export class MyApp {
 * @return 
 */
   deviceDetails() {
-    console.log('hello `Home` component');
     this.deviceInfo = this.deviceService.getDeviceInfo();
     const isMobile = this.deviceService.isMobile();
     const isTablet = this.deviceService.isTablet();
@@ -127,6 +141,12 @@ export class MyApp {
   checkActive(page) {
     //get active page [logic]
     return page == this.activePage;
+  }
+
+  clearData(){
+    this.storageService.clearUser().then(() => {
+      //Log the event and clear all the other necessary information
+    });
   }
 
 }

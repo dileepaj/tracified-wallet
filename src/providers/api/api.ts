@@ -46,22 +46,6 @@ export class Api {
     return new Promise((resolve, reject) => {
       this.http.post(this.LocalAdminURL + '/' + 'sign/login', body, reqOpts)
         .subscribe(response => {
-          // console.log(response);
-          // const user = {
-          //   "UserName": "Jhon",
-          //   "Email": "Jhon@gmail.com",
-          //   "Password": "passwordhash",
-          //   "AccountName": "admin",
-          //   // "PublicKey": "GCKUXI3JRJANYOF3AM35Z22FGUGYYUIEBPE5TTZ7P3G6XAEFGYZC2POM",
-          //   // "PrivateKey": "U2FsdGVkX19buyZyRq0pkT6vBEtAQ36e5y0ZiuUfdzpBFD7Tj3KgWVKBmnyixlF5mK9RaX+J1VUVZ9jMLcJ1fv1NAk/vjU0vgBcIiZhUCRs="
-
-          //   "PublicKey": "GD4PIV4DVVKMJRJLERGTTNTKNG6Z67V7JFHYCJNWXMPR2DSQ5FDI2QCT",
-          //   "PrivateKey": "U2FsdGVkX19KzAegZaKEGdlktqrISd5Ks2C2/0Bm7dvj1z9wRQFdPr9JPI3ybo5aa63Zb5J/9zhZypNVU/E4HvFb4xMoh4qOHqN6fjTuE6g="
-          //   // "PublicKey": "GARYFJQY4YQ4V62KUPFSVKZLEZN7LHRDZJKUUWM456MFA2W3CM4XETFG",
-          //   // "PrivateKey": "U2FsdGVkX1/U7TxrrB+kzEiFPa9373k2TUQkRT5pFvUVJQRDURmUQi8Y9jQaSkceZp3kGoFraA1k8oITT8UK6/yjNNXNivug788HaSDJFzc="
-          // }
-          // localStorage.setItem('_user', JSON.stringify(user));
-
           resolve(response);
         },
           error => {

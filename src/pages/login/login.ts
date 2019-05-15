@@ -59,14 +59,7 @@ export class LoginPage {
     this.menuCtrl.enable(true);
   }
 
-      /**
-* @desc perform login authentication to admin API  
-* @param string $username
-* @param string $password 
-* @author Jaje thananjaje3@gmail.com
-* @return 
-*/
-  doLogin() {
+  login() {
     if (this.connectivity.onDevice) {
       this.presentLoading();
       const authmodel = {
@@ -75,14 +68,10 @@ export class LoginPage {
         newPassword: 'none'
       };
 
-      console.log(authmodel)
-
       this.authService.validateUser(authmodel).then((res) => {
         if (res.status === 200) {
-          localStorage.setItem('_token', JSON.stringify(res.body.Token))
           try {
             this.getAccounts();
-            this.authService.authorizeLocalProfile(res.body.Token);
           } catch (error) {
             console.log(error)
             this.navCtrl.setRoot(TabsPage);
