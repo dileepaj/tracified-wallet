@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IonicPage, NavController, ToastController, MenuController, AlertController, Toast, LoadingController } from 'ionic-angular';
 
@@ -9,6 +9,7 @@ import { ResetPasswordPage } from '../reset-password/reset-password';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { TabsPage } from '../tabs/tabs';
 import { AddAccountPage } from '../add-account/add-account';
+import { t } from '@angular/core/src/render3';
 
 @IonicPage()
 @Component({

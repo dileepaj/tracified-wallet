@@ -20,8 +20,8 @@ export class TabsPage {
   tab3Title = " ";
 
   constructor(public navCtrl: NavController, public translateService: TranslateService) {
-      this.tab1Title = 'RECEIVED';
-      this.tab2Title = 'SENT';
-      this.tab3Title = 'TRANSFER';
+      this.tab1Title = 'Received';
+      this.tab2Title = 'Sent';
+      this.tab3Title = 'Transfer';
   }
 }
