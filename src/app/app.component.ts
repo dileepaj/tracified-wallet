@@ -60,6 +60,7 @@ export class MyApp {
     this.deviceDetails();
 
     this.events.subscribe('dislayName', (name) => { this.user = name; });
+    this.events.subscribe('company', (company) => { this.company = company; });
 
     this.authService.authorizeLocalProfile().then((res) => {
       if (res) {
@@ -68,7 +69,7 @@ export class MyApp {
         this.rootPage = LoginPage
       }
     }).catch(() => {
-
+      //Redirect to some page if this fails
     });
 
   }

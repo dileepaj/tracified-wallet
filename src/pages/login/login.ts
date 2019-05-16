@@ -82,19 +82,19 @@ export class LoginPage {
           this.gotoPasswordResetPage(this.form.value.username, this.form.value.password);
         } else if (res.status === 403) {
           this.dissmissLoading();
-          this.userError('authenticationFailed', 'accountIsBlocked');
+          this.userError('Authentication Failed', 'Your account is blocked. Please contact an Admin.');
         } else {
           this.dissmissLoading();
-          this.userError('authenticationFailed', 'authenticationFailedDescription');
+          this.userError('Authentication Failed', 'Failed to log into your account.');
         }
       })
         .catch((error) => {
           this.dissmissLoading();
-          this.userError('authenticationFailed', 'authenticationFailedDescription');
+          this.userError('Authentication Failed', 'Failed to log into your account.');
           console.log(error);
         });
     } else {
-      this.presentToast('noInternet');
+      this.presentToast('There is no internet at the moment.');
     }
   }
 
@@ -122,7 +122,7 @@ export class LoginPage {
           localStorage.setItem('_BCAccounts', JSON.stringify(BCAccounts));
           this.navCtrl.setRoot(TabsPage);
         } else {
-          console.log('Error! requesting BC Accounts')
+          console.log('Error requesting Blockchain accounts')
           this.navCtrl.setRoot(TabsPage);
           // this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
         }
@@ -130,7 +130,7 @@ export class LoginPage {
         .catch((error) => {
           if (error.status === 406) {
             this.dissmissLoading();
-            console.log('Error! requesting BC Accounts')
+            console.log('Error requesting Blockchain accounts')
             this.navCtrl.setRoot(AddAccountPage);
             // this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
           } else {
@@ -142,7 +142,7 @@ export class LoginPage {
           }
         });
     } else {
-      this.presentToast('noInternet');
+      this.presentToast('There is no internet at the moment.');
       this.navCtrl.setRoot(TabsPage);
     }
   }
@@ -183,7 +183,7 @@ export class LoginPage {
     // this.translate.get(['pleasewait']).subscribe(text => {
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
-      content: 'pleasewait'
+      content: 'Please Wait'
     });
     // });
     this.loading.present();
