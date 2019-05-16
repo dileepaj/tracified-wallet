@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Camera } from '@ionic-native/camera';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { IonicStorageModule, Storage } from '@ionic/storage';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -13,7 +12,7 @@ import { DeviceDetectorModule, DeviceDetectorService } from 'ngx-device-detector
 
 
 // import { Items } from '../mocks/providers/items';
-import { Settings, User, Api } from '../providers';
+import { User, Api } from '../providers';
 import { MyApp } from './app.component';
 import { ItemReceivedPageModule } from '../pages/item-received/item-received.module';
 import { ItemSentPageModule } from '../pages/item-sent/item-sent.module';
@@ -28,6 +27,9 @@ import { SelectSearchableModule } from '../components/search-dropdown/select-mod
 import { IonicSelectableModule } from 'ionic-selectable';
 import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
 import { Device } from '@ionic-native/device/ngx';
+import { StorageServiceProvider } from '../providers/storage-service/storage-service';
+import { LoginPageModule } from '../pages/login/login.module';
+import { MappingServiceProvider } from '../providers/mapping-service/mapping-service';
 
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
@@ -35,20 +37,20 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
-export function provideSettings(storage: Storage) {
-  /**
-   * The Settings provider takes a set of default settings for your app.
-   *
-   * You can add new settings options at any time. Once the settings are saved,
-   * these values will not overwrite the saved values (this can be done manually if desired).
-   */
-  return new Settings(storage, {
-    option1: true,
-    option2: 'Ionitron J. Framework',
-    option3: '3',
-    option4: 'Hello'
-  });
-}
+// export function provideSettings(storage: Storage) {
+//   /**
+//    * The Settings provider takes a set of default settings for your app.
+//    *
+//    * You can add new settings options at any time. Once the settings are saved,
+//    * these values will not overwrite the saved values (this can be done manually if desired).
+//    */
+//   return new Settings(storage, {
+//     option1: true,
+//     option2: 'Ionitron J. Framework',
+//     option3: '3',
+//     option4: 'Hello'
+//   });
+// }
 
 @NgModule({
   declarations: [
@@ -67,6 +69,7 @@ export function provideSettings(storage: Storage) {
     DeviceDetectorModule.forRoot(),
     AddAccountPageModule,
     ItemSentPageModule,
+    LoginPageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -74,8 +77,7 @@ export function provideSettings(storage: Storage) {
         deps: [HttpClient]
       }
     }),
-    IonicModule.forRoot(MyApp),
-    IonicStorageModule.forRoot()
+    IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -92,11 +94,12 @@ export function provideSettings(storage: Storage) {
     Camera,
     SplashScreen,
     StatusBar,
-    { provide: Settings, useFactory: provideSettings, deps: [Storage] },
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     ConnectivityServiceProvider,
-    AuthServiceProvider
+    AuthServiceProvider,
+    StorageServiceProvider,
+    MappingServiceProvider
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -3,7 +3,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { IonicPage, NavController, ToastController, MenuController, AlertController, Toast, LoadingController } from 'ionic-angular';
 
 import { User, Api } from '../../providers';
-// import { MainPage } from '../';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { ResetPasswordPage } from '../reset-password/reset-password';
@@ -61,14 +60,7 @@ export class LoginPage {
     this.menuCtrl.enable(true);
   }
 
-      /**
-* @desc perform login authentication to admin API  
-* @param string $username
-* @param string $password 
-* @author Jaje thananjaje3@gmail.com
-* @return 
-*/
-  doLogin() {
+  login() {
     if (this.connectivity.onDevice) {
       this.presentLoading();
       const authmodel = {
@@ -77,14 +69,10 @@ export class LoginPage {
         newPassword: 'none'
       };
 
-      console.log(authmodel)
-
       this.authService.validateUser(authmodel).then((res) => {
         if (res.status === 200) {
-          localStorage.setItem('_token', JSON.stringify(res.body.Token))
           try {
             this.getAccounts();
-            this.authService.authorizeLocalProfile(res.body.Token);
           } catch (error) {
             console.log(error)
             this.navCtrl.setRoot(TabsPage);
@@ -118,7 +106,7 @@ export class LoginPage {
     this.navCtrl.push(ResetPasswordPage, { type: 'forgotPassword' });
   }
 
-      /**
+/**
 * @desc retrieve blockchain accounts from admin backend  
 * @param 
 * @author Jaje thananjaje3@gmail.com
@@ -126,14 +114,10 @@ export class LoginPage {
 */
   getAccounts() {
     if (this.connectivity.onDevice) {
-      // this.presentLoading();
-
       this.api.getBCAccount().then((res) => {
         console.log(res);
         this.dissmissLoading();
-        //@ts-ignore
         if (res.status === 200 && res.body.accounts.accounts) {
-          //@ts-ignore
           const BCAccounts = res.body.accounts.accounts
           localStorage.setItem('_BCAccounts', JSON.stringify(BCAccounts));
           this.navCtrl.setRoot(TabsPage);
