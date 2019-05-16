@@ -29,6 +29,7 @@ import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
 import { Device } from '@ionic-native/device/ngx';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
 import { LoginPageModule } from '../pages/login/login.module';
+import { MappingServiceProvider } from '../providers/mapping-service/mapping-service';
 
 // The translate loader needs to know where to load i18n files
 // in Ionic's static asset pipeline.
@@ -97,7 +98,8 @@ export function createTranslateLoader(http: HttpClient) {
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     ConnectivityServiceProvider,
     AuthServiceProvider,
-    StorageServiceProvider
+    StorageServiceProvider,
+    MappingServiceProvider
   ]
 })
 export class AppModule { }

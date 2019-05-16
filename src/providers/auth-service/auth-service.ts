@@ -7,6 +7,7 @@ import { ToastController, Events } from 'ionic-angular';
 import { AES, enc } from 'crypto-js';
 import { Properties } from '../../shared/properties';
 import { StorageServiceProvider } from '../storage-service/storage-service';
+import { MappingServiceProvider } from '../mapping-service/mapping-service';
 
 @Injectable()
 export class AuthServiceProvider {
@@ -19,7 +20,8 @@ export class AuthServiceProvider {
     private connectivityService: ConnectivityServiceProvider,
     private toastCtrl: ToastController, private properties: Properties,
     private events: Events,
-    private storageService: StorageServiceProvider
+    private storageService: StorageServiceProvider,
+    private mappingService: MappingServiceProvider
   ) { }
 
   validateUser(authmodel): Promise<any> {
@@ -42,11 +44,11 @@ export class AuthServiceProvider {
         }).then((res) => {
           if (res.status === 200) {
             this.properties.token = res.body.Token;
-            const decoded = jwt.decode(this.properties.token);
+            const decoded: any = jwt.decode(this.properties.token);
             this.storageService.setUser(authmodel.userName, AES.encrypt(this.properties.token, this.key).toString());
-            this.properties.userName = decoded["payload"]["username"]; 
-            this.events.publish('dislayName', this.properties.userName);
-            resolve(res);
+            this.setProperties(decoded).then(() => {
+              resolve(res);
+            });            
           } else {
             resolve(res);
           }
@@ -128,9 +130,9 @@ export class AuthServiceProvider {
           this.checkTokenExpire(decryptedToken).then((notExpired) => {
             if (notExpired) {
               const decoded: any = jwt.decode(decryptedToken, { complete: true });
-              this.properties.userName = decoded["payload"]["username"]; 
-              this.events.publish('dislayName', this.properties.userName);
-              resolve(true);
+              this.setProperties(decoded.payload).then(() => {
+                resolve(true);
+              });
             } else if (!notExpired) {
               this.presentToast('Your logging session has been expired. Please login again.');
               resolve(false);
@@ -146,12 +148,12 @@ export class AuthServiceProvider {
   }
 
   presentToast(message) {
-      let toast = this.toastCtrl.create({
-        message: message,
-        duration: 2500,
-        position: 'bottom'
-      });
-      toast.present();
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 2500,
+      position: 'bottom'
+    });
+    toast.present();
   }
 
   // check token expiration
@@ -165,11 +167,34 @@ export class AuthServiceProvider {
           resolve(true);
         } else {
           this.storageService.clearUser();
-          resolve(false);          
+          resolve(false);
         }
+      } else {
+        resolve(false);
       }
-      // resolve(false);
     });
+  }
+
+  setProperties(decodedToken): Promise<any> {
+    return new Promise((resolve) => {
+      this.properties.userName = decodedToken["username"];
+      this.properties.tenant = decodedToken['tenantID'];
+      this.properties.displayName = decodedToken['name'];
+      this.properties.company = decodedToken['company'];
+      this.properties.userType = decodedToken['type'];
+      this.properties.displayImage = decodedToken['displayImage'];
+      this.events.publish('dislayName', this.properties.userName);
+      this.setDisplayImagetoStorage();
+      resolve(true);
+    });
+  }
+
+  setDisplayImagetoStorage() {
+    if (this.properties.displayImage !== 'none') {
+      this.mappingService.toBase64Url(this.properties.displayImage, 'image/jpeg').then((base64Image) => {
+        this.storageService.setImage(this.properties.userName, base64Image);
+      });
+    }
   }
 
 }

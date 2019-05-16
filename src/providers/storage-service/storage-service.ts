@@ -11,6 +11,11 @@ export class StorageServiceProvider {
     storeName: 'profile'
   });
 
+  public photo = localforage.createInstance({
+    name: 'photo',
+    storeName: 'photo'
+  });
+
   constructor() {
   }
 
@@ -59,6 +64,10 @@ export class StorageServiceProvider {
         resolve(true);
       });
     });
+  }
+
+  setImage(username, image) {
+    this.photo.setItem(username, image);
   }
 
 }
