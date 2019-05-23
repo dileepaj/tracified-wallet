@@ -53,7 +53,7 @@ export class LoginPage {
   }
 
   ionViewDidLoad() {
-    // this.menuCtrl.enable(false);
+    this.menuCtrl.enable(false);
   }
 
   ionViewWillLeave() {
