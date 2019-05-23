@@ -3,6 +3,8 @@ import { IonicPage, NavController, ModalController, LoadingController } from 'io
 import { Server, Transaction } from 'stellar-sdk';
 import { Items } from '../../providers/items/items';
 import { ItemDetailPage } from '../item-detail/item-detail';
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { Properties } from '../../shared/properties';
 
 @IonicPage()
 @Component({
@@ -21,11 +23,17 @@ export class TransferPage {
   searchTerm: any;
   BCAccounts: any;
 
-  constructor(public navCtrl: NavController, public modalCtrl: ModalController, private loadingCtrl: LoadingController, public itemsProvider: Items) {
-    // this.currentItems = this.items.query();
-    this.user = JSON.parse(localStorage.getItem('_user'))
-    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
-    // this.user.PublicKey = 'GCZRSDPSU2TPDZMX4NFDE3OBQPACXVA4LH6E3LO3QXPBPONL4K6CTNBI';
+  constructor(
+    private navCtrl: NavController, 
+    private modalCtrl: ModalController, 
+    private loadingCtrl: LoadingController, 
+    private itemsProvider: Items,
+    private storage: StorageServiceProvider,
+    private properties: Properties
+    ) {
+      this.storage.getBcAccount(this.properties.userName).then((accounts) => {
+        this.BCAccounts = accounts;
+      });
   }
 
   ionViewDidLoad() {
@@ -42,10 +50,7 @@ export class TransferPage {
     this.presentLoading();
     console.log('Begin async operation', refresher);
     this.getBalance();
-    // setTimeout(() => {
-    //   console.log('Async operation has ended');
     refresher.complete();
-    // }, 2000);
   }
 
   openItem(item) {
@@ -57,19 +62,12 @@ export class TransferPage {
   }
 
   setFilteredItems() {
-    // console.log(this.searchTerm)
     this.Searcheditems = this.currentItems.filter((item) => {
       return item.asset_code.toLowerCase().includes(this.searchTerm.toLowerCase());
     });
 
   }
 
-  /**
-* @desc retrieve asset balance from Stellar horizon by passing public key  
-* @param string $pk - the public key of main account
-* @author Jaje thananjaje3@gmail.com
-* @return 
-*/
   getBalance() {
     let assets = [];
 

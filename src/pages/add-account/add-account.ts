@@ -17,14 +17,8 @@ import { get } from 'request';
 import { Api } from '../../providers';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { BcAccountPage } from '../bc-account/bc-account';
-// import { BcAccountPage } from '../bc-account/bc-account';
-
-/**
- * Generated class for the AddAccountPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { Properties } from '../../shared/properties';
 
 @IonicPage()
 @Component({
@@ -43,12 +37,15 @@ export class AddAccountPage {
   BCAccounts: any;
 
   constructor(public navCtrl: NavController,
-    public navParams: NavParams,
-    public alertCtrl: AlertController,
+    private navParams: NavParams,
+    private alertCtrl: AlertController,
     private api: Api,
     private connectivity: ConnectivityServiceProvider,
-    public toastCtrl: ToastController,
-    private loadingCtrl: LoadingController) {
+    private toastCtrl: ToastController,
+    private loadingCtrl: LoadingController,
+    private storage: StorageServiceProvider,
+    private properties: Properties
+    ) {
 
     this.form = new FormGroup({
       username: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
@@ -56,7 +53,9 @@ export class AddAccountPage {
       password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required]))
     });
 
-    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
+    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
+      this.BCAccounts = accounts;
+    });
 
   }
 

@@ -7,13 +7,8 @@ Network.useTestNetwork();
 import { AES, enc } from "crypto-js";
 import Duration from "duration";
 import { Api } from '../../providers';
-
-/**
- * Generated class for the ItemReceivedPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { Properties } from '../../shared/properties';
 
 @IonicPage()
 @Component({
@@ -32,11 +27,19 @@ export class ItemReceivedPage {
   items = [];
   BCAccounts: any;
 
-  constructor(public navCtrl: NavController, public api: Api, private alertCtrl: AlertController, private loadingCtrl: LoadingController,
-    public toastCtrl: ToastController, public itemsProvider: Items) {
-    this.user = JSON.parse(localStorage.getItem('_user'))
-    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
-    // this.loadCOCReceived();
+  constructor(
+    public navCtrl: NavController,
+    public api: Api,
+    private alertCtrl: AlertController,
+    private loadingCtrl: LoadingController,
+    public toastCtrl: ToastController,
+    public itemsProvider: Items,
+    private storage: StorageServiceProvider,
+    private properties: Properties
+  ) {
+    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
+      this.BCAccounts = accounts;
+    });
   }
 
 
@@ -59,8 +62,7 @@ export class ItemReceivedPage {
 */
   loadCOCReceived() {
     try {
-      // console.log(this.BCAccounts[0].pk);
-
+      console.log(this.BCAccounts);
       this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe((resp) => {
         if (resp != null) {
           // @ts-ignore

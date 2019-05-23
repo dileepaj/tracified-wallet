@@ -1,7 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as localforage from 'localforage';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Injectable()
 export class StorageServiceProvider {
@@ -9,6 +7,11 @@ export class StorageServiceProvider {
   public profile = localforage.createInstance({
     name: 'profile',
     storeName: 'profile'
+  });
+
+  public blockchainAccounts = localforage.createInstance({
+    name: 'bcAccounts',
+    storeName: 'bcAccounts'
   });
 
   public photo = localforage.createInstance({
@@ -68,6 +71,37 @@ export class StorageServiceProvider {
 
   setImage(username, image) {
     this.photo.setItem(username, image);
+  }
+
+  setBcAccount(username: string, accounts: any): Promise<any>{
+    return new Promise((resolve) => {
+      this.blockchainAccounts.setItem(username, accounts).then(() => {
+        resolve(true);
+      });
+    });    
+  }
+
+  getBcAccount(username){
+    return new Promise((resolve) => {
+      this.blockchainAccounts.length().then((noOfKeys) => {
+        if (noOfKeys > 0) {
+          this.blockchainAccounts.getItem(username).then((account) => {
+            resolve(account);
+          });
+        } else {
+          resolve(false);
+        }
+      });
+
+    });
+  }
+
+  clearBcAccounts(){
+    return new Promise((resolve) => {
+      this.blockchainAccounts.clear().then(() => {
+        resolve(true);
+      });
+    });
   }
 
 }

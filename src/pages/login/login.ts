@@ -10,6 +10,8 @@ import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { TabsPage } from '../tabs/tabs';
 import { AddAccountPage } from '../add-account/add-account';
 import { t } from '@angular/core/src/render3';
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { Properties } from '../../shared/properties';
 
 @IonicPage()
 @Component({
@@ -23,28 +25,26 @@ export class LoginPage {
   private toastInstance: Toast;
   loading;
 
-  // The account fields for the login form.
-  // If you're using the username field with or without email, make
-  // sure to add it to the type
-
-  // Our translated text strings
   private loginErrorString: string;
   form: any;
 
-  constructor(public navCtrl: NavController,
-    public menuCtrl: MenuController,
-    public user: User,
+  constructor(
+    private navCtrl: NavController,
+    private menuCtrl: MenuController,
+    private user: User,
     private authService: AuthServiceProvider,
     private api: Api,
     private connectivity: ConnectivityServiceProvider,
-    public toastCtrl: ToastController,
+    private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
-    public alertCtrl: AlertController,
-    public translateService: TranslateService) {
+    private alertCtrl: AlertController,
+    private translateService: TranslateService,
+    private storage: StorageServiceProvider,
+    private properties: Properties
+  ) {
     this.form = new FormGroup({
       username: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
       password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required]))
-      // password: new FormControl('', Validators.compose([Validators.maxLength(30), Validators.minLength(8), Validators.pattern('[a-zA-Z ]*'), Validators.required]))
     });
 
     this.translateService.get('LOGIN_ERROR').subscribe((value) => {
@@ -106,25 +106,24 @@ export class LoginPage {
     this.navCtrl.push(ResetPasswordPage, { type: 'forgotPassword' });
   }
 
-/**
-* @desc retrieve blockchain accounts from admin backend  
-* @param 
-* @author Jaje thananjaje3@gmail.com
-* @return 
-*/
+  /**
+  * @desc retrieve blockchain accounts from admin backend  
+  * @param 
+  * @author Jaje thananjaje3@gmail.com
+  * @return 
+  */
   getAccounts() {
     if (this.connectivity.onDevice) {
       this.api.getBCAccount().then((res) => {
         console.log(res);
         this.dissmissLoading();
         if (res.status === 200 && res.body.accounts.accounts) {
-          const BCAccounts = res.body.accounts.accounts
-          localStorage.setItem('_BCAccounts', JSON.stringify(BCAccounts));
+          const BCAccounts = res.body.accounts.accounts;
+          this.storage.setBcAccount(this.properties.userName, BCAccounts);
           this.navCtrl.setRoot(TabsPage);
         } else {
           console.log('Error requesting Blockchain accounts')
           this.navCtrl.setRoot(TabsPage);
-          // this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
         }
       })
         .catch((error) => {
@@ -180,12 +179,10 @@ export class LoginPage {
   }
 
   presentLoading() {
-    // this.translate.get(['pleasewait']).subscribe(text => {
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
       content: 'Please Wait'
     });
-    // });
     this.loading.present();
   }
 

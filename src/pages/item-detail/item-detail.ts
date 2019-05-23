@@ -7,6 +7,9 @@ import { get } from 'request';
 import { Api } from '../../providers';
 var StellarSdk = require('stellar-sdk')
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { Properties } from '../../shared/properties';
+
 var server = new Server('https://horizon-testnet.stellar.org');
 StellarSdk.Network.useTestNetwork();
 
@@ -28,7 +31,7 @@ export class ItemDetailPage {
   isLoadingPresent: boolean;
   // selectedItem: string;
   selectedReceiver: any;
-  COCForm: { selectedItem: string, identifier: string, qty: string, receiver: string, vaidity: Date, } = {
+  COCForm: { selectedItem: string, identifier: string, qty: string, receiver: string, vaidity: Date } = {
     selectedItem: '',
     identifier: '',
     qty: '',
@@ -36,14 +39,22 @@ export class ItemDetailPage {
     vaidity: new Date()
   };
   BCAccounts: any;
-  constructor(public navCtrl: NavController, private toastCtrl: ToastController,
-    private api: Api, private connectivity: ConnectivityServiceProvider,
-    private loadingCtrl: LoadingController, navParams: NavParams, public itemsProvider: Items, private alertCtrl: AlertController) {
+  constructor(
+    private navCtrl: NavController,
+    private toastCtrl: ToastController,
+    private api: Api, 
+    private connectivity: ConnectivityServiceProvider,
+    private loadingCtrl: LoadingController,
+    private navParams: NavParams,
+    private itemsProvider: Items,
+    private alertCtrl: AlertController,
+    private storage: StorageServiceProvider,
+    private properties: Properties
+  ) {
 
-    this.user = JSON.parse(localStorage.getItem('_user'))
-    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
-
-
+    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
+      this.BCAccounts = accounts;
+    });
     this.item = navParams.get('item');
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
     this.receivers = navParams.get('receivers');
@@ -175,7 +186,7 @@ export class ItemDetailPage {
     console.log(this.COCForm);
 
     // Parallel
-    Promise.all([this.subAccountValidator(this.COCForm.receiver), this.COCVerification(signerSK), 
+    Promise.all([this.subAccountValidator(this.COCForm.receiver), this.COCVerification(signerSK),
       // this.getPreviousTXNID(this.COCForm.identifier)
     ])
       .then((res2) => {
@@ -666,8 +677,8 @@ export class ItemDetailPage {
           // this.dissmissLoading();
           if (res.status === 200) {
             this.presentToast('sub Account successfully added');
-            this.BCAccounts[0].subAccounts.push(subAcc.publicKey())
-            localStorage.setItem('_BCAccounts', JSON.stringify(this.BCAccounts));
+            this.BCAccounts[0].subAccounts.push(subAcc.publicKey());
+            this.storage.setBcAccount(this.properties.userName, this.BCAccounts);
             resolve();
           } else if (res.status === 406) {
             this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');

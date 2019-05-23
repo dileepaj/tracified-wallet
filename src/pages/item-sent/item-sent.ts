@@ -4,13 +4,8 @@ import { Items } from '../../providers/items/items';
 import { Transaction } from 'stellar-sdk';
 import Duration from "duration";
 import { Api } from '../../providers';
-
-/**
- * Generated class for the ItemSentPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { Properties } from '../../shared/properties';
 
 @IonicPage()
 @Component({
@@ -18,7 +13,6 @@ import { Api } from '../../providers';
   templateUrl: 'item-sent.html',
 })
 export class ItemSentPage {
-  // @Input() status: string;
   searchTerm: any = '';
 
   items = []
@@ -29,10 +23,18 @@ export class ItemSentPage {
   Citems: any;
   BCAccounts: any;
 
-  constructor(public navCtrl: NavController, public api: Api, private alertCtrl: AlertController, private loadingCtrl: LoadingController, public itemsProvider: Items) {
-    this.user = JSON.parse(localStorage.getItem('_user'))
-    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
-    // this.loadCOCSent();
+  constructor(
+    public navCtrl: NavController,
+    public api: Api,
+    private alertCtrl: AlertController,
+    private loadingCtrl: LoadingController,
+    public itemsProvider: Items,
+    private storage: StorageServiceProvider,
+    private properties: Properties
+  ) {
+    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
+      this.BCAccounts = accounts;
+    });
   }
 
   ionViewDidLoad() {
