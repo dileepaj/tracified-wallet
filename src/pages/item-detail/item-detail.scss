@@ -18,11 +18,11 @@ page-item-detail {
     background-color: #28A745;
 }
 
-  .item-input-has-focus, .input-has-focus {
+  // .item-input-has-focus, .input-has-focus {
     
-    // border-color: #28A745 !important;
-    // border: 5px !important;
-  }
+  //   // border-color: #28A745 !important;
+  //   // border: 5px !important;
+  // }
   #dropdown{
     border: transparent;
     width: -webkit-fill-available;
@@ -50,7 +50,7 @@ page-item-detail {
   }
 
 .label-md[stacked]{
-    margin: 2px 0px 25px 10px;
+    margin: 12px 0px 6px 0px;
 }
 
   #options{
@@ -61,10 +61,10 @@ page-item-detail {
     margin:auto;
   }
 
-  ion-label{
-    // padding: 5px !important;
+  // ion-label{
+  //   // padding: 5px !important;
 
-  }
+  // }
 
   #verticalAlign{
     height: auto;

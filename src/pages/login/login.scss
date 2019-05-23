@@ -24,7 +24,7 @@ page-login {
       width: 75%;
       margin: auto;
       font-size: 0.9em;
-      max-width: 20%;
+      letter-spacing: 2px;
       // background-color: #00c853 !important;
       // padding: 0 10%;
     }
@@ -42,13 +42,13 @@ page-login {
       background-repeat: no-repeat;
     }
     .hide-icon {
-      color: #00c853 !important; 
+      color: #2EBE60 !important; 
     }
     .item-input-has-focus .label-md[floating], .input-has-focus .label-md[floating]{
-      color: #00c853 !important;
+      color: #2EBE60 !important;
     }
     .item-md.item-input .item-inner {
-      border-bottom-color:#00c853 !important;
+      border-bottom-color:2EBE60 !important;
     }
     .item.md {
       padding: 0 0 0 0 !important;
