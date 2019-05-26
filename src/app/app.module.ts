@@ -31,31 +31,13 @@ import { StorageServiceProvider } from '../providers/storage-service/storage-ser
 import { LoginPageModule } from '../pages/login/login.module';
 import { MappingServiceProvider } from '../providers/mapping-service/mapping-service';
 
-// The translate loader needs to know where to load i18n files
-// in Ionic's static asset pipeline.
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
-// export function provideSettings(storage: Storage) {
-//   /**
-//    * The Settings provider takes a set of default settings for your app.
-//    *
-//    * You can add new settings options at any time. Once the settings are saved,
-//    * these values will not overwrite the saved values (this can be done manually if desired).
-//    */
-//   return new Settings(storage, {
-//     option1: true,
-//     option2: 'Ionitron J. Framework',
-//     option3: '3',
-//     option4: 'Hello'
-//   });
-// }
-
 @NgModule({
   declarations: [
-    MyApp,
-    
+    MyApp
   ],
   imports: [
     BrowserModule, 
@@ -86,15 +68,13 @@ export function createTranslateLoader(http: HttpClient) {
   providers: [
     Api,
     Properties,
-    Network, 
-    // Items,
+    Network,
     User,
     Device,
     DeviceDetectorService,
     Camera,
     SplashScreen,
     StatusBar,
-    // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     ConnectivityServiceProvider,
     AuthServiceProvider,

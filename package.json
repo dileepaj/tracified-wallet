@@ -74,5 +74,8 @@
       "android",
       "browser"
     ]
+  },
+  "config": {
+    "ionic_webpack": "./config/webpack.config.js"
   }
 }

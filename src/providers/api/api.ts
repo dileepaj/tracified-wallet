@@ -1,18 +1,15 @@
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Properties } from '../../shared/properties';
 
-/**
- * Api is a generic REST Api handler. Set your API url first.
- */
 @Injectable()
 export class Api {
   url: string = 'https://tracified-gateway.herokuapp.com';
   LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
-  loginurl: string = 'http://www.mocky.io/v2';
   reqOpts: any;
 
 
-  constructor(public http: HttpClient) { }
+  constructor(public http: HttpClient, private properties: Properties) { }
 
   ionViewDidLoad() { }
 
@@ -62,7 +59,7 @@ export class Api {
         headers: new HttpHeaders({
           'Accept': 'application/json',
           'Content-Type': 'Application/json',
-          'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+          'Authorization': 'Bearer ' + this.properties.token
         })
       }
       this.http.post(this.LocalAdminURL + '/' + 'api/bc/key/account/public', body, this.reqOpts)
@@ -88,8 +85,6 @@ export class Api {
       }
       this.http.get(this.url + '/transaction/lastTxn/' + Identifier, this.reqOpts)
         .subscribe(response => {
-          // console.log(response);
-
           resolve(response);
         },
           error => {
@@ -101,19 +96,16 @@ export class Api {
 
   getBCAccount(): Promise<any> {
     return new Promise((resolve, reject) => {
-      // console.log(JSON.parse(localStorage.getItem('_token')))
       this.reqOpts = {
         observe: 'response',
         headers: new HttpHeaders({
           'Accept': 'application/json',
           'Content-Type': 'Application/json',
-          'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+          'Authorization': 'Bearer ' + this.properties.token
         })
-      }
+      };
       this.http.get(this.LocalAdminURL + '/api/bc/keys', this.reqOpts)
         .subscribe(response => {
-          // console.log(response);
-
           resolve(response);
         },
           error => {
@@ -125,13 +117,12 @@ export class Api {
 
   addMainAccount(body): Promise<any> {
     return new Promise((resolve, reject) => {
-      // console.log(JSON.parse(localStorage.getItem('_token')))
       this.reqOpts = {
         observe: 'response',
         headers: new HttpHeaders({
           'Accept': 'application/json',
           'Content-Type': 'Application/json',
-          'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+          'Authorization': 'Bearer ' + this.properties.token,
         })
       }
       console.log(body);
@@ -155,7 +146,7 @@ export class Api {
       headers: new HttpHeaders({
         'Accept': 'application/json',
         'Content-Type': 'Application/json',
-        'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+        'Authorization': 'Bearer ' + this.properties.token,
       })
     }
     console.log(body);
@@ -164,13 +155,12 @@ export class Api {
 
   addSubAccount(body): Promise<any> {
     return new Promise((resolve, reject) => {
-      // console.log(JSON.parse(localStorage.getItem('_token')))
       this.reqOpts = {
         observe: 'response',
         headers: new HttpHeaders({
           'Accept': 'application/json',
           'Content-Type': 'Application/json',
-          'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+          'Authorization': 'Bearer ' + this.properties.token,
         })
       }
       this.http.put(this.LocalAdminURL + '/api/bc/key/sub', body, this.reqOpts)
@@ -188,7 +178,6 @@ export class Api {
 
   subAccountStatus(body): Promise<any> {
     return new Promise((resolve, reject) => {
-      // console.log(JSON.parse(localStorage.getItem('_token')))
       this.reqOpts = {
         observe: 'response',
         headers: new HttpHeaders({
@@ -211,13 +200,12 @@ export class Api {
 
   validateMainAccount(body): Promise<any> {
     return new Promise((resolve, reject) => {
-      // console.log(JSON.parse(localStorage.getItem('_token')))
       this.reqOpts = {
         observe: 'response',
         headers: new HttpHeaders({
           'Accept': 'application/json',
           'Content-Type': 'Application/json',
-          'Authorization': `bearer ${JSON.parse(localStorage.getItem('_token'))}`,
+          'Authorization': 'Bearer ' + this.properties.token
         })
       }
       this.http.post(this.LocalAdminURL + '/api/bc/key/main/account', body, this.reqOpts)
@@ -282,11 +270,5 @@ export class Api {
     return this.http.put(this.url + '/' + endpoint, body, reqOpts);
   }
 
-  delete(endpoint: string, reqOpts?: any) {
-    return this.http.delete(this.loginurl + '/' + endpoint, reqOpts);
-  }
-
-  patch(endpoint: string, body: any, reqOpts?: any) {
-    return this.http.patch(this.url + '/' + endpoint, body, reqOpts);
-  }
+ 
 }

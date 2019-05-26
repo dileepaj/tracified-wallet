@@ -17,14 +17,8 @@ import { get } from 'request';
 import { Api } from '../../providers';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { BcAccountPage } from '../bc-account/bc-account';
-// import { BcAccountPage } from '../bc-account/bc-account';
-
-/**
- * Generated class for the AddAccountPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { Properties } from '../../shared/properties';
 
 @IonicPage()
 @Component({
@@ -43,12 +37,15 @@ export class AddAccountPage {
   BCAccounts: any;
 
   constructor(public navCtrl: NavController,
-    public navParams: NavParams,
-    public alertCtrl: AlertController,
+    private navParams: NavParams,
+    private alertCtrl: AlertController,
     private api: Api,
     private connectivity: ConnectivityServiceProvider,
-    public toastCtrl: ToastController,
-    private loadingCtrl: LoadingController) {
+    private toastCtrl: ToastController,
+    private loadingCtrl: LoadingController,
+    private storage: StorageServiceProvider,
+    private properties: Properties
+    ) {
 
     this.form = new FormGroup({
       username: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
@@ -56,7 +53,9 @@ export class AddAccountPage {
       password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required]))
     });
 
-    this.BCAccounts = JSON.parse(localStorage.getItem('_BCAccounts'))
+    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
+      this.BCAccounts = accounts;
+    });
 
   }
 
@@ -86,16 +85,12 @@ export class AddAccountPage {
             console.log(publicKey)
             console.log(secretKey)
             this.createMultipleTrustline(pair).then(() => {
-              //@ts-ignore
               this.multisignSubAccount(pair2, publicKey).then(() => {
-                //@ts-ignore
                 this.encyrptSecret(secretKey, this.form.value.password).then((ciphertext) => {
-                  console.log(ciphertext);
                   const account = {
                     "account": {
                       "mainAccount": {
                         "accountName": this.form.value.username,
-                        //@ts-ignore
                         "pk": publicKey,
                         "sk": ciphertext,
                         //@ts-ignore
@@ -112,42 +107,42 @@ export class AddAccountPage {
                     } else if (res.status === 205) {
 
                     } else if (res.status === 403) {
-                      this.userError('authenticationFailed', 'accountIsBlocked');
+                      this.userError('Authentication Failed', 'Your account is blocked. Please contact an admin.');
                     } else {
-                      this.userError('authenticationFailed', 'authenticationFailedDescription');
+                      this.userError('Authentication Failed', 'Could not authenticate the account.');
                     }
                   })
                     .catch((error) => {
                       this.dissmissLoading();
-                      this.userError('authenticationFailed', 'authenticationFailedDescription');
+                      this.userError('Authentication Failed', 'authenticationFailedDescription');
                       console.log(error);
                     });
                 }).catch(e => {
                   console.log(e)
                   if (this.isLoadingPresent) {
                     this.dissmissLoading();
-                    this.presentToast('Error! encyrptSecret.');
+                    this.presentToast('Error occured while encrypting the key. Please contact an admin.');
                   }
                 })
               }).catch(e => {
                 console.log(e)
                 if (this.isLoadingPresent) {
                   this.dissmissLoading();
-                  this.presentToast('Error! createMultipleTrustline.');
+                  this.presentToast('Error occured. Could not create multiple trust lines.');
                 }
               })
             }).catch(e => {
               console.log(e)
               if (this.isLoadingPresent) {
                 this.dissmissLoading();
-                this.presentToast('Error! createAddress.');
+                this.presentToast('Ops! Something went wrong!');
               }
             })
           }).catch(e => {
             console.log(e)
             if (this.isLoadingPresent) {
               this.dissmissLoading();
-              this.presentToast('Error! createAddress.');
+              this.presentToast('Ops! Something went wrong!');
             }
           })
         }).catch(e => {
@@ -162,12 +157,12 @@ export class AddAccountPage {
           console.log(e)
           if (this.isLoadingPresent) {
             this.dissmissLoading();
-            this.presentToast('Error! validateMainAccount.');
+            this.presentToast('Could not validate the main account! Please try again.');
           }
         })
 
     } else {
-      this.presentToast('noInternet');
+      this.presentToast('There is no internet connection to complete this task. Please try again.');
     }
   }
 
@@ -193,23 +188,22 @@ export class AddAccountPage {
           console.log(res.body);
           this.dissmissLoading();
           if (res.status === 200) {
-            this.presentToast('sub Account successfully added');
+            this.presentToast('Sub account successfully added.');
             resolve();
 
           } else if (res.status === 406) {
             this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
           } else {
-            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            this.userError('Authentication Failed', 'Could not authenticate the account.');
           }
-        })
-          .catch((error) => {
+        }).catch((error) => {
             this.dissmissLoading();
-            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            this.userError('Authentication Failed', 'Could not authenticate the account.');
             console.log(error);
           });
       })
     } else {
-      this.presentToast('noInternet');
+      this.presentToast('There is no internet connection to complete this task. Please try again.');
     }
   }
 
@@ -236,19 +230,18 @@ export class AddAccountPage {
             resolve();
           } else {
             this.dissmissLoading();
-            this.userError('Main Account', 'Duplicate Main Account found!');
+            this.userError('Error', 'Duplicate main account found!');
             reject();
           }
-        })
-          .catch((error) => {
+        }).catch((error) => {
             this.dissmissLoading();
-            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            this.userError('Authentication Failed', 'Could not authenticate the account.');
             console.log(error);
             reject();
           });
       })
     } else {
-      this.presentToast('noInternet');
+      this.presentToast('There is no internet connection to complete this task. Please try again.');
     }
   }
 
@@ -299,14 +292,10 @@ export class AddAccountPage {
         json: true
       }, function (error, response, body) {
         if (error || response.statusCode !== 200) {
-          console.error('ERROR!', error || body);
           reject(error);
         }
         else {
-          console.log('SUCCESS! You have a new account :)\n', body);
-
           resolve(pair);
-
         }
       });
     })
@@ -323,15 +312,7 @@ export class AddAccountPage {
       var receivingKeys = pair;
       server.loadAccount(receivingKeys.publicKey())
         .then(function (account) {
-          const txBuilder = new TransactionBuilder(account)
-
-          // Create an object to represent the new asset
-          // var Aple = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-          // var Mango = new Asset('Mango', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-          // var Banana = new Asset('Banana', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-          // var Grapes = new Asset('Grapes', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-
-          // var assetArr = [Aple, Mango, Banana, Grapes];
+          const txBuilder = new TransactionBuilder(account);
 
           var Aple = new Asset('Apple', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
           var Mango = new Asset('Mango', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
@@ -350,8 +331,6 @@ export class AddAccountPage {
 
             const tx = txBuilder.build();
             tx.sign(receivingKeys);
-            console.log("XDR............");
-            console.log(tx.toEnvelope().toXDR('base64'));
 
             server.submitTransaction(tx)
               .then(function (transactionResult) {
@@ -421,11 +400,6 @@ export class AddAccountPage {
       return new Promise((resolve, reject) => {
         // Encrypt
         var ciphertext = AES.encrypt(secret, signer);
-
-        console.log("secret => " + secret);
-        console.log("signer => " + signer);
-        console.log("ciphertext => " + ciphertext);
-
         resolve(ciphertext.toString());
       })
     } catch (error) {
@@ -473,7 +447,7 @@ export class AddAccountPage {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
-      content: 'pleasewait'
+      content: 'Please Wait'
     });
 
     this.loading.present();

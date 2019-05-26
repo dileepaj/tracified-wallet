@@ -127,7 +127,7 @@ export class SelectSearchablePage {
             })
 
         } else {
-            this.presentToast('noInternet');
+            this.presentToast('There is no internet at the moment.');
         }
     }
 
@@ -242,7 +242,7 @@ export class SelectSearchablePage {
         // this.translate.get(['pleasewait']).subscribe(text => {
         this.loading = this.loadingCtrl.create({
             dismissOnPageChange: false,
-            content: 'pleasewait'
+            content: 'Please Wait'
         });
         // });
         this.loading.present();

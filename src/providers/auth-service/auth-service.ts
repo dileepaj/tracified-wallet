@@ -184,6 +184,7 @@ export class AuthServiceProvider {
       this.properties.userType = decodedToken['type'];
       this.properties.displayImage = decodedToken['displayImage'];
       this.events.publish('dislayName', this.properties.userName);
+      this.events.publish('company', this.properties.company);
       this.setDisplayImagetoStorage();
       resolve(true);
     });

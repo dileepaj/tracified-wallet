@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { Config, Nav, Platform } from 'ionic-angular';
+import { Config, Nav, Platform, AlertController } from 'ionic-angular';
 import { Device } from '@ionic-native/device/ngx';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
@@ -28,48 +28,48 @@ export class MyApp {
 
   //side menu pages
   pages: any[] = [
-    { icon: 'custom-itemIcon', title: 'Items', component: 'TabsPage' },
-    { icon: 'custom-blockchain', title: 'Accounts', component: 'BcAccountPage' },
-    { icon: 'custom-tutorial', title: 'Tutorial', component: 'TutorialPage' },
-    { icon: 'custom-settings', title: 'Settings', component: 'SettingsPage' },
-    { icon: 'custom-about', title: 'About', component: 'ContentPage' },
-    { icon: 'custom-logout', title: 'Logout', component: 'LoginPage' }
+    { icon: 'custom-itemIcon', title: 'Items', component: 'TabsPage', action: null },
+    { icon: 'custom-blockchain', title: 'Accounts', component: 'BcAccountPage', action: null },
+    { icon: 'custom-tutorial', title: 'Tutorial', component: 'TutorialPage', action: null },
+    { icon: 'custom-settings', title: 'Settings', component: 'SettingsPage', action: null },
+    { icon: 'custom-about', title: 'About', component: 'ContentPage', action: null },
+    { icon: 'custom-logout', title: 'Logout', component: 'LoginPage', action: this.logOut.bind(this) }
   ]
 
   constructor(
-    private deviceService: DeviceDetectorService, 
-    private device: Device, 
-    private translate: TranslateService, 
-    private properties: Properties, 
+    private deviceService: DeviceDetectorService,
+    private device: Device,
+    private translate: TranslateService,
+    private properties: Properties,
     platform: Platform,
-    private config: Config, 
-    private statusBar: StatusBar, 
+    private config: Config,
+    private statusBar: StatusBar,
     private splashScreen: SplashScreen,
     private events: Events,
     private authService: AuthServiceProvider,
+    private alertCtrl: AlertController,
     private storageService: StorageServiceProvider
-    ) {
+  ) {
     platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
     });
 
-    console.log("App Comp constructor");
     this.initTranslate();
     this.activePage = this.pages[0];
-    this.deviceDetails(); 
+    this.deviceDetails();
 
-    this.events.subscribe('dislayName', (name) => {this.user = name; });
+    this.events.subscribe('dislayName', (name) => { this.user = name; });
+    this.events.subscribe('company', (company) => { this.company = company; });
 
     this.authService.authorizeLocalProfile().then((res) => {
-      console.log("App component: Local Profile");
-      if(res) {
+      if (res) {
         this.rootPage = TabsPage
       } else {
         this.rootPage = LoginPage
       }
     }).catch(() => {
-
+      //Redirect to some page if this fails
     });
 
   }
@@ -126,10 +126,13 @@ export class MyApp {
 * @return 
 */
   openPage(page) {
-    // Reset the content nav to have just this page
-    // we wouldn't want the back button to show in this scenario
-    this.nav.setRoot(page.component);
-    this.activePage = page;
+    if (page.action) {
+      let action = page.action;
+      action();
+    } else {
+      this.nav.setRoot(page.component);
+      this.activePage = page;
+    }
   }
 
   /**
@@ -139,14 +142,34 @@ export class MyApp {
   * @return page which is active
 */
   checkActive(page) {
-    //get active page [logic]
     return page == this.activePage;
   }
 
-  clearData(){
-    this.storageService.clearUser().then(() => {
+  clearData() {
+    this.storageService.clearUser().then(() => {      
+      this.nav.setRoot(LoginPage);
       //Log the event and clear all the other necessary information
     });
+  }
+
+  logOut() {
+    let confirm = this.alertCtrl.create({
+      title: 'Confirmation',
+      message: 'Are you sure you want to logout?',
+      buttons: [
+        {
+          text: 'No',
+          handler: () => {
+          }
+        }, {
+          text: 'Yes',
+          handler: () => {
+            this.clearData();
+          }
+        }
+      ]
+    });
+    confirm.present();    
   }
 
 }
