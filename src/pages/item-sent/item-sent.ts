@@ -50,12 +50,8 @@ export class ItemSentPage {
 
   doRefresh(refresher) {
     this.presentLoading();
-    console.log('Begin async operation', refresher);
     this.loadCOCSent();
-    // setTimeout(() => {
-    //   console.log('Async operation has ended');
     refresher.complete();
-    // }, 2000);
   }
 
   setFilteredItems() {
@@ -162,7 +158,6 @@ export class ItemSentPage {
 
             })
         } else {
-          console.log('zero COC Sent')
           if (this.isLoadingPresent) { this.dissmissLoading(); }
 
         }
@@ -213,7 +208,6 @@ export class ItemSentPage {
         //@ts-ignore
         resolve(resp.body.pk)
       }, (err) => {
-        console.log('error in querying names from public keys')
         if (this.isLoadingPresent) { this.dissmissLoading(); }
         reject(err)
 
@@ -246,7 +240,7 @@ export class ItemSentPage {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
-      content: 'pleasewait'
+      content: 'Please Wait'
     });
 
     this.loading.present();

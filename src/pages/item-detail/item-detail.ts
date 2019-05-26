@@ -42,7 +42,7 @@ export class ItemDetailPage {
   constructor(
     private navCtrl: NavController,
     private toastCtrl: ToastController,
-    private api: Api, 
+    private api: Api,
     private connectivity: ConnectivityServiceProvider,
     private loadingCtrl: LoadingController,
     private navParams: NavParams,
@@ -117,61 +117,51 @@ export class ItemDetailPage {
       this.subAccountStatus().then((subAccounts: any) => {
         var availableArr = subAccounts.filter(function (al) {
           return al.available == true
-        })
-        console.log("availableArr");
-        console.log(availableArr);
+        });
         var matchingArr = subAccounts.filter(function (ml) {
           return ml.available == false && ml.receiver == receiver
-        })
-        console.log("matchingArr");
-        console.log(matchingArr.length);
+        });
 
         if (availableArr.length > 0) {
-          console.log("found available")
-          // availableArr[0].available = false
           resolve(availableArr[0]);
         } else if (availableArr.length == 0 && matchingArr.length >= 1) {
-          console.log("seq No ++")
-          // matchingArr[0].available = false
           resolve(matchingArr[0]);
         } else {
           this.createAddress().then((pair) => {
 
             this.multisignSubAccount(pair, this.BCAccounts[0].pk).then(() => {
               this.addSubAccount(pair).then(() => {
-                console.log("create new subAcc")
                 //@ts-ignore
                 resolve({ subAccount: pair.publicKey(), sequenceNo: 0 });
               }).catch(e => {
                 console.log(e)
                 if (this.isLoadingPresent) {
                   this.dissmissLoading();
-                  this.presentToast('Error! addSubAccount failed.');
+                  this.presentToast('Could not add the sub account. Please try again.');
                 }
               })
             }).catch(e => {
               console.log(e)
               if (this.isLoadingPresent) {
                 this.dissmissLoading();
-                this.presentToast('Error! multisignSubAccount unsuccesfull.');
+                this.presentToast('Multi signing failed for sub account. Please try again.');
               }
             })
           }).catch(e => {
             console.log(e)
             if (this.isLoadingPresent) {
               this.dissmissLoading();
-              this.presentToast('Error! createAddress unsuccesfull.');
+              this.presentToast('Creating address failed. Please try again.');
             }
           })
         }
+      }).catch(e => {
+        console.log(e)
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+          this.presentToast('Ops! Something went wrong.');
+        }
       })
-        .catch(e => {
-          console.log(e)
-          if (this.isLoadingPresent) {
-            this.dissmissLoading();
-            this.presentToast('Error! subAccountStatus unsuccesfull.');
-          }
-        })
     })
   }
 
@@ -186,37 +176,24 @@ export class ItemDetailPage {
     console.log(this.COCForm);
 
     // Parallel
-    Promise.all([this.subAccountValidator(this.COCForm.receiver), this.COCVerification(signerSK),
-      // this.getPreviousTXNID(this.COCForm.identifier)
-    ])
-      .then((res2) => {
-        // console.log(res2);
-        //@ts-ignore
-        Promise.all([this.AcceptBuild(this.COCForm.identifier, res2[1], res2[0].subAccount, res2[0], signerSK), this.RejectBuild(res2[1], res2[0].subAccount, res2[0], signerSK)])
-          .then((res3) => {
-            // console.log(res3);
-            // console.log(res2);
+    Promise.all([this.subAccountValidator(this.COCForm.receiver), this.COCVerification(signerSK)]).then((res2) => {
+      //@ts-ignore
+      Promise.all([this.AcceptBuild(this.COCForm.identifier, res2[1], res2[0].subAccount, res2[0], signerSK), this.RejectBuild(res2[1], res2[0].subAccount, res2[0], signerSK)])
+        .then((res3) => {
+          return res3;
+        })
+        .then((res4) => {
 
-            return res3;
-          })
-          .then((res4) => {
+          this.addCOC(res2, res4)
+            .catch((err) => {
+              console.log(err)
+            });
 
-            this.addCOC(res2, res4)
-              .catch((err) => {
-                console.log(err)
-              });
-
-            // console.log(res4);
-            // console.log(res2);
-
-            console.log('done');
-          })
-          .catch((err) => {
-            console.log(err); // something bad happened
-          });
-      })
+        })
+        .catch((err) => {
+        });
+    })
       .catch((err) => {
-        console.log(err); // something bad happened
       });
 
   }
@@ -230,7 +207,6 @@ export class ItemDetailPage {
 */
   addCOC(res2, res4) {
     if (this.connectivity.onDevice) {
-      // this.presentLoading();
       return new Promise((resolve, reject) => {
         const obj = {
           "Sender": this.BCAccounts[0].pk,
@@ -259,7 +235,7 @@ export class ItemDetailPage {
           } else {
             if (this.isLoadingPresent) {
               this.dissmissLoading();
-              this.presentToast('Error! transaction unsuccesfull.');
+              this.presentToast('Transaction failed. Please try again.');
             }
             reject();
           }
@@ -267,14 +243,14 @@ export class ItemDetailPage {
           console.log(err);
           if (this.isLoadingPresent) {
             this.dissmissLoading();
-            this.presentToast('Error! transaction unsuccesfull.');
+            this.presentToast('Transaction failed. Please try again.');
           }
           reject();
         });
       })
 
     } else {
-      this.presentToast('noInternet');
+      this.presentToast('There is no internet connection to complete this operation. Please try again.');
     }
   }
 
@@ -296,64 +272,56 @@ export class ItemDetailPage {
         console.log(subAccount)
         this.api.subAccountStatus(subAccount).then((res) => {
           console.log(res.body);
-          // this.dissmissLoading();
           if (res.status === 200) {
-            // localStorage.setItem('_subAccounts', JSON.stringify(res.body))
             resolve(res.body)
           } else {
-            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            this.userError('Authentication Failed', 'Could not authenticate the account. Please try again.');
           }
         })
           .catch((error) => {
             this.dissmissLoading();
-            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            this.userError('Authentication Failed', 'Could not authenticate the account. Please try again.');
             console.log(error);
           });
       })
 
     } else {
-      this.presentToast('noInternet');
+      this.presentToast('There is no internet connection to complete this operation. Please try again.');
     }
   }
 
   /**
-* @desc making sub account signable by main account (multi-signature transaction)  
-* @param object $subAccount - the public and secret key pair of sub account
-* @param string $mainAccount - the public key of main account
-* @author Jaje thananjaje3@gmail.com
-* @return 
-*/
+  * @desc making sub account signable by main account (multi-signature transaction)  
+  * @param object $subAccount - the public and secret key pair of sub account
+  * @param string $mainAccount - the public key of main account
+  * @author Jaje thananjaje3@gmail.com
+  * @return 
+  */
   multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
       server
         .loadAccount(subAccount.publicKey())
         .then(function (account) {
-          var transaction = new TransactionBuilder(account)
-            .addOperation(Operation.setOptions({
+          var transaction = new TransactionBuilder(account).addOperation(
+            Operation.setOptions({
               signer: {
                 ed25519PublicKey: mainAccount,
                 weight: 2
               }
-            }))
-            .addOperation(Operation.setOptions({
+            })).addOperation(Operation.setOptions({
               masterWeight: 0, // set master key weight
               lowThreshold: 2,
               medThreshold: 2, // a payment is medium threshold
               highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
-            }))
-            .build();
+            })).build();
 
           transaction.sign(subAccount); // sign the transaction
-          // console.log(transaction);
-
 
           return server.submitTransaction(transaction);
-        })
-        .then(function (transactionResult) {
+        }).then(function (transactionResult) {
           console.log(transactionResult.hash);
           resolve()
-        })
-        .catch(function (err) {
+        }).catch(function (err) {
           console.error(err);
           reject()
         });
@@ -443,7 +411,6 @@ export class ItemDetailPage {
             XDR = tx.toEnvelope();
             seqNum = tx.sequence;
             b64 = XDR.toXDR('base64');
-            console.log('XDR in base64 =>  ' + JSON.stringify(b64));
             const resolveObj = {
               seqNum: seqNum,
               b64: b64
@@ -516,7 +483,6 @@ export class ItemDetailPage {
             // console.log("envelope =>  "+transaction.toEnvelope());
             XDR = tx.toEnvelope();
             b64 = XDR.toXDR('base64');
-            console.log('XDR in base64 =>  ' + JSON.stringify(b64));
 
             resolve(b64);
           })
@@ -594,23 +560,22 @@ export class ItemDetailPage {
           if (res.status === 200) {
             resolve(res.body.LastTxn);
           } else if (res.status === 400) {
-            this.userError('getPreviousTXNID', 'Identifier mapping not found!');
+            this.userError('Error', 'Identifier mapping not found!');
             reject();
           } else {
             this.dissmissLoading();
-            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            this.userError('Authentication Failed', 'Could not get the transaction ID.');
             reject();
           }
-        })
-          .catch((error) => {
+        }).catch((error) => {
             this.dissmissLoading();
-            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            this.userError('Authentication Failed', 'Could not get the transaction ID.');
             console.log(error);
             reject();
           });
       })
     } else {
-      this.presentToast('noInternet');
+      this.presentToast('There is no internet connection to complete this operation. Please try again.');
     }
   }
 
@@ -635,12 +600,9 @@ export class ItemDetailPage {
           json: true
         }, function (error, response, body) {
           if (error || response.statusCode !== 200) {
-            console.error('ERROR!', error || body);
             reject(error);
           }
           else {
-            console.log('SUCCESS! You have a new account :)\n', body.hash);
-
             resolve(pair);
 
           }
@@ -676,24 +638,23 @@ export class ItemDetailPage {
           console.log(res.body);
           // this.dissmissLoading();
           if (res.status === 200) {
-            this.presentToast('sub Account successfully added');
+            this.presentToast('Sub ccount successfully added.');
             this.BCAccounts[0].subAccounts.push(subAcc.publicKey());
             this.storage.setBcAccount(this.properties.userName, this.BCAccounts);
             resolve();
           } else if (res.status === 406) {
             this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
           } else {
-            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            this.userError('Authentication Failed', 'Could not authenticate the sub account.');
           }
-        })
-          .catch((error) => {
+        }).catch((error) => {
             this.dissmissLoading();
-            this.userError('authenticationFailed', 'authenticationFailedDescription');
+            this.userError('Authentication Failed', 'Could not authenticate the sub account.');
             console.log(error);
           });
       })
     } else {
-      this.presentToast('noInternet');
+      this.presentToast('There is no internet connection to complete this operation. Please try again.');
     }
   }
 
@@ -733,7 +694,7 @@ export class ItemDetailPage {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
-      content: 'pleasewait'
+      content: 'Please Wait'
     });
 
     this.loading.present();

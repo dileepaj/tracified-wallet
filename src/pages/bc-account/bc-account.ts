@@ -37,13 +37,8 @@ export class BcAccountPage {
   }
 
   doRefresh(refresher) {
-    // this.presentLoading();
-    console.log('Begin async operation', refresher);
     this.getMainAccounts();
-    // setTimeout(() => {
-    console.log('Async operation has ended');
     refresher.complete();
-    // }, 2000);
   }
 
     /**
@@ -65,21 +60,19 @@ export class BcAccountPage {
             this.userAcc = res.body.accounts.accounts
             resolve();
           } else {
-            this.userError('Main Account', 'Duplicate Main Account found!');
-            // reject();
+            this.userError('Error', 'Duplicate main account found!');
           }
-        })
-          .catch((error) => {
+        }).catch((error) => {
             if (this.isLoadingPresent) {
               this.dissmissLoading();
             }
-            this.userError('Authentication Failed', 'Retrieving Blockchain Accounts failed');
+            this.userError('Authentication Failed', 'Retrieving blockchain accounts failed.');
             console.log(error);
             // reject();
           });
       })
     } else {
-      this.presentToast('noInternet');
+      this.presentToast('There is no internet connection to complete this operation. Please try again.');
     }
    } catch (error) {
     if (this.isLoadingPresent) {
@@ -104,7 +97,7 @@ export class BcAccountPage {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
-      content: 'pleasewait'
+      content: 'Pleaes Wait'
     });
 
     this.loading.present();

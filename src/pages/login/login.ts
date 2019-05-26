@@ -122,14 +122,12 @@ export class LoginPage {
           this.storage.setBcAccount(this.properties.userName, BCAccounts);
           this.navCtrl.setRoot(TabsPage);
         } else {
-          console.log('Error requesting Blockchain accounts')
           this.navCtrl.setRoot(TabsPage);
         }
       })
         .catch((error) => {
           if (error.status === 406) {
             this.dissmissLoading();
-            console.log('Error requesting Blockchain accounts')
             this.navCtrl.setRoot(AddAccountPage);
             // this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
           } else {
