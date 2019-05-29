@@ -1,3 +1,21 @@
 page-home {
+  ion-content {
+    .inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100%;
+      font-size: 14px;
 
+      img {
+        max-width: 10rem;
+        margin-bottom: 10px;
+      }
+      p {
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+    }
+  }
 }
