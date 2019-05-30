@@ -48,7 +48,7 @@ export class AuthServiceProvider {
             this.storageService.setUser(authmodel.userName, AES.encrypt(this.properties.token, this.key).toString());
             this.setProperties(decoded).then(() => {
               resolve(res);
-            });            
+            });
           } else {
             resolve(res);
           }
@@ -183,7 +183,7 @@ export class AuthServiceProvider {
       this.properties.company = decodedToken['company'];
       this.properties.userType = decodedToken['type'];
       this.properties.displayImage = decodedToken['displayImage'];
-      this.events.publish('dislayName', this.properties.userName);
+      this.events.publish('dislayName', this.properties.displayName);
       this.events.publish('company', this.properties.company);
       this.setDisplayImagetoStorage();
       resolve(true);
