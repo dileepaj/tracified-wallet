@@ -22,8 +22,8 @@ width: 35%;
     // text-align: center;
     vertical-align: middle;
     left: 34%;
-font-size: 18px;
-top: 47%;
+    font-size: 18px;
+    top: 47%;
     position: absolute;
     color: black;
 }
@@ -59,26 +59,26 @@ accordion-list{
     .alert-md .alert-input:focus {
         margin-bottom: 4px;
         border-bottom: 2px solid #28A745 !important;
-
     }
+
     .alert-md .alert-button {
-        color: white;
-        background-color: #28A745 !important;
-        margin-left: auto;
-        margin-right: auto;
+        color:#28A745;
+        margin-left: inherit;
+        margin-right: unset;
         .button-inner {
-             -webkit-justify-content: center;
-             justify-content: center;
-             width: 300px;
+          -webkit-justify-content: center;
+          justify-content: start;
+          color: #28A745;
+          width: fit-content;
          }
     }
+
     .alert-md .alert-wrapper{
-        margin-top: 25%;
-        margin-bottom: 75%;
-        width : 380px;
-        max-width : max-content; 
+        margin-top: 35%;
+        margin-bottom: 65%;
+        width : 280px;
     }
 
     .alert-md .alert-button-group {
-        padding: 20px;
+        padding: 10px;
     }
