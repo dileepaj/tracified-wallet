@@ -1,4 +1,4 @@
-page-home {
+page-content {
   ion-content {
     .inner {
       display: flex;
@@ -9,12 +9,13 @@ page-home {
       font-size: 14px;
 
       img {
-        max-width: 10rem;
+        max-width: 8rem;
         margin-bottom: 10px;
       }
       p {
         margin-top: 0;
         margin-bottom: 10px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
     }
   }

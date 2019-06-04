@@ -1,29 +1,27 @@
-import { Injectable } from '@angular/core';
-import * as localforage from 'localforage';
+import { Injectable } from "@angular/core";
+import * as localforage from "localforage";
 
 @Injectable()
 export class StorageServiceProvider {
-
   public profile = localforage.createInstance({
-    name: 'profile',
-    storeName: 'profile'
+    name: "profile",
+    storeName: "profile"
   });
 
   public blockchainAccounts = localforage.createInstance({
-    name: 'bcAccounts',
-    storeName: 'bcAccounts'
+    name: "bcAccounts",
+    storeName: "bcAccounts"
   });
 
   public photo = localforage.createInstance({
-    name: 'photo',
-    storeName: 'photo'
+    name: "photo",
+    storeName: "photo"
   });
 
-  constructor() {
-  }
+  constructor() {}
 
   setUser(user: string, userData: any): Promise<any> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.profile.setItem(user, userData).then(() => {
         resolve(true);
       });
@@ -31,28 +29,27 @@ export class StorageServiceProvider {
   }
 
   getUser(username): Promise<any> {
-    return new Promise((resolve) => {
-      this.profile.length().then((noOfKeys) => {
+    return new Promise(resolve => {
+      this.profile.length().then(noOfKeys => {
         if (noOfKeys > 0) {
-          this.profile.getItem(username).then((user) => {
+          this.profile.getItem(username).then(user => {
             resolve(user);
           });
         } else {
           resolve(false);
         }
       });
-
     });
   }
 
   getLocalProfile(): Promise<any> {
-    return new Promise((resolve) => {
-      this.profile.length().then((noOfKeys) => {
+    return new Promise(resolve => {
+      this.profile.length().then(noOfKeys => {
         if (noOfKeys === 0) {
           resolve(false);
         } else {
-          this.profile.key(0).then((res) => {
-            this.getUser(res).then((token) => {
+          this.profile.key(0).then(res => {
+            this.getUser(res).then(token => {
               resolve(token);
             });
           });
@@ -62,7 +59,7 @@ export class StorageServiceProvider {
   }
 
   clearUser(): Promise<any> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.profile.clear().then(() => {
         resolve(true);
       });
@@ -73,35 +70,33 @@ export class StorageServiceProvider {
     this.photo.setItem(username, image);
   }
 
-  setBcAccount(username: string, accounts: any): Promise<any>{
-    return new Promise((resolve) => {
+  setBcAccount(username: string, accounts: any): Promise<any> {
+    return new Promise(resolve => {
       this.blockchainAccounts.setItem(username, accounts).then(() => {
         resolve(true);
       });
-    });    
+    });
   }
 
-  getBcAccount(username){
-    return new Promise((resolve) => {
-      this.blockchainAccounts.length().then((noOfKeys) => {
+  getBcAccount(username) {
+    return new Promise(resolve => {
+      this.blockchainAccounts.length().then(noOfKeys => {
         if (noOfKeys > 0) {
-          this.blockchainAccounts.getItem(username).then((account) => {
+          this.blockchainAccounts.getItem(username).then(account => {
             resolve(account);
           });
         } else {
           resolve(false);
         }
       });
-
     });
   }
 
-  clearBcAccounts(){
-    return new Promise((resolve) => {
+  clearBcAccounts() {
+    return new Promise(resolve => {
       this.blockchainAccounts.clear().then(() => {
         resolve(true);
       });
     });
   }
-
 }
