@@ -61,6 +61,12 @@ page-login {
     border-bottom-color: #00c853 !important;
     box-shadow:none !important;
     }
+
+    .scroll-content {
+      position: absolute;
+      padding-bottom: 0 !important;
+    }
+
     .passwordIcon{
       zoom:0.8;
       padding-top: 35px;
