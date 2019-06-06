@@ -4,8 +4,8 @@ import * as localforage from "localforage";
 @Injectable()
 export class StorageServiceProvider {
   public profile = localforage.createInstance({
-    name: "profile",
-    storeName: "profile"
+    name: "profileWallet",
+    storeName: "profileWallet"
   });
 
   public blockchainAccounts = localforage.createInstance({

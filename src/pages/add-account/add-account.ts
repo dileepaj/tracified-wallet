@@ -98,7 +98,7 @@ export class AddAccountPage {
                       }
                     }
                   }
-                  this.apiService.addMainAccount(account).then((res) => {
+                  this.apiService.addMainAccountN(account).then((res) => {
                     this.dissmissLoading();
                     if (res.status === 200) {
                       console.log(res)
@@ -223,7 +223,7 @@ export class AddAccountPage {
           }
         };
 
-        this.apiService.validateMainAccount(account).then((res) => {
+        this.apiService.validateMainAccountN(account).then((res) => {
           console.log(res.body)
           // this.dissmissLoading();
           if (res.status === 200 && res.body.status == false) {

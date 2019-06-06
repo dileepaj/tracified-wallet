@@ -542,44 +542,6 @@ export class ItemDetailPage {
   }
 
   /**
-* @desc retrieve previous transaction ID from gateway   
-* @param string $Identifier 
-* @author Jaje thananjaje3@gmail.com
-* @return 
-*/
-  getPreviousTXNID(Identifier) {
-    if (this.connectivity.onDevice) {
-      return new Promise((resolve, reject) => {
-        // this.presentLoading();
-
-        //SHA256 the Identifier JSON
-
-        this.apiService.getPreviousTXNID(Identifier).then((res) => {
-          console.log(res.body)
-          // this.dissmissLoading();
-          if (res.status === 200) {
-            resolve(res.body.LastTxn);
-          } else if (res.status === 400) {
-            this.userError('Error', 'Identifier mapping not found!');
-            reject();
-          } else {
-            this.dissmissLoading();
-            this.userError('Authentication Failed', 'Could not get the transaction ID.');
-            reject();
-          }
-        }).catch((error) => {
-            this.dissmissLoading();
-            this.userError('Authentication Failed', 'Could not get the transaction ID.');
-            console.log(error);
-            reject();
-          });
-      })
-    } else {
-      this.presentToast('There is no internet connection to complete this operation. Please try again.');
-    }
-  }
-
-  /**
 * @desc communicate with stellar horizon to create and fund address.  
 * @param 
 * @author Jaje thananjaje3@gmail.com
