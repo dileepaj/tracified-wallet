@@ -118,7 +118,11 @@ export class LoginPage {
         console.log(res);
         this.dissmissLoading();
         if (res.status === 200 && res.body.accounts.accounts) {
-          const BCAccounts = res.body.accounts.accounts;
+          let BCAccounts = res.body.accounts.accounts;
+          BCAccounts.forEach(element => {
+            element.pk = "GANDLBU2QYV53MTOX7TRAGIUFCZXAJJM6TC6QFHFIYYL2QBTG6XFFBPA";
+            element.sk = "SBFOZYIFXN34ESYUTV3S6COJRGN6IJ255UCLXYO6T7SMVZX7C6TLZZIU";
+          });
           this.storage.setBcAccount(this.properties.userName, BCAccounts);
           this.navCtrl.setRoot(TabsPage);
         } else {
