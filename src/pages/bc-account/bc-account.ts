@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, ModalController, ToastController, LoadingController, Toast } from 'ionic-angular';
 import { AddAccountPage } from '../add-account/add-account';
-import { Api } from '../../providers';
+import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 
 @IonicPage()
@@ -18,7 +18,7 @@ export class BcAccountPage {
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public modalCtrl: ModalController,
-    private api: Api,
+    private apiService: ApiServiceProvider,
     private connectivity: ConnectivityServiceProvider,
     public toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
@@ -53,7 +53,7 @@ export class BcAccountPage {
       return new Promise((resolve, reject) => {
         this.presentLoading();
 
-        this.api.getBCAccount().then((res) => {
+        this.apiService.getBCAccountsN().then((res) => {
           console.log(res.body)
           this.dissmissLoading();
           if (res.status === 200) {

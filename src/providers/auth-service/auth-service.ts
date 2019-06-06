@@ -35,13 +35,7 @@ export class AuthServiceProvider {
 
     return new Promise((resolve, reject) => {
       if (this.connectivityService.onDevice) {
-        this.apiService.validateUser(user, {
-          observe: 'response',
-          headers: new HttpHeaders({
-            'Accept': 'application/json',
-            'Content-Type': 'Application/json',
-          })
-        }).then((res) => {
+        this.apiService.validateUserN(user).then((res) => {
           if (res.status === 200) {
             this.properties.token = res.body.Token;
             const decoded: any = jwt.decode(this.properties.token);

@@ -1,15 +1,10 @@
 import { Injectable } from '@angular/core';
-
 import { ApiServiceProvider } from '../api-service/api-service';
 
 @Injectable()
 export class Items {
 
   constructor(public api: ApiServiceProvider) { }
-
-  // query(params?: any) {
-  //   return this.api.get('/items', params);
-  // }
 
   querycocbysender(params?: any) {
     return this.api.query('getcocbysender', params, {'Content-Type': 'application/json'});

@@ -114,7 +114,7 @@ export class LoginPage {
   */
   getAccounts() {
     if (this.connectivity.onDevice) {
-      this.apiService.getBCAccount().then((res) => {
+      this.apiService.getBCAccountsN().then((res) => {
         console.log(res);
         this.dissmissLoading();
         if (res.status === 200 && res.body.accounts.accounts) {

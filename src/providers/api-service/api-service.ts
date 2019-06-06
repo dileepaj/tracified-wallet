@@ -1,6 +1,8 @@
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Properties } from '../../shared/properties';
+import { Properties } from '../../shared/properties'
+import { Observable } from 'rxjs/Rx';
+import { login, blockchainAccs } from '../../shared/config';
 
 @Injectable()
 export class ApiServiceProvider {
@@ -84,27 +86,6 @@ export class ApiServiceProvider {
         })
       }
       this.http.get(this.url + '/transaction/lastTxn/' + Identifier, this.reqOpts)
-        .subscribe(response => {
-          resolve(response);
-        },
-          error => {
-            console.log(error);
-            reject(error);
-          });
-    });
-  }
-
-  getBCAccount(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.reqOpts = {
-        observe: 'response',
-        headers: new HttpHeaders({
-          'Accept': 'application/json',
-          'Content-Type': 'Application/json',
-          'Authorization': 'Bearer ' + this.properties.token
-        })
-      };
-      this.http.get(this.LocalAdminURL + '/api/bc/keys', this.reqOpts)
         .subscribe(response => {
           resolve(response);
         },
@@ -251,12 +232,63 @@ export class ApiServiceProvider {
     });
   }
 
-  subAccountAvailability(body: any, reqOpts?: any): Promise<any> {
-    // let confirm = { 'confirmUser': body };
+  put(endpoint: string, body: any, reqOpts?: any) {
+    return this.http.put(this.url + '/' + endpoint, body, reqOpts);
+  }
+
+  private getN(url, headers?): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.http.post("http://www.mocky.io/v2" + '/' + '5c23626d2f00006700049569', body, reqOpts)
-        .subscribe(response => {
+      this.http.get(url, headers).timeout(2500).subscribe(
+        response => {
           console.log(response);
+          resolve(response);
+        },
+        error => {
+          console.log(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  private postN(url, payload, headers?): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http.post(url, payload, headers).timeout(2500).subscribe(
+        response => {
+          console.log(response);
+          resolve(response);
+        },
+        error => {
+          console.log(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  validateUserN(payload): Promise<any> {
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json'
+      })
+    }
+    return this.postN(login, payload, headers);
+  }
+
+  getBCAccount(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+          'Authorization': 'Bearer ' + this.properties.token
+        })
+      };
+      this.http.get(this.LocalAdminURL + '/api/bc/keys', this.reqOpts)
+        .subscribe(response => {
           resolve(response);
         },
           error => {
@@ -266,9 +298,18 @@ export class ApiServiceProvider {
     });
   }
 
-  put(endpoint: string, body: any, reqOpts?: any) {
-    return this.http.put(this.url + '/' + endpoint, body, reqOpts);
+  getBCAccountsN(): Promise<any> {
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token
+      })
+    };
+
+    return this.getN(blockchainAccs, headers);
   }
 
- 
+
 }
