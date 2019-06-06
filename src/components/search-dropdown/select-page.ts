@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, Searchbar, ViewController, LoadingController, ToastController, Toast, AlertController } from 'ionic-angular';
 import { SelectSearchable } from './select';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
-import { Api } from '../../providers';
+import { ApiServiceProvider } from '../../providers/api-service/api-service';
 
 @Component({
     selector: 'select-searchable-page',
@@ -22,7 +22,7 @@ export class SelectSearchablePage {
     loading: any;
     private toastInstance: Toast;
 
-    constructor(private navParams: NavParams, private viewCtrl: ViewController, private connectivity: ConnectivityServiceProvider, private loadingCtrl: LoadingController, private api: Api,
+    constructor(private navParams: NavParams, private viewCtrl: ViewController, private connectivity: ConnectivityServiceProvider, private loadingCtrl: LoadingController, private apiService: ApiServiceProvider,
         public alertCtrl: AlertController,
         public toastCtrl: ToastController,
 
@@ -108,7 +108,7 @@ export class SelectSearchablePage {
 
                 console.log(model)
 
-                this.api.getPublickey(model).then((res) => {
+                this.apiService.getPublickey(model).then((res) => {
                     this.dissmissLoading();
                     if (res.status === 200) {
                         console.log(res.body)

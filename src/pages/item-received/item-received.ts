@@ -7,12 +7,10 @@ import {
   LoadingController
 } from "ionic-angular";
 import { Items } from "../../providers/items/items";
-// import { Transaction } from 'stellar-sdk';
 import { Network, Keypair, Transaction } from "stellar-base";
 Network.useTestNetwork();
 import { AES, enc } from "crypto-js";
-import Duration from "duration";
-import { Api } from "../../providers";
+import { ApiServiceProvider } from "../../providers/api-service/api-service";
 import { StorageServiceProvider } from "../../providers/storage-service/storage-service";
 import { Properties } from "../../shared/properties";
 
@@ -43,7 +41,7 @@ export class ItemReceivedPage {
 
   constructor(
     public navCtrl: NavController,
-    public api: Api,
+    public apiService: ApiServiceProvider,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
@@ -309,7 +307,7 @@ export class ItemReceivedPage {
         }
       };
 
-      this.api.getNames(param).subscribe(
+      this.apiService.getNames(param).subscribe(
         resp => {
           //@ts-ignore
           console.log(resp.body.pk);

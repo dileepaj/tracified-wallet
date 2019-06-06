@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Properties } from '../../shared/properties';
 
 @Injectable()
-export class Api {
+export class ApiServiceProvider {
   url: string = 'https://tracified-gateway.herokuapp.com';
   LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
   reqOpts: any;

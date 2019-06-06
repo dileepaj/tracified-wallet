@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as jwt from 'jsonwebtoken';
-import { Api } from '../api/api';
+import { ApiServiceProvider } from '../api-service/api-service';
 import { ConnectivityServiceProvider } from '../connectivity-service/connectivity-service';
 import { ToastController, Events } from 'ionic-angular';
 import { AES, enc } from 'crypto-js';
@@ -16,7 +16,7 @@ export class AuthServiceProvider {
 
   constructor(
     public http: HttpClient,
-    private apiService: Api,
+    private apiService: ApiServiceProvider,
     private connectivityService: ConnectivityServiceProvider,
     private toastCtrl: ToastController, private properties: Properties,
     private events: Events,

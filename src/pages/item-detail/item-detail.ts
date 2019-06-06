@@ -4,7 +4,7 @@ import { Items } from '../../providers/items/items';
 import { Network, Operation, Server, TransactionBuilder, Asset, Keypair } from 'stellar-sdk';
 import { AES, enc } from "crypto-js";
 import { get } from 'request';
-import { Api } from '../../providers';
+import { ApiServiceProvider } from '../../providers/api-service/api-service';
 var StellarSdk = require('stellar-sdk')
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
@@ -42,7 +42,7 @@ export class ItemDetailPage {
   constructor(
     private navCtrl: NavController,
     private toastCtrl: ToastController,
-    private api: Api,
+    private apiService: ApiServiceProvider,
     private connectivity: ConnectivityServiceProvider,
     private loadingCtrl: LoadingController,
     private navParams: NavParams,
@@ -270,7 +270,7 @@ export class ItemDetailPage {
           "SubAccounts": this.BCAccounts[0].subAccounts
         };
         console.log(subAccount)
-        this.api.subAccountStatus(subAccount).then((res) => {
+        this.apiService.subAccountStatus(subAccount).then((res) => {
           console.log(res.body);
           if (res.status === 200) {
             resolve(res.body)
@@ -554,7 +554,7 @@ export class ItemDetailPage {
 
         //SHA256 the Identifier JSON
 
-        this.api.getPreviousTXNID(Identifier).then((res) => {
+        this.apiService.getPreviousTXNID(Identifier).then((res) => {
           console.log(res.body)
           // this.dissmissLoading();
           if (res.status === 200) {
@@ -634,9 +634,7 @@ export class ItemDetailPage {
           }
         };
 
-        this.api.addSubAccount(account).then((res) => {
-          console.log(res.body);
-          // this.dissmissLoading();
+        this.apiService.addSubAccount(account).then((res) => {
           if (res.status === 200) {
             this.presentToast('Sub ccount successfully added.');
             this.BCAccounts[0].subAccounts.push(subAcc.publicKey());

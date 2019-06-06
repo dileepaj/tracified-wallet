@@ -2,7 +2,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { Injectable } from '@angular/core';
 
-import { Api } from '../api/api';
+import { ApiServiceProvider } from '../api-service/api-service';
 import { rejects } from 'assert';
 
 /**
@@ -28,7 +28,7 @@ import { rejects } from 'assert';
 export class User {
   _user: any;
 
-  constructor(public api: Api) { }
+  constructor(public api: ApiServiceProvider) { }
 
   /**
    * Send a POST request to our signup endpoint with the data
