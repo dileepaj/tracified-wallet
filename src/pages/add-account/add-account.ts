@@ -64,10 +64,10 @@ export class AddAccountPage {
   }
 
   /**
-* @desc handler function managing other promise function to add main account to admin 
-* @param  
+* @desc handler function managing other promise function to add main account to admin
+* @param
 * @author Jaje thananjaje3@gmail.com
-* @return  
+* @return
 */
   addMainAccount() {
     var publicKey;
@@ -170,7 +170,7 @@ export class AddAccountPage {
 * @desc add sub account public key to admin
 * @param string $subAcc - the subAcc will be mapped with main account
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   addSubAccount(subAcc) {
 
@@ -208,10 +208,10 @@ export class AddAccountPage {
   }
 
   /**
-* @desc validate the main account name whether its already present (globally unique)  
+* @desc validate the main account name whether its already present (globally unique)
 * @param string $username - the username as main account name
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   validateMainAccount() {
     if (this.connectivity.onDevice) {
@@ -246,7 +246,7 @@ export class AddAccountPage {
   }
 
   /**
-* @desc check the time need to crack the password that user inputs  
+* @desc check the time need to crack the password that user inputs
 * @param string $StrengthPassword - StrengthPassword to check strength
 * @author Jaje thananjaje3@gmail.com
 * @return password strenth as time
@@ -275,8 +275,8 @@ export class AddAccountPage {
   }
 
   /**
-* @desc communicate with stellar horizon to create and fund address.  
-* @param 
+* @desc communicate with stellar horizon to create and fund address.
+* @param
 * @author Jaje thananjaje3@gmail.com
 * @return object key pair
 */
@@ -302,10 +302,10 @@ export class AddAccountPage {
   }
 
   /**
-* @desc create trust line for multipe assets dynamically for a Stellar account  
+* @desc create trust line for multipe assets dynamically for a Stellar account
 * @param object $pair - the public and secret key pair
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   createMultipleTrustline(pair) {
     return new Promise((resolve, reject) => {
@@ -345,11 +345,11 @@ export class AddAccountPage {
   }
 
   /**
-* @desc making sub account signable by main account (multi-signature transaction)  
+* @desc making sub account signable by main account (multi-signature transaction)
 * @param object $subAccount - the public and secret key pair of sub account
 * @param string $mainAccount - the public key of main account
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
@@ -389,7 +389,7 @@ export class AddAccountPage {
   }
 
   /**
-* @desc encrypt the secret key with the signer   
+* @desc encrypt the secret key with the signer
 * @param string $secret - the secret to be encrypted
 * @param string $signer - the signer to encrypt the secret
 * @author Jaje thananjaje3@gmail.com
@@ -413,7 +413,7 @@ export class AddAccountPage {
   }
 
   gotoBlockchainAccPage() {
-    // this.navCtrl.push(BcAccountPage);
+     this.navCtrl.push(BcAccountPage);
   }
 
   userError(title, message) {
@@ -425,7 +425,7 @@ export class AddAccountPage {
     });
     alert.present();
   }
- 
+
   presentToast(message) {
     if (this.toastInstance) {
       return;
@@ -442,7 +442,7 @@ export class AddAccountPage {
     });
     this.toastInstance.present();
   }
- 
+
   presentLoading() {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
@@ -452,7 +452,7 @@ export class AddAccountPage {
 
     this.loading.present();
   }
- 
+
   dissmissLoading() {
     this.isLoadingPresent = false;
     this.loading.dismiss();
