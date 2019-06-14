@@ -30,7 +30,6 @@ export class MyApp {
   pages: any[] = [
     { icon: 'custom-itemIcon', title: 'Items', component: 'TabsPage', action: null },
     { icon: 'custom-blockchain', title: 'Accounts', component: 'BcAccountPage', action: null },
-    { icon: 'custom-tutorial', title: 'Tutorial', component: 'TutorialPage', action: null },
     { icon: 'custom-settings', title: 'Settings', component: 'SettingsPage', action: null },
     { icon: 'custom-about', title: 'About', component: 'ContentPage', action: null },
     { icon: 'custom-logout', title: 'Logout', component: 'LoginPage', action: this.logOut.bind(this) }
@@ -75,10 +74,10 @@ export class MyApp {
   }
 
   /**
-* @desc retrieve device information from the device 
-* @param  
+* @desc retrieve device information from the device
+* @param
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   deviceDetails() {
     this.deviceInfo = this.deviceService.getDeviceInfo();
@@ -89,9 +88,9 @@ export class MyApp {
 
   /**
 * @desc Initialize the language translation
-* @param 
+* @param
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   initTranslate() {
     // Set the default language for translation strings, and the current language.
@@ -123,7 +122,7 @@ export class MyApp {
 * @desc opens the passed page
 * @param string $page - the page to be displayed
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   openPage(page) {
     if (page.action) {
@@ -137,7 +136,7 @@ export class MyApp {
 
   /**
   * @desc checks and returns the current active page
-  * @param 
+  * @param
   * @author Jaje thananjaje3@gmail.com
   * @return page which is active
 */
@@ -146,7 +145,7 @@ export class MyApp {
   }
 
   clearData() {
-    this.storageService.clearUser().then(() => {      
+    this.storageService.clearUser().then(() => {
       this.nav.setRoot(LoginPage);
       //Log the event and clear all the other necessary information
     });
@@ -169,7 +168,7 @@ export class MyApp {
         }
       ]
     });
-    confirm.present();    
+    confirm.present();
   }
 
 }
