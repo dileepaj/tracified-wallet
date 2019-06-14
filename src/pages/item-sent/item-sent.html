@@ -19,11 +19,26 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <div *ngIf="!Citems" id="noitemDiv">
-    <img id="notification-icon" src="../../assets/imgs/notifications-bell-button.png">
-    <h2 id="noItem"> NOTIFICATIONS </h2>
-    <ion-note id="noItem-note">No notifications available for this period</ion-note>
-  </div>
+
+  <ion-content>
+    <ion-grid no-padding *ngIf="!Citems">
+      <ion-row>
+        <ion-col no-padding text-center>
+          <img class="notification-icon" src="../../assets/imgs/notifications-bell-button.png"/>
+        </ion-col>
+      </ion-row>
+      <ion-row class="row">
+        <ion-col class="noItem">
+          <h1>NOTIFICATIONS</h1>
+        </ion-col>
+      </ion-row>
+      <ion-row  class="row">
+        <ion-col class="noItem-note">
+          <ion-note text-wrap>No notifications available for this period</ion-note>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
 
   <accordion-list *ngFor="let item of Searcheditems; let index = index" [status]="item.status" [date]="item.date"
     [uname]="item.uname" [oname]="item.oname" [qty]="item.qty" textColor="#000000" hasMargin="false" headerColor="#ffffff"
