@@ -65,7 +65,7 @@ export function createTranslateLoader(http: HttpClient) {
     IonicModule.forRoot(MyApp),
     IonicLoggerModule.forRoot({
       docDir: 'Tracified',
-      logDir: 'Tracified-Officer',
+      logDir: 'Tracified-Wallet',
       logRetentionDays: 1,
       debug: true,
       printDebugMessages: true,
