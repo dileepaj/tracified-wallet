@@ -15,16 +15,16 @@ export class BcAccountPage {
   userAcc;
   isLoadingPresent: boolean;
 
-  constructor(public navCtrl: NavController,
+  constructor(
+    public navCtrl: NavController,
     public navParams: NavParams,
     public modalCtrl: ModalController,
     private apiService: ApiServiceProvider,
     private connectivity: ConnectivityServiceProvider,
     public toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
-    public alertCtrl: AlertController, ) {
-
-  }
+    public alertCtrl: AlertController
+    ) { }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad BcAccountPage');
