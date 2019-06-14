@@ -1,126 +1,116 @@
 page-item-received {
-    .refresher-refreshing .spinner-crescent circle, .refresher-refreshing .spinner-ios line, .refresher-refreshing .spinner-ios-small line{
-        stroke : red;
-     }
-   .refresher{
-        // $refresher-icon-color: red;
-        // color: #28A745;
-        --refresh-width: 55px;
+  .refresher-refreshing .spinner-crescent circle,
+  .refresher-refreshing .spinner-ios line,
+  .refresher-refreshing .spinner-ios-small line {
+    stroke: red;
+  }
+  .refresher {
+    // $refresher-icon-color: red;
+    // color: #28A745;
+    --refresh-width: 55px;
     pointer-events: none;
     width: var(--refresh-width);
     height: var(--refresh-width);
     border-radius: 50%;
     position: absolute;
-    transition: all 300ms cubic-bezier(0,0,0.2,1);
+    transition: all 300ms cubic-bezier(0, 0, 0.2, 1);
     will-change: transform, opacity;
-   }
-    h2{
-        font-size: 1.8rem !important;
-    }
+  }
+  h2 {
+    font-size: 1.8rem !important;
+  }
 
-    .scroll-content{
-        padding: 3px;
+  .scroll-content {
+    padding: 3px;
+  }
+  .col {
+    padding: 4px;
+  }
 
-    }
-    .col{
-        padding: 4px;
-    }
+  .notification-icon {
+    display: flex;
+    margin-top: 35%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 35%;
+    background-repeat: repeat-x;
+  }
 
-    #noitemDiv{
-        // height:100%;
-        // width: 350px;
-        // position: relative;
-        display: block;
-        // zoom: 0.5;
-    }
+  .noItem {
+    color: black;
+    padding: 0;
+    text-align: center;
+  }
 
-    #notification-icon{
-        display: flex;
-        margin-top: 35%;
-        margin-left: auto;
-        margin-right: auto;
-        height: 100%;
-        width: 35%;
-        background-repeat: repeat-x;
-    }
+  .noItem-note {
+    color: grey !important;
+    padding: 0;
+    text-align: center;
+  }
 
+  .row {
+    align-items: flex-start !important;
+  }
 
+  .item-inner {
+    border-bottom: 0 !important;
+  }
 
-    #noItem{
-        // text-align: center;
-        vertical-align: middle;
-        left: 34%;
+  .note-md {
+    color: #3d3d3d;
+  }
 
-        top: 47%;
-        position: absolute;
-        color: black;
-    }
+  .hr {
+    color: black !important;
+  }
 
-    #noItem-note{
-        // text-align: center;
-        vertical-align: middle;
-        // align-content: center;
-        left: 21%;
-        top: 55%;
-        position: absolute;
-        color: grey !important;
-    }
+  accordion-list {
+    margin: 0px;
+  }
 
-    .note-md {
-        color: #3d3d3d;
-    }
+  #accept {
+    border-color: #ccc;
+    color: white;
+    background-color: #28a745;
+  }
+  #reject {
+    border-color: #ccc;
+    color: red;
+  }
+}
 
-    .hr{
-        color: black !important;
-    }
+.alert-md .alert-input:focus {
+  margin-bottom: 4px;
+  border-bottom: 2px solid #28a745 !important;
+}
+.alert-md .alert-button {
+  color: #28a745;
+  margin-left: auto;
+  margin-right: auto;
+  .button-inner {
+    -webkit-justify-content: center;
+    justify-content: center;
+    width: 300px;
+  }
+}
+.alert-md .alert-wrapper {
+  margin-top: 25%;
+  margin-bottom: 75%;
+  width: 380px;
+  max-width: max-content;
+}
 
-    accordion-list{
-        margin: 0px;
-    }
+.alert-md .alert-button-group {
+  padding: 20px;
+}
 
-        #accept{
-            border-color:#ccc;
-            color: white;
-            background-color: #28A745;
-        }
-        #reject{
-            border-color: #ccc;
-            color: red;
-        }
-    }
+.search {
+  ion-searchbar {
+    --icon-color: #28a745 !important;
+  }
+}
 
-        .alert-md .alert-input:focus {
-            margin-bottom: 4px;
-            border-bottom: 2px solid #28A745 !important;
-
-        }
-        .alert-md .alert-button {
-            color: #28A745;
-            margin-left: auto;
-            margin-right: auto;
-            .button-inner {
-                 -webkit-justify-content: center;
-                 justify-content: center;
-                 width: 300px
-            }
-        }
-        .alert-md .alert-wrapper{
-            margin-top: 25%;
-            margin-bottom: 75%;
-            width : 380px;
-            max-width : max-content;
-          }
-
-        .alert-md .alert-button-group {
-          padding: 20px;
-        }
-
-        .search {
-            ion-searchbar {
-                --icon-color: #28A745 !important;
-            }
-        }
-
-        ion-content.has-refresher > .scroll-content {
-            background: #ededed;
-        }
+ion-content.has-refresher > .scroll-content {
+  background: #ededed;
+}
