@@ -12,6 +12,8 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
+import { Logger } from 'ionic-logger';
+import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
 
 @Component({
   templateUrl: 'app.html'
@@ -48,11 +50,14 @@ export class MyApp {
     private events: Events,
     private authService: AuthServiceProvider,
     private alertCtrl: AlertController,
-    private storageService: StorageServiceProvider
+    private storageService: StorageServiceProvider,
+    private logger: Logger,
+    private fileSystem: FileSystemServiceProvider
   ) {
     platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
+      this.logger.init(fileSystem).then((status)=>this.logger.debug('[Logger] init: ' + status));
     });
 
     this.initTranslate();
@@ -75,10 +80,10 @@ export class MyApp {
   }
 
   /**
-* @desc retrieve device information from the device 
-* @param  
+* @desc retrieve device information from the device
+* @param
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   deviceDetails() {
     this.deviceInfo = this.deviceService.getDeviceInfo();
@@ -89,9 +94,9 @@ export class MyApp {
 
   /**
 * @desc Initialize the language translation
-* @param 
+* @param
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   initTranslate() {
     // Set the default language for translation strings, and the current language.
@@ -123,7 +128,7 @@ export class MyApp {
 * @desc opens the passed page
 * @param string $page - the page to be displayed
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   openPage(page) {
     if (page.action) {
@@ -137,7 +142,7 @@ export class MyApp {
 
   /**
   * @desc checks and returns the current active page
-  * @param 
+  * @param
   * @author Jaje thananjaje3@gmail.com
   * @return page which is active
 */
@@ -146,7 +151,7 @@ export class MyApp {
   }
 
   clearData() {
-    this.storageService.clearUser().then(() => {      
+    this.storageService.clearUser().then(() => {
       this.nav.setRoot(LoginPage);
       //Log the event and clear all the other necessary information
     });
@@ -169,7 +174,7 @@ export class MyApp {
         }
       ]
     });
-    confirm.present();    
+    confirm.present();
   }
 
 }
