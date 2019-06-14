@@ -64,10 +64,12 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     IonicModule.forRoot(MyApp),
     IonicLoggerModule.forRoot({
-      docDir: 'MyApp',
-      logDir: 'log',
+      docDir: 'Tracified',
+      logDir: 'Tracified-Officer',
+      logRetentionDays: 1,
       debug: true,
       printDebugMessages: true,
+      logTofle:true
     })
   ],
   bootstrap: [IonicApp],
