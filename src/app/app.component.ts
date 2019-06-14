@@ -12,7 +12,7 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
-import { Logger } from 'ionic-logger';
+import { Logger } from 'ionic-logger-new';
 import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
 
 @Component({
