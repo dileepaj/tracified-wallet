@@ -33,13 +33,17 @@ export class ItemSentPage {
   ) {
     this.storage.getBcAccount(this.properties.userName).then((accounts) => {
       this.BCAccounts = accounts;
+      this.loadCOCSent();
+    }).catch(error => {
+      if(this.isLoadingPresent){
+        this.dissmissLoading();
+      }
+      console.log(error);
     });
   }
 
   ionViewDidLoad() {
     this.presentLoading();
-    this.loadCOCSent();
-
     this.setFilteredItems();
   }
 
