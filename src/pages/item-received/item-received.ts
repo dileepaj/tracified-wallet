@@ -75,92 +75,88 @@ export class ItemReceivedPage {
 
   loadCOCReceived() {
     // try {
-    console.log(this.BCAccounts[0]);
     this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe(
       resp => {
         if (resp != null) {
           this.Citems = resp;
           const Tempitems = [];
 
-          this.getNamesFromKeys(this.Citems)
-            .then(namedKeys => {
-              this.Citems.forEach(item => {
-                const parsedTx = new Transaction(item.AcceptXdr);
-                // @ts-ignore
-                const oldDate: number = new Date(
-                  parsedTx.timeBounds.minTime * 1000
-                );
-                // @ts-ignore
-                const newDate: number = new Date(
-                  parsedTx.timeBounds.maxTime * 1000
-                );
+          this.getNamesFromKeys(this.Citems).then(namedKeys => {
+            this.Citems.forEach(item => {
+              const parsedTx = new Transaction(item.AcceptXdr);
+              // @ts-ignore
+              const oldDate: number = new Date(
+                parsedTx.timeBounds.minTime * 1000
+              );
+              // @ts-ignore
+              const newDate: number = new Date(
+                parsedTx.timeBounds.maxTime * 1000
+              );
 
-                // @ts-ignore
-                let now: number = new Date();
-                var hoursAgo = this.timeDuration(now, oldDate);
-                var validTill = this.timeDuration(newDate, now);
+              // @ts-ignore
+              let now: number = new Date();
+              var hoursAgo = this.timeDuration(now, oldDate);
+              var validTill = this.timeDuration(newDate, now);
 
-                let itemArr = [];
-                parsedTx.operations.forEach(tansac => {
-                  if (tansac.type == "payment") {
-                    let assetObj = {
-                      source: tansac.source,
-                      sourcename: this.BCAccounts[0].accountName,
-                      asset: tansac.asset.code,
-                      amount: tansac.amount
-                    };
+              let itemArr = [];
+              parsedTx.operations.forEach(tansac => {
+                if (tansac.type == "payment") {
+                  let assetObj = {
+                    source: tansac.source,
+                    sourcename: this.BCAccounts[0].accountName,
+                    asset: tansac.asset.code,
+                    amount: tansac.amount
+                  };
 
-                    itemArr.push(assetObj);
-                  }
-                });
-
-                const tempLast = itemArr.pop();
-                itemArr.length > 0
-                  ? (tempLast.source = itemArr[0].source)
-                  : null;
-                const obj = {
-                  AcceptTxn: item.AcceptTxn,
-                  AcceptXdr: item.AcceptXdr,
-                  RejectTxn: item.RejectTxn,
-                  RejectXdr: item.RejectXdr,
-                  date: hoursAgo,
-                  itemArr: itemArr,
-                  uname: tempLast.source,
-                  oname: tempLast.asset,
-                  qty: tempLast.amount,
-                  validity: newDate.toLocaleString(),
-                  time: validTill,
-                  status: item.Status,
-
-                  Identifier: item.Identifier,
-                  Receiver: item.Receiver,
-                  Sender: item.Sender,
-                  SequenceNo: item.SequenceNo,
-                  SubAccount: item.SubAccount,
-                  TxnHash: item.TxnHash
-                };
-                Tempitems.push(obj);
-                this.items = Tempitems.reverse();
-                this.setFilteredItems();
-              });
-              return namedKeys;
-            })
-            .then(namedKeys => {
-              this.items.forEach(element => {
-                //@ts-ignore
-                element.uname = namedKeys.find((o) => { element.uname === o.pk }).accountName;
+                  itemArr.push(assetObj);
+                }
               });
 
-              if (this.isLoadingPresent) {
-                this.dissmissLoading();
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              if (this.isLoadingPresent) {
-                this.dissmissLoading();
-              }
+              const tempLast = itemArr.pop();
+              itemArr.length > 0
+                ? (tempLast.source = itemArr[0].source)
+                : null;
+              const obj = {
+                AcceptTxn: item.AcceptTxn,
+                AcceptXdr: item.AcceptXdr,
+                RejectTxn: item.RejectTxn,
+                RejectXdr: item.RejectXdr,
+                date: hoursAgo,
+                itemArr: itemArr,
+                uname: tempLast.source,
+                oname: tempLast.asset,
+                qty: tempLast.amount,
+                validity: newDate.toLocaleString(),
+                time: validTill,
+                status: item.Status,
+
+                Identifier: item.Identifier,
+                Receiver: item.Receiver,
+                Sender: item.Sender,
+                SequenceNo: item.SequenceNo,
+                SubAccount: item.SubAccount,
+                TxnHash: item.TxnHash
+              };
+              Tempitems.push(obj);
+              this.items = Tempitems.reverse();
+              this.setFilteredItems();
             });
+            return namedKeys;
+          }).then(namedKeys => {
+            this.items.forEach(element => {
+              //@ts-ignore
+              element.uname = namedKeys.find((o) => { element.uname === o.pk }).accountName;
+            });
+
+            if (this.isLoadingPresent) {
+              this.dissmissLoading();
+            }
+          }).catch(err => {
+            console.log(err);
+            if (this.isLoadingPresent) {
+              this.dissmissLoading();
+            }
+          });
         } else {
           if (this.isLoadingPresent) {
             this.dissmissLoading();
@@ -168,19 +164,12 @@ export class ItemReceivedPage {
         }
       },
       err => {
-        console.log(err.error.Status);
-
+        console.log(err);
         if (this.isLoadingPresent) {
           this.dissmissLoading();
         }
       }
     );
-    // } catch (error) {
-    //   console.log(error);
-    //   if (this.isLoadingPresent) {
-    //     this.dissmissLoading();
-    //   }
-    // }
   }
 
   signXDR(item, status, signerSK) {

@@ -122,6 +122,7 @@ export class LoginPage {
           BCAccounts.forEach(element => {
             element.pk = "GANDLBU2QYV53MTOX7TRAGIUFCZXAJJM6TC6QFHFIYYL2QBTG6XFFBPA";
             element.sk = "SBFOZYIFXN34ESYUTV3S6COJRGN6IJ255UCLXYO6T7SMVZX7C6TLZZIU";
+            element.subAccounts[0] = "GALEIGNXI6GF2S4TCUQPCFNPKVLYE63ZXJJTT3QOOTHVBTENTT5JRVMO";
           });
           this.storage.setBcAccount(this.properties.userName, BCAccounts);
           this.navCtrl.setRoot(TabsPage);
