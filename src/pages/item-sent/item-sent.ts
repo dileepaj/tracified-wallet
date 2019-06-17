@@ -31,13 +31,16 @@ export class ItemSentPage {
     private storage: StorageServiceProvider,
     private properties: Properties
   ) {
-    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
-      this.BCAccounts = accounts;
-      this.loadCOCSent();
-    }).catch(error => {
-      if(this.isLoadingPresent){
+
+    this.storage.getBcAccount(this.properties.userName).then(accounts => {
+      if (accounts) {
+        this.BCAccounts = accounts;
+        this.loadCOCSent();
+      } else {
+        console.log("There's no Blockchain accounts for this user");
         this.dissmissLoading();
       }
+    }).catch(error => {
       console.log(error);
     });
   }

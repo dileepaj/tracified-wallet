@@ -50,8 +50,13 @@ export class ItemReceivedPage {
     private properties: Properties
   ) {
     this.storage.getBcAccount(this.properties.userName).then(accounts => {
-      this.BCAccounts = accounts;
-      this.loadCOCReceived();
+      if(accounts){
+        this.BCAccounts = accounts;
+        this.loadCOCReceived();
+      } else {
+        console.log("There's no Blockchain accounts for this user");
+        this.dissmissLoading();
+      }
     }).catch(error => {
       console.log(error);
     });
