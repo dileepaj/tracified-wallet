@@ -57,10 +57,13 @@ export class ItemReceivedPage {
       .getBcAccount(this.properties.userName)
       .then(accounts => {
         this.BCAccounts = accounts;
+        if(this.BCAccounts){
         this.loadCOCReceived();
+        }
       })
       .catch(error => {
         console.log(error);
+        this.dataError("Error","There should be at least one account.");
       });
   }
 
@@ -427,4 +430,15 @@ export class ItemReceivedPage {
     });
     toast.present();
   }
+
+  dataError(title, message) {
+    let alert = this.alertCtrl.create();
+    alert.setTitle(title);
+    alert.setMessage(message);
+    alert.addButton({
+      text: 'close'
+    });
+    alert.present();
+  }
+
 }
