@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, ModalController, LoadingController } from 'ionic-angular';
+import { IonicPage, NavController, ModalController, LoadingController, AlertController } from 'ionic-angular';
 import { Server, Transaction } from 'stellar-sdk';
 import { Items } from '../../providers/items/items';
 import { ItemDetailPage } from '../item-detail/item-detail';
@@ -24,25 +24,38 @@ export class TransferPage {
   BCAccounts: any;
 
   constructor(
-    private navCtrl: NavController, 
-    private modalCtrl: ModalController, 
-    private loadingCtrl: LoadingController, 
+    private navCtrl: NavController,
+    private modalCtrl: ModalController,
+    private loadingCtrl: LoadingController,
     private itemsProvider: Items,
     private storage: StorageServiceProvider,
-    private properties: Properties
+    private properties: Properties,
+    private alertCtrl: AlertController
     ) {
-      this.storage.getBcAccount(this.properties.userName).then((accounts) => {
-        this.BCAccounts = accounts;
-      });
+
   }
 
   ionViewDidLoad() {
     this.presentLoading();
-    this.getBalance();
-    this.loadReceivers();
+
+    this.storage
+      .getBcAccount(this.properties.userName)
+      .then(accounts => {
+        this.BCAccounts = accounts;
+        if (this.BCAccounts) {
+          this.getBalance();
+          this.loadReceivers();
+        }
+        else {
+          console.log("There should be at least one account.");
+          this.dataError("Error","There should be at least one account.");
+        }
+      });
+
   }
 
   ionViewDidEnter() {
+
 
   }
 
@@ -95,10 +108,10 @@ export class TransferPage {
   }
 
   /**
-* @desc retrieve receivers from the gateway   
+* @desc retrieve receivers from the gateway
 * @param string $pk - the public key of main account
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   loadReceivers() {
     try {
@@ -150,6 +163,16 @@ export class TransferPage {
   dissmissLoading() {
     this.isLoadingPresent = false;
     this.loading.dismiss();
+  }
+
+  dataError(title, message) {
+    let alert = this.alertCtrl.create();
+    alert.setTitle(title);
+    alert.setMessage(message);
+    alert.addButton({
+      text: 'close'
+    });
+    alert.present();
   }
 
 }
