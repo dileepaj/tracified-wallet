@@ -31,15 +31,19 @@ export class ItemSentPage {
     public itemsProvider: Items,
     private storage: StorageServiceProvider,
     private properties: Properties
-  ) {
-    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
-      this.BCAccounts = accounts;
-    });
-  }
+  ) {}
 
   ionViewDidLoad() {
     this.presentLoading();
-    this.loadCOCSent();
+    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
+      this.BCAccounts = accounts;
+      if(this.BCAccounts){
+        this.loadCOCSent();
+      }
+    }).catch((error)=>{
+      console.log(error);
+      this.dataError("Error","There should be at least one account.");
+    });
 
     this.setFilteredItems();
   }
@@ -63,9 +67,9 @@ export class ItemSentPage {
 
   /**
 * @desc retrieve COC transaction from gateway
-* @param  
+* @param
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   loadCOCSent() {
     try {
@@ -175,7 +179,7 @@ export class ItemSentPage {
   }
 
   /**
-* @desc retrieve names against account public keys from admin   
+* @desc retrieve names against account public keys from admin
 * @param stringArray $receiverArr - publick key array
 * @author Jaje thananjaje3@gmail.com
 * @return account names object for public keys
@@ -251,4 +255,13 @@ export class ItemSentPage {
     this.loading.dismiss();
   }
 
+  dataError(title, message) {
+    let alert = this.alertCtrl.create();
+    alert.setTitle(title);
+    alert.setMessage(message);
+    alert.addButton({
+      text: 'close'
+    });
+    alert.present();
+  }
 }
