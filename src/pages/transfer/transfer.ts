@@ -5,6 +5,7 @@ import { Items } from '../../providers/items/items';
 import { ItemDetailPage } from '../item-detail/item-detail';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
+import { AES, enc } from "crypto-js";
 
 @IonicPage()
 @Component({
@@ -12,6 +13,9 @@ import { Properties } from '../../shared/properties';
   templateUrl: 'transfer.html',
 })
 export class TransferPage {
+  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
+  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
+
   currentItems = [];
   user: any;
   loading;
@@ -42,7 +46,8 @@ export class TransferPage {
       .getBcAccount(this.properties.userName)
       .then(accounts => {
         this.BCAccounts = accounts;
-        if (this.BCAccounts) {
+        this.BCAccounts = JSON.parse(AES.decrypt(this.BCAccounts, this.key).toString(enc.Utf8));
+        if(this.BCAccounts) {
           this.getBalance();
           this.loadReceivers();
         }
