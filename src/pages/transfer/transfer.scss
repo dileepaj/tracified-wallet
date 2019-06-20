@@ -4,41 +4,38 @@ page-transfer {
         overflow: hidden;
         background-color: white !important;
         // opacity: 0.9;
-        
+
     }
 
-    #notification-icon{
-        display: flex;
-        margin-top: 35%;
-    margin-left: auto;
-    margin-right: auto;
-    height: 100%;
-    width: 35%;
-        background-repeat: repeat-x;
+    .notification-icon {
+      display: flex;
+      margin-top: 35%;
+      margin-left: auto;
+      margin-right: auto;
+      height: 100%;
+      width: 35%;
+      background-repeat: repeat-x;
     }
 
-
-
-    #noItem{
-        // text-align: center;
-        vertical-align: middle;
-        left: 34%;
-    font-size: 18px;
-    top: 47%;
-        position: absolute;
-        color: black;
+    .noItem {
+      color: black;
+      padding: 0;
+      text-align: center;
     }
 
-    #noItem-note{
-        // text-align: center;
-        vertical-align: middle;
-        // align-content: center;
-        left: 21%;
-        top: 55%;
-        position: absolute;
-        color: grey;
+    .noItem-note {
+      color: grey !important;
+      padding: 0;
+      text-align: center;
     }
 
+    .row {
+      align-items: flex-start !important;
+    }
+
+    .item-inner {
+      border-bottom: 0 !important;
+    }
     .card-md{
         height: 75px;
         border-radius: 4px !important;
@@ -60,5 +57,5 @@ page-transfer {
         margin: 11px 41px !important;
         font-weight: 500;
     }
-    
+
 }

@@ -12,6 +12,7 @@ import { AddAccountPage } from '../add-account/add-account';
 import { t } from '@angular/core/src/render3';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
+import { AES, enc } from 'crypto-js';
 
 @IonicPage()
 @Component({
@@ -19,6 +20,8 @@ import { Properties } from '../../shared/properties';
   templateUrl: 'login.html'
 })
 export class LoginPage {
+  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
+  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
 
   passwordType: string = 'password';
   passwordIcon: string = 'eye-off';
@@ -107,10 +110,10 @@ export class LoginPage {
   }
 
   /**
-  * @desc retrieve blockchain accounts from admin backend  
-  * @param 
+  * @desc retrieve blockchain accounts from admin backend
+  * @param
   * @author Jaje thananjaje3@gmail.com
-  * @return 
+  * @return
   */
   getAccounts() {
     if (this.connectivity.onDevice) {
@@ -118,8 +121,8 @@ export class LoginPage {
         console.log(res);
         this.dissmissLoading();
         if (res.status === 200 && res.body.accounts.accounts) {
-          const BCAccounts = res.body.accounts.accounts;
-          this.storage.setBcAccount(this.properties.userName, BCAccounts);
+          const BCAccounts =JSON.stringify(res.body.accounts.accounts);
+          this.storage.setBcAccount(this.properties.userName, AES.encrypt(BCAccounts, this.key).toString());
           this.navCtrl.setRoot(TabsPage);
         } else {
           this.navCtrl.setRoot(TabsPage);

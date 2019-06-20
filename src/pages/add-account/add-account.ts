@@ -26,6 +26,9 @@ import { Properties } from '../../shared/properties';
   templateUrl: 'add-account.html',
 })
 export class AddAccountPage {
+  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
+  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
+
   PasswordStrength = null;
   isLoadingPresent: boolean;
   StrengthPassword: any;
@@ -54,7 +57,7 @@ export class AddAccountPage {
     });
 
     this.storage.getBcAccount(this.properties.userName).then((accounts) => {
-      this.BCAccounts = accounts;
+      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
     });
 
   }

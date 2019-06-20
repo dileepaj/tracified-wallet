@@ -20,6 +20,9 @@ StellarSdk.Network.useTestNetwork();
   templateUrl: 'item-detail.html'
 })
 export class ItemDetailPage {
+  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
+  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
+
   selectedItem2: any;
   itemRequired: any;
   itemList: any = [];
@@ -53,7 +56,7 @@ export class ItemDetailPage {
   ) {
 
     this.storage.getBcAccount(this.properties.userName).then((accounts) => {
-      this.BCAccounts = accounts;
+      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
     });
     this.item = navParams.get('item');
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
@@ -642,7 +645,7 @@ export class ItemDetailPage {
           if (res.status === 200) {
             this.presentToast('Sub ccount successfully added.');
             this.BCAccounts[0].subAccounts.push(subAcc.publicKey());
-            this.storage.setBcAccount(this.properties.userName, this.BCAccounts);
+            this.storage.setBcAccount(this.properties.userName, AES.encrypt(this.BCAccounts, this.key).toString());
             resolve();
           } else if (res.status === 406) {
             this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
