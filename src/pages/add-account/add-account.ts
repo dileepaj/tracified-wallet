@@ -57,8 +57,7 @@ export class AddAccountPage {
     });
 
     this.storage.getBcAccount(this.properties.userName).then((accounts) => {
-      this.BCAccounts = accounts;
-      this.BCAccounts = JSON.parse(AES.decrypt(this.BCAccounts, this.key).toString(enc.Utf8));
+      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
     });
 
   }
