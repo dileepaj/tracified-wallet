@@ -12,6 +12,8 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { TabsPage } from '../pages/tabs/tabs';
 import { LoginPage } from '../pages/login/login';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
+import { Logger } from 'ionic-logger-new';
+import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
 
 @Component({
   templateUrl: 'app.html'
@@ -47,11 +49,14 @@ export class MyApp {
     private events: Events,
     private authService: AuthServiceProvider,
     private alertCtrl: AlertController,
-    private storageService: StorageServiceProvider
+    private storageService: StorageServiceProvider,
+    private logger: Logger,
+    private fileSystem: FileSystemServiceProvider
   ) {
     platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
+      this.logger.init(fileSystem).then((status)=>this.logger.debug('[Logger] init: ' + status));
     });
 
     this.initTranslate();
