@@ -30,38 +30,49 @@
             <ion-option *ngFor="let Item of currentItems">{{Item.asset_code}}</ion-option>
           </ion-select> -->
           <!-- </ion-item> -->
-          <ion-label stacked id="label">Item</ion-label>
+
+          <!-- <ion-label stacked id="label">Item</ion-label>
           <div class="styled">
             <select id="dropdown" [(ngModel)]="COCForm.selectedItem" name="item">
               <option id="options" *ngFor="let Item of currentItems">{{Item.asset_code}}</option>
             </select>
-          </div>
-          
+          </div> -->
+          <ion-label stacked>Item</ion-label>
+          <ion-item>
+           <ion-select color='balanced' class="textArea" id="dropdown" [selectOptions]="{title:'Items'}" [(ngModel)]="COCForm.selectedItem" name="item">
+              <ion-option *ngFor="let Item of currentItems">{{Item.asset_code}}</ion-option>
+            </ion-select>
+          </ion-item>
+
           <ion-label stacked id="label">Identifier</ion-label>
           <ion-item id="rounded">
             <!-- <ion-label id="label" floating> Quantity </ion-label> -->
             <ion-input class="textArea" id="identifier" type="text" placeholder="Identifier"
               [(ngModel)]="COCForm.identifier" name="identifier"></ion-input>
           </ion-item>
-         
+
           <ion-label stacked id="label">Quantity</ion-label>
           <ion-item id="rounded">
             <!-- <ion-label id="label" floating> Quantity </ion-label> -->
             <ion-input class="textArea" id="quantity" type="number" placeholder="Quantity" [(ngModel)]="COCForm.qty"
               name="qty"></ion-input>
           </ion-item>
-          
+
           <ion-label stacked id="label">Receiver</ion-label>
           <ion-item text-wrap>
-            <select-searchable class="textArea" [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}"
-              (ionInput)="setFilteredItems()" title=" Receiver" canSearch="true" [items]="receivers"
-              itemTextField="itemName" emptyMessage="No data"></select-searchable>
+            <select-searchable [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}"
+               title=" Receiver" canSearch="true" [items]="receivers"
+              itemTextField="itemName" emptyMessage="No data">
+            </select-searchable>
           </ion-item>
+
+
+
 
           <!-- <div class="styled">
             <ion-row>
               <ion-input id="receiverInput" type="text" placeholder="Receiver" [(ngModel)]="COCForm.receiver" name="receiver"></ion-input>
-              
+
               <select float="right" id="receiverDropdown" [(ngModel)]="COCForm.receiver" onChange='' name="receiver">
                 <option id="options" *ngFor="let receiver of receivers">{{receiver}}</option>
                 <option id="options" value="">Other</option>
@@ -74,7 +85,7 @@
           <ion-input type="text" [(ngModel)]="COCForm.receiver" name="receiver"></ion-input>
         </ion-item> -->
 
-          
+
 
           <!-- <ion-item id="rounded">
           <ion-label id="label" floating> Receiver </ion-label>
@@ -88,12 +99,12 @@
             <ion-datetime class="textArea" id="input" placeholder="Validity" displayFormat="YYYY-MM-DDTHH:mm:ssTZD"
               min="2018-11-29T06:25:48Z" max="2050" [(ngModel)]="COCForm.vaidity" name="vaidity"></ion-datetime>
           </ion-item>
-          
+
 
         </ion-list>
 
         <div id="button">
-          <button (click)="passwordPrompt()" id="cocButton" [disabled]="COCForm.invalid" ion-button block
+          <button (click)="passwordPrompt()" id="cocButton" ion-button block
             color="secondary">Transfer</button>
         </div>
 

@@ -121,7 +121,10 @@ export class LoginPage {
         console.log(res);
         this.dissmissLoading();
         if (res.status === 200 && res.body.accounts.accounts) {
-          const BCAccounts =JSON.stringify(res.body.accounts.accounts);
+          let BCAccounts = res.body.accounts.accounts;
+          BCAccounts[0].pk = "GANDLBU2QYV53MTOX7TRAGIUFCZXAJJM6TC6QFHFIYYL2QBTG6XFFBPA";
+          BCAccounts[0].sk = "SBFOZYIFXN34ESYUTV3S6COJRGN6IJ255UCLXYO6T7SMVZX7C6TLZZIU";
+          BCAccounts[0].subAccounts[0] = "GALEIGNXI6GF2S4TCUQPCFNPKVLYE63ZXJJTT3QOOTHVBTENTT5JRVMO";
           this.storage.setBcAccount(this.properties.userName, AES.encrypt(BCAccounts, this.key).toString());
           this.navCtrl.setRoot(TabsPage);
         } else {

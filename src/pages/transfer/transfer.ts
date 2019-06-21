@@ -39,9 +39,8 @@ export class TransferPage {
 
   }
 
-  ionViewDidLoad() {
+  ngOnInit(){
     this.presentLoading();
-
     this.storage
       .getBcAccount(this.properties.userName)
       .then(accounts => {
@@ -53,15 +52,14 @@ export class TransferPage {
         else {
           console.log("There should be at least one account.");
           this.dataError("Error","There should be at least one account.");
+          this.dissmissLoading();
         }
       });
-
   }
 
-  ionViewDidEnter() {
+  ionViewDidLoad() {}
 
-
-  }
+  ionViewDidEnter() {}
 
   doRefresh(refresher) {
     this.presentLoading();
