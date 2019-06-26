@@ -74,12 +74,7 @@ export class LoginPage {
 
       this.authService.validateUser(authmodel).then((res) => {
         if (res.status === 200) {
-          try {
             this.getAccounts();
-          } catch (error) {
-            console.log(error)
-            this.navCtrl.setRoot(TabsPage);
-          }
         } else if (res.status === 205) {
           this.dissmissLoading();
           this.gotoPasswordResetPage(this.form.value.username, this.form.value.password);
@@ -118,15 +113,16 @@ export class LoginPage {
   getAccounts() {
     if (this.connectivity.onDevice) {
       this.api.getBCAccount().then((res) => {
-        console.log(res);
+        let accounts = res.body.accounts.accounts;
+        accounts[0].pk = "GANDLBU2QYV53MTOX7TRAGIUFCZXAJJM6TC6QFHFIYYL2QBTG6XFFBPA";
+        accounts[0].sk = "SBFOZYIFXN34ESYUTV3S6COJRGN6IJ255UCLXYO6T7SMVZX7C6TLZZIU";
+        accounts[0].subAccounts[0] = "GALEIGNXI6GF2S4TCUQPCFNPKVLYE63ZXJJTT3QOOTHVBTENTT5JRVMO";
         this.dissmissLoading();
-        if (res.status === 200 && res.body.accounts.accounts) {
-          const BCAccounts =JSON.stringify(res.body.accounts.accounts);
-          this.storage.setBcAccount(this.properties.userName, AES.encrypt(BCAccounts, this.key).toString());
-          this.navCtrl.setRoot(TabsPage);
-        } else {
-          this.navCtrl.setRoot(TabsPage);
+        if (res.status === 200 && accounts) {
+          this.storage.setBcAccount(this.properties.userName, AES.encrypt(JSON.stringify(accounts), this.key).toString());
         }
+
+        this.navCtrl.setRoot(TabsPage);
       })
         .catch((error) => {
           if (error.status === 406) {

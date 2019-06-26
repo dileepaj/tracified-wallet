@@ -42,19 +42,25 @@ export class TransferPage {
   ionViewDidLoad() {
     this.presentLoading();
 
-    this.storage
+      this.storage
       .getBcAccount(this.properties.userName)
       .then(accounts => {
-        this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+          this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+
         if(this.BCAccounts) {
           this.getBalance();
           this.loadReceivers();
         }
         else {
           console.log("There should be at least one account.");
+          this.dissmissLoading();
           this.dataError("Error","There should be at least one account.");
         }
       });
+
+
+
+
 
   }
 
@@ -90,9 +96,8 @@ export class TransferPage {
 
     var server = new Server('https://horizon-testnet.stellar.org');
     // the JS SDK uses promises for most actions, such as retrieving an account
-    server.loadAccount(this.BCAccounts[0].pk)
-      .then(function (account) {
-        // console.log('Balances for account: ' + JSON.stringify(account.balances));
+    server.loadAccount(this.BCAccounts[0].pk).then(function (account) {
+         //console.log('Balances for account: ' + JSON.stringify(account.balances));
         account.balances.forEach(function (balance) {
           // @ts-ignore
           console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
