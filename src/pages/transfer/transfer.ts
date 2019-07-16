@@ -46,11 +46,13 @@ export class TransferPage {
       .getBcAccount(this.properties.userName)
       .then(accounts => {
         this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+        this.BCAccounts = false;
         if(this.BCAccounts) {
           this.getBalance();
           this.loadReceivers();
         }
         else {
+          this.dissmissLoading();
           console.log("There should be at least one account.");
           this.dataError("Error","There should be at least one account.");
         }
