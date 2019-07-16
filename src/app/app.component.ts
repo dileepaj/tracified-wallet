@@ -150,9 +150,10 @@ export class MyApp {
   }
 
   clearData() {
-    this.storageService.clearUser().then(() => {
-      this.nav.setRoot(LoginPage);
-      //Log the event and clear all the other necessary information
+    this.storageService.clearUser().then(() => {      
+      this.storageService.clearBcAccounts().then(() => {
+        this.nav.setRoot(LoginPage);
+      });
     });
   }
 

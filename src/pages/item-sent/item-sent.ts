@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, AlertController, LoadingController } from 'ionic-angular';
 import { Items } from '../../providers/items/items';
 import { Transaction } from 'stellar-sdk';
-import Duration from "duration";
-import { Api } from '../../providers';
+import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
 import { AES, enc } from "crypto-js";
@@ -28,7 +27,7 @@ export class ItemSentPage {
 
   constructor(
     public navCtrl: NavController,
-    public api: Api,
+    public apiService: ApiServiceProvider,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     public itemsProvider: Items,
@@ -210,7 +209,7 @@ export class ItemSentPage {
         }
       }
 
-      this.api.getNames(param).subscribe((resp) => {
+      this.apiService.getNames(param).subscribe((resp) => {
         //@ts-ignore
         console.log(resp.body.pk);
         //@ts-ignore

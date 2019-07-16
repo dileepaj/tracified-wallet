@@ -12,7 +12,7 @@ import { DeviceDetectorModule, DeviceDetectorService } from 'ngx-device-detector
 
 
 // import { Items } from '../mocks/providers/items';
-import { User, Api } from '../providers';
+import { User } from '../providers';
 import { MyApp } from './app.component';
 import { ItemReceivedPageModule } from '../pages/item-received/item-received.module';
 import { ItemSentPageModule } from '../pages/item-sent/item-sent.module';
@@ -30,6 +30,7 @@ import { Device } from '@ionic-native/device/ngx';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
 import { LoginPageModule } from '../pages/login/login.module';
 import { MappingServiceProvider } from '../providers/mapping-service/mapping-service';
+import { ApiServiceProvider } from '../providers/api-service/api-service';
 import { IonicLoggerModule, Logger } from 'ionic-logger-new';
 import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
 import {File} from '@ionic-native/file';
@@ -77,7 +78,7 @@ export function createTranslateLoader(http: HttpClient) {
     MyApp
   ],
   providers: [
-    Api,
+    ApiServiceProvider,
     Properties,
     Network,
     User,

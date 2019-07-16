@@ -2,14 +2,14 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IonicPage, NavController, ToastController, MenuController, AlertController, Toast, LoadingController } from 'ionic-angular';
 
-import { User, Api } from '../../providers';
+import { ApiServiceProvider } from '../../providers/api-service/api-service';
+import { User } from '../../providers/user/user';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { ResetPasswordPage } from '../reset-password/reset-password';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { TabsPage } from '../tabs/tabs';
 import { AddAccountPage } from '../add-account/add-account';
-import { t } from '@angular/core/src/render3';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
 import { AES, enc } from 'crypto-js';
@@ -36,7 +36,7 @@ export class LoginPage {
     private menuCtrl: MenuController,
     private user: User,
     private authService: AuthServiceProvider,
-    private api: Api,
+    private apiService: ApiServiceProvider,
     private connectivity: ConnectivityServiceProvider,
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
@@ -117,7 +117,7 @@ export class LoginPage {
   */
   getAccounts() {
     if (this.connectivity.onDevice) {
-      this.api.getBCAccount().then((res) => {
+      this.apiService.getBCAccountsN().then((res) => {
         console.log(res);
         this.dissmissLoading();
         if (res.status === 200 && res.body.accounts.accounts) {
