@@ -20,6 +20,9 @@ import { Properties } from "../../shared/properties";
   templateUrl: "item-received.html"
 })
 export class ItemReceivedPage {
+  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
+  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
+
   searchTerm: any = "";
   Searcheditems: {
     date: string;
@@ -48,27 +51,21 @@ export class ItemReceivedPage {
     public itemsProvider: Items,
     private storage: StorageServiceProvider,
     private properties: Properties
-  ) {
-    this.storage.getBcAccount(this.properties.userName).then(accounts => {
-      if(accounts){
-        this.BCAccounts = accounts;
-        this.loadCOCReceived();
-      } else {
-        console.log("There's no Blockchain accounts for this user");
-        this.dissmissLoading();
-      }
-    }).catch(error => {
-      console.log(error);
-    });
-  }
+  ) {}
 
   ngOnInit() {
-    // this.storage.getBcAccount(this.properties.userName).then(accounts => {
-    //   this.BCAccounts = accounts;
-    //   this.loadCOCReceived();
-    // }).catch(error => {
-    //   console.log(error);
-    // });
+    this.storage
+      .getBcAccount(this.properties.userName)
+      .then(accounts => {
+        this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+        if(this.BCAccounts){
+        this.loadCOCReceived();
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        this.dataError("Error","There should be at least one account.");
+      });
   }
 
   ionViewDidLoad() {
@@ -374,4 +371,15 @@ export class ItemReceivedPage {
     });
     toast.present();
   }
+
+  dataError(title, message) {
+    let alert = this.alertCtrl.create();
+    alert.setTitle(title);
+    alert.setMessage(message);
+    alert.addButton({
+      text: 'close'
+    });
+    alert.present();
+  }
+
 }

@@ -84,10 +84,14 @@ export class StorageServiceProvider {
         if (noOfKeys > 0) {
           this.blockchainAccounts.getItem(username).then(account => {
             resolve(account);
+          }).catch( () => {
+            resolve(false);
           });
         } else {
           resolve(false);
         }
+      }).catch(()=>{
+        resolve(false);
       });
     });
   }

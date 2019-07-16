@@ -20,6 +20,9 @@ StellarSdk.Network.useTestNetwork();
   templateUrl: 'item-detail.html'
 })
 export class ItemDetailPage {
+  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
+  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
+
   selectedItem2: any;
   itemRequired: any;
   itemList: any = [];
@@ -53,7 +56,7 @@ export class ItemDetailPage {
   ) {
 
     this.storage.getBcAccount(this.properties.userName).then((accounts) => {
-      this.BCAccounts = accounts;
+      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
     });
     this.item = navParams.get('item');
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
@@ -71,10 +74,10 @@ export class ItemDetailPage {
   }
 
   /**
-* @desc opens modal to enter decrpting passphrase  
-* @param 
+* @desc opens modal to enter decrpting passphrase
+* @param
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   passwordPrompt() {
     let alert = this.alertCtrl.create({
@@ -109,7 +112,7 @@ export class ItemDetailPage {
 * @desc validates and provides available sub account to build the XDR (if nothing is available it will create one)
 * @param string $receiver
 * @author Jaje thananjaje3@gmail.com
-* @return object which contains available sub account public key 
+* @return object which contains available sub account public key
 */
   subAccountValidator(receiver) {
     return new Promise((resolve, reject) => {
@@ -166,10 +169,10 @@ export class ItemDetailPage {
   }
 
   /**
-* @desc handler function manages other async function to do COC  
+* @desc handler function manages other async function to do COC
 * @param string $signerSK - the public key of main account
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   doCOC(signerSK) {
     this.presentLoading();
@@ -199,11 +202,11 @@ export class ItemDetailPage {
   }
 
   /**
-* @desc send the COC object to gateway  
+* @desc send the COC object to gateway
 * @param object $res2 - previous Txn ID
 * @param object $res4 - accept build and reject build XDRs
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   addCOC(res2, res4) {
     if (this.connectivity.onDevice) {
@@ -255,11 +258,11 @@ export class ItemDetailPage {
   }
 
   /**
-* @desc retrieving sub acoount status from gateway  
+* @desc retrieving sub acoount status from gateway
 * @param object $subAccount - the public and secret key pair of sub account
 * @param string $mainAccount - the public key of main account
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   subAccountStatus() {
     if (this.connectivity.onDevice) {
@@ -273,8 +276,10 @@ export class ItemDetailPage {
         this.apiService.subAccountStatus(subAccount).then((res) => {
           console.log(res.body);
           if (res.status === 200) {
-            resolve(res.body)
+            this.dissmissLoading();
+            resolve(res.body);
           } else {
+            this.dissmissLoading();
             this.userError('Authentication Failed', 'Could not authenticate the account. Please try again.');
           }
         })
@@ -291,11 +296,11 @@ export class ItemDetailPage {
   }
 
   /**
-  * @desc making sub account signable by main account (multi-signature transaction)  
+  * @desc making sub account signable by main account (multi-signature transaction)
   * @param object $subAccount - the public and secret key pair of sub account
   * @param string $mainAccount - the public key of main account
   * @author Jaje thananjaje3@gmail.com
-  * @return 
+  * @return
   */
   multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
@@ -329,11 +334,11 @@ export class ItemDetailPage {
   }
 
   /**
-* @desc Building acceptance XDR  
-* @param string $Identifier 
-* @param string $proofHash 
+* @desc Building acceptance XDR
+* @param string $Identifier
+* @param string $proofHash
 * @param string $subAcc - sub account public key need to build the XDR
-* @param object $subAccObj 
+* @param object $subAccObj
 * @param object $signerSK - the public and secret key pair of main account
 * @author Jaje thananjaje3@gmail.com
 * @return sequence number and acceptance XDR
@@ -432,10 +437,10 @@ export class ItemDetailPage {
   }
 
   /**
-* @desc Building rejectance XDR  
-* @param string $proofHash 
+* @desc Building rejectance XDR
+* @param string $proofHash
 * @param string $subAcc - sub account public key need to build the XDR
-* @param object $subAccObj 
+* @param object $subAccObj
 * @param object $signerSK - the public and secret key pair of main account
 * @author Jaje thananjaje3@gmail.com
 * @return sequence number and rejectance XDR
@@ -541,9 +546,7 @@ export class ItemDetailPage {
     }
   }
 
-  /**
-* @desc communicate with stellar horizon to create and fund address.  
-* @param 
+/**
 * @author Jaje thananjaje3@gmail.com
 * @return object key pair
 */
@@ -577,11 +580,11 @@ export class ItemDetailPage {
 
   }
 
-  /**
+/**
 * @desc add sub account public key to admin
 * @param string $subAcc - the subAcc will be mapped with main account
 * @author Jaje thananjaje3@gmail.com
-* @return 
+* @return
 */
   addSubAccount(subAcc) {
 
@@ -600,7 +603,7 @@ export class ItemDetailPage {
           if (res.status === 200) {
             this.presentToast('Sub ccount successfully added.');
             this.BCAccounts[0].subAccounts.push(subAcc.publicKey());
-            this.storage.setBcAccount(this.properties.userName, this.BCAccounts);
+            this.storage.setBcAccount(this.properties.userName, AES.encrypt(this.BCAccounts, this.key).toString());
             resolve();
           } else if (res.status === 406) {
             this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
@@ -619,7 +622,7 @@ export class ItemDetailPage {
   }
 
   /**
- * @desc decyrpt the secret key with the signer   
+ * @desc decyrpt the secret key with the signer
  * @param string $ciphertext - the chiper to be decyrpted
  * @param string $signer - the signer to decyrpt the secret
  * @author Jaje thananjaje3@gmail.com

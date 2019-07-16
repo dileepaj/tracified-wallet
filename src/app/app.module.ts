@@ -31,6 +31,9 @@ import { StorageServiceProvider } from '../providers/storage-service/storage-ser
 import { LoginPageModule } from '../pages/login/login.module';
 import { MappingServiceProvider } from '../providers/mapping-service/mapping-service';
 import { ApiServiceProvider } from '../providers/api-service/api-service';
+import { IonicLoggerModule, Logger } from 'ionic-logger-new';
+import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
+import {File} from '@ionic-native/file';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -41,7 +44,7 @@ export function createTranslateLoader(http: HttpClient) {
     MyApp
   ],
   imports: [
-    BrowserModule, 
+    BrowserModule,
     IonicSelectableModule,
     HttpClientModule,
     SelectSearchableModule,
@@ -60,7 +63,15 @@ export function createTranslateLoader(http: HttpClient) {
         deps: [HttpClient]
       }
     }),
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    IonicLoggerModule.forRoot({
+      docDir: 'Tracified',
+      logDir: 'Tracified-Wallet',
+      logRetentionDays: 1,
+      debug: true,
+      printDebugMessages: true,
+      logToFle:true
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -80,7 +91,10 @@ export function createTranslateLoader(http: HttpClient) {
     ConnectivityServiceProvider,
     AuthServiceProvider,
     StorageServiceProvider,
-    MappingServiceProvider
+    MappingServiceProvider,
+    Logger,
+    FileSystemServiceProvider,
+    File
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

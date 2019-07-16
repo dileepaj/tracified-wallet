@@ -1,84 +1,80 @@
 page-item-sent {
 
-.scroll-content{
-    padding: 3px;
-
-}
-.col{
+  .col {
     padding: 4px;
-}
+  }
 
-#notification-icon{
+  .notification-icon {
     display: flex;
     margin-top: 35%;
-margin-left: auto;
-margin-right: auto;
-height: 100%;
-width: 35%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 35%;
     background-repeat: repeat-x;
-}
+  }
 
-#noItem{
-    // text-align: center;
-    vertical-align: middle;
-    left: 34%;
-    font-size: 18px;
-    top: 47%;
-    position: absolute;
+  .noItem {
     color: black;
-}
+    padding: 0;
+    text-align: center;
+  }
 
-#noItem-note{
-    // text-align: center;
-    vertical-align: middle;
-    // align-content: center;
-    left: 21%;
-    top: 55%;
-    position: absolute;
+  .noItem-note {
     color: grey !important;
-}
+    padding: 0;
+    text-align: center;
+  }
 
-.note-md {
+  .row {
+    align-items: flex-start !important;
+  }
+
+  .item-inner {
+    border-bottom: 0 !important;
+  }
+
+  .note-md {
     color: #3d3d3d;
-}
+  }
 
-accordion-list{
+  accordion-list {
     margin: 0px;
+  }
+
+  #accept {
+    border-color: #ccc;
+    color: #28a745;
+  }
+  #reject {
+    border-color: #ccc;
+    color: red;
+  }
 }
 
-    #accept{
-        border-color: #ccc;
-        color: #28A745;
-    }
-    #reject{
-        border-color: #ccc;
-        color: red;
-    }
+.alert-md .alert-input:focus {
+  margin-bottom: 4px;
+  border-bottom: 2px solid #28a745 !important;
 }
 
-    .alert-md .alert-input:focus {
-        margin-bottom: 4px;
-        border-bottom: 2px solid #28A745 !important;
-    }
+.alert-md .alert-button {
+  color: #28a745;
+  margin-left: inherit;
+  margin-right: unset;
+  .button-inner {
+    -webkit-justify-content: center;
+    justify-content: start;
+    color: #28a745;
+    width: fit-content;
+  }
+}
 
-    .alert-md .alert-button {
-        color:#28A745;
-        margin-left: inherit;
-        margin-right: unset;
-        .button-inner {
-          -webkit-justify-content: center;
-          justify-content: start;
-          color: #28A745;
-          width: fit-content;
-         }
-    }
+.alert-md .alert-wrapper {
+  margin-top: 35%;
+  margin-bottom: 65%;
+  width: 280px;
+}
 
-    .alert-md .alert-wrapper{
-        margin-top: 35%;
-        margin-bottom: 65%;
-        width : 280px;
-    }
-
-    .alert-md .alert-button-group {
-        padding: 10px;
-    }
+.alert-md .alert-button-group {
+  padding: 10px;
+}
