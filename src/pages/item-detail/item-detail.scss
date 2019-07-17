@@ -18,7 +18,6 @@ page-item-detail {
 
   ion-label {
     margin: 8px !important;
-    font-size:2vw;
   }
 
   .button-block {
@@ -27,7 +26,7 @@ page-item-detail {
 
   .button-md {
   height: 8vw;
-  font-size: 4vw;
+  font-size: 2rem;
   }
   .list-md {
     margin: auto;
@@ -40,11 +39,11 @@ page-item-detail {
  }
 
   [text-wrap] .label-md {
-    font-size: 4vw;
+    font-size: 1em;
   }
 
   .label-md[stacked] {
-    font-size: 3vw;
+    font-size: 1rem;
     margin-left : 0 !important;
   }
 
@@ -57,7 +56,7 @@ page-item-detail {
   .item-md,
   .item-select .label-md{
   color: #999 !important;
-  font-size: 4vw;
+  font-size: 1em;
 }
 
   #cocButton {
