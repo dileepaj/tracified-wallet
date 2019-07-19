@@ -70,7 +70,7 @@ export class StorageServiceProvider {
     this.photo.setItem(username, image);
   }
 
-  setBcAccount(username: string, accounts: any): Promise<any> {
+  setBcAccounts(username: string, accounts: any): Promise<any> {
     return new Promise(resolve => {
       this.blockchainAccounts.setItem(username, accounts).then(() => {
         resolve(true);

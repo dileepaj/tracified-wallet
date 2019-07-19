@@ -39,7 +39,8 @@ export class AddAccountPage {
   form: FormGroup;
   BCAccounts: any;
 
-  constructor(public navCtrl: NavController,
+  constructor(
+    public navCtrl: NavController,
     private navParams: NavParams,
     private alertCtrl: AlertController,
     private apiService: ApiServiceProvider,
@@ -48,10 +49,10 @@ export class AddAccountPage {
     private loadingCtrl: LoadingController,
     private storage: StorageServiceProvider,
     private properties: Properties
-    ) {
+  ) {
 
     this.form = new FormGroup({
-      username: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
+      accName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
       strength: new FormControl(''),
       password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required]))
     });
@@ -62,16 +63,6 @@ export class AddAccountPage {
 
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad AddAccountPage');
-  }
-
-  /**
-* @desc handler function managing other promise function to add main account to admin
-* @param
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   addMainAccount() {
     var publicKey;
     var secretKey;
@@ -84,16 +75,13 @@ export class AddAccountPage {
             publicKey = pair.publicKey()
             //@ts-ignore
             secretKey = pair.secret();
-            //@ts-ignore
-            console.log(publicKey)
-            console.log(secretKey)
             this.createMultipleTrustline(pair).then(() => {
               this.multisignSubAccount(pair2, publicKey).then(() => {
                 this.encyrptSecret(secretKey, this.form.value.password).then((ciphertext) => {
                   const account = {
                     "account": {
                       "mainAccount": {
-                        "accountName": this.form.value.username,
+                        "accountName": this.form.value.accName,
                         "pk": publicKey,
                         "sk": ciphertext,
                         //@ts-ignore
@@ -169,60 +157,13 @@ export class AddAccountPage {
     }
   }
 
-  /**
-* @desc add sub account public key to admin
-* @param string $subAcc - the subAcc will be mapped with main account
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
-  addSubAccount(subAcc) {
-
-    if (this.connectivity.onDevice) {
-      this.presentLoading();
-      return new Promise((resolve, reject) => {
-        const account = {
-          "account": {
-            "subKey": subAcc,
-            "pk": this.BCAccounts[0].pk
-          }
-        };
-
-        this.apiService.addSubAccount(account).then((res) => {
-          console.log(res.body);
-          this.dissmissLoading();
-          if (res.status === 200) {
-            this.presentToast('Sub account successfully added.');
-            resolve();
-
-          } else if (res.status === 406) {
-            this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
-          } else {
-            this.userError('Authentication Failed', 'Could not authenticate the account.');
-          }
-        }).catch((error) => {
-            this.dissmissLoading();
-            this.userError('Authentication Failed', 'Could not authenticate the account.');
-            console.log(error);
-          });
-      })
-    } else {
-      this.presentToast('There is no internet connection to complete this task. Please try again.');
-    }
-  }
-
-  /**
-* @desc validate the main account name whether its already present (globally unique)
-* @param string $username - the username as main account name
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   validateMainAccount() {
     if (this.connectivity.onDevice) {
       return new Promise((resolve, reject) => {
         // this.presentLoading();
         const account = {
           "account": {
-            "accountName": this.form.value.username
+            "accountName": this.form.value.accName
           }
         };
 
@@ -237,11 +178,11 @@ export class AddAccountPage {
             reject();
           }
         }).catch((error) => {
-            this.dissmissLoading();
-            this.userError('Authentication Failed', 'Could not authenticate the account.');
-            console.log(error);
-            reject();
-          });
+          this.dissmissLoading();
+          this.userError('Authentication Failed', 'Could not authenticate the account.');
+          console.log(error);
+          reject();
+        });
       })
     } else {
       this.presentToast('There is no internet connection to complete this task. Please try again.');
@@ -324,7 +265,7 @@ export class AddAccountPage {
           var Yoghurt = new Asset('Yoghurt', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
 
 
-          var assetArr = [Aple, Mango, Banana, Milk,Yoghurt];
+          var assetArr = [Aple, Mango, Banana, Milk, Yoghurt];
           assetArr.forEach(element => {
             // add operation
             txBuilder.addOperation(Operation.changeTrust({
@@ -416,7 +357,7 @@ export class AddAccountPage {
   }
 
   gotoBlockchainAccPage() {
-     this.navCtrl.push(BcAccountPage);
+    this.navCtrl.push(BcAccountPage);
   }
 
   userError(title, message) {
