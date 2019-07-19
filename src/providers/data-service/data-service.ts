@@ -26,4 +26,8 @@ export class DataServiceProvider {
     return this.storage.setBcAccounts(this.properties.userName, accounts);
   }
 
+  addTransactionAccount(account): Promise<any> {
+    return this.apiService.addTransactionAccount(account);
+  }
+
 }

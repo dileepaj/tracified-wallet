@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, LoadingController, Toast, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, ToastController, LoadingController, Toast, AlertController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Network, Server, Keypair, Asset, TransactionBuilder, Operation } from 'stellar-sdk';
 import { AES, enc } from "crypto-js";
@@ -12,13 +12,18 @@ const patterns = require("hsimp-purescript/dictionaries/patterns");
 const checks = require("hsimp-purescript/dictionaries/checks");
 const namedNumbers = require("hsimp-purescript/dictionaries/named-Numbers");
 const CharacterSets = require("hsimp-purescript/dictionaries/character-Sets");
-Network.useTestNetwork();
 import { get } from 'request';
+
+import { BcAccountPage } from '../bc-account/bc-account';
+
+// Service Providers
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
-import { BcAccountPage } from '../bc-account/bc-account';
-import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { DataServiceProvider } from '../../providers/data-service/data-service';
+
+// Shared Services
 import { Properties } from '../../shared/properties';
+import { Logger } from 'ionic-logger-new';
 
 @IonicPage()
 @Component({
@@ -37,18 +42,17 @@ export class AddAccountPage {
   private toastInstance: Toast;
   loading;
   form: FormGroup;
-  BCAccounts: any;
 
   constructor(
     public navCtrl: NavController,
-    private navParams: NavParams,
     private alertCtrl: AlertController,
     private apiService: ApiServiceProvider,
     private connectivity: ConnectivityServiceProvider,
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
-    private storage: StorageServiceProvider,
-    private properties: Properties
+    private properties: Properties,
+    private logger: Logger,
+    private dataService: DataServiceProvider
   ) {
 
     this.form = new FormGroup({
@@ -56,19 +60,19 @@ export class AddAccountPage {
       strength: new FormControl(''),
       password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required]))
     });
-
-    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
-      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
-    });
-
   }
 
   addMainAccount() {
     var publicKey;
     var secretKey;
+
     if (this.connectivity.onDevice) {
       this.presentLoading();
-      this.validateMainAccount().then(() => {
+      this.validateAccountName().then((status) => {
+        if (!status) {
+          this.dissmissLoading();
+          this.presentAlert("Error", "Account name already exists. Please pick a different name for the account.");
+        }
         this.createAddress().then((pair) => {
           this.createAddress().then((pair2) => {
             //@ts-ignore
@@ -77,124 +81,103 @@ export class AddAccountPage {
             secretKey = pair.secret();
             this.createMultipleTrustline(pair).then(() => {
               this.multisignSubAccount(pair2, publicKey).then(() => {
-                this.encyrptSecret(secretKey, this.form.value.password).then((ciphertext) => {
+                this.encyrptSecret(secretKey, this.form.value.password).then((encSecretKey) => {
                   const account = {
                     "account": {
                       "mainAccount": {
                         "accountName": this.form.value.accName,
                         "pk": publicKey,
-                        "sk": ciphertext,
+                        "sk": encSecretKey,
                         //@ts-ignore
                         "subAccounts": [pair2.publicKey()]
                       }
                     }
                   }
-                  this.apiService.addMainAccountN(account).then((res) => {
+                  this.dataService.addTransactionAccount(account).then((res) => {
                     this.dissmissLoading();
                     if (res.status === 200) {
-                      console.log(res)
-                      this.presentToast('Blockchain Account added successfully!');
-                      this.gotoBlockchainAccPage();
-                    } else if (res.status === 205) {
-
-                    } else if (res.status === 403) {
-                      this.userError('Authentication Failed', 'Your account is blocked. Please contact an admin.');
+                      this.presentToast('Transaction account added successfully!');
+                      this.navCtrl.push(BcAccountPage);
                     } else {
-                      this.userError('Authentication Failed', 'Could not authenticate the account.');
+                      this.presentToast('Failed to add the transaction account.');
                     }
-                  })
-                    .catch((error) => {
-                      this.dissmissLoading();
-                      this.userError('Authentication Failed', 'authenticationFailedDescription');
-                      console.log(error);
-                    });
-                }).catch(e => {
-                  console.log(e)
+                  }, (err) => {
+                    this.dissmissLoading();
+                    if (err.status == 403) {
+                      this.presentAlert('Authentication Failed', 'Your account is blocked. Please contact an admin.');
+                    } else {
+                      this.presentAlert('Authentication Failed', 'Could not authenticate the account.');
+                    }
+                  }).catch((error) => {
+                    this.dissmissLoading();
+                    this.presentAlert('Authentication Failed', 'Could not authenticate the account.');
+                    this.logger.error("Failed to add transaction account: " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
+                  });
+                }).catch(() => {
                   if (this.isLoadingPresent) {
                     this.dissmissLoading();
                     this.presentToast('Error occured while encrypting the key. Please contact an admin.');
                   }
-                })
+                });
               }).catch(e => {
-                console.log(e)
                 if (this.isLoadingPresent) {
                   this.dissmissLoading();
                   this.presentToast('Error occured. Could not create multiple trust lines.');
                 }
-              })
+              });
             }).catch(e => {
-              console.log(e)
               if (this.isLoadingPresent) {
                 this.dissmissLoading();
                 this.presentToast('Ops! Something went wrong!');
               }
-            })
+            });
           }).catch(e => {
-            console.log(e)
             if (this.isLoadingPresent) {
               this.dissmissLoading();
               this.presentToast('Ops! Something went wrong!');
             }
-          })
+          });
         }).catch(e => {
-          console.log(e)
           if (this.isLoadingPresent) {
             this.dissmissLoading();
             this.presentToast('Error! createAddress.');
           }
-        })
-      })
-        .catch(e => {
-          console.log(e)
-          if (this.isLoadingPresent) {
-            this.dissmissLoading();
-            this.presentToast('Could not validate the main account! Please try again.');
-          }
-        })
-
+        });
+      }).catch((error) => {
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+          this.presentToast('Could not check the transaction account name! Please try again.');
+        }
+      });
     } else {
       this.presentToast('There is no internet connection to complete this task. Please try again.');
     }
   }
 
-  validateMainAccount() {
+  validateAccountName() {
     if (this.connectivity.onDevice) {
       return new Promise((resolve, reject) => {
-        // this.presentLoading();
         const account = {
           "account": {
             "accountName": this.form.value.accName
           }
         };
-
         this.apiService.validateMainAccountN(account).then((res) => {
-          console.log(res.body)
-          // this.dissmissLoading();
           if (res.status === 200 && res.body.status == false) {
-            resolve();
+            resolve(true);
           } else {
-            this.dissmissLoading();
-            this.userError('Error', 'Duplicate main account found!');
-            reject();
+            resolve(false);
           }
         }).catch((error) => {
-          this.dissmissLoading();
-          this.userError('Authentication Failed', 'Could not authenticate the account.');
-          console.log(error);
+          this.logger.error("Account name validation failed: " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
           reject();
         });
-      })
+      });
     } else {
       this.presentToast('There is no internet connection to complete this task. Please try again.');
     }
   }
 
-  /**
-* @desc check the time need to crack the password that user inputs
-* @param string $StrengthPassword - StrengthPassword to check strength
-* @author Jaje thananjaje3@gmail.com
-* @return password strenth as time
-*/
   checkStrength() {
     const hsimp = setup({
       calculation: {
@@ -218,18 +201,9 @@ export class AddAccountPage {
 
   }
 
-  /**
-* @desc communicate with stellar horizon to create and fund address.
-* @param
-* @author Jaje thananjaje3@gmail.com
-* @return object key pair
-*/
   createAddress() {
     return new Promise((resolve, reject) => {
-      //generate address pair
       var pair = Keypair.random();
-
-      //funds address with XLM
       get({
         url: 'https://friendbot.stellar.org',
         qs: { addr: pair.publicKey() },
@@ -245,12 +219,6 @@ export class AddAccountPage {
     })
   }
 
-  /**
-* @desc create trust line for multipe assets dynamically for a Stellar account
-* @param object $pair - the public and secret key pair
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   createMultipleTrustline(pair) {
     return new Promise((resolve, reject) => {
       var receivingKeys = pair;
@@ -288,13 +256,6 @@ export class AddAccountPage {
     })
   }
 
-  /**
-* @desc making sub account signable by main account (multi-signature transaction)
-* @param object $subAccount - the public and secret key pair of sub account
-* @param string $mainAccount - the public key of main account
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
       server
@@ -332,23 +293,15 @@ export class AddAccountPage {
     })
   }
 
-  /**
-* @desc encrypt the secret key with the signer
-* @param string $secret - the secret to be encrypted
-* @param string $signer - the signer to encrypt the secret
-* @author Jaje thananjaje3@gmail.com
-* @return encrypted secret chiper
-*/
   encyrptSecret(secret, signer) {
-    try {
-      return new Promise((resolve, reject) => {
-        // Encrypt
-        var ciphertext = AES.encrypt(secret, signer);
-        resolve(ciphertext.toString());
-      })
-    } catch (error) {
-      console.log(error)
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        var encSecretKey = AES.encrypt(secret, signer);
+        resolve(encSecretKey.toString());
+      } catch {
+        reject();
+      }
+    });
   }
 
   hideShowPassword() {
@@ -356,11 +309,7 @@ export class AddAccountPage {
     this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
   }
 
-  gotoBlockchainAccPage() {
-    this.navCtrl.push(BcAccountPage);
-  }
-
-  userError(title, message) {
+  presentAlert(title, message) {
     let alert = this.alertCtrl.create();
     alert.setTitle(title);
     alert.setMessage(message);
@@ -378,7 +327,7 @@ export class AddAccountPage {
     this.toastInstance = this.toastCtrl.create({
       message: message,
       duration: 2000,
-      position: 'middle'
+      position: 'bottom'
     });
 
     this.toastInstance.onDidDismiss(() => {

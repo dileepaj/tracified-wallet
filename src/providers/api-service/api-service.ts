@@ -223,7 +223,7 @@ export class ApiServiceProvider {
     return this.getN(blockchainAccs, headers);
   }
 
-  addMainAccountN(payload): Promise<any> {
+  addTransactionAccount(payload): Promise<any> {
     let headers = {
       observe: 'response',
       headers: new HttpHeaders({
