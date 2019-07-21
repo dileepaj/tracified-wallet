@@ -10,95 +10,55 @@
 </ion-header>
 
 <ion-content>
-  <br>
-  <!-- <md-input-container>
-    <md-select ng-model="mode" ng-change="toggleSearch()">
-      <md-option selected="selected">State 1</md-option>
-      <md-option>State 2</md-option>
-      <md-option>State 3</md-option>
-      <md-option>State 4</md-option>
-    </md-select>
-  </md-input-container> -->
-  <div id="verticalAlign">
-    <div id="container">
+<div class="container">
       <form>
         <ion-list id="list-COC">
+            <ion-label stacked id="label">Item</ion-label>
+          <ion-item>
+            <ion-label >Item</ion-label>
+           <ion-select name="item">
+              <ion-option *ngFor="let Item of currentItems">{{Item.asset_code}}</ion-option>
+            </ion-select>
+          </ion-item>
 
-          <!-- <ion-item id="rounded"> -->
-          <!-- <ion-label stacked id="label">Item</ion-label> -->
-          <!-- <ion-select id="input" [(ngModel)]="COCForm.selectedItem" name="item" multiple="false">
-            <ion-option *ngFor="let Item of currentItems">{{Item.asset_code}}</ion-option>
-          </ion-select> -->
-          <!-- </ion-item> -->
-          <ion-label stacked id="label">Item</ion-label>
-          <div class="styled">
-            <select id="dropdown" [(ngModel)]="COCForm.selectedItem" name="item">
-              <option id="options" *ngFor="let Item of currentItems">{{Item.asset_code}}</option>
-            </select>
-          </div>
-          
           <ion-label stacked id="label">Identifier</ion-label>
-          <ion-item id="rounded">
-            <!-- <ion-label id="label" floating> Quantity </ion-label> -->
-            <ion-input class="textArea" id="identifier" type="text" placeholder="Identifier"
+          <ion-item >
+            <ion-input type="text" placeholder="Identifier"
               [(ngModel)]="COCForm.identifier" name="identifier"></ion-input>
           </ion-item>
-         
+
           <ion-label stacked id="label">Quantity</ion-label>
           <ion-item id="rounded">
-            <!-- <ion-label id="label" floating> Quantity </ion-label> -->
-            <ion-input class="textArea" id="quantity" type="number" placeholder="Quantity" [(ngModel)]="COCForm.qty"
+            <ion-input type="number" placeholder="Quantity" [(ngModel)]="COCForm.qty"
               name="qty"></ion-input>
           </ion-item>
-          
-          <ion-label stacked id="label">Receiver</ion-label>
+
+
+          <ion-label  stacked id="label">Receiver</ion-label>
           <ion-item text-wrap>
-            <select-searchable class="textArea" [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}"
+            <select-searchable [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}"
               (ionInput)="setFilteredItems()" title=" Receiver" canSearch="true" [items]="receivers"
-              itemTextField="itemName" emptyMessage="No data"></select-searchable>
+              itemTextField="itemName" emptyMessage="No data">
+            </select-searchable>
           </ion-item>
 
-          <!-- <div class="styled">
-            <ion-row>
-              <ion-input id="receiverInput" type="text" placeholder="Receiver" [(ngModel)]="COCForm.receiver" name="receiver"></ion-input>
-              
-              <select float="right" id="receiverDropdown" [(ngModel)]="COCForm.receiver" onChange='' name="receiver">
-                <option id="options" *ngFor="let receiver of receivers">{{receiver}}</option>
-                <option id="options" value="">Other</option>
-              </select>
-            </ion-row>
-          </div> -->
 
-          <!-- <ion-item *ngIf="option == 'otherOptionValue'">
-          <ion-label>Receiver</ion-label>
-          <ion-input type="text" [(ngModel)]="COCForm.receiver" name="receiver"></ion-input>
-        </ion-item> -->
-
-          
-
-          <!-- <ion-item id="rounded">
-          <ion-label id="label" floating> Receiver </ion-label>
-          <ion-select id="input" [(ngModel)]="COCForm.receiver" name="receiver" multiple="false">
-            <ion-option *ngFor="let receiver of receivers" selected="true">{{receiver.Receiver}}</ion-option>
-          </ion-select>
-        </ion-item> -->
         <ion-label stacked id="label">Validity</ion-label>
           <ion-item id="rounded">
-            <!-- <ion-label id="label" floating> Validity </ion-label> -->
-            <ion-datetime class="textArea" id="input" placeholder="Validity" displayFormat="YYYY-MM-DDTHH:mm:ssTZD"
+            <ion-datetime  placeholder="Validity" displayFormat="YYYY-MM-DDTHH:mm:ssTZD"
               min="2018-11-29T06:25:48Z" max="2050" [(ngModel)]="COCForm.vaidity" name="vaidity"></ion-datetime>
           </ion-item>
-          
-
         </ion-list>
 
-        <div id="button">
+
+        <div class="button">
           <button (click)="passwordPrompt()" id="cocButton" [disabled]="COCForm.invalid" ion-button block
             color="secondary">Transfer</button>
         </div>
 
-
       </form>
-    </div>
-  </div>
+</div>
 </ion-content>
+
+
+

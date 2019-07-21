@@ -40,11 +40,11 @@ export class TransferPage {
   ionViewDidLoad() {
     this.presentLoading();
 
-    this.storage
+      this.storage
       .getBcAccount(this.properties.userName)
       .then(accounts => {
-        this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
-        this.BCAccounts = false;
+          this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+
         if(this.BCAccounts) {
           this.getBalance();
           this.loadReceivers();
@@ -52,9 +52,14 @@ export class TransferPage {
         else {
           this.dissmissLoading();
           console.log("There should be at least one account.");
+          this.dissmissLoading();
           this.dataError("Error","There should be at least one account.");
         }
       });
+
+
+
+
 
   }
 
@@ -89,13 +94,20 @@ export class TransferPage {
     let assets = [];
 
     var server = new Server('https://horizon-testnet.stellar.org');
+    // the JS SDK uses promises for most actions, such as retrieving an account
     server.loadAccount(this.BCAccounts[0].pk).then(function (account) {
-      account.balances.forEach(function (balance) {
-        // @ts-ignore
-        console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
-        let bal: number = parseFloat(balance.balance)
-        // @ts-ignore
-        assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
+         //console.log('Balances for account: ' + JSON.stringify(account.balances));
+        account.balances.forEach(function (balance) {
+          // @ts-ignore
+          console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
+          let bal: number = parseFloat(balance.balance)
+          // @ts-ignore
+          assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
+        });
+        assets.pop();
+      })
+      .catch(function (err) {
+        console.error(err);
       });
       assets.pop();
     }).catch(function (err) {

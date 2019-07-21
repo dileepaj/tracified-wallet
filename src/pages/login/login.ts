@@ -74,12 +74,7 @@ export class LoginPage {
 
       this.authService.validateUser(authmodel).then((res) => {
         if (res.status === 200) {
-          try {
             this.getAccounts();
-          } catch (error) {
-            console.log(error)
-            this.navCtrl.setRoot(TabsPage);
-          }
         } else if (res.status === 205) {
           this.dissmissLoading();
           this.gotoPasswordResetPage(this.form.value.username, this.form.value.password);
@@ -120,13 +115,11 @@ export class LoginPage {
       this.apiService.getBCAccountsN().then((res) => {
         console.log(res);
         this.dissmissLoading();
-        if (res.status === 200 && res.body.accounts.accounts) {
-          const BCAccounts =JSON.stringify(res.body.accounts.accounts);
-          this.storage.setBcAccount(this.properties.userName, AES.encrypt(BCAccounts, this.key).toString());
-          this.navCtrl.setRoot(TabsPage);
-        } else {
-          this.navCtrl.setRoot(TabsPage);
+        if (res.status === 200 && accounts) {
+          this.storage.setBcAccount(this.properties.userName, AES.encrypt(JSON.stringify(accounts), this.key).toString());
         }
+
+        this.navCtrl.setRoot(TabsPage);
       })
         .catch((error) => {
           if (error.status === 406) {
