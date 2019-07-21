@@ -33,9 +33,15 @@ export class ItemSentPage {
     public itemsProvider: Items,
     private storage: StorageServiceProvider,
     private properties: Properties
-  ) {}
+  ) {  }
+
+  ngOnInit(){  }  
 
   ionViewDidLoad() {
+    this.setFilteredItems();
+  }
+
+  ionViewDidEnter() {
     this.presentLoading();
     this.storage.getBcAccount(this.properties.userName).then((accounts) => {
       this.BCAccounts = accounts;
@@ -47,11 +53,6 @@ export class ItemSentPage {
       console.log(error);
       this.dataError("Error","There should be at least one account.");
     });
-
-    this.setFilteredItems();
-  }
-
-  ionViewDidEnter() {
 
   }
 

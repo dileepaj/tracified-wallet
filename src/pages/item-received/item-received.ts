@@ -51,21 +51,10 @@ export class ItemReceivedPage {
     public itemsProvider: Items,
     private storage: StorageServiceProvider,
     private properties: Properties
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.storage
-      .getBcAccount(this.properties.userName)
-      .then(accounts => {
-        this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
-        if(this.BCAccounts){
-        this.loadCOCReceived();
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        this.dataError("Error","There should be at least one account.");
-      });
+    
   }
 
   ionViewDidLoad() {
@@ -73,7 +62,17 @@ export class ItemReceivedPage {
     this.setFilteredItems();
   }
 
-  ionViewDidEnter() { }
+  ionViewDidEnter() {
+    this.storage.getBcAccount(this.properties.userName).then(accounts => {
+      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+      if (this.BCAccounts) {
+        this.loadCOCReceived();
+      }
+    }).catch(error => {
+      console.log(error);
+      this.dataError("Error", "There should be at least one account.");
+    });
+  }
 
   loadCOCReceived() {
     // try {

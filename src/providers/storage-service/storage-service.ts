@@ -1,8 +1,10 @@
 import { Injectable } from "@angular/core";
+import { AES, enc } from "crypto-js";
 import * as localforage from "localforage";
 
 @Injectable()
 export class StorageServiceProvider {
+  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
   public profile = localforage.createInstance({
     name: "profileWallet",
     storeName: "profileWallet"
@@ -72,7 +74,10 @@ export class StorageServiceProvider {
 
   setBcAccounts(username: string, accounts: any): Promise<any> {
     return new Promise(resolve => {
-      this.blockchainAccounts.setItem(username, accounts).then(() => {
+      console.log("Accounts: ", accounts);
+      let encAccounts = AES.encrypt(JSON.stringify(accounts), this.key).toString();
+      console.log("Enc Accounts: ", encAccounts);
+      this.blockchainAccounts.setItem(username, encAccounts).then(() => {
         resolve(true);
       });
     });

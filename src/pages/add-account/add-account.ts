@@ -97,7 +97,7 @@ export class AddAccountPage {
                     this.dissmissLoading();
                     if (res.status === 200) {
                       this.presentToast('Transaction account added successfully!');
-                      this.navCtrl.push(BcAccountPage);
+                      this.navCtrl.setRoot(BcAccountPage);
                     } else {
                       this.presentToast('Failed to add the transaction account.');
                     }
