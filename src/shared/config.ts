@@ -5,7 +5,7 @@ const admin = ENV.API_ADMIN;
 
 // Admin GET
 
-export const blockchainAcc: string = admin + '/api/bc/keys'; // GET
+export const blockchainAccs: string = admin + '/api/bc/keys'; // GET
 
 // Admin POST
 

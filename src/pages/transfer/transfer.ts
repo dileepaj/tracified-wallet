@@ -35,9 +35,7 @@ export class TransferPage {
     private storage: StorageServiceProvider,
     private properties: Properties,
     private alertCtrl: AlertController
-    ) {
-
-  }
+    ) { }
 
   ionViewDidLoad() {
     this.presentLoading();
@@ -52,6 +50,7 @@ export class TransferPage {
           this.loadReceivers();
         }
         else {
+          this.dissmissLoading();
           console.log("There should be at least one account.");
           this.dissmissLoading();
           this.dataError("Error","There should be at least one account.");
@@ -110,6 +109,10 @@ export class TransferPage {
       .catch(function (err) {
         console.error(err);
       });
+      assets.pop();
+    }).catch(function (err) {
+      console.error(err);
+    });
     this.currentItems = assets;
     this.Searcheditems = this.currentItems;
     console.log(this.Searcheditems)

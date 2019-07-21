@@ -1,9 +1,11 @@
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Properties } from '../../shared/properties';
+import { Properties } from '../../shared/properties'
+import { Observable } from 'rxjs/Rx';
+import { login, blockchainAccs, addMainAcc, validateMainAcc } from '../../shared/config';
 
 @Injectable()
-export class Api {
+export class ApiServiceProvider {
   url: string = 'https://tracified-gateway.herokuapp.com';
   LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
   reqOpts: any;
@@ -39,19 +41,6 @@ export class Api {
     return this.http.post(this.url + '/' + endpoint, body, reqOpts);
   }
 
-  validateUser(body: any, reqOpts?: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.http.post(this.LocalAdminURL + '/' + 'sign/login', body, reqOpts)
-        .subscribe(response => {
-          resolve(response);
-        },
-          error => {
-            console.log(error);
-            reject(error);
-          });
-    });
-  }
-
   getPublickey(body: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.reqOpts = {
@@ -74,70 +63,7 @@ export class Api {
     });
   }
 
-  getPreviousTXNID(Identifier): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.reqOpts = {
-        observe: 'response',
-        headers: new HttpHeaders({
-          'Accept': 'application/json',
-          'Content-Type': 'Application/json',
-        })
-      }
-      this.http.get(this.url + '/transaction/lastTxn/' + Identifier, this.reqOpts)
-        .subscribe(response => {
-          resolve(response);
-        },
-          error => {
-            console.log(error);
-            reject(error);
-          });
-    });
-  }
 
-  getBCAccount(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.reqOpts = {
-        observe: 'response',
-        headers: new HttpHeaders({
-          'Accept': 'application/json',
-          'Content-Type': 'Application/json',
-          'Authorization': 'Bearer ' + this.properties.token
-        })
-      };
-      this.http.get(this.LocalAdminURL + '/api/bc/keys', this.reqOpts)
-        .subscribe(response => {
-          resolve(response);
-        },
-          error => {
-            console.log(error);
-            reject(error);
-          });
-    });
-  }
-
-  addMainAccount(body): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.reqOpts = {
-        observe: 'response',
-        headers: new HttpHeaders({
-          'Accept': 'application/json',
-          'Content-Type': 'Application/json',
-          'Authorization': 'Bearer ' + this.properties.token,
-        })
-      }
-      console.log(body);
-      this.http.post(this.LocalAdminURL + '/api/bc/key/main', body, this.reqOpts)
-        .subscribe(response => {
-          console.log(response);
-
-          resolve(response);
-        },
-          error => {
-            console.log(error);
-            reject(error);
-          });
-    });
-  }
 
   getNames(body) {
 
@@ -198,28 +124,7 @@ export class Api {
     });
   }
 
-  validateMainAccount(body): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.reqOpts = {
-        observe: 'response',
-        headers: new HttpHeaders({
-          'Accept': 'application/json',
-          'Content-Type': 'Application/json',
-          'Authorization': 'Bearer ' + this.properties.token
-        })
-      }
-      this.http.post(this.LocalAdminURL + '/api/bc/key/main/account', body, this.reqOpts)
-        .subscribe(response => {
-          console.log(response);
 
-          resolve(response);
-        },
-          error => {
-            console.log(error);
-            reject(error);
-          });
-    });
-  }
 
   verifyEmail(body: any, reqOpts?: any): Promise<any> {
     let confirm = { 'confirmUser': body };
@@ -251,24 +156,94 @@ export class Api {
     });
   }
 
-  subAccountAvailability(body: any, reqOpts?: any): Promise<any> {
-    // let confirm = { 'confirmUser': body };
-    return new Promise((resolve, reject) => {
-      this.http.post("http://www.mocky.io/v2" + '/' + '5c23626d2f00006700049569', body, reqOpts)
-        .subscribe(response => {
-          console.log(response);
-          resolve(response);
-        },
-          error => {
-            console.log(error);
-            reject(error);
-          });
-    });
-  }
-
   put(endpoint: string, body: any, reqOpts?: any) {
     return this.http.put(this.url + '/' + endpoint, body, reqOpts);
   }
 
- 
+
+  /* REFACTORED CODE BELOW */
+
+  private getN(url, headers?): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http.get(url, headers).timeout(2500).subscribe(
+        response => {
+          console.log(response);
+          resolve(response);
+        },
+        error => {
+          console.log(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  private postN(url, payload, headers?): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http.post(url, payload, headers).timeout(2500).subscribe(
+        response => {
+          console.log(response);
+          resolve(response);
+        },
+        error => {
+          console.log(error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  validateUserN(payload): Promise<any> {
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json'
+      })
+    }
+    return this.postN(login, payload, headers);
+  }
+
+  getBCAccountsN(): Promise<any> {
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token
+      })
+    };
+
+    return this.getN(blockchainAccs, headers);
+  }
+
+  addMainAccountN(payload): Promise<any> {
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token,
+      })
+    };
+
+    return this.postN(addMainAcc, payload, headers);
+  }
+
+  validateMainAccountN(payload): Promise<any> {
+
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token
+      })
+    };
+
+    return this.postN(validateMainAcc, payload, headers);
+
+  }
+
+
 }

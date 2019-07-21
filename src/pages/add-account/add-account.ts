@@ -14,7 +14,7 @@ const namedNumbers = require("hsimp-purescript/dictionaries/named-Numbers");
 const CharacterSets = require("hsimp-purescript/dictionaries/character-Sets");
 Network.useTestNetwork();
 import { get } from 'request';
-import { Api } from '../../providers';
+import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { BcAccountPage } from '../bc-account/bc-account';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
@@ -42,7 +42,7 @@ export class AddAccountPage {
   constructor(public navCtrl: NavController,
     private navParams: NavParams,
     private alertCtrl: AlertController,
-    private api: Api,
+    private apiService: ApiServiceProvider,
     private connectivity: ConnectivityServiceProvider,
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
@@ -101,7 +101,7 @@ export class AddAccountPage {
                       }
                     }
                   }
-                  this.api.addMainAccount(account).then((res) => {
+                  this.apiService.addMainAccountN(account).then((res) => {
                     this.dissmissLoading();
                     if (res.status === 200) {
                       console.log(res)
@@ -187,7 +187,7 @@ export class AddAccountPage {
           }
         };
 
-        this.api.addSubAccount(account).then((res) => {
+        this.apiService.addSubAccount(account).then((res) => {
           console.log(res.body);
           this.dissmissLoading();
           if (res.status === 200) {
@@ -226,7 +226,7 @@ export class AddAccountPage {
           }
         };
 
-        this.api.validateMainAccount(account).then((res) => {
+        this.apiService.validateMainAccountN(account).then((res) => {
           console.log(res.body)
           // this.dissmissLoading();
           if (res.status === 200 && res.body.status == false) {

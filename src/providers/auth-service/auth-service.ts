@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as jwt from 'jsonwebtoken';
-import { Api } from '../api/api';
+import { ApiServiceProvider } from '../api-service/api-service';
 import { ConnectivityServiceProvider } from '../connectivity-service/connectivity-service';
 import { ToastController, Events } from 'ionic-angular';
 import { AES, enc } from 'crypto-js';
@@ -16,7 +16,7 @@ export class AuthServiceProvider {
 
   constructor(
     public http: HttpClient,
-    private apiService: Api,
+    private apiService: ApiServiceProvider,
     private connectivityService: ConnectivityServiceProvider,
     private toastCtrl: ToastController, private properties: Properties,
     private events: Events,
@@ -35,13 +35,7 @@ export class AuthServiceProvider {
 
     return new Promise((resolve, reject) => {
       if (this.connectivityService.onDevice) {
-        this.apiService.validateUser(user, {
-          observe: 'response',
-          headers: new HttpHeaders({
-            'Accept': 'application/json',
-            'Content-Type': 'Application/json',
-          })
-        }).then((res) => {
+        this.apiService.validateUserN(user).then((res) => {
           if (res.status === 200) {
             this.properties.token = res.body.Token;
             const decoded: any = jwt.decode(this.properties.token);
