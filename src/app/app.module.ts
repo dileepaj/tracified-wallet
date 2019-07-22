@@ -7,11 +7,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-// import { Device } from 'ionic-native';
 import { DeviceDetectorModule, DeviceDetectorService } from 'ngx-device-detector';
 
 
-// import { Items } from '../mocks/providers/items';
 import { User, Api } from '../providers';
 import { MyApp } from './app.component';
 import { ItemReceivedPageModule } from '../pages/item-received/item-received.module';
@@ -26,7 +24,6 @@ import { Properties } from '../shared/properties';
 import { SelectSearchableModule } from '../components/search-dropdown/select-module';
 import { IonicSelectableModule } from 'ionic-selectable';
 import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
-//import { SettingsModule } from '../pages/settings/settings.module';
 
 import { Device } from '@ionic-native/device/ngx';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
