@@ -26,6 +26,8 @@ import { Properties } from '../shared/properties';
 import { SelectSearchableModule } from '../components/search-dropdown/select-module';
 import { IonicSelectableModule } from 'ionic-selectable';
 import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
+//import { SettingsModule } from '../pages/settings/settings.module';
+
 import { Device } from '@ionic-native/device/ngx';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
 import { LoginPageModule } from '../pages/login/login.module';

@@ -12,12 +12,46 @@
         </button>
     <ion-title>Settings</ion-title>
   </ion-navbar>
-
 </ion-header>
 
+<!--ion-content padding>tent
+  Generated template for the SettingsPage page.
 
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
 
 
 <ion-content padding>
 
+<ion-row style="height: 10px"></ion-row>
+
+  <ion-row  justify-content-center align-items-center style="vertical-align: 100%; flex-direction: column">
+    <ion-avatar>
+        <a class="item-avatar">
+        <img src="./assets/imgs/userProfile.png">
+        </a>
+    </ion-avatar>
+     &nbsp;
+    <a href>CHANGE</a>
+  </ion-row>
+
+  <ion-row style="height: 20pt"></ion-row>
+    <ion-item>
+        <ion-label position="fixed" color= "black">UserName</ion-label>
+        <ion-input>{{username}}</ion-input>
+      </ion-item>
+
+<ion-row style="height: 15pt"></ion-row>
+
+    <button ion-button [ngStyle]="{'background-color':'#27b211'}" float-left (click) ="presentPrompt()">Change Password</button>
+
+<ion-row style="height: 45pt"></ion-row>
+    <ion-item>
+        <ion-label>Enable logging</ion-label>
+        <ion-toggle checked>
+        </ion-toggle>
+    </ion-item>
+
 </ion-content>
+

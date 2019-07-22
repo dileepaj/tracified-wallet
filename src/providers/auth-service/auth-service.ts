@@ -8,6 +8,7 @@ import { AES, enc } from 'crypto-js';
 import { Properties } from '../../shared/properties';
 import { StorageServiceProvider } from '../storage-service/storage-service';
 import { MappingServiceProvider } from '../mapping-service/mapping-service';
+import { resolve } from 'path';
 
 @Injectable()
 export class AuthServiceProvider {
@@ -120,6 +121,32 @@ export class AuthServiceProvider {
     });
   }
 
+  changeUserSettings(type, user): Promise<any> {
+    var user;
+    return new Promise((resolve) => {
+    if(type === 'profile'){
+      user= {
+        userName: AES.encrypt(user.userName, this.adminKey).toString(),
+        firstName: user.dislayName,
+        lastName: '',
+        image: user.displayImage
+      };
+    } else if (type === 'password') {
+      user = {
+        userName: AES.encrypt(user.userName, this.adminKey).toString(),
+        oldPassword: AES.encrypt(user.oldPassword, this.adminKey).toString(),
+        newPassword: AES.encrypt(user.newPassword, this.adminKey).toString(),
+      };
+    } else if (type === 'image'){
+      user = {
+        userName: AES.encrypt(user.userName, this.adminKey).toString(),
+        image: user.image,
+        name: user.name
+      };
+    }
+  });
+  }
+
   // get local profile
   authorizeLocalProfile(): Promise<any> {
     return new Promise((resolve) => {
@@ -197,5 +224,4 @@ export class AuthServiceProvider {
       });
     }
   }
-
 }
