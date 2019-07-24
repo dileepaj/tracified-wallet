@@ -13,6 +13,7 @@ import { AES, enc } from "crypto-js";
 import { ApiServiceProvider } from "../../providers/api-service/api-service";
 import { StorageServiceProvider } from "../../providers/storage-service/storage-service";
 import { Properties } from "../../shared/properties";
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 @IonicPage()
 @Component({
@@ -20,8 +21,11 @@ import { Properties } from "../../shared/properties";
   templateUrl: "item-received.html"
 })
 export class ItemReceivedPage {
-  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
-  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
+  key: string = "ejHu3Gtucptt93py1xS4qWvIrweMBaO";
+  adminKey: string = "hackerkaidagalbanisbaby"
+    .split("")
+    .reverse()
+    .join("");
 
   searchTerm: any = "";
   Searcheditems: {
@@ -53,13 +57,12 @@ export class ItemReceivedPage {
     private properties: Properties
   ) { }
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() { }
 
   ionViewDidLoad() {
     this.presentLoading();
     this.setFilteredItems();
+    this.dissmissLoading();
   }
 
   ionViewDidEnter() {
@@ -376,9 +379,8 @@ export class ItemReceivedPage {
     alert.setTitle(title);
     alert.setMessage(message);
     alert.addButton({
-      text: 'close'
+      text: "close"
     });
     alert.present();
   }
-
 }

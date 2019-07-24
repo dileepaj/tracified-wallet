@@ -1,6 +1,5 @@
 // http://ionicframework.com/docs/v2/theming/
 
-
 // App Global Sass
 // --------------------------------------------------
 // Put style rules here that you want to apply globally. These
@@ -14,92 +13,115 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+
+
+// ion-app.md {
+//   font-size: 4vw;
+// }
+
+.toolbar-md {
+  padding: 15px;
+}
+
+ion-app.md [margin] .scroll-content {
+  margin: 16px !important;
+}
+.alert-md [aria-checked="true"] .alert-radio-label {
+  color: #42ad47 !important;
+}
+
+.alert-md [aria-checked="true"] .alert-radio-icon {
+  border-color: #42ad47;
+}
+
+.alert-md .alert-radio-inner {
+  background-color: #42ad47;
+}
+
 .toolbar-background {
-    // border-color: #343A40 !important;
-    border-color: #3D3D3D !important;
-    background: #3D3D3D !important;
-    color: white;
+  // border-color: #343A40 !important;
+  border-color: #3d3d3d !important;
+  background: #3d3d3d !important;
+  color: white;
 }
 
-.toolbar-title-md{
-    color: white;
-    padding: 0px;
-    font-size: 1.2rem;
-    font-weight: 400;
-    letter-spacing: normal;
+.toolbar-title-md {
+  color: white;
+  padding: 0px;
+  font-size: 1em;
+  font-weight: 400;
+  letter-spacing: normal;
 }
 
-.bar-button{
-    color: white;
-    background-color: transparent;
-    padding: 0px 0px 2px 0px;
-
-}
- 
-.tracified-logo{
-    height: 59px;
-    width: 59px;
+.bar-button {
+  color: white;
+  background-color: transparent;
+  padding: 0px 0px 2px 0px;
 }
 
-.tenant-name{
-    margin: 11px 0 0 0;
+.tracified-logo {
+  height: 59px;
+  width: 59px;
 }
 
-#company{
-    font-size: 30px;
-    color: white;
+.tenant-name {
+  margin: 11px 0 0 0;
 }
 
-.user-name{
-    color: white;
+#company {
+  font-size: 30px;
+  color: white;
+}
+
+.user-name {
+  color: white;
 }
 
 .list-md {
-    margin: -1px 0 16px;
-    padding-top: 24px;
+  margin: -1px 0 16px;
+  padding-top: 24px;
 }
 
-#menu-title{
-    font-weight: 600;
+#menu-title {
+  font-weight: 600;
 }
 
 .activeHighlight {
-    color: #28A745 !important;
-    background-color: #d4d4d48a !important;
-
+  color: #28a745 !important;
+  background-color: #d4d4d48a !important;
 }
 
 ion-icon {
-    &[class*="custom-"] {
-        margin: 0 5px 0 0;
-        vertical-align: middle;
-        $sz: 20px; 
-        width: $sz;
-        height: $sz;
-    } // custom icons
-    &[class*="itemIcon"] {
-        background: url(../../assets/icon/items.svg) no-repeat 50% 50%;
-        background-size: contain;
-    }
-    &[class*="blockchain"] {
-        background: url(../../assets/icon/blockchain.svg) no-repeat 50% 50%;
-        background-size: contain;
-    }
-    &[class*="tutorial"] {
-        background: url(../../assets/icon/tutorial.svg) no-repeat 50% 50%;
-        background-size: contain;
-    }
-    &[class*="settings"] {
-        background: url(../../assets/icon/settings.svg) no-repeat 50% 50%;
-        background-size: contain;
-    }
-    &[class*="about"] {
-        background: url(../../assets/icon/about.svg) no-repeat 50% 50%;
-        background-size: contain;
-    }
-    &[class*="logout"] {
-        background: url(../../assets/icon/logout.svg) no-repeat 50% 50%;
-        background-size: contain;
-    }
-
+  &[class*="custom-"] {
+    margin: 0 5px 0 0;
+    vertical-align: middle;
+    $sz: 20px;
+    width: $sz;
+    height: $sz;
+  } // custom icons
+  &[class*="itemIcon"] {
+    background: url(../../assets/icon/items.svg) no-repeat 50% 50%;
+    background-size: contain;
+  }
+  &[class*="blockchain"] {
+    background: url(../../assets/icon/blockchain.svg) no-repeat 50% 50%;
+    background-size: contain;
+  }
+  &[class*="tutorial"] {
+    background: url(../../assets/icon/tutorial.svg) no-repeat 50% 50%;
+    background-size: contain;
+  }
+  &[class*="settings"] {
+    background: url(../../assets/icon/settings.svg) no-repeat 50% 50%;
+    background-size: contain;
+  }
+  &[class*="about"] {
+    background: url(../../assets/icon/about.svg) no-repeat 50% 50%;
+    background-size: contain;
+  }
+  &[class*="logout"] {
+    background: url(../../assets/icon/logout.svg) no-repeat 50% 50%;
+    background-size: contain;
+  }
 }

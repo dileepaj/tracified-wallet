@@ -7,6 +7,7 @@ import { StorageServiceProvider } from '../../providers/storage-service/storage-
 import { Properties } from '../../shared/properties';
 import { AES, enc } from "crypto-js";
 
+
 @IonicPage()
 @Component({
   selector: 'page-item-sent',
@@ -43,6 +44,7 @@ export class ItemSentPage {
 
   ionViewDidEnter() {
     this.presentLoading();
+
     this.storage.getBcAccount(this.properties.userName).then((accounts) => {
       this.BCAccounts = accounts;
       this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
@@ -51,6 +53,7 @@ export class ItemSentPage {
       }
     }).catch((error)=>{
       console.log(error);
+      this.dissmissLoading();
       this.dataError("Error","There should be at least one account.");
     });
 

@@ -136,6 +136,7 @@ export class LoginPage {
     this.navCtrl.push(ResetPasswordPage, { type: 'forgotPassword' });
   }  
 
+
   hideShowPassword() {
     this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
     this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';

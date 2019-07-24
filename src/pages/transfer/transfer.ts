@@ -39,6 +39,7 @@ export class TransferPage {
 
   ionViewDidLoad() {  }
 
+
   ionViewDidEnter() {
     this.presentLoading();
 
@@ -82,13 +83,20 @@ export class TransferPage {
     let assets = [];
 
     var server = new Server('https://horizon-testnet.stellar.org');
+    // the JS SDK uses promises for most actions, such as retrieving an account
     server.loadAccount(this.BCAccounts[0].pk).then(function (account) {
-      account.balances.forEach(function (balance) {
-        // @ts-ignore
-        console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
-        let bal: number = parseFloat(balance.balance)
-        // @ts-ignore
-        assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
+         //console.log('Balances for account: ' + JSON.stringify(account.balances));
+        account.balances.forEach(function (balance) {
+          // @ts-ignore
+          console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
+          let bal: number = parseFloat(balance.balance)
+          // @ts-ignore
+          assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
+        });
+        assets.pop();
+      })
+      .catch(function (err) {
+        console.error(err);
       });
       assets.pop();
     }).catch(function (err) {
