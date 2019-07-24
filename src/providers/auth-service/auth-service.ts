@@ -1,11 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as jwt from 'jsonwebtoken';
-import { ApiServiceProvider } from '../api-service/api-service';
-import { ConnectivityServiceProvider } from '../connectivity-service/connectivity-service';
 import { ToastController, Events } from 'ionic-angular';
 import { AES, enc } from 'crypto-js';
+
 import { Properties } from '../../shared/properties';
+import { Logger } from 'ionic-logger-new';
+
+import { ApiServiceProvider } from '../api-service/api-service';
+import { ConnectivityServiceProvider } from '../connectivity-service/connectivity-service';
 import { StorageServiceProvider } from '../storage-service/storage-service';
 import { MappingServiceProvider } from '../mapping-service/mapping-service';
 
@@ -21,7 +24,8 @@ export class AuthServiceProvider {
     private toastCtrl: ToastController, private properties: Properties,
     private events: Events,
     private storageService: StorageServiceProvider,
-    private mappingService: MappingServiceProvider
+    private mappingService: MappingServiceProvider,
+    private logger: Logger
   ) { }
 
   validateUser(authmodel): Promise<any> {
@@ -40,14 +44,15 @@ export class AuthServiceProvider {
             this.properties.token = res.body.Token;
             const decoded: any = jwt.decode(this.properties.token);
             this.storageService.setUser(authmodel.userName, AES.encrypt(this.properties.token, this.key).toString());
-            this.setProperties(decoded).then(() => {
-              resolve(res);
-            });
+            this.setProperties(decoded);
+            resolve(res);
           } else {
             resolve(res);
           }
+        }, (err) => {
+          reject(err);
         }).catch(error => {
-          console.log(error);
+          this.logger.error("Validate user error: " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
           reject(error);
         });
       }
@@ -124,9 +129,8 @@ export class AuthServiceProvider {
           this.checkTokenExpire(decryptedToken).then((notExpired) => {
             if (notExpired) {
               const decoded: any = jwt.decode(decryptedToken, { complete: true });
-              this.setProperties(decoded.payload).then(() => {
-                resolve(true);
-              });
+              this.setProperties(decoded.payload);
+              resolve(true);
             } else if (!notExpired) {
               this.presentToast('Your logging session has been expired. Please login again.');
               resolve(false);
@@ -169,25 +173,24 @@ export class AuthServiceProvider {
     });
   }
 
-  setProperties(decodedToken): Promise<any> {
-    return new Promise((resolve) => {
-      this.properties.userName = decodedToken["username"];
-      this.properties.tenant = decodedToken['tenantID'];
-      this.properties.displayName = decodedToken['name'];
-      this.properties.company = decodedToken['company'];
-      this.properties.userType = decodedToken['type'];
-      this.properties.displayImage = decodedToken['displayImage'];
-      this.events.publish('dislayName', this.properties.displayName);
-      this.events.publish('company', this.properties.company);
-      this.setDisplayImagetoStorage();
-      resolve(true);
-    });
+  setProperties(decodedToken) {
+    this.properties.userName = decodedToken["username"];
+    this.properties.tenant = decodedToken['tenantID'];
+    this.properties.displayName = decodedToken['name'];
+    this.properties.company = decodedToken['company'];
+    this.properties.userType = decodedToken['type'];
+    this.properties.displayImage = decodedToken['displayImage'];
+    this.events.publish('dislayName', this.properties.displayName);
+    this.events.publish('company', this.properties.company);
+    this.setDisplayImagetoStorage();
   }
 
   setDisplayImagetoStorage() {
     if (this.properties.displayImage !== 'none') {
       this.mappingService.toBase64Url(this.properties.displayImage, 'image/jpeg').then((base64Image) => {
         this.storageService.setImage(this.properties.userName, base64Image);
+      }).catch((err) => {
+        this.logger.error("Setting display image to storage failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       });
     }
   }

@@ -35,36 +35,25 @@ export class TransferPage {
     private storage: StorageServiceProvider,
     private properties: Properties,
     private alertCtrl: AlertController
-    ) { }
+  ) { }
 
-  ionViewDidLoad() {
-    this.presentLoading();
+  ionViewDidLoad() {  }
 
-      this.storage
-      .getBcAccount(this.properties.userName)
-      .then(accounts => {
-          this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
-
-        if(this.BCAccounts) {
-          this.getBalance();
-          this.loadReceivers();
-        }
-        else {
-          this.dissmissLoading();
-          console.log("There should be at least one account.");
-          this.dissmissLoading();
-          this.dataError("Error","There should be at least one account.");
-        }
-      });
-
-
-
-
-
-  }
 
   ionViewDidEnter() {
+    this.presentLoading();
 
+    this.storage.getBcAccount(this.properties.userName).then(accounts => {
+      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+      if (this.BCAccounts) {
+        this.getBalance();
+        this.loadReceivers();
+      } else {
+        this.dissmissLoading();
+        console.log("There should be at least one account.");
+        this.dataError("Error", "There should be at least one account.");
+      }
+    });
 
   }
 

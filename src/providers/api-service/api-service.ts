@@ -1,7 +1,9 @@
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Properties } from '../../shared/properties'
 import { Observable } from 'rxjs/Rx';
+
+import { Logger } from 'ionic-logger-new';
+import { Properties } from '../../shared/properties';
 import { login, blockchainAccs, addMainAcc, validateMainAcc } from '../../shared/config';
 
 @Injectable()
@@ -11,7 +13,11 @@ export class ApiServiceProvider {
   reqOpts: any;
 
 
-  constructor(public http: HttpClient, private properties: Properties) { }
+  constructor(
+    public http: HttpClient, 
+    private properties: Properties,
+    private logger: Logger
+    ) { }
 
   ionViewDidLoad() { }
 
@@ -62,8 +68,6 @@ export class ApiServiceProvider {
           });
     });
   }
-
-
 
   getNames(body) {
 
@@ -167,11 +171,11 @@ export class ApiServiceProvider {
     return new Promise((resolve, reject) => {
       this.http.get(url, headers).timeout(2500).subscribe(
         response => {
-          console.log(response);
+          this.logger.info("[SUCCESS]GET", this.properties.skipConsoleLogs, this.properties.writeToFile);
           resolve(response);
         },
         error => {
-          console.log(error);
+          this.logger.error("[ERROR]GET: " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
           reject(error);
         }
       );
@@ -182,11 +186,11 @@ export class ApiServiceProvider {
     return new Promise((resolve, reject) => {
       this.http.post(url, payload, headers).timeout(2500).subscribe(
         response => {
-          console.log(response);
+          this.logger.info("[SUCCESS]POST", this.properties.skipConsoleLogs, this.properties.writeToFile);
           resolve(response);
         },
         error => {
-          console.log(error);
+          this.logger.error("[ERROR]POST: " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
           reject(error);
         }
       );
@@ -200,8 +204,10 @@ export class ApiServiceProvider {
         'Accept': 'application/json',
         'Content-Type': 'Application/json'
       })
-    }
+    };
+    
     return this.postN(login, payload, headers);
+    
   }
 
   getBCAccountsN(): Promise<any> {
@@ -217,7 +223,7 @@ export class ApiServiceProvider {
     return this.getN(blockchainAccs, headers);
   }
 
-  addMainAccountN(payload): Promise<any> {
+  addTransactionAccount(payload): Promise<any> {
     let headers = {
       observe: 'response',
       headers: new HttpHeaders({

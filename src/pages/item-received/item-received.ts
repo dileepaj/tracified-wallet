@@ -54,28 +54,10 @@ export class ItemReceivedPage {
     public toastCtrl: ToastController,
     public itemsProvider: Items,
     private storage: StorageServiceProvider,
-    private properties: Properties,
-    private authService: AuthServiceProvider
+    private properties: Properties
   ) { }
 
-  ngOnInit() {
-    // this.authService.authorizeLocalProfile().then((res) => {
-        console.log(this.properties.userName);
-        this.storage.getBcAccount(this.properties.userName).then(accounts => {
-          this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
-          console.log("Item received",this.BCAccounts);
-          if (this.BCAccounts) {
-            this.loadCOCReceived();
-          }
-        })
-          .catch(error => {
-            console.log(error);
-            this.dissmissLoading();
-            this.dataError("Error", "There should be at least one account.");
-          });
-    // });
-
-  }
+  ngOnInit() { }
 
   ionViewDidLoad() {
     this.presentLoading();
@@ -83,7 +65,17 @@ export class ItemReceivedPage {
     this.dissmissLoading();
   }
 
-  ionViewDidEnter() { }
+  ionViewDidEnter() {
+    this.storage.getBcAccount(this.properties.userName).then(accounts => {
+      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+      if (this.BCAccounts) {
+        this.loadCOCReceived();
+      }
+    }).catch(error => {
+      console.log(error);
+      this.dataError("Error", "There should be at least one account.");
+    });
+  }
 
   loadCOCReceived() {
     // try {

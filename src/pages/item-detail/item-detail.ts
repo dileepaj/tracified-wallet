@@ -603,7 +603,7 @@ export class ItemDetailPage {
           if (res.status === 200) {
             this.presentToast('Sub ccount successfully added.');
             this.BCAccounts[0].subAccounts.push(subAcc.publicKey());
-            this.storage.setBcAccount(this.properties.userName, AES.encrypt(this.BCAccounts, this.key).toString());
+            this.storage.setBcAccounts(this.properties.userName, AES.encrypt(this.BCAccounts, this.key).toString());
             resolve();
           } else if (res.status === 406) {
             this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
