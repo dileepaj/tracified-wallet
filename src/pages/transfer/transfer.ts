@@ -37,7 +37,7 @@ export class TransferPage {
     private alertCtrl: AlertController
   ) { }
 
-  ionViewDidLoad() {  }
+  ionViewDidLoad() { }
 
 
   ionViewDidEnter() {
@@ -83,37 +83,32 @@ export class TransferPage {
     let assets = [];
 
     var server = new Server('https://horizon-testnet.stellar.org');
-    // the JS SDK uses promises for most actions, such as retrieving an account
-    server.loadAccount(this.BCAccounts[0].pk).then(function (account) {
-         //console.log('Balances for account: ' + JSON.stringify(account.balances));
-        account.balances.forEach(function (balance) {
-          // @ts-ignore
-          console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
-          let bal: number = parseFloat(balance.balance)
-          // @ts-ignore
-          assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
-        });
-        assets.pop();
-      })
-      .catch(function (err) {
-        console.error(err);
+    server.loadAccount(this.BCAccounts[0].pk).then((account) => {
+      account.balances.forEach((balance) => {
+        // @ts-ignore
+        console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
+        let bal: number = parseFloat(balance.balance)
+        // @ts-ignore
+        assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
       });
       assets.pop();
-    }).catch(function (err) {
+    }).catch((err) => {
       console.error(err);
     });
     this.currentItems = assets;
     this.Searcheditems = this.currentItems;
     console.log(this.Searcheditems)
-    if (this.isLoadingPresent) { this.dissmissLoading(); }
+    if (this.isLoadingPresent) {
+      this.dissmissLoading();
+    }
   }
 
   /**
-* @desc retrieve receivers from the gateway
-* @param string $pk - the public key of main account
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
+  * @desc retrieve receivers from the gateway
+  * @param string $pk - the public key of main account
+  * @author Jaje thananjaje3@gmail.com
+  * @return
+  */
   loadReceivers() {
     try {
       // console.log(this.BCAccounts[0].pk);
