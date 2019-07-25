@@ -92,6 +92,12 @@ ion-app.md [margin] .scroll-content {
   background-color: #d4d4d48a !important;
 }
 
+.button {
+  width: 75%;
+  margin: auto;
+  font-size: 0.9em;
+  letter-spacing: 2px;
+}
 ion-icon {
   &[class*="custom-"] {
     margin: 0 5px 0 0;
