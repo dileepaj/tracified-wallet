@@ -29,9 +29,11 @@ import { Device } from '@ionic-native/device/ngx';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
 import { LoginPageModule } from '../pages/login/login.module';
 import { MappingServiceProvider } from '../providers/mapping-service/mapping-service';
+import { ApiServiceProvider } from '../providers/api-service/api-service';
 import { IonicLoggerModule, Logger } from 'ionic-logger-new';
 import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
 import {File} from '@ionic-native/file';
+import { DataServiceProvider } from '../providers/data-service/data-service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -76,7 +78,7 @@ export function createTranslateLoader(http: HttpClient) {
     MyApp
   ],
   providers: [
-    Api,
+    ApiServiceProvider,
     Properties,
     Network,
     User,
@@ -92,7 +94,8 @@ export function createTranslateLoader(http: HttpClient) {
     MappingServiceProvider,
     Logger,
     FileSystemServiceProvider,
-    File
+    File,
+    DataServiceProvider
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

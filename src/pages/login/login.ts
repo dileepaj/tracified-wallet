@@ -1,17 +1,24 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { IonicPage, NavController, ToastController, MenuController, AlertController, Toast, LoadingController } from 'ionic-angular';
-
-import { User, Api } from '../../providers';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
-import { ResetPasswordPage } from '../reset-password/reset-password';
+import { AES } from 'crypto-js';
+
+// Shared Services
+import { Properties } from '../../shared/properties';
+
+// Service Providers
+
+import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
+import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
+import { Logger } from 'ionic-logger-new';
+import { User } from '../../providers/user/user';
+
+// Pages and Components
+import { ResetPasswordPage } from '../reset-password/reset-password';
 import { TabsPage } from '../tabs/tabs';
 import { AddAccountPage } from '../add-account/add-account';
-import { t } from '@angular/core/src/render3';
-import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
-import { Properties } from '../../shared/properties';
 
 @IonicPage()
 @Component({
@@ -19,6 +26,8 @@ import { Properties } from '../../shared/properties';
   templateUrl: 'login.html'
 })
 export class LoginPage {
+  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
+  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
 
   passwordType: string = 'password';
   passwordIcon: string = 'eye-off';
@@ -33,14 +42,14 @@ export class LoginPage {
     private menuCtrl: MenuController,
     private user: User,
     private authService: AuthServiceProvider,
-    private api: Api,
     private connectivity: ConnectivityServiceProvider,
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private translateService: TranslateService,
-    private storage: StorageServiceProvider,
-    private properties: Properties
+    private properties: Properties,
+    private logger: Logger,
+    private dataService: DataServiceProvider
   ) {
     this.form = new FormGroup({
       username: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
@@ -68,88 +77,72 @@ export class LoginPage {
         password: this.form.value.password,
         newPassword: 'none'
       };
-
       this.authService.validateUser(authmodel).then((res) => {
         if (res.status === 200) {
-          try {
-            this.getAccounts();
-          } catch (error) {
-            console.log(error)
-            this.navCtrl.setRoot(TabsPage);
-          }
+          this.dataService.getBlockchainAccounts().then((res) => {
+            if (res.status == 200) {
+              let accounts = res.body.accounts.accounts;
+              this.dataService.storeBlockchainAccounts(accounts).then(() => {
+                this.navCtrl.setRoot(TabsPage);
+                this.dissmissLoading();
+              }).catch((err) => {
+                this.dissmissLoading();
+                this.presentAlert('Error', 'Failed to store transaction accounts in memory.');
+                this.logger.error("Storing BC accounts error: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+              });              
+            } else {
+              this.dissmissLoading();
+              this.presentAlert('Error', 'Failed to fetch transaction accounts.');
+            }
+          }, (err) => {
+            if (err.status == 406) {
+              this.dissmissLoading();
+              this.navCtrl.push(AddAccountPage);
+            } else {
+              this.dissmissLoading();
+              this.presentAlert('Error', 'Failed to fetch transaction accounts.');
+            }
+          }).catch((err) => {
+            this.dissmissLoading();
+            this.presentAlert('Error', 'Failed to fetch transaction accounts.');
+            this.logger.error("Get Blockchain accounts error: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+          });
         } else if (res.status === 205) {
           this.dissmissLoading();
-          this.gotoPasswordResetPage(this.form.value.username, this.form.value.password);
-        } else if (res.status === 403) {
-          this.dissmissLoading();
-          this.userError('Authentication Failed', 'Your account is blocked. Please contact an Admin.');
+          this.navCtrl.push(ResetPasswordPage, { type: 'initial', username: this.form.value.username, code: this.form.value.password });
         } else {
           this.dissmissLoading();
-          this.userError('Authentication Failed', 'Failed to log into your account.');
+          this.presentAlert('Authentication Failed', 'Failed to log into your account.');
         }
-      })
-        .catch((error) => {
+      }, (err) => {
+        if (err.status === 403) {
           this.dissmissLoading();
-          this.userError('Authentication Failed', 'Failed to log into your account.');
-          console.log(error);
-        });
+          this.presentAlert('Authentication Failed', 'Your account is blocked. Please contact an Admin.');
+        } else {
+          this.dissmissLoading();
+          this.presentAlert('Authentication Failed', 'Failed to log into your account.');
+        }
+      }).catch((error) => {
+        this.dissmissLoading();
+        this.presentAlert('Authentication Failed', 'Failed to log into your account.');
+        this.logger.error("User validation error: " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+      });
     } else {
       this.presentToast('There is no internet at the moment.');
     }
-  }
-
-  gotoPasswordResetPage(username, password) {
-    this.navCtrl.push(ResetPasswordPage, { type: 'initial', username: username, code: password });
   }
 
   gotoForgotPasswordPage() {
     this.navCtrl.push(ResetPasswordPage, { type: 'forgotPassword' });
-  }
+  }  
 
-  /**
-  * @desc retrieve blockchain accounts from admin backend  
-  * @param 
-  * @author Jaje thananjaje3@gmail.com
-  * @return 
-  */
-  getAccounts() {
-    if (this.connectivity.onDevice) {
-      this.api.getBCAccount().then((res) => {
-        console.log(res);
-        this.dissmissLoading();
-        if (res.status === 200 && res.body.accounts.accounts) {
-          const BCAccounts = res.body.accounts.accounts;
-          this.storage.setBcAccount(this.properties.userName, BCAccounts);
-          this.navCtrl.setRoot(TabsPage);
-        } else {
-          this.navCtrl.setRoot(TabsPage);
-        }
-      })
-        .catch((error) => {
-          if (error.status === 406) {
-            this.dissmissLoading();
-            this.navCtrl.setRoot(AddAccountPage);
-            // this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
-          } else {
-
-            this.dissmissLoading();
-            // this.userError('retrievingBCAccountsFailed', 'retrievingBCAccountsFailed');
-            console.log(error);
-            this.navCtrl.setRoot(TabsPage);
-          }
-        });
-    } else {
-      this.presentToast('There is no internet at the moment.');
-      this.navCtrl.setRoot(TabsPage);
-    }
-  }
 
   hideShowPassword() {
     this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
     this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
   }
 
-  userError(title, message) {
+  presentAlert(title, message) {
     let alert = this.alertCtrl.create();
     alert.setTitle(title);
     alert.setMessage(message);

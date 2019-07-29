@@ -5,6 +5,7 @@ import { Items } from '../../providers/items/items';
 import { ItemDetailPage } from '../item-detail/item-detail';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
+import { AES, enc } from "crypto-js";
 
 @IonicPage()
 @Component({
@@ -12,6 +13,9 @@ import { Properties } from '../../shared/properties';
   templateUrl: 'transfer.html',
 })
 export class TransferPage {
+  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
+  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
+
   currentItems = [];
   user: any;
   loading;
@@ -31,31 +35,25 @@ export class TransferPage {
     private storage: StorageServiceProvider,
     private properties: Properties,
     private alertCtrl: AlertController
-    ) {
+  ) { }
 
-  }
+  ionViewDidLoad() { }
 
-  ionViewDidLoad() {
-    this.presentLoading();
-
-    this.storage
-      .getBcAccount(this.properties.userName)
-      .then(accounts => {
-        this.BCAccounts = accounts;
-        if (this.BCAccounts) {
-          this.getBalance();
-          this.loadReceivers();
-        }
-        else {
-          console.log("There should be at least one account.");
-          this.dataError("Error","There should be at least one account.");
-        }
-      });
-
-  }
 
   ionViewDidEnter() {
+    this.presentLoading();
 
+    this.storage.getBcAccount(this.properties.userName).then(accounts => {
+      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+      if (this.BCAccounts) {
+        this.getBalance();
+        this.loadReceivers();
+      } else {
+        this.dissmissLoading();
+        console.log("There should be at least one account.");
+        this.dataError("Error", "There should be at least one account.");
+      }
+    });
 
   }
 
@@ -85,34 +83,32 @@ export class TransferPage {
     let assets = [];
 
     var server = new Server('https://horizon-testnet.stellar.org');
-    // the JS SDK uses promises for most actions, such as retrieving an account
-    server.loadAccount(this.BCAccounts[0].pk)
-      .then(function (account) {
-        // console.log('Balances for account: ' + JSON.stringify(account.balances));
-        account.balances.forEach(function (balance) {
-          // @ts-ignore
-          console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
-          let bal: number = parseFloat(balance.balance)
-          // @ts-ignore
-          assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
-        });
-        assets.pop();
-      })
-      .catch(function (err) {
-        console.error(err);
+    server.loadAccount(this.BCAccounts[0].pk).then((account) => {
+      account.balances.forEach((balance) => {
+        // @ts-ignore
+        console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
+        let bal: number = parseFloat(balance.balance)
+        // @ts-ignore
+        assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
       });
+      assets.pop();
+    }).catch((err) => {
+      console.error(err);
+    });
     this.currentItems = assets;
     this.Searcheditems = this.currentItems;
     console.log(this.Searcheditems)
-    if (this.isLoadingPresent) { this.dissmissLoading(); }
+    if (this.isLoadingPresent) {
+      this.dissmissLoading();
+    }
   }
 
   /**
-* @desc retrieve receivers from the gateway
-* @param string $pk - the public key of main account
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
+  * @desc retrieve receivers from the gateway
+  * @param string $pk - the public key of main account
+  * @author Jaje thananjaje3@gmail.com
+  * @return
+  */
   loadReceivers() {
     try {
       // console.log(this.BCAccounts[0].pk);

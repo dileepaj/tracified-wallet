@@ -21,16 +21,30 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <div *ngIf="!currentItems[2]" id="noitemDiv">
-    <img id="notification-icon" src="../../assets/imgs/notifications-bell-button.png">
-    <h2 id="noItem"> NOTIFICATIONS </h2>
-    <ion-note id="noItem-note">No notifications available for this period</ion-note>
-  </div>
+
+  <ion-content *ngIf="!currentItems[2]">
+    <ion-grid no-padding >
+      <ion-row>
+        <ion-col no-padding text-center>
+          <img class="notification-icon" src="../../assets/imgs/notifications-bell-button.png"/>
+        </ion-col>
+      </ion-row>
+      <ion-row class="row">
+        <ion-col class="noItem">
+          <h1>NOTIFICATIONS</h1>
+        </ion-col>
+      </ion-row>
+      <ion-row  class="row">
+        <ion-col class="noItem-note">
+          <ion-note text-wrap>No notifications available for this period</ion-note>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+
+
 
   <ion-card *ngFor="let item of Searcheditems" (click)="openItem(item)">
-    <!-- <ion-avatar item-start>
-          <img [src]="item.profilePic" />
-        </ion-avatar> -->
     <ion-row>
       <ion-col left text-left>
         <h2 class="item">Item : {{item.asset_code}}</h2>
@@ -40,5 +54,4 @@
       </ion-col>
     </ion-row>
   </ion-card>
-
 </ion-content>
