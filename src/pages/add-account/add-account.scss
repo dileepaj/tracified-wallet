@@ -12,13 +12,9 @@ page-add-account {
           padding-left: 8%;
         }
         
-        .login-button {
-            width: 55%;
-            margin: auto;
-            font-size: 0.9em;
-            // max-width: 20%;
-          // background-color: #00c853 !important;
-          // padding: 0 10%;
+        .login-button .button{
+          background-color: #00c853;
+          margin: auto;
         }
         .note{
           padding-top: 5%;
