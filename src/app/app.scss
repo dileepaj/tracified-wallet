@@ -20,6 +20,32 @@
 //   font-size: 4vw;
 // }
 
+
+
+/*Refactored css*/
+html {
+  font-size: 10px;
+}
+
+button {
+  padding: 10px 20px;
+  border-radius: 3;
+  font-size: 1.4rem;
+}
+
+.green-button {
+  background-color: #00c853;
+}
+
+.button-wrapper-center-both {
+  width: 100%;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*End refactored css*/
+
 .toolbar-md {
   padding: 15px;
 }
@@ -91,6 +117,8 @@ ion-app.md [margin] .scroll-content {
   color: #28a745 !important;
   background-color: #d4d4d48a !important;
 }
+
+
 
 ion-icon {
   &[class*="custom-"] {
