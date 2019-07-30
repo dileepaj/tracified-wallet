@@ -1,6 +1,6 @@
 page-add-account {
     @media all and (orientation:portrait) {
-        
+
         ion-row {
           align-items: center;
         }
@@ -12,10 +12,7 @@ page-add-account {
           padding-left: 8%;
         }
         
-        .login-button .button{
-          background-color: #00c853;
-          margin: auto;
-        }
+       
         .note{
           padding-top: 5%;
           width: auto;
@@ -37,7 +34,7 @@ page-add-account {
           background-repeat: no-repeat;
         }
         .hide-icon {
-          color: #00c853 !important; 
+          color: #00c853 !important;
         }
         .item-input-has-focus .label-md[floating], .input-has-focus .label-md[floating]{
           color: #00c853 !important;
@@ -56,9 +53,9 @@ page-add-account {
         ion-item.item-md.item-input.ng-invalid.ng-touched:not(.input-has-focus) .item-inner {
         border-bottom-color: #00c853 !important;
         box-shadow: none;
-        }    
+        }
         .passwordIcon{
-          zoom:0.8; 
+          zoom:0.8;
           padding-top: 35px;
           z-index:1
        }

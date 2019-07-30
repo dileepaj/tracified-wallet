@@ -15,20 +15,25 @@
   <ion-grid>
     <form [formGroup]="form">
       <ion-row class="formbox">
-        <ion-item> 
-          <ion-label class="login-lables" floating >Account Name</ion-label>
-          <ion-input formControlName="accName" type="text"  name="accName"  keyNext></ion-input>
+        <ion-item>
+          <ion-label class="login-lables" floating>Account Name</ion-label>
+          <ion-input formControlName="accName" type="text" name="accName" keyNext></ion-input>
         </ion-item>
         <ion-item>
           <ion-label floating>Secured Password</ion-label>
-          <ion-input formControlName="password" [(ngModel)]="StrengthPassword" (ionChange)="checkStrength()" name="password" [type]="passwordType" clearOnEdit="false"></ion-input>
-          <ion-icon item-end [name]="passwordIcon" color="secondary" class="passwordIcon" (click)='hideShowPassword()'></ion-icon>
+          <ion-input formControlName="password" [(ngModel)]="StrengthPassword" (ionChange)="checkStrength()"
+            name="password" [type]="passwordType" clearOnEdit="false"></ion-input>
+          <ion-icon item-end [name]="passwordIcon" color="secondary" class="passwordIcon" (click)='hideShowPassword()'>
+          </ion-icon>
         </ion-item>
-          <h4 *ngIf="form.valid == true" class="desc">It takes {{PasswordStrength}} to crack your password!</h4>
-      </ion-row> 
+        <h4 *ngIf="form.valid == true" class="desc">It takes {{PasswordStrength}} to crack your password!</h4>
+      </ion-row>
       <ion-row>
+        <div class="button-wrapper-center-both">
           <!-- <img (click)="doLogin()" class="login-button" src="../../assets/icon/login.svg"> -->
-        <button  class="login-button" [disabled]="!form.valid" (click)="addMainAccount()" ion-button  color="secondary">Generate Blockchain Address</button>
+          <button class="login-button" [disabled]="!form.valid" (click)="addMainAccount()" ion-button
+            color="secondary">Generate Blockchain Address</button>
+        </div>
       </ion-row>
       <ion-row justify-content-center>
         <ion-note class="note" (click)="gotoBlockchainAccPage()">Not sure? go back</ion-note>
