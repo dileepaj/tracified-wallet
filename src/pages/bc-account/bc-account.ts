@@ -33,7 +33,6 @@ export class BcAccountPage {
 
   goToAddAccount() {
     this.navCtrl.push(AddAccountPage);
-
   }
 
   doRefresh(refresher) {
@@ -41,12 +40,6 @@ export class BcAccountPage {
     refresher.complete();
   }
 
-    /**
-* @desc retrieve blockchain main accounts from admin 
-* @param 
-* @author Jaje thananjaje3@gmail.com
-* @return 
-*/
   getMainAccounts() {
    try {
     if (this.connectivity.onDevice) {

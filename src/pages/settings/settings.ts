@@ -9,12 +9,6 @@ import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import {SettingsProfilePage } from '../settings-profile/settings-profile';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 
-/**
- * Generated class for the SettingsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -23,18 +17,22 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
 })
 
 export class SettingsPage {
+
   user: any;
   myphoto: string;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController,
-    private events: Events,   private authService: AuthServiceProvider, private camera: Camera) {
+
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private alertCtrl: AlertController,
+    private events: Events,
+    private authService: AuthServiceProvider, 
+    private camera: Camera
+    ) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SettingsPage');
-  }
-
-  changeTransactionPwd() {
-     this.navCtrl.push('AddAccountPage', {});
+  changeTransactionPassword() {
+     this.navCtrl.push('BcAccountPage');
   }
 
   profileImageOption() {

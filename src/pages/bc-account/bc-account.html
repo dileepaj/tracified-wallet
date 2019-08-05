@@ -11,10 +11,6 @@
 
 
 <ion-content padding>
-  <!-- <div *ngIf="Citems">
-    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
-  </div> -->
-
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
       refreshingText="Refreshing...">
@@ -58,16 +54,6 @@
         </ion-col>
       </ion-row>
     </ion-item>
-    <!-- <ion-item>
-      <ion-row>
-        <ion-col col-3 left text-left>
-          <h5 class="label">Sub Acc: </h5>
-        </ion-col>
-        <ion-col col-9 right text-left *ngFor="let subAccount of account.subAccounts">
-          <h5>{{subAccount}}</h5>
-        </ion-col>
-      </ion-row>
-    </ion-item> -->
   </ion-card>
 
   <ion-fab right bottom>
