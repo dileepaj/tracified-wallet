@@ -10,7 +10,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { DeviceDetectorModule, DeviceDetectorService } from 'ngx-device-detector';
 
 
-import { User, Api } from '../providers';
+import { User} from '../providers';
 import { MyApp } from './app.component';
 import { ItemReceivedPageModule } from '../pages/item-received/item-received.module';
 import { ItemSentPageModule } from '../pages/item-sent/item-sent.module';
@@ -24,6 +24,7 @@ import { Properties } from '../shared/properties';
 import { SelectSearchableModule } from '../components/search-dropdown/select-module';
 import { IonicSelectableModule } from 'ionic-selectable';
 import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
+import {SettingsProfilePageModule } from '../pages/settings-profile/settings-profile.module';
 
 import { Device } from '@ionic-native/device/ngx';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
@@ -34,6 +35,7 @@ import { IonicLoggerModule, Logger } from 'ionic-logger-new';
 import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
 import {File} from '@ionic-native/file';
 import { DataServiceProvider } from '../providers/data-service/data-service';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -56,6 +58,7 @@ export function createTranslateLoader(http: HttpClient) {
     AddAccountPageModule,
     ItemSentPageModule,
     LoginPageModule,
+    SettingsProfilePageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

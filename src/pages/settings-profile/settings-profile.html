@@ -1,0 +1,50 @@
+<!--
+  Generated template for the SettingsProfilePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+      <button ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+      </button>
+    <ion-title>Change Profile</ion-title>
+  </ion-navbar> 
+
+</ion-header>
+
+<ion-content padding>
+<form>
+  <ion-row style="height: 20pt"></ion-row>
+  <ion-item>
+      <ion-label position="fixed" color= "black" >First Name </ion-label>
+      <ion-input type="text" [(ngModel)]="fullName.content" name="firstName" required ></ion-input>
+  </ion-item>
+</form>
+
+  <ion-item>
+    <ion-label position="fixed" color= "black">Last Name</ion-label>
+    <ion-input type="text" [(ngModel)]="fullName.content" name="firstName" required ></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="fixed" color= "black">Current Password</ion-label>
+    <ion-input>{{currentPassword}}</ion-input>
+  </ion-item>
+
+  <ion-item>
+  <ion-label position="fixed" color= "black">New Password</ion-label>
+  <ion-input>{{username}}</ion-input>
+  </ion-item>
+
+  <ion-item>
+  <ion-label position="fixed" color= "black">Confirm Password</ion-label>
+  <ion-input>{{username}}</ion-input>
+  </ion-item>
+
+  <button ion-button class= "saveButton">Save Changes</button>
+
+
+</ion-content>

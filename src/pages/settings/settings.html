@@ -7,9 +7,9 @@
 <ion-header>
 
   <ion-navbar>
-      <button ion-button menuToggle>
-          <ion-icon name="menu"></ion-icon>
-        </button>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
     <ion-title>Settings</ion-title>
   </ion-navbar>
 </ion-header>
@@ -24,34 +24,41 @@
 
 <ion-content padding>
 
-<ion-row style="height: 10px"></ion-row>
+  <ion-row></ion-row>
 
-  <ion-row  justify-content-center align-items-center style="vertical-align: 100%; flex-direction: column">
-    <ion-avatar>
-        <a class="item-avatar">
-        <img src="./assets/imgs/userProfile.png">
-        </a>
-    </ion-avatar>
-     &nbsp;
-    <a href>CHANGE</a>
-  </ion-row>
+  <ion-row justify-content-center align-items-center style="vertical-align: 100%; flex-direction: column">  </ion-row>
 
-  <ion-row style="height: 20pt"></ion-row>
-    <ion-item>
-        <ion-label position="fixed" color= "black">UserName</ion-label>
-        <ion-input>{{username}}</ion-input>
-      </ion-item>
+  <ion-label>
+    <ion-label position="fixed" color="#6b6d6f" font-size= 12px>CATEGORIES</ion-label>
+  </ion-label>
 
-<ion-row style="height: 15pt"></ion-row>
+  <ion-item>
+    <ion-label class="category-button"  (click) ="profileImageOption()"> Change Profile Image</ion-label>
+    <img [src]= "myphoto"/>
+  </ion-item>
 
-    <button ion-button [ngStyle]="{'background-color':'#27b211'}" float-left (click) ="presentPrompt()">Change Password</button>
+  <ion-item>
+    <ion-label class="category-button"  (click)="settingNameClick()"> Change Display Name</ion-label>
+  </ion-item>
 
-<ion-row style="height: 45pt"></ion-row>
-    <ion-item>
-        <ion-label>Enable logging</ion-label>
-        <ion-toggle checked>
-        </ion-toggle>
-    </ion-item>
+  <ion-item>
+    <ion-label class="category-button"  (click)="settingPasswordClick()"> Change Account Password</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label class="category-button"  (click)="changeTransactionPwd()"> Change Transaction Passwords</ion-label>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Display Account Public Key</ion-label>
+    <ion-toggle checked>
+    </ion-toggle>
+  </ion-item>
+
+  <ion-item>
+    <ion-label>Enable logging</ion-label>
+    <ion-toggle checked>
+    </ion-toggle> 
+  </ion-item>
 
 </ion-content>
-

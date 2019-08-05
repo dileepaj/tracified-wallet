@@ -6,6 +6,8 @@ import { Events } from 'ionic-angular';
 import { LoginPageModule } from '../login/login.module';
 import { User } from 'providers';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
+import {SettingsProfilePage } from '../settings-profile/settings-profile';
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 /**
  * Generated class for the SettingsPage page.
@@ -22,54 +24,87 @@ import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 export class SettingsPage {
   user: any;
+  myphoto: string;
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController,
-    private events: Events,   private authService: AuthServiceProvider) {
-      this.events.subscribe('dislayName', (name) => { this.user = name; })
-      console.log(this.user);
+    private events: Events,   private authService: AuthServiceProvider, private camera: Camera) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SettingsPage');
   }
 
+  changeTransactionPwd() {
+     this.navCtrl.push('AddAccountPage', {});
+  }
 
-  presentPrompt() {
+  profileImageOption() {
     let alert = this.alertCtrl.create({
-      title: 'Change Password',
-      inputs: [
-        {
-          name: 'currentPassword',
-          placeholder: 'Current password',
-          type: 'password'
-        },
-        {
-          name: 'newPassword',
-          placeholder: 'New password',
-          type: 'password'
-        },
-        {
-          name: 'confirmPassword',
-          placeholder: 'Confirm password',
-          type: 'password'
-        }
-      ],
+      title: 'Change Profile Image',
       buttons: [
         {
-          text: 'Cancel',
-          role: 'cancel',
+          text: 'Take a picture using camera',
+          role: 'camera-picture',
           handler: data => {
-            console.log('Cancel clicked');
+           this.switchCamPic();
           }
         },
         {
-          text: 'Enter',
-          role: 'enter',
+          text: 'Open gallery',
+          role: 'open-gallery',
           handler: data => {
-            console.log('Enter clicked');
+           this.switchOpenGal();
           }
         }
       ]
     });
     alert.present();
   }
+
+  switchCamPic(){
+    const options: CameraOptions = {
+    quality: 70,
+    destinationType: this.camera.DestinationType.FILE_URI,
+    encodingType: this.camera.EncodingType.JPEG,
+    mediaType: this.camera.MediaType.PICTURE
+    }
+
+    this.camera.getPicture(options).then((imageData) => {
+    this.myphoto = 'data:image/jpeg;base64,' + imageData;
+    }, (err) => {
+    // Handle Error
+    });
+  }
+
+  switchOpenGal(){
+    const options: CameraOptions = {
+      quality: 70,
+      destinationType: this.camera.DestinationType.FILE_URI,
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      saveToPhotoAlbum:false,
+      allowEdit:true,
+      targetWidth:300,
+      targetHeight: 300
+      }
+  
+      this.camera.getPicture(options).then((imageData) => {
+      this.myphoto = 'data:image/jpeg;base64,' + imageData;
+      }, (err) => {
+      // Handle Error
+      });
+  }
+
+  settingOptionClick(){
+    this.navCtrl.push('SettingsProfilePage', {});
+  }
+
+  settingNameClick() {
+    this.navCtrl.push('SettingsProfilePage', {});
+  }
+
+  settingPasswordClick(){
+    this.navCtrl.push('SettingsProfilePage', {});
+  }
+
 }
+
+

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Rx';
 
 import { Logger } from 'ionic-logger-new';
 import { Properties } from '../../shared/properties';
-import { login, blockchainAccs, addMainAcc, validateMainAcc } from '../../shared/config';
+import { login, blockchainAccs, addMainAcc, validateMainAcc, detailChange, passwordChange,  changeDisplayImage } from '../../shared/config';
 
 @Injectable()
 export class ApiServiceProvider {
@@ -208,6 +208,40 @@ export class ApiServiceProvider {
     
     return this.postN(login, payload, headers);
     
+  }
+
+  changeUserSettings(type, payload, token): Promise<any> {
+    var url;
+    var user = { 'user': payload };
+    if (type === 'profile') {
+      url = detailChange;
+    } else if (type === 'password') {
+      url = passwordChange;
+    } else if (type === 'image') {
+      url = changeDisplayImage;
+    }
+    return new Promise((resolve, reject) => {
+      this.http.post(url, user, {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+          'Authorization': 'Bearer ' + token
+        })
+      })
+        .subscribe(
+          response => {
+            this.logger.info('changeUserSettings success', this.properties.skipConsoleLogs, this.properties.writeToFile);
+            console.log(response);
+            resolve(response);
+          },
+          error => {
+            this.logger.error('changeUserSettings error: ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+            console.log(error);
+            reject(error);
+          }
+        );
+    });
   }
 
   getBCAccountsN(): Promise<any> {

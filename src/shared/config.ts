@@ -25,7 +25,6 @@ export const previosTxnId: string = gateway + '/transaction/lastTxn/'; // GET
 
 // Gateway POST
 
-
-
-
-
+export const passwordChange: string = admin + '/api/changepassword';
+export const changeDisplayImage: string = admin + '/api/user/profilepicture';
+export const detailChange: string = admin + '/api/changedetails';
