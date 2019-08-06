@@ -16,7 +16,9 @@
         </ion-item>
       </ion-row>
       <ion-row>
-        <button  class="login-button" ion-button (click)="login()" color="secondary">{{'LOGIN' | translate}}</button>
+        <div class="button-wrapper-center-both">
+            <button class="login-button" ion-button (click)="login()" color="secondary">{{'LOGIN' | translate}}</button>
+        </div>        
       </ion-row>
       <ion-row justify-content-center>
         <ion-note class="forgot-password" (click)="gotoForgotPasswordPage()">{{'FORGOTTENPASSWORD'| translate}}</ion-note>
@@ -24,57 +26,3 @@
     </form>
   </ion-grid>
 </ion-content>
-<!-- <ion-footer no-border *ngIf="env.mode === 'Staging'">
-  <ion-row justify-content-center>
-    <ion-note>{{env.mode}}</ion-note>
-  </ion-row>
-  <ion-row justify-content-center>
-    <ion-note *ngIf="remotePackage">version {{remotePackage.appVersion}} - {{remotePackage.label}}</ion-note>
-  </ion-row>
-</ion-footer> -->
-
-
-<!-- <ion-content scroll="false">
-  <div class="splash-bg">
-  <div class="splash-info">
-    <div class="splash-logo"></div>
-    <div class="splash-intro">
-      <p>Tracified Wallet</p>
-      <hr>
-      <p>Log In</p>
-    </div>
-  </div>
-
-
-  <div class="login-Form">
-    <form>
-      <ion-list id="list-login">
-
-        <ion-item>
-              <ion-label fixed>{{ 'EMAIL' | translate }}</ion-label>
-              <ion-input type="email" [(ngModel)]="account.email" name="email"></ion-input>
-            </ion-item> 
-
-        <ion-item id="input-login">
-          <ion-label id="label" floating> USERNAME </ion-label>
-          <ion-input id="label" type="text" [(ngModel)]="account.username" name="username"></ion-input>
-        </ion-item>
-
-
-        <ion-item id="input-login">
-          <ion-label id="label" floating> PASSWORD </ion-label>
-          <ion-input id="label" type="password" [(ngModel)]="account.password" name="password"></ion-input>
-          <ion-input id="label" name="password" [type]="passwordType" clearOnEdit="false"></ion-input>
-          <ion-icon item-end [name]="passwordIcon" color="white" class="passwordIcon" (click)='hideShowPassword()'></ion-icon>
-        </ion-item>
-        <div class="login-icon" >
-          <button   class="login">{{ 'LOGIN' | translate }}</button>
-          <img (click)="doLogin()" src="../../assets/icon/login.png">
-        </div>
-      </ion-list>
-      
-    </form>
-  </div>
-  </div>
-
-</ion-content> -->
