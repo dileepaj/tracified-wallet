@@ -1,5 +1,59 @@
 <ion-menu [content]="content">
   <ion-header>
+    <ion-toolbar>
+      <div text-center padding>
+        <div class="profile-image-holder">
+          <img class="profile-image" src="" alt="Profile Picture" />
+        </div>
+        <h2 class="white-font line-spacing-small">{{user}}</h2>
+        <h3 class="white-font line-spacing-small">{{company}}</h3>
+        <h4 class="white-font line-spacing-small">{{userType}}</h4>
+      </div>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-list no-lines padding>
+      <button text-wrap ion-item menuClose (click)="openPage()">
+        <ion-icon class="primary-font" name="clipboard" item-start></ion-icon>
+        <h5 class="line-spacing icon-alignment primary-font">Items</h5>
+      </button>
+      <button text-wrap ion-item menuClose (click)="openPage()">
+        <ion-icon class="primary-font" name="contacts" item-start></ion-icon>
+        <h5 class="line-spacing icon-alignment primary-font">Accounts</h5>
+      </button>
+      <button text-wrap ion-item menuClose (click)="openPage()">
+        <ion-icon class="primary-font" name="settings" item-start></ion-icon>
+        <h5 class="line-spacing icon-alignment primary-font">Settings</h5>
+      </button>
+      <button text-wrap ion-item menuClose (click)="openPage()">
+        <ion-icon class="primary-font" name="information-circle" item-start></ion-icon>
+        <h5 class="line-spacing icon-alignment primary-font">About</h5>
+      </button>
+      <button text-wrap ion-item menuClose (click)="openPage()">
+        <ion-icon class="primary-font" name="power" item-start></ion-icon>
+        <h5 class="line-spacing icon-alignment primary-font">Logout</h5>
+      </button>
+    </ion-list>
+  </ion-content>
+  <ion-footer>
+    <ion-row>
+      <ion-col col-4>
+        <button ion-button class="btn-text-only primary-font padding-width capitalize-font">English</button>
+      </ion-col>
+      <ion-col col-4>
+        <button ion-button class="btn-text-only primary-font padding-width capitalize-font">Sinhala</button>
+      </ion-col>
+      <ion-col col-4>
+        <button ion-button class="btn-text-only primary-font padding-width capitalize-font">Tamil</button>
+      </ion-col>
+    </ion-row>
+  </ion-footer>
+</ion-menu>
+
+
+<!-- <ion-menu [content]="content">
+  <ion-header>
     <ion-toolbar class="menu-toolbar">
       <div text-center class="side-menu-card" padding>
         <img src="assets/img/appicon.png" class="tracified-logo" />
@@ -21,6 +75,6 @@
     </ion-list>
   </ion-content>
 
-</ion-menu>
+</ion-menu> -->
 
-<ion-nav #content [root]="rootPage"></ion-nav>
+<ion-nav #content [root]="rootPage" swipeBackEnabled="false"></ion-nav>

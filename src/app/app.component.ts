@@ -73,17 +73,11 @@ export class MyApp {
         this.rootPage = LoginPage
       }
     }).catch(() => {
-      //Redirect to some page if this fails
+      this.rootPage = LoginPage
     });
 
   }
 
-  /**
-* @desc retrieve device information from the device
-* @param
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   deviceDetails() {
     this.deviceInfo = this.deviceService.getDeviceInfo();
     const isMobile = this.deviceService.isMobile();
@@ -91,12 +85,6 @@ export class MyApp {
     const isDesktopDevice = this.deviceService.isDesktop();
   }
 
-  /**
-* @desc Initialize the language translation
-* @param
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   initTranslate() {
     // Set the default language for translation strings, and the current language.
     this.translate.setDefaultLang('en');
@@ -123,12 +111,6 @@ export class MyApp {
     });
   }
 
-  /**
-* @desc opens the passed page
-* @param string $page - the page to be displayed
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   openPage(page) {
     if (page.action) {
       let action = page.action;
@@ -139,12 +121,6 @@ export class MyApp {
     }
   }
 
-  /**
-  * @desc checks and returns the current active page
-  * @param
-  * @author Jaje thananjaje3@gmail.com
-  * @return page which is active
-*/
   checkActive(page) {
     return page == this.activePage;
   }
