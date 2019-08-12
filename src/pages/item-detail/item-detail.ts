@@ -55,7 +55,7 @@ export class ItemDetailPage {
     private properties: Properties
   ) {
 
-    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
+    this.storage.getBcAccounts(this.properties.userName).then((accounts) => {
       this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
     });
     this.item = navParams.get('item');

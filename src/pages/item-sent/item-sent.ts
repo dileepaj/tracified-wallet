@@ -45,7 +45,7 @@ export class ItemSentPage {
   ionViewDidEnter() {
     this.presentLoading();
 
-    this.storage.getBcAccount(this.properties.userName).then((accounts) => {
+    this.storage.getBcAccounts(this.properties.userName).then((accounts) => {
       this.BCAccounts = accounts;
       this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
       if(this.BCAccounts){

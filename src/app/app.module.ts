@@ -35,6 +35,7 @@ import { IonicLoggerModule, Logger } from 'ionic-logger-new';
 import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
 import {File} from '@ionic-native/file';
 import { DataServiceProvider } from '../providers/data-service/data-service';
+import { BlockchainServiceProvider } from '../providers/blockchain-service/blockchain-service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -96,7 +97,8 @@ export function createTranslateLoader(http: HttpClient) {
     Logger,
     FileSystemServiceProvider,
     File,
-    DataServiceProvider
+    DataServiceProvider,
+    BlockchainServiceProvider
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -14,6 +14,9 @@ import { LoginPage } from '../pages/login/login';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
 import { Logger } from 'ionic-logger-new';
 import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
+import { DataServiceProvider } from '../providers/data-service/data-service';
+import { BlockchainServiceProvider } from '../providers/blockchain-service/blockchain-service';
+import { WaitingFundsPage } from '../pages/waiting-funds/waiting-funds';
 
 @Component({
   templateUrl: 'app.html'
@@ -28,7 +31,6 @@ export class MyApp {
 
   @ViewChild(Nav) nav: Nav;
 
-  //side menu pages
   pages: any[] = [
     { icon: 'custom-itemIcon', title: 'Items', component: 'TabsPage', action: null },
     { icon: 'custom-blockchain', title: 'Accounts', component: 'BcAccountPage', action: null },
@@ -51,12 +53,14 @@ export class MyApp {
     private alertCtrl: AlertController,
     private storageService: StorageServiceProvider,
     private logger: Logger,
-    private fileSystem: FileSystemServiceProvider
+    private fileSystem: FileSystemServiceProvider,
+    private dataService: DataServiceProvider,
+    private blockchainService: BlockchainServiceProvider
   ) {
     platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
-      this.logger.init(fileSystem).then((status)=>this.logger.debug('[Logger] init: ' + status));
+      this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
     });
 
     this.initTranslate();
@@ -68,22 +72,31 @@ export class MyApp {
 
     this.authService.authorizeLocalProfile().then((res) => {
       if (res) {
-        this.rootPage = TabsPage
+        this.dataService.retrieveBlockchainAccounts().then((accounts) => {
+          this.blockchainService.checkAccountsForFunds(accounts).then((status) => {
+            if (status) {
+              this.rootPage = TabsPage
+            } else {
+              this.rootPage = WaitingFundsPage
+            }
+          });
+        }).catch((err) => {
+          this.dataService.clearLocalData();
+          this.rootPage = LoginPage
+        });
+
       } else {
+        this.dataService.clearLocalData();
         this.rootPage = LoginPage
       }
-    }).catch(() => {
-      //Redirect to some page if this fails
+    }).catch((err) => {
+      this.logger.error("Authorize local profile failed: ", err);
+      this.presentAlert("Error", "Failed to authorize the user. Please login again.");
+      this.rootPage = LoginPage
     });
 
   }
 
-  /**
-* @desc retrieve device information from the device
-* @param
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   deviceDetails() {
     this.deviceInfo = this.deviceService.getDeviceInfo();
     const isMobile = this.deviceService.isMobile();
@@ -91,12 +104,6 @@ export class MyApp {
     const isDesktopDevice = this.deviceService.isDesktop();
   }
 
-  /**
-* @desc Initialize the language translation
-* @param
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   initTranslate() {
     // Set the default language for translation strings, and the current language.
     this.translate.setDefaultLang('en');
@@ -123,12 +130,6 @@ export class MyApp {
     });
   }
 
-  /**
-* @desc opens the passed page
-* @param string $page - the page to be displayed
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   openPage(page) {
     if (page.action) {
       let action = page.action;
@@ -139,18 +140,12 @@ export class MyApp {
     }
   }
 
-  /**
-  * @desc checks and returns the current active page
-  * @param
-  * @author Jaje thananjaje3@gmail.com
-  * @return page which is active
-*/
   checkActive(page) {
     return page == this.activePage;
   }
 
   clearData() {
-    this.storageService.clearUser().then(() => {      
+    this.storageService.clearUser().then(() => {
       this.storageService.clearBcAccounts().then(() => {
         this.nav.setRoot(LoginPage);
       });
@@ -177,4 +172,12 @@ export class MyApp {
     confirm.present();
   }
 
+  presentAlert(title: string, message: string) {
+    let alert = this.alertCtrl.create({
+      title: title,
+      message: message
+    });
+
+    alert.present();
+  }
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, ToastController, LoadingController, Toast, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, ToastController, LoadingController, Toast, AlertController, NavParams } from 'ionic-angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Network, Server, Keypair, Asset, TransactionBuilder, Operation } from 'stellar-sdk';
 import { AES, enc } from "crypto-js";
@@ -12,18 +12,19 @@ const patterns = require("hsimp-purescript/dictionaries/patterns");
 const checks = require("hsimp-purescript/dictionaries/checks");
 const namedNumbers = require("hsimp-purescript/dictionaries/named-Numbers");
 const CharacterSets = require("hsimp-purescript/dictionaries/character-Sets");
-import { get } from 'request';
-
-import { BcAccountPage } from '../bc-account/bc-account';
 
 // Service Providers
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
+import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 
 // Shared Services
 import { Properties } from '../../shared/properties';
 import { Logger } from 'ionic-logger-new';
+
+// Pages
+import { AccountInfoPage } from '../../pages/account-info/account-info';
 
 @IonicPage()
 @Component({
@@ -42,6 +43,7 @@ export class AddAccountPage {
   private toastInstance: Toast;
   loading;
   form: FormGroup;
+  private navigation;
 
   constructor(
     public navCtrl: NavController,
@@ -52,7 +54,9 @@ export class AddAccountPage {
     private loadingCtrl: LoadingController,
     private properties: Properties,
     private logger: Logger,
-    private dataService: DataServiceProvider
+    private dataService: DataServiceProvider,
+    private mappingService: MappingServiceProvider,
+    private navParams: NavParams
   ) {
 
     this.form = new FormGroup({
@@ -60,93 +64,74 @@ export class AddAccountPage {
       strength: new FormControl(''),
       password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required]))
     });
+
+    this.navigation = this.navParams.get('navigation');
   }
 
   addMainAccount() {
-    var publicKey;
-    var secretKey;
-
     if (this.connectivity.onDevice) {
       this.presentLoading();
-      this.validateAccountName().then((status) => {
-        if (!status) {
+      this.validateAccountName(this.form.value.accName).then((status) => {
+        if (status) {
+          let mainPair = this.createKeyPair();
+          let subPair = this.createKeyPair();
+
+          this.mappingService.encyrptSecret(mainPair.secret(), this.form.value.password).then((encMainSecretKey) => {
+            this.mappingService.encyrptSecret(subPair.secret(), this.form.value.password).then((encSubSecretKey) => {
+              const mainAccount = {
+                accName: this.form.value.accName,
+                publicKey: mainPair.publicKey(),
+                privateKey: mainPair.secret()
+              };
+              const account = {
+                "account": {
+                  "mainAccount": {
+                    "accountName": this.form.value.accName,
+                    "pk": mainPair.publicKey(),
+                    "sk": encMainSecretKey,
+                    "subAccounts": [{
+                      "pk": subPair.publicKey(),
+                      "sk": encSubSecretKey
+                    }]
+                  }
+                }
+              }
+              this.dataService.addTransactionAccount(account).then((res) => {
+                this.dissmissLoading();
+                if (res.status === 200) {
+                  this.presentToast('Transaction account added successfully!');
+                  this.navCtrl.setRoot(AccountInfoPage, { account: mainAccount, navigation: this.navigation });
+                } else {
+                  this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+                }
+              }, (err) => {
+                this.dissmissLoading();
+                if (err.status == 403) {
+                  this.presentAlert('Authentication Failed', 'Your account is blocked. Please contact an admin.');
+                } else {
+                  this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+                }
+              }).catch((error) => {
+                this.dissmissLoading();
+                this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+                this.logger.error("Failed to add transaction account: " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
+              });
+            }).catch((err) => {
+              this.dissmissLoading();
+              this.logger.error("Encrypting private key failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+            });
+          }).catch((err) => {
+            this.dissmissLoading();
+            this.logger.error("Encrypting private key failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+          });
+        } else {
           this.dissmissLoading();
           this.presentAlert("Error", "Account name already exists. Please pick a different name for the account.");
         }
-        this.createAddress().then((pair) => {
-          this.createAddress().then((pair2) => {
-            //@ts-ignore
-            publicKey = pair.publicKey()
-            //@ts-ignore
-            secretKey = pair.secret();
-            this.createMultipleTrustline(pair).then(() => {
-              this.multisignSubAccount(pair2, publicKey).then(() => {
-                this.encyrptSecret(secretKey, this.form.value.password).then((encSecretKey) => {
-                  const account = {
-                    "account": {
-                      "mainAccount": {
-                        "accountName": this.form.value.accName,
-                        "pk": publicKey,
-                        "sk": encSecretKey,
-                        //@ts-ignore
-                        "subAccounts": [pair2.publicKey()]
-                      }
-                    }
-                  }
-                  this.dataService.addTransactionAccount(account).then((res) => {
-                    this.dissmissLoading();
-                    if (res.status === 200) {
-                      this.presentToast('Transaction account added successfully!');
-                      this.navCtrl.setRoot(BcAccountPage);
-                    } else {
-                      this.presentToast('Failed to add the transaction account.');
-                    }
-                  }, (err) => {
-                    this.dissmissLoading();
-                    if (err.status == 403) {
-                      this.presentAlert('Authentication Failed', 'Your account is blocked. Please contact an admin.');
-                    } else {
-                      this.presentAlert('Authentication Failed', 'Could not authenticate the account.');
-                    }
-                  }).catch((error) => {
-                    this.dissmissLoading();
-                    this.presentAlert('Authentication Failed', 'Could not authenticate the account.');
-                    this.logger.error("Failed to add transaction account: " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                  });
-                }).catch(() => {
-                  if (this.isLoadingPresent) {
-                    this.dissmissLoading();
-                    this.presentToast('Error occured while encrypting the key. Please contact an admin.');
-                  }
-                });
-              }).catch(e => {
-                if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-                  this.presentToast('Error occured. Could not create multiple trust lines.');
-                }
-              });
-            }).catch(e => {
-              if (this.isLoadingPresent) {
-                this.dissmissLoading();
-                this.presentToast('Ops! Something went wrong!');
-              }
-            });
-          }).catch(e => {
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-              this.presentToast('Ops! Something went wrong!');
-            }
-          });
-        }).catch(e => {
-          if (this.isLoadingPresent) {
-            this.dissmissLoading();
-            this.presentToast('Error! createAddress.');
-          }
-        });
       }).catch((error) => {
         if (this.isLoadingPresent) {
           this.dissmissLoading();
-          this.presentToast('Could not check the transaction account name! Please try again.');
+          this.presentToast('Error occured. Could not validate account name.');
         }
       });
     } else {
@@ -154,28 +139,24 @@ export class AddAccountPage {
     }
   }
 
-  validateAccountName() {
-    if (this.connectivity.onDevice) {
-      return new Promise((resolve, reject) => {
-        const account = {
-          "account": {
-            "accountName": this.form.value.accName
-          }
-        };
-        this.apiService.validateMainAccountN(account).then((res) => {
-          if (res.status === 200 && res.body.status == false) {
-            resolve(true);
-          } else {
-            resolve(false);
-          }
-        }).catch((error) => {
-          this.logger.error("Account name validation failed: " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
-          reject();
-        });
+  validateAccountName(accName) {
+    return new Promise((resolve, reject) => {
+      const account = {
+        "account": {
+          "accountName": accName
+        }
+      };
+      this.apiService.validateMainAccountN(account).then((res) => {
+        if (res.status === 200 && res.body.status == false) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }).catch((error) => {
+        this.logger.error("Account name validation failed: " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+        reject();
       });
-    } else {
-      this.presentToast('There is no internet connection to complete this task. Please try again.');
-    }
+    });
   }
 
   checkStrength() {
@@ -201,102 +182,42 @@ export class AddAccountPage {
 
   }
 
-  createAddress() {
-    return new Promise((resolve, reject) => {
-      var pair = Keypair.random();
-      get({
-        url: 'https://friendbot.stellar.org',
-        qs: { addr: pair.publicKey() },
-        json: true
-      }, function (error, response, body) {
-        if (error || response.statusCode !== 200) {
-          reject(error);
-        }
-        else {
-          resolve(pair);
-        }
-      });
-    })
-  }
-
-  createMultipleTrustline(pair) {
-    return new Promise((resolve, reject) => {
-      var receivingKeys = pair;
-      server.loadAccount(receivingKeys.publicKey())
-        .then(function (account) {
-          const txBuilder = new TransactionBuilder(account);
-
-          var Aple = new Asset('Apple', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
-          var Mango = new Asset('Mango', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
-          var Banana = new Asset('Sugar', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
-          var Milk = new Asset('Milk1', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
-          var Yoghurt = new Asset('Yoghurt', 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
-
-
-          var assetArr = [Aple, Mango, Banana, Milk, Yoghurt];
-          assetArr.forEach(element => {
-            // add operation
-            txBuilder.addOperation(Operation.changeTrust({
-              asset: element,
-              limit: '1000'
-            }))
-
-            const tx = txBuilder.build();
-            tx.sign(receivingKeys);
-
-            server.submitTransaction(tx)
-              .then(function (transactionResult) {
-                console.log(transactionResult);
-              }).catch(function (err) {
-                console.log(err);
-              })
-          })
-          resolve();
-        })
-    })
+  createKeyPair() {
+    return Keypair.random();
   }
 
   multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
-      server
-        .loadAccount(subAccount.publicKey())
-        .then(function (account) {
-          var transaction = new TransactionBuilder(account)
-            .addOperation(Operation.setOptions({
-              signer: {
-                ed25519PublicKey: mainAccount,
-                weight: 2
-              }
-            }))
-            .addOperation(Operation.setOptions({
-              masterWeight: 0, // set master key weight
-              lowThreshold: 2,
-              medThreshold: 2, // a payment is medium threshold
-              highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
-            }))
-            .build();
+      server.loadAccount(subAccount.publicKey()).then(function (account) {
+        var transaction = new TransactionBuilder(account).addOperation(Operation.setOptions({
+          signer: {
+            ed25519PublicKey: mainAccount,
+            weight: 2
+          }
+        })).addOperation(Operation.setOptions({
+          masterWeight: 0, // set master key weight
+          lowThreshold: 2,
+          medThreshold: 2, // a payment is medium threshold
+          highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
+        })).build();
 
-          transaction.sign(subAccount); // sign the transaction
-          console.log(transaction);
+        transaction.sign(subAccount); // sign the transaction
 
-
-          return server.submitTransaction(transaction);
-        })
-        .then(function (transactionResult) {
-          console.log(transactionResult);
-          resolve()
-        })
-        .catch(function (err) {
-          console.error(err);
-          reject()
-        });
-    })
+        return server.submitTransaction(transaction);
+      }).then(function (transactionResult) {
+        console.log(transactionResult);
+        resolve()
+      }).catch(function (err) {
+        console.error(err);
+        reject()
+      });
+    });
   }
 
-  encyrptSecret(secret, signer) {
+  encyrptSecret(key, signer) {
     return new Promise((resolve, reject) => {
       try {
-        var encSecretKey = AES.encrypt(secret, signer);
+        var encSecretKey = AES.encrypt(key, signer);
         resolve(encSecretKey.toString());
       } catch {
         reject();

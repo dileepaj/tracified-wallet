@@ -27,5 +27,10 @@ export const previosTxnId: string = gateway + '/transaction/lastTxn/'; // GET
 
 
 
+// stellar access point
+
+export const stellarNet: string = 'https://horizon.stellar.org';
+
+
 
 

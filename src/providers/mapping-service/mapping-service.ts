@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { isObject } from 'ionic-angular/util/util';
+import { AES, enc } from "crypto-js";
 declare const Buffer;
 
 @Injectable()
@@ -54,6 +55,17 @@ export class MappingServiceProvider {
         canvas = null;
       };
       img.src = url;
+    });
+  }
+
+  encyrptSecret(key, signer) {
+    return new Promise((resolve, reject) => {
+      try {
+        var encSecretKey = AES.encrypt(key, signer);
+        resolve(encSecretKey.toString());
+      } catch {
+        reject();
+      }
     });
   }
 

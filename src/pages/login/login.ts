@@ -14,11 +14,13 @@ import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { Logger } from 'ionic-logger-new';
 import { User } from '../../providers/user/user';
+import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 
 // Pages and Components
 import { ResetPasswordPage } from '../reset-password/reset-password';
 import { TabsPage } from '../tabs/tabs';
 import { AddAccountPage } from '../add-account/add-account';
+import { WaitingFundsPage } from '../../pages/waiting-funds/waiting-funds';
 
 @IonicPage()
 @Component({
@@ -49,7 +51,8 @@ export class LoginPage {
     private translateService: TranslateService,
     private properties: Properties,
     private logger: Logger,
-    private dataService: DataServiceProvider
+    private dataService: DataServiceProvider,
+    private blockchainService: BlockchainServiceProvider
   ) {
     this.form = new FormGroup({
       username: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
@@ -79,31 +82,28 @@ export class LoginPage {
       };
       this.authService.validateUser(authmodel).then((res) => {
         if (res.status === 200) {
-          this.dataService.getBlockchainAccounts().then((res) => {
-            if (res.status == 200) {
-              let accounts = res.body.accounts.accounts;
-              this.dataService.storeBlockchainAccounts(accounts).then(() => {
-                this.navCtrl.setRoot(TabsPage);
+          this.dataService.getBlockchainAccounts().then((accounts) => {
+            this.dataService.storeBlockchainAccounts(accounts).then(() => {
+              this.blockchainService.checkAccountsForFunds(accounts).then((status) => {
+                if (status) {
+                  this.navCtrl.setRoot(TabsPage);
+                } else {
+                  this.navCtrl.setRoot(WaitingFundsPage);
+                }
                 this.dissmissLoading();
-              }).catch((err) => {
-                this.dissmissLoading();
-                this.presentAlert('Error', 'Failed to store transaction accounts in memory.');
-                this.logger.error("Storing BC accounts error: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-              });              
-            } else {
+              });
+            }).catch((err) => {
               this.dissmissLoading();
-              this.presentAlert('Error', 'Failed to fetch transaction accounts.');
-            }
-          }, (err) => {
-            if (err.status == 406) {
-              this.dissmissLoading();
-              this.navCtrl.push(AddAccountPage);
-            } else {
-              this.dissmissLoading();
-              this.presentAlert('Error', 'Failed to fetch transaction accounts.');
-            }
+              this.presentAlert('Error', 'Failed to store transaction accounts in memory.');
+              this.logger.error("Storing BC accounts error: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+            });
           }).catch((err) => {
             this.dissmissLoading();
+            if (err.status == 406) {
+              this.navCtrl.push(AddAccountPage, { navigation: 'initial' });
+            } else {
+              this.presentAlert('Error', 'Failed to fetch transaction accounts.');
+            }
             this.presentAlert('Error', 'Failed to fetch transaction accounts.');
             this.logger.error("Get Blockchain accounts error: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
           });
@@ -134,7 +134,7 @@ export class LoginPage {
 
   gotoForgotPasswordPage() {
     this.navCtrl.push(ResetPasswordPage, { type: 'forgotPassword' });
-  }  
+  }
 
 
   hideShowPassword() {
