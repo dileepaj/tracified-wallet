@@ -72,19 +72,7 @@ export class MyApp {
 
     this.authService.authorizeLocalProfile().then((res) => {
       if (res) {
-        this.dataService.retrieveBlockchainAccounts().then((accounts) => {
-          this.blockchainService.checkAccountsForFunds(accounts).then((status) => {
-            if (status) {
-              this.rootPage = TabsPage
-            } else {
-              this.rootPage = WaitingFundsPage
-            }
-          });
-        }).catch((err) => {
-          this.dataService.clearLocalData();
-          this.rootPage = LoginPage
-        });
-
+        this.rootPage = TabsPage
       } else {
         this.dataService.clearLocalData();
         this.rootPage = LoginPage

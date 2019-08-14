@@ -84,14 +84,8 @@ export class LoginPage {
         if (res.status === 200) {
           this.dataService.getBlockchainAccounts().then((accounts) => {
             this.dataService.storeBlockchainAccounts(accounts).then(() => {
-              this.blockchainService.checkAccountsForFunds(accounts).then((status) => {
-                if (status) {
-                  this.navCtrl.setRoot(TabsPage);
-                } else {
-                  this.navCtrl.setRoot(WaitingFundsPage);
-                }
-                this.dissmissLoading();
-              });
+              this.dissmissLoading();
+              this.navCtrl.setRoot(TabsPage);
             }).catch((err) => {
               this.dissmissLoading();
               this.presentAlert('Error', 'Failed to store transaction accounts in memory.');

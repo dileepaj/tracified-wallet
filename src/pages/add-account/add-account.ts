@@ -89,9 +89,13 @@ export class AddAccountPage {
                     "accountName": this.form.value.accName,
                     "pk": mainPair.publicKey(),
                     "sk": encMainSecretKey,
+                    "skp": mainPair.secret(),
+                    "FO": false,
                     "subAccounts": [{
                       "pk": subPair.publicKey(),
-                      "sk": encSubSecretKey
+                      "sk": encSubSecretKey,
+                      "skp": subPair.secret(),
+                      "skInvalidated": false
                     }]
                   }
                 }

@@ -30,54 +30,6 @@ export class BlockchainServiceProvider {
     }
   }
 
-  checkAccountsForFunds(accounts): Promise<any> {
-    return new Promise((resolve, reject) => {
-      let status = false;
-      accounts.forEach((account) => {
-        this.checkAccountFunds(account.publicKey).then(() => {
-          status = true;
-        });
-      });
-      resolve(status);
-    });
-  }
-
-  checkAccountFunds(publicKey): Promise<any> {
-    return new Promise((resolve, reject) => {
-      Network.usePublicNetwork();
-      var server = new Server(stellarNet);
-      server.loadAccount(publicKey).then((account) => {
-        resolve(true);
-      }).catch((err) => {
-        this.logger.error("Could not load the stellar account: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject(err);
-      });
-    });
-  }
-
-  checkInvalidation(accounts) {
-    let status = false;
-    accounts.forEach((mainAccount) => {
-      mainAccount.subAccounts.forEach((subAccount) => {
-        if (!subAccount.keyInvalidated) {
-          let sub = {
-            publicKey: subAccount.pk,
-            privateKey: subAccount.sk
-          };
-          let main = {
-            publicKey: mainAccount.pk,
-            privateKey: mainAccount.sk
-          };
-          this.invalidateSubAccountKey(sub, main).then(() => {
-            subAccount.keyInvalidated = true;
-            status = true;
-          });
-        }
-      });
-    });
-    // Check if this gets returned after processing all the accounts.
-    return status;
-  }
 
   invalidateSubAccountKey(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
@@ -106,4 +58,5 @@ export class BlockchainServiceProvider {
       });
     });
   }
+
 }

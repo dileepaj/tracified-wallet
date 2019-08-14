@@ -47,7 +47,6 @@ export class ItemSentPage {
 
     this.storage.getBcAccounts(this.properties.userName).then((accounts) => {
       this.BCAccounts = accounts;
-      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
       if(this.BCAccounts){
         this.loadCOCSent();
       }
@@ -185,12 +184,6 @@ export class ItemSentPage {
 
   }
 
-  /**
-* @desc retrieve names against account public keys from admin
-* @param stringArray $receiverArr - publick key array
-* @author Jaje thananjaje3@gmail.com
-* @return account names object for public keys
-*/
   getNamesFromKeys(receiverArr) {
 
     return new Promise((resolve, reject) => {

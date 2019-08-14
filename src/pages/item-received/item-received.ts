@@ -13,7 +13,6 @@ import { AES, enc } from "crypto-js";
 import { ApiServiceProvider } from "../../providers/api-service/api-service";
 import { StorageServiceProvider } from "../../providers/storage-service/storage-service";
 import { Properties } from "../../shared/properties";
-import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 @IonicPage()
 @Component({
@@ -67,7 +66,7 @@ export class ItemReceivedPage {
 
   ionViewDidEnter() {
     this.storage.getBcAccounts(this.properties.userName).then(accounts => {
-      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+      this.BCAccounts = accounts;
       if (this.BCAccounts) {
         this.loadCOCReceived();
       }

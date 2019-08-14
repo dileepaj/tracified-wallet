@@ -44,7 +44,7 @@ export class TransferPage {
     this.presentLoading();
 
     this.storage.getBcAccounts(this.properties.userName).then(accounts => {
-      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+      this.BCAccounts = accounts;
       if (this.BCAccounts) {
         this.getBalance();
         this.loadReceivers();
@@ -103,12 +103,6 @@ export class TransferPage {
     }
   }
 
-  /**
-  * @desc retrieve receivers from the gateway
-  * @param string $pk - the public key of main account
-  * @author Jaje thananjaje3@gmail.com
-  * @return
-  */
   loadReceivers() {
     try {
       // console.log(this.BCAccounts[0].pk);

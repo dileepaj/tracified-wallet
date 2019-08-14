@@ -73,12 +73,6 @@ export class ItemDetailPage {
     }
   }
 
-  /**
-* @desc opens modal to enter decrpting passphrase
-* @param
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   passwordPrompt() {
     let alert = this.alertCtrl.create({
       cssClass: 'submitPassword',
@@ -108,12 +102,6 @@ export class ItemDetailPage {
     alert.present();
   }
 
-  /**
-* @desc validates and provides available sub account to build the XDR (if nothing is available it will create one)
-* @param string $receiver
-* @author Jaje thananjaje3@gmail.com
-* @return object which contains available sub account public key
-*/
   subAccountValidator(receiver) {
     return new Promise((resolve, reject) => {
 
@@ -168,12 +156,6 @@ export class ItemDetailPage {
     })
   }
 
-  /**
-* @desc handler function manages other async function to do COC
-* @param string $signerSK - the public key of main account
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   doCOC(signerSK) {
     this.presentLoading();
     console.log(this.COCForm);
@@ -201,13 +183,6 @@ export class ItemDetailPage {
 
   }
 
-  /**
-* @desc send the COC object to gateway
-* @param object $res2 - previous Txn ID
-* @param object $res4 - accept build and reject build XDRs
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   addCOC(res2, res4) {
     if (this.connectivity.onDevice) {
       return new Promise((resolve, reject) => {
@@ -257,13 +232,6 @@ export class ItemDetailPage {
     }
   }
 
-  /**
-* @desc retrieving sub acoount status from gateway
-* @param object $subAccount - the public and secret key pair of sub account
-* @param string $mainAccount - the public key of main account
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   subAccountStatus() {
     if (this.connectivity.onDevice) {
       // this.presentLoading();
@@ -295,13 +263,6 @@ export class ItemDetailPage {
     }
   }
 
-  /**
-  * @desc making sub account signable by main account (multi-signature transaction)
-  * @param object $subAccount - the public and secret key pair of sub account
-  * @param string $mainAccount - the public key of main account
-  * @author Jaje thananjaje3@gmail.com
-  * @return
-  */
   multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
       server
@@ -333,16 +294,6 @@ export class ItemDetailPage {
     })
   }
 
-  /**
-* @desc Building acceptance XDR
-* @param string $Identifier
-* @param string $proofHash
-* @param string $subAcc - sub account public key need to build the XDR
-* @param object $subAccObj
-* @param object $signerSK - the public and secret key pair of main account
-* @author Jaje thananjaje3@gmail.com
-* @return sequence number and acceptance XDR
-*/
   AcceptBuild(Identifier, proofHash, subAcc, subAccObj, signerSK) {
 
     return new Promise((resolve, reject) => {
@@ -436,15 +387,6 @@ export class ItemDetailPage {
 
   }
 
-  /**
-* @desc Building rejectance XDR
-* @param string $proofHash
-* @param string $subAcc - sub account public key need to build the XDR
-* @param object $subAccObj
-* @param object $signerSK - the public and secret key pair of main account
-* @author Jaje thananjaje3@gmail.com
-* @return sequence number and rejectance XDR
-*/
   RejectBuild(proofHash, subAcc, subAccObj, signerSK) {
 
     return new Promise((resolve, reject) => {
@@ -502,12 +444,6 @@ export class ItemDetailPage {
 
   }
 
-  /**
-* @desc making a blockchain transaction to prove COC has been made
-* @param object $signerSK - the public and secret key pair of main account
-* @author Jaje thananjaje3@gmail.com
-* @return Txn hash to be added in COCAcceptBuild & COC RejectBiuld
-*/
   COCVerification(signerSK) {
     // console.log(this.COCForm);
     const form = this.COCForm
@@ -546,10 +482,6 @@ export class ItemDetailPage {
     }
   }
 
-/**
-* @author Jaje thananjaje3@gmail.com
-* @return object key pair
-*/
   createAddress() {
     try {
       return new Promise((resolve, reject) => {
@@ -580,12 +512,6 @@ export class ItemDetailPage {
 
   }
 
-/**
-* @desc add sub account public key to admin
-* @param string $subAcc - the subAcc will be mapped with main account
-* @author Jaje thananjaje3@gmail.com
-* @return
-*/
   addSubAccount(subAcc) {
 
     if (this.connectivity.onDevice) {
@@ -621,13 +547,6 @@ export class ItemDetailPage {
     }
   }
 
-  /**
- * @desc decyrpt the secret key with the signer
- * @param string $ciphertext - the chiper to be decyrpted
- * @param string $signer - the signer to decyrpt the secret
- * @author Jaje thananjaje3@gmail.com
- * @return decyrpted plain text
- */
   decyrptSecret(ciphertext, signer) {
     // Decrypt
     try {
