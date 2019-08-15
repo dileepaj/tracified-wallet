@@ -3,8 +3,10 @@ import { IonicPage, NavController, ToastController, LoadingController, Toast, Al
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Network, Server, Keypair, Asset, TransactionBuilder, Operation } from 'stellar-sdk';
 import { AES, enc } from "crypto-js";
-Network.useTestNetwork();
-var server = new Server('https://horizon-testnet.stellar.org');
+import { stellarNet } from '../../shared/config';
+
+Network.usePublicNetwork();
+var server = new Server(stellarNet);
 const setup = require("hsimp-purescript");
 const periods = require("hsimp-purescript/dictionaries/periods");
 const top10 = require("hsimp-purescript/dictionaries/top10");

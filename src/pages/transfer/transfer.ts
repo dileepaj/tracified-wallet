@@ -6,6 +6,7 @@ import { ItemDetailPage } from '../item-detail/item-detail';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
 import { AES, enc } from "crypto-js";
+import { stellarNet } from '../../shared/config';
 
 @IonicPage()
 @Component({
@@ -42,16 +43,13 @@ export class TransferPage {
 
   ionViewDidEnter() {
     this.presentLoading();
-
     this.mainAccount = this.properties.defaultAccount;
     this.getBalance();
     this.loadReceivers();
-
   }
 
   doRefresh(refresher) {
     this.presentLoading();
-    console.log('Begin async operation', refresher);
     this.getBalance();
     refresher.complete();
   }
@@ -73,24 +71,24 @@ export class TransferPage {
 
   getBalance() {
     let assets = [];
-    var server = new Server('https://horizon-testnet.stellar.org');
+    var server = new Server(stellarNet);
     server.loadAccount(this.mainAccount.pk).then((account) => {
       account.balances.forEach((balance) => {
-        // @ts-ignore
-        console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
-        let bal: number = parseFloat(balance.balance)
+        let bal: number = parseFloat(balance.balance);
         // @ts-ignore
         assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
       });
       assets.pop();
+      this.currentItems = assets;
+      this.Searcheditems = this.currentItems;
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
     }).catch((err) => {
       console.error(err);
-    });
-    this.currentItems = assets;
-    this.Searcheditems = this.currentItems;
-    if (this.isLoadingPresent) {
       this.dissmissLoading();
-    }
+    });
+
   }
 
   loadReceivers() {

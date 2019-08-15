@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Network, Operation, Keypair, TransactionBuilder, Server, Account } from 'stellar-sdk';
+import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset } from 'stellar-sdk';
 
 import { Properties } from '../../shared/properties';
 import { stellarNet } from '../../shared/config';
@@ -51,11 +51,34 @@ export class BlockchainServiceProvider {
 
         return server.submitTransaction(transaction);
       }).then((transactionResult) => {
-        resolve()
+        resolve();
       }).catch((err) => {
         this.logger.error("Invalidating sub account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject()
+        reject();
       });
+    });
+  }
+
+  validateFundTransfer(sendingAcc, amount) {
+
+  }
+
+  transferFunds(sendingAccSk, receivingAccPk, amount) {
+    var sendingAccPair = Keypair.fromSecret(sendingAccSk);
+    var sendingAccPk = sendingAccPair.publicKey();
+
+    Network.usePublicNetwork();
+    var server = new Server(stellarNet);
+
+    server.loadAccount(sendingAccPk).then((account) => {
+      var transaction = new TransactionBuilder(account)
+        .addOperation(Operation.payment({ destination: receivingAccPk, asset: Asset.native(), amount: amount }))
+        .build();
+      transaction.sign(sendingAccPair);
+
+      return server.submitTransaction(transaction);
+    }).catch(function (e) {
+      console.error(e);
     });
   }
 

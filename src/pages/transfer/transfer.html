@@ -22,26 +22,23 @@
   </ion-refresher>
 
 
-  <ion-content *ngIf="!currentItems[2]">
-    <ion-grid no-padding >
-      <ion-row>
-        <ion-col no-padding text-center>
-          <img class="notification-icon" src="../../assets/imgs/notifications-bell-button.png"/>
-        </ion-col>
-      </ion-row>
-      <ion-row class="row">
-        <ion-col class="noItem">
-          <h1>NOTIFICATIONS</h1>
-        </ion-col>
-      </ion-row>
-      <ion-row  class="row">
-        <ion-col class="noItem-note">
-          <ion-note text-wrap>No notifications available for this period</ion-note>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-content>
-
+  <ion-grid no-padding *ngIf="!currentItems">
+    <ion-row>
+      <ion-col no-padding text-center>
+        <img class="notification-icon" src="../../assets/imgs/notifications-bell-button.png" />
+      </ion-col>
+    </ion-row>
+    <ion-row class="row">
+      <ion-col class="noItem">
+        <h1>NOTIFICATIONS</h1>
+      </ion-col>
+    </ion-row>
+    <ion-row class="row">
+      <ion-col class="noItem-note">
+        <ion-note text-wrap>No notifications available for this period</ion-note>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 
   <ion-card *ngFor="let item of Searcheditems" (click)="openItem(item)">

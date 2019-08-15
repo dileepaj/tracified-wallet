@@ -9,9 +9,10 @@ var StellarSdk = require('stellar-sdk')
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
+import { stellarNet } from '../../shared/config';
 
-var server = new Server('https://horizon-testnet.stellar.org');
-StellarSdk.Network.useTestNetwork();
+var server = new Server(stellarNet);
+StellarSdk.Network.usePublicNetwork();
 
 @IonicPage()
 
@@ -41,7 +42,7 @@ export class ItemDetailPage {
     receiver: '',
     vaidity: new Date()
   };
-  BCAccounts: any;
+  mainAccount: any;
   constructor(
     private navCtrl: NavController,
     private toastCtrl: ToastController,
@@ -55,9 +56,7 @@ export class ItemDetailPage {
     private properties: Properties
   ) {
 
-    this.storage.getBcAccounts(this.properties.userName).then((accounts) => {
-      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
-    });
+    this.mainAccount = this.properties.defaultAccount;
     this.item = navParams.get('item');
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
     this.receivers = navParams.get('receivers');
@@ -90,7 +89,7 @@ export class ItemDetailPage {
           handler: data => {
             if (data.password != "") {
               console.log(data);
-              this.doCOC(this.decyrptSecret(this.BCAccounts[0].sk, data.password));
+              this.doCOC(this.decyrptSecret(this.mainAccount.sk, data.password));
             } else {
               // console.log(data);
               // return data;
@@ -120,7 +119,7 @@ export class ItemDetailPage {
         } else {
           this.createAddress().then((pair) => {
 
-            this.multisignSubAccount(pair, this.BCAccounts[0].pk).then(() => {
+            this.multisignSubAccount(pair, this.mainAccount.pk).then(() => {
               this.addSubAccount(pair).then(() => {
                 //@ts-ignore
                 resolve({ subAccount: pair.publicKey(), sequenceNo: 0 });
@@ -187,7 +186,7 @@ export class ItemDetailPage {
     if (this.connectivity.onDevice) {
       return new Promise((resolve, reject) => {
         const obj = {
-          "Sender": this.BCAccounts[0].pk,
+          "Sender": this.mainAccount.pk,
           "Receiver": this.COCForm.receiver,
           //@ts-ignore
           "SubAccount": res2[0].subAccount,
@@ -238,7 +237,7 @@ export class ItemDetailPage {
       return new Promise((resolve, reject) => {
         const subAccount = {
           "User": "UserNameNotVaildatingNow",
-          "SubAccounts": this.BCAccounts[0].subAccounts
+          "SubAccounts": this.mainAccount.subAccounts
         };
         console.log(subAccount)
         this.apiService.subAccountStatus(subAccount).then((res) => {
@@ -305,7 +304,7 @@ export class ItemDetailPage {
         const quantity = this.COCForm.qty;
         const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
-        const senderPublickKey = this.BCAccounts[0].pk;
+        const senderPublickKey = this.mainAccount.pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
@@ -315,11 +314,7 @@ export class ItemDetailPage {
 
         console.log(subAccObj);
 
-        // var asset = new Asset(item, 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
         var asset = new Asset(item, 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
-        // var asset2 = new Asset('Apple', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-        // var asset3 = new Asset('Grapes', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
-        // var asset4 = new Asset('Mango', 'GC6TIYXKJOAIDHPUZNJXEEZKBG6GCIA6XT3EW2YZCL2PQ3LHUI6OGRM7');
         var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
         // Network.useTestNetwork();
@@ -336,24 +331,6 @@ export class ItemDetailPage {
               amount: quantity,
               source: senderPublickKey
             }))
-            // transaction.addOperation(Operation.payment({
-            //   destination: receiver,
-            //   asset: asset2,
-            //   amount: '50',
-            //   source: senderPublickKey
-            // }))
-            // transaction.addOperation(Operation.payment({
-            //   destination: receiver,
-            //   asset: asset3,
-            //   amount: '70',
-            //   source: senderPublickKey
-            // }))
-            // transaction.addOperation(Operation.payment({
-            //   destination: senderPublickKey,
-            //   asset: asset4,
-            //   amount: '100',
-            //   source: receiver
-            // }))
 
             if (!subAccObj.available) {
               transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccObj.sequenceNo + 2) }))
@@ -361,9 +338,6 @@ export class ItemDetailPage {
 
             const tx = transaction.build();
             tx.sign(sourceKeypair);
-
-            // Let's see the XDR (encoded in base64) of the transaction we just built
-            // console.log("envelope =>  "+transaction.toEnvelope());
             XDR = tx.toEnvelope();
             seqNum = tx.sequence;
             b64 = XDR.toXDR('base64');
@@ -376,10 +350,7 @@ export class ItemDetailPage {
           })
           .catch(function (e) {
             console.log(e);
-            // reject(e)
-
           });
-
       } catch (error) {
         console.log(error)
       }
@@ -396,7 +367,7 @@ export class ItemDetailPage {
         const receiver = this.COCForm.receiver;
         // const item = this.COCForm.selectedItem;
         const time = new Date(this.COCForm.vaidity);
-        const senderPublickKey = this.BCAccounts[0].pk;
+        const senderPublickKey = this.mainAccount.pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
         // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
@@ -452,7 +423,7 @@ export class ItemDetailPage {
       return new Promise((resolve, reject) => {
 
         var sourceKeypair = Keypair.fromSecret(signerSK);
-        var server = new Server('https://horizon-testnet.stellar.org');
+        var server = new Server(stellarNet);
         server.loadAccount(sourceKeypair.publicKey())
           .then(function (account) {
             var transaction = new TransactionBuilder(account)
@@ -521,15 +492,15 @@ export class ItemDetailPage {
         const account = {
           "account": {
             "subKey": subAcc.publicKey(),
-            "pk": this.BCAccounts[0].pk
+            "pk": this.mainAccount.pk
           }
         };
 
         this.apiService.addSubAccount(account).then((res) => {
           if (res.status === 200) {
             this.presentToast('Sub ccount successfully added.');
-            this.BCAccounts[0].subAccounts.push(subAcc.publicKey());
-            this.storage.setBcAccounts(this.properties.userName, AES.encrypt(this.BCAccounts, this.key).toString());
+            this.mainAccount.subAccounts.push(subAcc.publicKey());
+            this.storage.setBcAccounts(this.properties.userName, AES.encrypt(this.mainAccount, this.key).toString());
             resolve();
           } else if (res.status === 406) {
             this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');

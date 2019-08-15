@@ -8,7 +8,7 @@ import {
 } from "ionic-angular";
 import { Items } from "../../providers/items/items";
 import { Network, Keypair, Transaction } from "stellar-base";
-Network.useTestNetwork();
+Network.usePublicNetwork();
 import { AES, enc } from "crypto-js";
 import { ApiServiceProvider } from "../../providers/api-service/api-service";
 import { StorageServiceProvider } from "../../providers/storage-service/storage-service";
@@ -58,7 +58,7 @@ export class ItemReceivedPage {
 
   ngOnInit() { }
 
-  ionViewDidLoad() {    
+  ionViewDidLoad() {
     this.setFilteredItems();
   }
 
@@ -108,9 +108,13 @@ export class ItemReceivedPage {
               });
 
               const tempLast = itemArr.pop();
-              itemArr.length > 0
-                ? (tempLast.source = itemArr[0].source)
-                : null;
+
+              if (itemArr.length > 0) {
+                tempLast.source = itemArr[0].source
+              } else {
+                tempLast.source = null;
+              }
+
               const obj = {
                 AcceptTxn: item.AcceptTxn,
                 AcceptXdr: item.AcceptXdr,
@@ -147,7 +151,6 @@ export class ItemReceivedPage {
               this.dissmissLoading();
             }
           }).catch(err => {
-            console.log(err);
             if (this.isLoadingPresent) {
               this.dissmissLoading();
             }
@@ -159,7 +162,6 @@ export class ItemReceivedPage {
         }
       },
       err => {
-        console.log(err);
         if (this.isLoadingPresent) {
           this.dissmissLoading();
         }
@@ -170,6 +172,7 @@ export class ItemReceivedPage {
   signXDR(item, status, signerSK) {
     return new Promise((resolve, reject) => {
       var sourceKeypair = Keypair.fromSecret(signerSK);
+
       if (status == "accept") {
         item.status = "accepted";
         const parsedTx = new Transaction(item.AcceptXdr);
@@ -191,60 +194,53 @@ export class ItemReceivedPage {
         item.RejectXdr = x;
         resolve(item);
       }
-    }).catch(function (e) {
-      console.log(e);
+
+    }).catch((e) => {
       // reject(e)
     });
   }
 
   sendSignedXDR(item, status, signerSK) {
     this.presentLoading();
-    this.signXDR(item, status, signerSK)
-      .then(obj => {
-        console.log(obj);
-        this.itemsProvider.updateStatusCOC(obj).subscribe(resp => {
-          console.log(resp);
+    this.signXDR(item, status, signerSK).then(obj => {
+      this.itemsProvider.updateStatusCOC(obj).subscribe(resp => {
+        // @ts-ignore
+        if (resp.Body.Status == "accepted") {
+          this.presentToast("Transaction Success!");
           // @ts-ignore
-          if (resp.Body.Status == "accepted") {
-            this.presentToast("Transaction Success!");
-            // @ts-ignore
-          } else if (resp.Body.Status == "rejected") {
-            this.presentToast("Transaction Success!");
-          }
-          if (this.isLoadingPresent) {
-            this.dissmissLoading();
-          }
-        },
-          err => {
-            console.log(err);
-            item.status = "pending";
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-            }
-            this.presentToast("Transaction Unsuccessfull");
-          }
-        );
-      })
-      .catch(e => {
-        console.log(e);
+        } else if (resp.Body.Status == "rejected") {
+          this.presentToast("Transaction Success!");
+        }
         if (this.isLoadingPresent) {
           this.dissmissLoading();
-          this.presentToast("Error! signing Transaction.");
         }
+      }, err => {
+        item.status = "pending";
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+        }
+        this.presentToast("Transaction Unsuccessfull");
       });
+    }).catch(e => {
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+        this.presentToast("Error! signing Transaction.");
+      }
+    });
   }
 
   getNamesFromKeys(receiverArr) {
     return new Promise((resolve, reject) => {
       var obj = {};
-      for (var i = 0, len = receiverArr.length; i < len; i++)
+      for (var i = 0, len = receiverArr.length; i < len; i++) {
         obj[receiverArr[i]["Sender"]] = receiverArr[i];
+      }
 
       var receiverNames = new Array();
 
-      for (var key in obj) receiverNames.push(obj[key].Sender);
-
-      console.log(receiverNames);
+      for (var key in obj) {
+        receiverNames.push(obj[key].Sender);
+      }
 
       const param = {
         account: {
