@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Account Details</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-row>
+        <h4>Account name</h4>
+      </ion-row>
+      <ion-row>
+        <h3>{{ account.accountName }}</h3>
+      </ion-row>
+    </ion-row>
+    <ion-row>
+      <ion-row>
+        <h4>Public key</h4>
+      </ion-row>
+      <ion-row>
+        <h3>{{ account.pk }}</h3>
+      </ion-row>
+    </ion-row>
+    <ion-row>
+      <ion-row>
+        <h4>Private key</h4>
+      </ion-row>
+      <ion-row *ngIf="keyDecrypted">
+          <h3>{{ privateKey }}</h3>
+        </ion-row>
+      <ion-row>
+        <button ion-button (click)="decryptSecretKey()">View key</button>
+      </ion-row>      
+    </ion-row>
+    <ion-row *ngIf="notDefaultAccount">
+        <button ion-button (click)="makeDefaultAccount()">Make default account</button>
+    </ion-row>
+  </ion-grid>
+</ion-content>

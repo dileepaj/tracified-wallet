@@ -16,7 +16,6 @@ import { Logger } from 'ionic-logger-new';
 import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
 import { DataServiceProvider } from '../providers/data-service/data-service';
 import { BlockchainServiceProvider } from '../providers/blockchain-service/blockchain-service';
-import { WaitingFundsPage } from '../pages/waiting-funds/waiting-funds';
 
 @Component({
   templateUrl: 'app.html'
@@ -72,6 +71,7 @@ export class MyApp {
 
     this.authService.authorizeLocalProfile().then((res) => {
       if (res) {
+        // Set the default account
         this.rootPage = TabsPage
       } else {
         this.dataService.clearLocalData();

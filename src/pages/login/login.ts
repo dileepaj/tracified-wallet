@@ -83,6 +83,7 @@ export class LoginPage {
       this.authService.validateUser(authmodel).then((res) => {
         if (res.status === 200) {
           this.dataService.getBlockchainAccounts().then((accounts) => {
+            this.properties.defaultAccountPk = accounts[0].pk;
             this.dataService.storeBlockchainAccounts(accounts).then(() => {
               this.dissmissLoading();
               this.navCtrl.setRoot(TabsPage);

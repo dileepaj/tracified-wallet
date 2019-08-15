@@ -41,12 +41,12 @@ export class MappingServiceProvider {
 
   toBase64Url(url, outputFormat) {
     return new Promise((resolve) => {
-    let img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.onload = () => {
-      let canvas = <HTMLCanvasElement> document.createElement('CANVAS'),
-        ctx = canvas.getContext('2d'),
-        dataURL;
+      let img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = () => {
+        let canvas = <HTMLCanvasElement>document.createElement('CANVAS'),
+          ctx = canvas.getContext('2d'),
+          dataURL;
         canvas.height = img.height;
         canvas.width = img.width;
         ctx.drawImage(img, 0, 0);
@@ -63,6 +63,18 @@ export class MappingServiceProvider {
       try {
         var encSecretKey = AES.encrypt(key, signer);
         resolve(encSecretKey.toString());
+      } catch {
+        reject();
+      }
+    });
+  }
+
+  decryptSecret(encKey, sipher) {
+    return new Promise((resolve, reject) => {
+      try {
+        console.log(encKey, sipher);
+        var decKey = AES.decrypt(encKey, sipher);
+        resolve(decKey.toString(enc.Utf8));
       } catch {
         reject();
       }

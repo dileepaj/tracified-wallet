@@ -7,6 +7,7 @@ export class Properties{
     public userType: string;
     public displayImage: string;
     public bcAccounts;
+    public defaultAccountPk: string;
 
     public skipConsoleLogs: boolean;
     public writeToFile: boolean;

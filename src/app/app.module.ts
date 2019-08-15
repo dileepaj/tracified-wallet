@@ -36,6 +36,7 @@ import { FileSystemServiceProvider } from '../providers/file-service/file-system
 import {File} from '@ionic-native/file';
 import { DataServiceProvider } from '../providers/data-service/data-service';
 import { BlockchainServiceProvider } from '../providers/blockchain-service/blockchain-service';
+import { AccountDetailsPageModule } from '../pages/account-details/account-details.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -47,6 +48,7 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   imports: [
     BrowserModule,
+    AccountDetailsPageModule,
     IonicSelectableModule,
     HttpClientModule,
     SelectSearchableModule,

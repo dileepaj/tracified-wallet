@@ -20,7 +20,7 @@
     <ion-note id="noItem-note">No Accounts available for this period</ion-note>
   </div>
 
-  <ion-card text-wrap *ngFor="let account of userAcc">
+  <ion-card text-wrap *ngFor="let account of userAcc" (click)="viewAccount(account)">
     <ion-item>
       <ion-row>
         <ion-col col-4 left text-left>
