@@ -24,7 +24,7 @@ export class ItemSentPage {
   loading;
   isLoadingPresent: boolean;
   Citems: any;
-  BCAccounts: any;
+  mainAccount: any;
 
   constructor(
     public navCtrl: NavController,
@@ -34,9 +34,9 @@ export class ItemSentPage {
     public itemsProvider: Items,
     private storage: StorageServiceProvider,
     private properties: Properties
-  ) {  }
+  ) { }
 
-  ngOnInit(){  }  
+  ngOnInit() { }
 
   ionViewDidLoad() {
     this.setFilteredItems();
@@ -44,18 +44,8 @@ export class ItemSentPage {
 
   ionViewDidEnter() {
     this.presentLoading();
-
-    this.storage.getBcAccounts(this.properties.userName).then((accounts) => {
-      this.BCAccounts = accounts;
-      if(this.BCAccounts){
-        this.loadCOCSent();
-      }
-    }).catch((error)=>{
-      console.log(error);
-      this.dissmissLoading();
-      this.dataError("Error","There should be at least one account.");
-    });
-
+    this.mainAccount = this.properties.defaultAccount;
+    this.loadCOCSent();
   }
 
   doRefresh(refresher) {
@@ -79,12 +69,9 @@ export class ItemSentPage {
 */
   loadCOCSent() {
     try {
-      console.log(this.BCAccounts[0].pk);
-
-      this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
+      this.itemsProvider.querycocbysender(this.mainAccount.pk).subscribe((resp) => {
         if (resp != null) {
           // @ts-ignore
-          console.log(resp);
           this.Citems = resp;
           const Tempitems = []
 
@@ -110,7 +97,7 @@ export class ItemSentPage {
 
                     let assetObj = {
                       "source": tansac.source,
-                      "sourcename": this.BCAccounts[0].accountName,
+                      "sourcename": this.mainAccount.accountName,
                       "asset": tansac.asset.code,
                       "amount": tansac.amount,
                       "destination": tansac.destination

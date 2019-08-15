@@ -71,11 +71,17 @@ export class MyApp {
 
     this.authService.authorizeLocalProfile().then((res) => {
       if (res) {
-        // Set the default account
-        this.rootPage = TabsPage
+        this.dataService.retrieveBlockchainAccounts().then((accounts) => {
+          this.properties.defaultAccount = accounts[0];
+          this.rootPage = TabsPage;
+        }).catch((err) => {
+          this.presentAlert("Error", "Could not retrieve transaction accounts from storage. Please login again.");
+          this.dataService.clearLocalData();
+          this.rootPage = LoginPage;
+        });
       } else {
         this.dataService.clearLocalData();
-        this.rootPage = LoginPage
+        this.rootPage = LoginPage;
       }
     }).catch((err) => {
       this.logger.error("Authorize local profile failed: ", err);

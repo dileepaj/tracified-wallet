@@ -43,7 +43,7 @@ export class ItemReceivedPage {
   Citems: any;
 
   items = [];
-  BCAccounts: any;
+  mainAccount: any;
 
   constructor(
     public navCtrl: NavController,
@@ -58,27 +58,19 @@ export class ItemReceivedPage {
 
   ngOnInit() { }
 
-  ionViewDidLoad() {
-    this.presentLoading();
+  ionViewDidLoad() {    
     this.setFilteredItems();
-    this.dissmissLoading();
   }
 
   ionViewDidEnter() {
-    this.storage.getBcAccounts(this.properties.userName).then(accounts => {
-      this.BCAccounts = accounts;
-      if (this.BCAccounts) {
-        this.loadCOCReceived();
-      }
-    }).catch(error => {
-      console.log(error);
-      this.dataError("Error", "There should be at least one account.");
-    });
+    this.presentLoading();
+    this.mainAccount = this.properties.defaultAccount;
+    this.loadCOCReceived();
   }
 
   loadCOCReceived() {
     // try {
-    this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe(
+    this.itemsProvider.querycocbyReceiver(this.mainAccount.pk).subscribe(
       resp => {
         if (resp != null) {
           this.Citems = resp;
@@ -106,7 +98,7 @@ export class ItemReceivedPage {
                 if (tansac.type == "payment") {
                   let assetObj = {
                     source: tansac.source,
-                    sourcename: this.BCAccounts[0].accountName,
+                    sourcename: this.mainAccount.accountName,
                     asset: tansac.asset.code,
                     amount: tansac.amount
                   };
@@ -320,7 +312,7 @@ export class ItemReceivedPage {
               this.sendSignedXDR(
                 item,
                 buttonStatus,
-                this.decyrptSecret(this.BCAccounts[0].sk, data.password)
+                this.decyrptSecret(this.mainAccount.sk, data.password)
               );
             }
           }

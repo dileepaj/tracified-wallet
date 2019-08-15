@@ -92,7 +92,7 @@ export class AccountDetailsPage {
   }
 
   defaultAccountCheck() {
-    if (this.account.pk != this.properties.defaultAccountPk) {
+    if (this.account.pk != this.properties.defaultAccount.pk) {
       this.notDefaultAccount = true;
     } else {
       this.notDefaultAccount = false;
@@ -107,14 +107,12 @@ export class AccountDetailsPage {
         {
           text: 'No',
           role: 'cancel',
-          handler: data => {
-
-          }
+          handler: data => { }
         },
         {
           text: 'Yes',
           handler: data => {
-            this.properties.defaultAccountPk = this.account.pk;
+            this.properties.defaultAccount = this.account;
             this.defaultAccountCheck();
           }
         }

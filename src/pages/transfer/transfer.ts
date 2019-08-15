@@ -25,7 +25,7 @@ export class TransferPage {
   Searcheditems: any;
   itemPresent: boolean;
   searchTerm: any;
-  BCAccounts: any;
+  mainAccount: any;
 
   constructor(
     private navCtrl: NavController,
@@ -43,17 +43,9 @@ export class TransferPage {
   ionViewDidEnter() {
     this.presentLoading();
 
-    this.storage.getBcAccounts(this.properties.userName).then(accounts => {
-      this.BCAccounts = accounts;
-      if (this.BCAccounts) {
-        this.getBalance();
-        this.loadReceivers();
-      } else {
-        this.dissmissLoading();
-        console.log("There should be at least one account.");
-        this.dataError("Error", "There should be at least one account.");
-      }
-    });
+    this.mainAccount = this.properties.defaultAccount;
+    this.getBalance();
+    this.loadReceivers();
 
   }
 
@@ -81,9 +73,8 @@ export class TransferPage {
 
   getBalance() {
     let assets = [];
-
     var server = new Server('https://horizon-testnet.stellar.org');
-    server.loadAccount(this.BCAccounts[0].pk).then((account) => {
+    server.loadAccount(this.mainAccount.pk).then((account) => {
       account.balances.forEach((balance) => {
         // @ts-ignore
         console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
@@ -97,7 +88,6 @@ export class TransferPage {
     });
     this.currentItems = assets;
     this.Searcheditems = this.currentItems;
-    console.log(this.Searcheditems)
     if (this.isLoadingPresent) {
       this.dissmissLoading();
     }
@@ -105,15 +95,11 @@ export class TransferPage {
 
   loadReceivers() {
     try {
-      // console.log(this.BCAccounts[0].pk);
-      this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
+      this.itemsProvider.querycocbysender(this.mainAccount.pk).subscribe((resp) => {
         // @ts-ignore
         console.log(resp);
         // @ts-ignore
         this.receivers = resp;
-        // console.log(this.receivers[0].Receiver);
-
-        // remove duplicates
         var obj = {};
         for (var i = 0, len = this.receivers.length; i < len; i++)
           obj[this.receivers[i]['Receiver']] = this.receivers[i];
@@ -123,20 +109,18 @@ export class TransferPage {
         for (var key in obj)
           this.receivers.push(obj[key].Receiver);
 
-        console.log(this.receivers)
-
-        if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+        }
       }, (err) => {
-        console.log('error in querying receivers')
-        if (this.isLoadingPresent) { this.dissmissLoading(); }
-
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+        }
       });
     } catch (error) {
-      console.log(error);
-      if (this.isLoadingPresent) { this.dissmissLoading(); }
-
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
     }
   }
 
