@@ -6,7 +6,7 @@ import { Properties } from '../../shared/properties';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
-import { WaitingFundsPage } from '../../pages/waiting-funds/waiting-funds';
+import { TabsPage } from '../../pages/tabs/tabs';
 
 @IonicPage()
 @Component({
@@ -34,7 +34,7 @@ export class AccountInfoPage {
 
   continue() {
     if (this.navigation === 'initial') {
-      this.navCtrl.push(WaitingFundsPage);
+      this.navCtrl.push(TabsPage);
     } else {
       this.navCtrl.push(BcAccountPage);
     }

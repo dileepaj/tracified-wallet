@@ -247,7 +247,7 @@ export class ApiServiceProvider {
       })
     };
 
-    return this.postN(validateMainAcc, payload, headers);
+    return this.getN(validateMainAcc + "?accountName=" + payload, headers);
 
   }
 

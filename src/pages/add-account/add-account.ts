@@ -100,6 +100,8 @@ export class AddAccountPage {
                   }
                 }
               }
+
+              // Save to local storage
               this.dataService.addTransactionAccount(account).then((res) => {
                 this.dissmissLoading();
                 if (res.status === 200) {
@@ -145,12 +147,7 @@ export class AddAccountPage {
 
   validateAccountName(accName) {
     return new Promise((resolve, reject) => {
-      const account = {
-        "account": {
-          "accountName": accName
-        }
-      };
-      this.apiService.validateMainAccountN(account).then((res) => {
+      this.apiService.validateMainAccountN(accName).then((res) => {
         if (res.status === 200 && res.body.status == false) {
           resolve(true);
         } else {
