@@ -15,9 +15,19 @@
   </ion-refresher>
 
   <div *ngIf="!userAcc" id="noitemDiv">
-    <img id="notification-icon" src="../../assets/imgs/notifications-bell-button.png">
-    <h2 id="noItem"> ACCOUNTS </h2>
-    <ion-note id="noItem-note">No Accounts available for this period</ion-note>
+    <ion-row>
+      <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+    </ion-row>
+    <ion-row>
+      <div class="full-width text-center line-spacing-small">
+        <h1 class="primary-font">Accounts</h1>
+      </div>
+    </ion-row>
+    <ion-row text-wrap>
+      <div class="full-width text-center">
+        <h3 class="secondary-font">No accounts available for the user</h3>
+      </div>
+    </ion-row>
   </div>
 
   <ion-card text-wrap *ngFor="let account of userAcc" (click)="viewAccount(account)">
@@ -47,6 +57,5 @@
     <button color="secondary" ion-fab (click)="goToAddAccount()">
       <ion-icon name="add"></ion-icon>
     </button>
-
   </ion-fab>
 </ion-content>

@@ -6,22 +6,24 @@
     <form [formGroup]="form">
       <ion-row class="loginbox">
         <ion-item>
-          <ion-label class="login-lables" floating >{{'USERNAME' | translate}}</ion-label>
-          <ion-input #userName formControlName="username" type="email"  name="userName"  keyNext></ion-input>
+          <ion-label class="login-lables" floating>{{'USERNAME' | translate}}</ion-label>
+          <ion-input #userName formControlName="username" type="email" name="userName" keyNext></ion-input>
         </ion-item>
         <ion-item>
           <ion-label floating>{{'PASSWORD' | translate}}</ion-label>
           <ion-input formControlName="password" name="password" [type]="passwordType" clearOnEdit="false"></ion-input>
-          <ion-icon item-end [name]="passwordIcon" color="secondary" class="passwordIcon" (click)='hideShowPassword()'></ion-icon>
+          <ion-icon item-end [name]="passwordIcon" color="secondary" class="passwordIcon" (click)='hideShowPassword()'>
+          </ion-icon>
         </ion-item>
       </ion-row>
       <ion-row>
-        <div class="button-wrapper-center-both">
-            <button class="login-button" ion-button (click)="login()" color="secondary">{{'LOGIN' | translate}}</button>
-        </div>        
+        <div class="button-wrapper">
+          <button class="login-button" ion-button (click)="login()" color="secondary">{{'LOGIN' | translate}}</button>
+        </div>
       </ion-row>
       <ion-row justify-content-center>
-        <ion-note class="forgot-password" (click)="gotoForgotPasswordPage()">{{'FORGOTTENPASSWORD'| translate}}</ion-note>
+        <ion-note class="forgot-password" (click)="gotoForgotPasswordPage()">{{'FORGOTTENPASSWORD'| translate}}
+        </ion-note>
       </ion-row>
     </form>
   </ion-grid>

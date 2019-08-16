@@ -1,34 +1,14 @@
 page-item-sent {
 
-  .col {
-    padding: 4px;
-  }
-
   .notification-icon {
     display: flex;
-    margin-top: 35%;
+    margin-top: 20vh;
     margin-left: auto;
     margin-right: auto;
     height: 100%;
-    width: 35%;
-    background-repeat: repeat-x;
+    width: 25vh;
   }
 
-  .noItem {
-    color: black;
-    padding: 0;
-    text-align: center;
-  }
-
-  .noItem-note {
-    color: grey !important;
-    padding: 0;
-    text-align: center;
-  }
-
-  .row {
-    align-items: flex-start !important;
-  }
 
   .item-inner {
     border-bottom: 0 !important;

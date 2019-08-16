@@ -16,6 +16,9 @@ import { Logger } from 'ionic-logger-new';
 import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
 import { DataServiceProvider } from '../providers/data-service/data-service';
 import { BlockchainServiceProvider } from '../providers/blockchain-service/blockchain-service';
+import { BcAccountPage } from '../pages/bc-account/bc-account';
+import { SettingsPage } from '../pages/settings/settings';
+import { ContentPage } from '../pages/content/content';
 
 @Component({
   templateUrl: 'app.html'
@@ -124,13 +127,26 @@ export class MyApp {
     });
   }
 
-  openPage(page) {
-    if (page.action) {
-      let action = page.action;
-      action();
-    } else {
-      this.nav.setRoot(page.component);
-      this.activePage = page;
+  openPage(page: string) {
+    switch (page) {
+      case "items":
+        this.nav.setRoot(TabsPage);
+        break;
+      case "accounts":
+        this.nav.setRoot(BcAccountPage);
+        break;
+      case "funds":
+        this.nav.setRoot(SettingsPage);
+        break;
+      case "settings":
+        this.nav.setRoot(SettingsPage);
+        break;
+      case "about":
+        this.nav.setRoot(ContentPage);
+        break;
+      case "logout":
+        this.logOut();
+        break;
     }
   }
 

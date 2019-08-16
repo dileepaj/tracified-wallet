@@ -1,65 +1,44 @@
 page-transfer {
-    ion-card{
-        padding: 15px;
-        overflow: hidden;
-        background-color: white !important;
-        // opacity: 0.9;
+  ion-card {
+    padding: 15px;
+    overflow: hidden;
+    background-color: white !important;
+    // opacity: 0.9;
+  }
 
-    }
+  .notification-icon {
+    display: flex;
+    margin-top: 20vh;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 25vh;
+  }
 
-    .notification-icon {
-      display: flex;
-      margin-top: 35%;
-      margin-left: auto;
-      margin-right: auto;
-      height: 100%;
-      width: 35%;
-      background-repeat: repeat-x;
-    }
+  .note-md {
+    color: #3d3d3d;
+  }
 
-    .noItem {
-      color: black;
-      padding: 0;
-      text-align: center;
-    }
+  .item-inner {
+    border-bottom: 0 !important;
+  }
+  .card-md {
+    height: 75px;
+    border-radius: 4px !important;
+  }
 
-    .noItem-note {
-      color: grey !important;
-      padding: 0;
-      text-align: center;
-    }
+  .searchbar-md {
+    padding: 8px 8px 4px 8px;
+  }
 
-    .note-md {
-      color: #3d3d3d;
-    }
+  .item {
+    margin: 8px 2px !important;
+    font-weight: 400;
+    font-size: 18px !important;
+  }
 
-    .row {
-      align-items: flex-start !important;
-    }
-
-    .item-inner {
-      border-bottom: 0 !important;
-    }
-    .card-md{
-        height: 75px;
-        border-radius: 4px !important;
-
-    }
-
-    .searchbar-md {
-        padding: 8px 8px 4px 8px;
-    }
-
-    .item{
-        margin: 8px 2px !important;
-        font-weight: 400;
-        font-size: 18px !important;
-
-    }
-
-    #item-bal{
-        margin: 11px 41px !important;
-        font-weight: 500;
-    }
-
+  #item-bal {
+    margin: 11px 41px !important;
+    font-weight: 500;
+  }
 }
