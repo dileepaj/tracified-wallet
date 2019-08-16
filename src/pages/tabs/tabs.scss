@@ -17,7 +17,7 @@ page-tabs {
         &[class*="custom-"] {
             margin: 0 5px 0 0;
             vertical-align: middle;
-            $sz: 20px;
+            $sz: 24px;
             width: $sz;
             height: $sz;
         } // custom icons
@@ -39,18 +39,18 @@ page-tabs {
 }
 
 .tabs-md .tab-button-text {
-    font-size: 1rem;
+    font-size: 1.2rem;
 }
 
 .tabs-md .tab-button[aria-selected=false] {
-    color: grey !important;
+    color: #28A745 !important;
     padding: 0;
 
     ion-icon {
         &[class*="custom-"] {
             margin: 0 5px 0 0;
             vertical-align: middle;
-            $sz: 20px;
+            $sz: 24px;
             width: $sz;
             height: $sz;
         } // custom icons

@@ -1,17 +1,13 @@
 <ion-header>
-
   <ion-navbar>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Add Blockchain Account</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 <ion-content>
-  <h4 class="desc">Create a new blockchain account</h4>
-
   <ion-grid>
     <form [formGroup]="form">
       <ion-row class="formbox">
@@ -29,16 +25,11 @@
         <h4 *ngIf="form.valid == true" class="desc">It takes {{PasswordStrength}} to crack your password!</h4>
       </ion-row>
       <ion-row>
-        <div class="button-wrapper-center-both">
-          <!-- <img (click)="doLogin()" class="login-button" src="../../assets/icon/login.svg"> -->
+        <div class="button-wrapper">
           <button class="login-button" [disabled]="!form.valid" (click)="addMainAccount()" ion-button
             color="secondary">Generate Blockchain Address</button>
         </div>
       </ion-row>
-      <ion-row justify-content-center>
-        <ion-note class="note" (click)="gotoBlockchainAccPage()">Not sure? go back</ion-note>
-      </ion-row>
-
     </form>
 
   </ion-grid>

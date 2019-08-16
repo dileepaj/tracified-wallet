@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angu
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { Keypair } from 'stellar-sdk';
 import { Properties } from '../../shared/properties';
+import { BcAccountPage } from '../../pages/bc-account/bc-account';
 
 @IonicPage()
 @Component({
@@ -15,6 +16,7 @@ export class AccountDetailsPage {
   private privateKey: string;
   private keyDecrypted: boolean = false;
   private notDefaultAccount: boolean = true;
+  private accountFunds:string = 'Calculating...';
 
   constructor(
     public navCtrl: NavController,
@@ -25,6 +27,7 @@ export class AccountDetailsPage {
   ) {
     this.account = this.navParams.get("account");
     this.defaultAccountCheck();
+    // Get account funds
   }
 
   decryptSecretKey() {
@@ -137,6 +140,10 @@ export class AccountDetailsPage {
     });
 
     alert.present();
+  }
+
+  backButton() {
+    this.navCtrl.setRoot(BcAccountPage);
   }
 
 }

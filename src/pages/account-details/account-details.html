@@ -9,36 +9,46 @@
 
 
 <ion-content padding>
-  <ion-grid>
-    <ion-row>
-      <ion-row>
-        <h4>Account name</h4>
+  <ion-grid class="padding-width content-start">
+    <ion-row class="full-width line-spacing">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">Account name</h4>
       </ion-row>
-      <ion-row>
-        <h3>{{ account.accountName }}</h3>
-      </ion-row>
-    </ion-row>
-    <ion-row>
-      <ion-row>
-        <h4>Public key</h4>
-      </ion-row>
-      <ion-row>
-        <h3>{{ account.pk }}</h3>
+      <ion-row class="full-width line-spacing">
+        <h3 class="primary-font">{{ account.accountName }}</h3>
       </ion-row>
     </ion-row>
-    <ion-row>
-      <ion-row>
-        <h4>Private key</h4>
+    <ion-row class="full-width line-spacing">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">Public key</h4>
       </ion-row>
-      <ion-row *ngIf="keyDecrypted">
-          <h3>{{ privateKey }}</h3>
-        </ion-row>
-      <ion-row>
-        <button ion-button (click)="decryptSecretKey()">View key</button>
-      </ion-row>      
+      <ion-row class="full-width line-spacing" text-wrap>
+        <h3 class="primary-font word-wrap" text-wrap>{{ account.pk }}</h3>
+      </ion-row>
     </ion-row>
-    <ion-row *ngIf="notDefaultAccount">
-        <button ion-button (click)="makeDefaultAccount()">Make default account</button>
+    <ion-row class="full-width line-spacing">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">Private key</h4>
+      </ion-row>
+      <ion-row class="full-width line-spacing" *ngIf="keyDecrypted" text-wrap>
+        <h3 class="primary-font word-wrap">{{ privateKey }}</h3>
+      </ion-row>
+      <ion-row class="full-width" *ngIf="!keyDecrypted">
+        <button class="btn-text-only green-font" ion-button (click)="decryptSecretKey()">View key</button>
+      </ion-row>
+    </ion-row>
+    <ion-row class="full-width line-spacing">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">Available Funds</h4>
+      </ion-row>
+      <ion-row class="full-width line-spacing" text-wrap>
+        <h3 class="primary-font word-wrap" text-wrap>{{ accountFunds }}</h3>
+      </ion-row>
+    </ion-row>
+    <ion-row class="full-width line-spacing" *ngIf="notDefaultAccount">
+      <div class="button-wrapper">
+          <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
+      </div>          
     </ion-row>
   </ion-grid>
 </ion-content>
