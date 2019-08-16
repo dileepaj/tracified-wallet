@@ -52,8 +52,20 @@ export class DataServiceProvider {
     return this.apiService.addTransactionAccount(account);
   }
 
+  addSubAccount(account): Promise<any> {
+    return this.apiService.addSubAccount(account);
+  }
+
   clearLocalData(){
     this.storage.clearAllLocalStores();
+  }
+
+  retrieveDefaultAccount(): Promise<any> {
+    return this.storage.getDefaultAccount();
+  }
+
+  setDefaultAccount(account): Promise<any> {
+    return this.storage.setDefaultAccount(account);
   }
 
 

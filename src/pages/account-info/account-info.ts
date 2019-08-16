@@ -34,9 +34,9 @@ export class AccountInfoPage {
 
   continue() {
     if (this.navigation === 'initial') {
-      this.navCtrl.push(TabsPage);
+      this.navCtrl.setRoot(TabsPage);
     } else {
-      this.navCtrl.push(BcAccountPage);
+      this.navCtrl.setRoot(BcAccountPage);
     }
 
   }

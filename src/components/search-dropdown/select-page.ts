@@ -100,15 +100,8 @@ export class SelectSearchablePage {
         if (this.connectivity.onDevice) {
             this.presentLoading();
             return new Promise((resolve, reject) => {
-                const model = {
-                    "account": {
-                        "accountName": name
-                    }
-                };
 
-                console.log(model)
-
-                this.apiService.getPublickey(model).then((res) => {
+                this.apiService.getPublickey(name).then((res) => {
                     this.dissmissLoading();
                     if (res.status === 200) {
                         console.log(res.body)

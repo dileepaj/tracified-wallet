@@ -22,6 +22,11 @@ export class StorageServiceProvider {
     storeName: "photo"
   });
 
+  public misc = localforage.createInstance({
+    name: "misc",
+    storeName: "misc"
+  });
+
   constructor(
     private logger: Logger,
     private properties: Properties
@@ -118,6 +123,37 @@ export class StorageServiceProvider {
     return new Promise(resolve => {
       this.blockchainAccounts.clear().then(() => {
         resolve(true);
+      });
+    });
+  }
+
+  setDefaultAccount(account): Promise<any> {
+    return new Promise(resolve => {
+      let encAccount = AES.encrypt(JSON.stringify(account), this.key).toString();
+      this.misc.setItem("defaultAccount", encAccount).then(() => {
+        resolve(true);
+      });
+    });
+  }
+
+  getDefaultAccount(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.misc.length().then(noOfKeys => {
+        if (noOfKeys > 0) {
+          this.misc.getItem("defaultAccount").then(account => {
+            let decryptedAcc = JSON.parse(AES.decrypt(account.toString(), this.key).toString(enc.Utf8));
+            resolve(decryptedAcc);
+          }).catch((err) => {
+            this.logger.error("Storage get default account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+            reject(err);
+          });
+        } else {
+          this.logger.error("No default account found.", this.properties.skipConsoleLogs, this.properties.writeToFile);
+          reject(false);
+        }
+      }).catch((err) => {
+        this.logger.error("Storage check length failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+        reject(err);
       });
     });
   }

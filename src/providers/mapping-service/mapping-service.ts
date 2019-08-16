@@ -72,7 +72,6 @@ export class MappingServiceProvider {
   decryptSecret(encKey, sipher) {
     return new Promise((resolve, reject) => {
       try {
-        console.log(encKey, sipher);
         var decKey = AES.decrypt(encKey, sipher);
         resolve(decKey.toString(enc.Utf8));
       } catch {

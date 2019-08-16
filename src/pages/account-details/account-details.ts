@@ -4,6 +4,7 @@ import { MappingServiceProvider } from '../../providers/mapping-service/mapping-
 import { Keypair } from 'stellar-sdk';
 import { Properties } from '../../shared/properties';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
+import { DataServiceProvider } from '../../providers/data-service/data-service';
 
 @IonicPage()
 @Component({
@@ -23,7 +24,8 @@ export class AccountDetailsPage {
     public navParams: NavParams,
     private alertCtrl: AlertController,
     private mappingService: MappingServiceProvider,
-    private properties: Properties
+    private properties: Properties,
+    private dataService: DataServiceProvider
   ) {
     this.account = this.navParams.get("account");
     this.defaultAccountCheck();
@@ -116,6 +118,7 @@ export class AccountDetailsPage {
           text: 'Yes',
           handler: data => {
             this.properties.defaultAccount = this.account;
+            this.dataService.setDefaultAccount(this.account);
             this.defaultAccountCheck();
           }
         }

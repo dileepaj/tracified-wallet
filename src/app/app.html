@@ -3,7 +3,7 @@
     <ion-toolbar>
       <div text-center padding>
         <div class="profile-image-holder">
-          <img class="profile-image" src="" alt="Profile Picture" />
+          <img class="profile-image" src="../assets/imgs/user.png" alt="Profile Picture" />
         </div>
         <h2 class="white-font line-spacing-small">{{user}}</h2>
         <h3 class="white-font line-spacing-small">{{company}}</h3>
@@ -22,10 +22,6 @@
         <ion-icon class="primary-font" name="contacts" item-start></ion-icon>
         <h5 class="line-spacing icon-alignment primary-font">Accounts</h5>
       </button>
-      <button text-wrap ion-item menuClose (click)="openPage('funds')">
-        <ion-icon class="primary-font" name="md-cash" item-start></ion-icon>
-        <h5 class="line-spacing icon-alignment primary-font">Fund Transfer</h5>
-      </button>
       <button text-wrap ion-item menuClose (click)="openPage('settings')">
         <ion-icon class="primary-font" name="settings" item-start></ion-icon>
         <h5 class="line-spacing icon-alignment primary-font">Settings</h5>
@@ -43,13 +39,13 @@
   <ion-footer>
     <ion-row>
       <ion-col col-4>
-        <button ion-button class="btn-text-only primary-font padding-width capitalize-font">English</button>
+        <button ion-button (click)="languageChange()" class="btn-text-only primary-font padding-width capitalize-font">English</button>
       </ion-col>
       <ion-col col-4>
-        <button ion-button class="btn-text-only primary-font padding-width capitalize-font">Sinhala</button>
+        <button ion-button (click)="languageChange()" class="btn-text-only primary-font padding-width capitalize-font">Sinhala</button>
       </ion-col>
       <ion-col col-4>
-        <button ion-button class="btn-text-only primary-font padding-width capitalize-font">Tamil</button>
+        <button ion-button (click)="languageChange()" class="btn-text-only primary-font padding-width capitalize-font">Tamil</button>
       </ion-col>
     </ion-row>
   </ion-footer>

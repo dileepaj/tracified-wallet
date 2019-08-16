@@ -45,7 +45,7 @@ export class TransferPage {
     this.presentLoading();
     this.mainAccount = this.properties.defaultAccount;
     this.getBalance();
-    this.loadReceivers();
+    // this.loadReceivers();
   }
 
   doRefresh(refresher) {
@@ -57,8 +57,8 @@ export class TransferPage {
   openItem(item) {
     this.navCtrl.push(ItemDetailPage, {
       item: item,
-      currentItems: this.currentItems,
-      receivers: this.receivers
+      currentItems: this.currentItems
+      // receivers: this.receivers
     });
   }
 
@@ -91,42 +91,42 @@ export class TransferPage {
 
   }
 
-  loadReceivers() {
-    try {
-      this.itemsProvider.querycocbysender(this.mainAccount.pk).subscribe((resp) => {
-        // @ts-ignore
-        console.log(resp);
-        // @ts-ignore
-        this.receivers = resp;
-        var obj = {};
-        for (var i = 0, len = this.receivers.length; i < len; i++)
-          obj[this.receivers[i]['Receiver']] = this.receivers[i];
+  // loadReceivers() {
+  //   try {
+  //     this.itemsProvider.querycocbysender(this.mainAccount.pk).subscribe((resp) => {
+  //       // @ts-ignore
+  //       console.log(resp);
+  //       // @ts-ignore
+  //       this.receivers = resp;
+  //       var obj = {};
+  //       for (var i = 0, len = this.receivers.length; i < len; i++)
+  //         obj[this.receivers[i]['Receiver']] = this.receivers[i];
 
-        this.receivers = new Array();
+  //       this.receivers = new Array();
 
-        for (var key in obj)
-          this.receivers.push(obj[key].Receiver);
+  //       for (var key in obj)
+  //         this.receivers.push(obj[key].Receiver);
 
-        if (this.isLoadingPresent) {
-          this.dissmissLoading();
-        }
-      }, (err) => {
-        if (this.isLoadingPresent) {
-          this.dissmissLoading();
-        }
-      });
-    } catch (error) {
-      if (this.isLoadingPresent) {
-        this.dissmissLoading();
-      }
-    }
-  }
+  //       if (this.isLoadingPresent) {
+  //         this.dissmissLoading();
+  //       }
+  //     }, (err) => {
+  //       if (this.isLoadingPresent) {
+  //         this.dissmissLoading();
+  //       }
+  //     });
+  //   } catch (error) {
+  //     if (this.isLoadingPresent) {
+  //       this.dissmissLoading();
+  //     }
+  //   }
+  // }
 
   presentLoading() {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
-      content: 'pleasewait'
+      content: 'Please Wait'
     });
 
     this.loading.present();

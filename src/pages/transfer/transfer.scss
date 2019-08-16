@@ -1,9 +1,7 @@
 page-transfer {
   ion-card {
-    padding: 15px;
     overflow: hidden;
     background-color: white !important;
-    // opacity: 0.9;
   }
 
   .notification-icon {
@@ -15,15 +13,10 @@ page-transfer {
     width: 25vh;
   }
 
-  .note-md {
-    color: #3d3d3d;
-  }
-
   .item-inner {
     border-bottom: 0 !important;
   }
   .card-md {
-    height: 75px;
     border-radius: 4px !important;
   }
 
@@ -31,14 +24,17 @@ page-transfer {
     padding: 8px 8px 4px 8px;
   }
 
-  .item {
-    margin: 8px 2px !important;
-    font-weight: 400;
-    font-size: 18px !important;
+  .secondary-font {
+    color: #b1b1b1 !important;
   }
 
-  #item-bal {
-    margin: 11px 41px !important;
-    font-weight: 500;
+  .primary-font {
+    color: #4f525d !important;
+  }
+
+  h3 {
+    font-size: 1.6rem !important;
+    font-weight: 400;
+    margin: 0;
   }
 }

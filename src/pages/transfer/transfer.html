@@ -35,14 +35,22 @@
         </div>
       </ion-row>
     </div>
-    <div *ngIf="currentItems.length > 0">
+    <div *ngIf="currentItems.length > 0" class="content-start">
       <ion-card *ngFor="let item of Searcheditems" (click)="openItem(item)">
         <ion-row>
           <ion-col left text-left>
-            <h2 class="item">Item : {{item.asset_code}}</h2>
+            <h4 class="item secondary-font">Item</h4>
           </ion-col>
           <ion-col right text-right>
-            <h2 class="item" id="item-bal">{{item.balance}}</h2>
+            <h4 class="item secondary-font" id="item-bal">Balance</h4>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col left text-left>
+            <h3 class="item primary-font">{{item.asset_code}}</h3>
+          </ion-col>
+          <ion-col right text-right>
+            <h3 class="item primary-font" id="item-bal">{{item.balance}}</h3>
           </ion-col>
         </ion-row>
       </ion-card>

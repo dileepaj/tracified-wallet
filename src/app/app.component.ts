@@ -74,8 +74,8 @@ export class MyApp {
 
     this.authService.authorizeLocalProfile().then((res) => {
       if (res) {
-        this.dataService.retrieveBlockchainAccounts().then((accounts) => {
-          this.properties.defaultAccount = accounts[0];
+        this.dataService.retrieveDefaultAccount().then((account) => {
+          this.properties.defaultAccount = account;
           this.rootPage = TabsPage;
         }).catch((err) => {
           this.presentAlert("Error", "Could not retrieve transaction accounts from storage. Please login again.");
@@ -135,9 +135,6 @@ export class MyApp {
       case "accounts":
         this.nav.setRoot(BcAccountPage);
         break;
-      case "funds":
-        this.nav.setRoot(SettingsPage);
-        break;
       case "settings":
         this.nav.setRoot(SettingsPage);
         break;
@@ -154,14 +151,6 @@ export class MyApp {
     return page == this.activePage;
   }
 
-  clearData() {
-    this.storageService.clearUser().then(() => {
-      this.storageService.clearBcAccounts().then(() => {
-        this.nav.setRoot(LoginPage);
-      });
-    });
-  }
-
   logOut() {
     let confirm = this.alertCtrl.create({
       title: 'Confirmation',
@@ -174,7 +163,8 @@ export class MyApp {
         }, {
           text: 'Yes',
           handler: () => {
-            this.clearData();
+            this.storageService.clearAllLocalStores();
+            this.nav.setRoot(LoginPage);
           }
         }
       ]
@@ -189,5 +179,9 @@ export class MyApp {
     });
 
     alert.present();
+  }
+
+  languageChange() {
+    this.presentAlert("Language", "This feature is under development. You cannot change languages at the moment.");
   }
 }

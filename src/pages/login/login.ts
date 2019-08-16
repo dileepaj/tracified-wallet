@@ -84,6 +84,7 @@ export class LoginPage {
         if (res.status === 200) {
           this.dataService.getBlockchainAccounts().then((accounts) => {
             this.properties.defaultAccount = accounts[0];
+            this.dataService.setDefaultAccount(accounts[0]);
             this.dataService.storeBlockchainAccounts(accounts).then(() => {
               this.dissmissLoading();
               this.navCtrl.setRoot(TabsPage);
@@ -99,7 +100,6 @@ export class LoginPage {
             } else {
               this.presentAlert('Error', 'Failed to fetch transaction accounts.');
             }
-            this.presentAlert('Error', 'Failed to fetch transaction accounts.');
             this.logger.error("Get Blockchain accounts error: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
           });
         } else if (res.status === 205) {

@@ -242,13 +242,7 @@ export class ItemReceivedPage {
         receiverNames.push(obj[key].Sender);
       }
 
-      const param = {
-        account: {
-          accounts: receiverNames
-        }
-      };
-
-      this.apiService.getNames(param).subscribe(
+      this.apiService.getNames(receiverNames).subscribe(
         resp => {
           //@ts-ignore
           console.log(resp.body.pk);

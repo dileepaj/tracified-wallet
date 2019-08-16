@@ -178,13 +178,7 @@ export class ItemSentPage {
         receiverNames.push(obj[key].Receiver);
       }
 
-      const param = {
-        "account": {
-          "accounts": receiverNames
-        }
-      }
-
-      this.apiService.getNames(param).subscribe((resp) => {
+      this.apiService.getNames(receiverNames).subscribe((resp) => {
         //@ts-ignore
         resolve(resp.body.pk)
       }, (err) => {
