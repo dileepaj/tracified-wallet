@@ -136,7 +136,7 @@ export class MyApp {
         this.nav.setRoot(BcAccountPage);
         break;
       case "settings":
-        this.nav.setRoot(SettingsPage);
+        this.underDevelopment();
         break;
       case "about":
         this.nav.setRoot(ContentPage);
@@ -149,6 +149,10 @@ export class MyApp {
 
   checkActive(page) {
     return page == this.activePage;
+  }
+
+  underDevelopment() {
+    this.presentAlert("Settings", "This feature is under development. You cannot view settings at the moment.")
   }
 
   logOut() {

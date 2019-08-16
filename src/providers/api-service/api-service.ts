@@ -77,7 +77,10 @@ export class ApiServiceProvider {
       })
     }
 
-    return this.http.get(getMainPublicKeys + '?accounts=' + body, this.reqOpts)
+    console.log(this.properties.token);
+    console.log(JSON.stringify(body));
+
+    return this.http.post(getMainPublicKeys ,body, this.reqOpts)
   }
 
   addSubAccount(body): Promise<any> {

@@ -10,6 +10,12 @@ import { ConnectivityServiceProvider } from '../../providers/connectivity-servic
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
 import { stellarNet } from '../../shared/config';
+import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
+import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
+import { DataServiceProvider } from '../../providers/data-service/data-service';
+import { subAccountBaseFee } from '../../shared/config';
+import { rejects } from 'assert';
+import { TabsPage } from '../../pages/tabs/tabs';
 
 var server = new Server(stellarNet);
 StellarSdk.Network.usePublicNetwork();
@@ -26,11 +32,11 @@ export class ItemDetailPage {
 
   selectedItem2: any;
   itemRequired: any;
-  itemList: any = [];
+  // itemList: any = [];
   item: any;
   user: any;
   currentItems: any;
-  receivers = [];
+  // receivers = [];
   loading;
   isLoadingPresent: boolean;
   // selectedItem: string;
@@ -42,6 +48,9 @@ export class ItemDetailPage {
     receiver: '',
     vaidity: new Date()
   };
+
+  private secretKey;
+
   mainAccount: any;
   constructor(
     private navCtrl: NavController,
@@ -53,23 +62,18 @@ export class ItemDetailPage {
     private itemsProvider: Items,
     private alertCtrl: AlertController,
     private storage: StorageServiceProvider,
-    private properties: Properties
+    private properties: Properties,
+    private blockchainService: BlockchainServiceProvider,
+    private mappingService: MappingServiceProvider,
+    private dataService: DataServiceProvider
   ) {
-
     this.mainAccount = this.properties.defaultAccount;
     this.item = navParams.get('item');
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
-    this.receivers = navParams.get('receivers');
-
-    this.itemList = this.receivers
-
   }
 
   ionViewDidLoad() {
     this.COCForm.selectedItem = this.item.asset_code;
-    if (this.receivers[0]) {
-      this.selectedReceiver = this.receivers[0];
-    }
   }
 
   passwordPrompt() {
@@ -79,7 +83,6 @@ export class ItemDetailPage {
       inputs: [
         {
           name: 'password',
-          placeholder: '***********',
           type: 'password'
         }
       ],
@@ -89,10 +92,14 @@ export class ItemDetailPage {
           handler: data => {
             if (data.password != "") {
               console.log(data);
-              this.doCOC(this.decyrptSecret(this.mainAccount.sk, data.password));
+              this.mappingService.decryptSecret(this.mainAccount.sk, data.password).then((decKey) => {
+                this.secretKey = decKey;
+                this.doCOC(decKey);
+              }).catch((err) => {
+                console.log("Invalid Password");
+              });
             } else {
-              // console.log(data);
-              // return data;
+              console.log("Empty Password");
             }
           }
         }
@@ -103,194 +110,245 @@ export class ItemDetailPage {
 
   subAccountValidator(receiver) {
     return new Promise((resolve, reject) => {
-
-      this.subAccountStatus().then((subAccounts: any) => {
-        var availableArr = subAccounts.filter(function (al) {
+      return this.subAccountStatus().then((subAccounts: any) => {
+        console.log("Sub Accounts: ", subAccounts);
+        var availableArr = subAccounts.filter((al) => {
           return al.available == true
         });
-        var matchingArr = subAccounts.filter(function (ml) {
+        var matchingArr = subAccounts.filter((ml) => {
           return ml.available == false && ml.receiver == receiver
         });
 
         if (availableArr.length > 0) {
-          resolve(availableArr[0]);
+          console.log("SubAccount: ", availableArr[0].subAccount);
+          let subPair = this.blockchainService.getSubAccountPair(availableArr[0].subAccount, this.mainAccount);
+          return this.blockchainService.accountBalance(availableArr[0].subAccount).then((balance) => {
+            if (subAccountBaseFee <= balance) {
+              return this.blockchainService.checkIfAccountInvalidated(availableArr[0].subAccount).then((status) => {
+                if (status) {
+                  resolve(availableArr[0]);
+                } else {
+                  return this.blockchainService.invalidateSubAccountKey(subPair, this.mainAccount).then(() => {
+                    resolve(availableArr[0]);
+                  }).catch((err) => {
+                    console.log("Account Invalidation error: ", err);
+                    reject(err);
+                  });
+                }
+              }).catch((err) => {
+                console.log("Account Invalidation Check error: ", err);
+                reject(err);
+              });
+            } else {
+              return this.blockchainService.transferFunds(this.secretKey, availableArr[0].subAccount, "2").then(() => {
+                return this.blockchainService.checkIfAccountInvalidated(availableArr[0].subAccount).then((status) => {
+                  if (status) {
+                    resolve(availableArr[0]);
+                  } else {
+                    return this.blockchainService.invalidateSubAccountKey(subPair, this.mainAccount).then(() => {
+                      resolve(availableArr[0]);
+                    }).catch((err) => {
+                      console.log("Account Invalidation error: ", err);
+                      reject(err);
+                    });
+                  }
+                }).catch((err) => {
+                  console.log("Account Invalidation Check error: ", err);
+                  reject(err);
+                });
+              }).catch((err) => {
+                console.log("Not enough funds");
+                reject(err);
+              });
+            }
+          }).catch((err) => {
+            // If the error is a 404 try payment method
+            console.log("Account Fund Check error: ", err);
+            if (err.status == 404) {
+              this.blockchainService.transferFundsForNewAccounts(this.secretKey, availableArr[0].subAccount, "2").then(() => {
+                return this.blockchainService.checkIfAccountInvalidated(availableArr[0].subAccount).then((status) => {
+                  if (status) {
+                    resolve(availableArr[0]);
+                  } else {
+                    return this.blockchainService.invalidateSubAccountKey(subPair, this.mainAccount).then(() => {
+                      resolve(availableArr[0]);
+                    }).catch((err) => {
+                      console.log("Account Invalidation error: ", err);
+                      // Reject
+                    });
+                  }
+                }).catch((err) => {
+                  console.log("Account Invalidation Check error: ", err);
+                });
+              }).catch((err) => {
+                console.log("Fund transfer error: ", err);
+                reject(err);
+              });
+            } else {
+              console.log("Account balance error: ", err);
+              reject(err);
+            }
+
+          });
         } else if (availableArr.length == 0 && matchingArr.length >= 1) {
+          let subPair = this.blockchainService.getSubAccountPair(matchingArr[0].subAccount, this.mainAccount);
+          this.blockchainService.accountBalance(matchingArr[0].subAccount).then((balance) => {
+            if (subAccountBaseFee <= balance) {
+              resolve(matchingArr[0]);
+            } else {
+              return this.blockchainService.transferFunds(this.secretKey, availableArr[0].subAccount, "2").then(() => {
+                resolve(matchingArr[0]);
+              }).catch((err) => {
+                console.log("Not enough funds");
+                reject(err);
+              });
+            }
+          }).catch((err) => {
+            console.log("Could not check the account balance: ", err);
+            reject(err);
+          });
           resolve(matchingArr[0]);
         } else {
-          this.createAddress().then((pair) => {
-
-            this.multisignSubAccount(pair, this.mainAccount.pk).then(() => {
-              this.addSubAccount(pair).then(() => {
-                //@ts-ignore
-                resolve({ subAccount: pair.publicKey(), sequenceNo: 0 });
-              }).catch(e => {
-                console.log(e)
-                if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-                  this.presentToast('Could not add the sub account. Please try again.');
-                }
-              })
-            }).catch(e => {
-              console.log(e)
-              if (this.isLoadingPresent) {
-                this.dissmissLoading();
-                this.presentToast('Multi signing failed for sub account. Please try again.');
+          this.blockchainService.accountBalance(this.mainAccount.pk).then((balance) => {
+            this.blockchainService.accountAssetsCount(this.mainAccount.pk).then((count: number) => {
+              let baseFee = (count * 0.5) + 4;
+              if (baseFee <= balance) {
+                this.createAddress().then((subPair) => {
+                  this.blockchainService.transferFundsForNewAccounts(this.secretKey, subPair.publicKey(), "2").then(() => {
+                    this.blockchainService.invalidateSubAccountKey(subPair, this.mainAccount).then(() => {
+                      resolve(subPair.publicKey());
+                    }).catch((err) => {
+                      console.log("Invalidating account failed: ", err);
+                      reject(err);
+                    });
+                  }).catch((err) => {
+                    console.log("Account funding failed: ", err);
+                    reject(err);
+                  });
+                });
+              } else {
+                this.userError("Error!", "Main account does not have enough funds to perform this transaction.");
+                console.log("Not enough funds.");
+                reject();
               }
-            })
-          }).catch(e => {
-            console.log(e)
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-              this.presentToast('Creating address failed. Please try again.');
-            }
-          })
+            }).catch((err) => {
+              console.log("Not enough funds.");
+              reject();
+            });
+          }).catch((err) => {
+            console.log("Not enough funds.");
+            reject();
+          });
         }
       }).catch(e => {
-        console.log(e)
+        console.log(e);
         if (this.isLoadingPresent) {
           this.dissmissLoading();
           this.presentToast('Ops! Something went wrong.');
         }
-      })
-    })
+        reject();
+      });
+    });
   }
 
   doCOC(signerSK) {
     this.presentLoading();
-    console.log(this.COCForm);
-
-    // Parallel
-    Promise.all([this.subAccountValidator(this.COCForm.receiver), this.COCVerification(signerSK)]).then((res2) => {
-      //@ts-ignore
-      Promise.all([this.AcceptBuild(this.COCForm.identifier, res2[1], res2[0].subAccount, res2[0], signerSK), this.RejectBuild(res2[1], res2[0].subAccount, res2[0], signerSK)])
-        .then((res3) => {
+    this.subAccountValidator(this.COCForm.receiver).then((res) => {
+      console.log(res);
+      this.COCVerification(signerSK).then((res1) => {
+        //@ts-ignore
+        Promise.all([this.AcceptBuild(this.COCForm.identifier, res1, res.subAccount, res, signerSK), this.RejectBuild(res1, res.subAccount, res, signerSK)]).then((res3) => {
           return res3;
-        })
-        .then((res4) => {
-
-          this.addCOC(res2, res4)
-            .catch((err) => {
-              console.log(err)
-            });
-
-        })
-        .catch((err) => {
+        }).then((res4) => {
+          this.addCOC(res, res4).then(() => {
+            this.navCtrl.setRoot(TabsPage);
+          }).catch((err) => {
+            this.navCtrl.setRoot(TabsPage);
+            console.log("Adding CoC failed: ", err);
+          });
+        }).catch((err) => {
+          console.log("Error: Do CoC1: ", err);
         });
-    })
-      .catch((err) => {
+      }).catch((err) => {
+        this.userError("Error!", "Ops! Something went wrong!");
       });
-
+    }).catch((err) => {
+      this.userError("Error!", "Ops! Something went wrong!");
+    });
   }
 
   addCOC(res2, res4) {
-    if (this.connectivity.onDevice) {
-      return new Promise((resolve, reject) => {
-        const obj = {
-          "Sender": this.mainAccount.pk,
-          "Receiver": this.COCForm.receiver,
-          //@ts-ignore
-          "SubAccount": res2[0].subAccount,
-          //@ts-ignore
-          "SequenceNo": Number(res4[0].seqNum + 2),
-          // (subAcc) ? : ;
-          //@ts-ignore
-          "AcceptXdr": res4[0].b64,
-          "RejectXdr": res4[1],
-          "Identifier": this.COCForm.identifier,
-          "Status": "pending"
-        }
-        console.log(obj)
-        this.itemsProvider.addCOC(obj).subscribe((resp) => {
-          // this.navCtrl.push(MainPage);
-          console.log(resp)
-          // @ts-ignore
-          if (resp.Message == "Success" && this.isLoadingPresent) {
-            this.dissmissLoading();
-            resolve();
-            this.presentToast(this.item.asset_code + ' transfered succesfully.');
-            //set local storage???
-          } else {
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-              this.presentToast('Transaction failed. Please try again.');
-            }
-            reject();
-          }
-        }, (err) => {
-          console.log(err);
+    return new Promise((resolve, reject) => {
+      const obj = {
+        "Sender": this.mainAccount.pk,
+        "Receiver": this.COCForm.receiver,
+        //@ts-ignore
+        "SubAccount": res2.subAccount,
+        //@ts-ignore
+        "SequenceNo": Number(res4[0].seqNum + 2),
+        // (subAcc) ? : ;
+        //@ts-ignore
+        "AcceptXdr": res4[0].b64,
+        "RejectXdr": res4[1],
+        "Identifier": this.COCForm.identifier,
+        "Status": "pending"
+      }
+      console.log(obj)
+      this.itemsProvider.addCOC(obj).subscribe((resp) => {
+        // this.navCtrl.push(MainPage);
+        console.log(resp)
+        // @ts-ignore
+        if (resp.Message == "Success" && this.isLoadingPresent) {
+          this.dissmissLoading();
+          resolve();
+          this.presentToast(this.item.asset_code + ' transfered succesfully.');
+          //set local storage???
+        } else {
           if (this.isLoadingPresent) {
             this.dissmissLoading();
             this.presentToast('Transaction failed. Please try again.');
           }
           reject();
-        });
-      })
-
-    } else {
-      this.presentToast('There is no internet connection to complete this operation. Please try again.');
-    }
+        }
+      }, (err) => {
+        console.log(err);
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+          this.presentToast('Transaction failed. Please try again.');
+        }
+        reject();
+      });
+    });
   }
 
   subAccountStatus() {
-    if (this.connectivity.onDevice) {
-      // this.presentLoading();
-      return new Promise((resolve, reject) => {
-        const subAccount = {
-          "User": "UserNameNotVaildatingNow",
-          "SubAccounts": this.mainAccount.subAccounts
-        };
-        console.log(subAccount)
-        this.apiService.subAccountStatus(subAccount).then((res) => {
-          console.log(res.body);
-          if (res.status === 200) {
-            this.dissmissLoading();
-            resolve(res.body);
-          } else {
-            this.dissmissLoading();
-            this.userError('Authentication Failed', 'Could not authenticate the account. Please try again.');
-          }
-        })
-          .catch((error) => {
-            this.dissmissLoading();
-            this.userError('Authentication Failed', 'Could not authenticate the account. Please try again.');
-            console.log(error);
-          });
-      })
-
-    } else {
-      this.presentToast('There is no internet connection to complete this operation. Please try again.');
-    }
-  }
-
-  multisignSubAccount(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
-      server
-        .loadAccount(subAccount.publicKey())
-        .then(function (account) {
-          var transaction = new TransactionBuilder(account).addOperation(
-            Operation.setOptions({
-              signer: {
-                ed25519PublicKey: mainAccount,
-                weight: 2
-              }
-            })).addOperation(Operation.setOptions({
-              masterWeight: 0, // set master key weight
-              lowThreshold: 2,
-              medThreshold: 2, // a payment is medium threshold
-              highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
-            })).build();
 
-          transaction.sign(subAccount); // sign the transaction
+      let subPks = [];
+      this.mainAccount.subAccounts.forEach((account) => {
+        subPks.push(account.pk);
+      });
+      const subAccount = {
+        "User": this.mainAccount.accountName,
+        "SubAccounts": subPks
+      };
 
-          return server.submitTransaction(transaction);
-        }).then(function (transactionResult) {
-          console.log(transactionResult.hash);
-          resolve()
-        }).catch(function (err) {
-          console.error(err);
-          reject()
-        });
-    })
+      console.log("Sub Accounts: ", JSON.stringify(this.mainAccount.subAccounts));
+      return this.apiService.subAccountStatus(subAccount).then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          this.dissmissLoading();
+          resolve(res.body);
+        } else {
+          this.dissmissLoading();
+          this.userError('Error', 'Something went wrong! Please try again.');
+        }
+      }).catch((error) => {
+        this.dissmissLoading();
+        this.userError('Error', 'Something went wrong! Please try again.');
+        console.log(error);
+      });
+    });
   }
 
   AcceptBuild(Identifier, proofHash, subAcc, subAccObj, signerSK) {
@@ -314,7 +372,7 @@ export class ItemDetailPage {
 
         console.log(subAccObj);
 
-        var asset = new Asset(item, 'GA4DLKMMKKIWBAMR4EXHZ3I55PGHSC5OKAWUACM4Y7WWMONRYX72WN5L');
+        var asset = new Asset(item, 'GA34R3AQUTUGARS6AZCXKVW5GKUQQB3IFQVG4T47R6OOKN4T4O3KKHNP');
         var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
         // Network.useTestNetwork();
@@ -370,167 +428,99 @@ export class ItemDetailPage {
         const senderPublickKey = this.mainAccount.pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
-        // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
         var maxTime = time.getTime() / 1000.0;
-        console.log(maxTime)
-        // console.log(sequenceNo + 1);
-
-        // var maxTime = 1542860820;
+        console.log(maxTime);
         var sourceKeypair = Keypair.fromSecret(signerSK);
         var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+        server.loadAccount(subAcc).then(function (account) {
+          var transaction = new TransactionBuilder(account, opts).addOperation(Operation.manageData({
+            name: 'Status', value: 'rejected', source: receiver
+          })).addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))
 
-        // StellarSdk.Network.useTestNetwork();
-        // var server = new Server('https://horizon-testnet.stellar.org');
-        server.loadAccount(subAcc)
-          // var source = new StellarSdk.Account(receiver, "46316927324160");
-          .then(function (account) {
-            var transaction = new TransactionBuilder(account, opts)
-              .addOperation(Operation.manageData({
-                name: 'Status', value: 'rejected', source: receiver
-              }))
-              .addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))
+          if (!subAccObj.available) {
+            transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccObj.sequenceNo + 2) }))
+          }
 
-            if (!subAccObj.available) {
-              transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccObj.sequenceNo + 2) }))
-            }
+          const tx = transaction.build();
+          tx.sign(sourceKeypair);
+          XDR = tx.toEnvelope();
+          b64 = XDR.toXDR('base64');
 
-            const tx = transaction.build();
-            tx.sign(sourceKeypair);
-
-            // Let's see the XDR (encoded in base64) of the transaction we just built
-            // console.log("envelope =>  "+transaction.toEnvelope());
-            XDR = tx.toEnvelope();
-            b64 = XDR.toXDR('base64');
-
-            resolve(b64);
-          })
-          .catch(function (e) {
-            // reject(e)
-            console.log(e);
-          });
+          resolve(b64);
+        }).catch(function (e) {
+          // reject(e)
+          console.log(e);
+        });
       } catch (error) {
         console.log(error)
       }
-    })
-
+    });
   }
 
   COCVerification(signerSK) {
-    // console.log(this.COCForm);
-    const form = this.COCForm
-
+    const form = this.COCForm;
     try {
       return new Promise((resolve, reject) => {
 
         var sourceKeypair = Keypair.fromSecret(signerSK);
         var server = new Server(stellarNet);
-        server.loadAccount(sourceKeypair.publicKey())
-          .then(function (account) {
-            var transaction = new TransactionBuilder(account)
-              .addOperation(Operation.manageData({ name: 'Transaction Type', value: '11', }))
-              .addOperation(Operation.manageData({ name: 'Identifier', value: form.identifier, }))
-              .addOperation(Operation.manageData({ name: 'Receiver', value: form.receiver, }))
-              .addOperation(Operation.manageData({ name: 'Asset', value: form.selectedItem, }))
-              .addOperation(Operation.manageData({ name: 'Amount', value: form.qty, }))
-              .addOperation(Operation.manageData({ name: 'MaxBound', value: JSON.stringify(form.vaidity), }))
-              .build();
-            // sign the transaction
-            transaction.sign(sourceKeypair);
-            return server.submitTransaction(transaction);
-          })
-          .then(function (transactionResult) {
-            // console.log(transactionResult.hash);
-            resolve(transactionResult.hash);
-          })
-          .catch(function (err) {
-            console.log(err);
-            reject();
-          });
+        server.loadAccount(sourceKeypair.publicKey()).then(function (account) {
+          var transaction = new TransactionBuilder(account)
+            .addOperation(Operation.manageData({ name: 'Transaction Type', value: '11', }))
+            .addOperation(Operation.manageData({ name: 'Identifier', value: form.identifier, }))
+            .addOperation(Operation.manageData({ name: 'Receiver', value: form.receiver, }))
+            .addOperation(Operation.manageData({ name: 'Asset', value: form.selectedItem, }))
+            .addOperation(Operation.manageData({ name: 'Amount', value: form.qty, }))
+            .addOperation(Operation.manageData({ name: 'MaxBound', value: JSON.stringify(form.vaidity), }))
+            .build();
+          // sign the transaction
+          transaction.sign(sourceKeypair);
+          return server.submitTransaction(transaction);
+        }).then(function (transactionResult) {
+          resolve(transactionResult.hash);
+        }).catch(function (err) {
+          console.log(err);
+          reject();
+        });
       });
     }
     catch (err_1) {
-      console.log(err_1);
+      console.log("CoC Verification: ", err_1);
     }
   }
 
-  createAddress() {
-    try {
-      return new Promise((resolve, reject) => {
-        var pair = Keypair.random();
-        pair.secret();
-        console.log(pair.publicKey())
-        pair.publicKey();
-        console.log(pair.secret())
-
-        get({
-          url: 'https://friendbot.stellar.org',
-          qs: { addr: pair.publicKey() },
-          json: true
-        }, function (error, response, body) {
-          if (error || response.statusCode !== 200) {
-            reject(error);
-          }
-          else {
-            resolve(pair);
-
-          }
-        });
-      })
-    } catch (error) {
-      console.log(error);
-
-    }
-
+  createAddress(): Promise<any> {
+    return new Promise((resolve) => {
+      var pair = Keypair.random();
+      resolve(pair);
+    });
   }
 
   addSubAccount(subAcc) {
+    return new Promise((resolve, reject) => {
+      const account = {
+        "account": {
+          "subKey": subAcc.publicKey(),
+          "pk": this.mainAccount.pk
+        }
+      };
 
-    if (this.connectivity.onDevice) {
-      // this.presentLoading();
-      return new Promise((resolve, reject) => {
-        console.log(subAcc);
-        const account = {
-          "account": {
-            "subKey": subAcc.publicKey(),
-            "pk": this.mainAccount.pk
-          }
-        };
-
-        this.apiService.addSubAccount(account).then((res) => {
-          if (res.status === 200) {
-            this.presentToast('Sub ccount successfully added.');
-            this.mainAccount.subAccounts.push(subAcc.publicKey());
-            this.storage.setBcAccounts(this.properties.userName, AES.encrypt(this.mainAccount, this.key).toString());
-            resolve();
-          } else if (res.status === 406) {
-            this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
-          } else {
-            this.userError('Authentication Failed', 'Could not authenticate the sub account.');
-          }
-        }).catch((error) => {
-            this.dissmissLoading();
-            this.userError('Authentication Failed', 'Could not authenticate the sub account.');
-            console.log(error);
-          });
-      })
-    } else {
-      this.presentToast('There is no internet connection to complete this operation. Please try again.');
-    }
-  }
-
-  decyrptSecret(ciphertext, signer) {
-    // Decrypt
-    try {
-      var decrypted = (AES.decrypt(ciphertext.toString(), signer)).toString(enc.Utf8);
-
-      console.log("signer => " + signer);
-      console.log("ciphertext => " + ciphertext);
-      console.log("plaintext => " + decrypted);
-
-      return decrypted;
-    } catch (error) {
-      console.log(error);
-    }
+      return this.dataService.addSubAccount(account).then((res) => {
+        if (res.status === 200) {
+          this.presentToast('Sub account successfully added.');
+          this.mainAccount.subAccounts.push(subAcc.publicKey());
+          resolve();
+        } else if (res.status === 406) {
+          this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
+          reject();
+        } else {
+          this.userError('Authentication Failed', 'Could not authenticate the sub account.');
+          reject();
+        }
+      }).catch((err) => {
+        reject(err);
+      });
+    });
   }
 
   userError(title, message) {

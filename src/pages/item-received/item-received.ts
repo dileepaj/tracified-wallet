@@ -72,6 +72,7 @@ export class ItemReceivedPage {
     // try {
     this.itemsProvider.querycocbyReceiver(this.mainAccount.pk).subscribe(
       resp => {
+        console.log("Resp: ", resp);
         if (resp != null) {
           this.Citems = resp;
           const Tempitems = [];
@@ -242,20 +243,22 @@ export class ItemReceivedPage {
         receiverNames.push(obj[key].Sender);
       }
 
-      this.apiService.getNames(receiverNames).subscribe(
-        resp => {
-          //@ts-ignore
-          console.log(resp.body.pk);
-          //@ts-ignore
-          resolve(resp.body.pk);
-        },
-        err => {
-          if (this.isLoadingPresent) {
-            this.dissmissLoading();
-          }
-          reject(err);
-        }
-      );
+      // this.apiService.getNames(receiverNames).subscribe(
+      //   resp => {
+      //     //@ts-ignore
+      //     console.log(resp.body.pk);
+      //     //@ts-ignore
+      //     resolve(resp.body.pk);
+      //   },
+      //   err => {
+      //     if (this.isLoadingPresent) {
+      //       this.dissmissLoading();
+      //     }
+      //     reject(err);
+      //   }
+      // );
+
+      resolve(["sharmilan"]);
     });
   }
 
@@ -290,7 +293,7 @@ export class ItemReceivedPage {
       inputs: [
         {
           name: "password",
-          placeholder: "***********",
+          placeholder: "",
           type: "password"
         }
       ],

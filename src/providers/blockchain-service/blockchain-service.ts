@@ -34,7 +34,7 @@ export class BlockchainServiceProvider {
   invalidateSubAccountKey(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
       var server = new Server(stellarNet);
-      server.loadAccount(subAccount.publicKey).then((account) => {
+      server.loadAccount(subAccount.publicKey()).then((account) => {
         var transaction = new TransactionBuilder(account).addOperation(Operation.setOptions({
           signer: {
             ed25519PublicKey: mainAccount,
@@ -53,6 +53,7 @@ export class BlockchainServiceProvider {
       }).then((transactionResult) => {
         resolve();
       }).catch((err) => {
+        console.log(err);
         this.logger.error("Invalidating sub account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();
       });
@@ -63,23 +64,139 @@ export class BlockchainServiceProvider {
 
   }
 
-  transferFunds(sendingAccSk, receivingAccPk, amount) {
-    var sendingAccPair = Keypair.fromSecret(sendingAccSk);
-    var sendingAccPk = sendingAccPair.publicKey();
+  transferFundsForNewAccounts(sendingAccSk, receivingAccPk, amount): Promise<any> {
+    return new Promise((resolve, reject) => {
+      var sendingAccPair = Keypair.fromSecret(sendingAccSk);
+      var sendingAccPk = sendingAccPair.publicKey();
 
-    Network.usePublicNetwork();
-    var server = new Server(stellarNet);
+      Network.usePublicNetwork();
+      var server = new Server(stellarNet);
 
-    server.loadAccount(sendingAccPk).then((account) => {
-      var transaction = new TransactionBuilder(account)
-        .addOperation(Operation.payment({ destination: receivingAccPk, asset: Asset.native(), amount: amount }))
-        .build();
-      transaction.sign(sendingAccPair);
+      return server.loadAccount(sendingAccPk).then((account) => {
+        var transaction = new TransactionBuilder(account)
+          .addOperation(Operation.createAccount({ destination: receivingAccPk, startingBalance: amount.toString() }))
+          .build();
+        transaction.sign(sendingAccPair);
 
-      return server.submitTransaction(transaction);
-    }).catch(function (e) {
-      console.error(e);
+        return server.submitTransaction(transaction).then((status) => {
+          console.log(status);
+          resolve(status);
+        }).catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+      }).catch((e) => {
+        console.error(e);
+        reject(e);
+      });
     });
   }
 
+  transferFunds(sendingAccSk, receivingAccPk, amount) {
+    return new Promise((resolve, reject) => {
+      var sendingAccPair = Keypair.fromSecret(sendingAccSk);
+      var sendingAccPk = sendingAccPair.publicKey();
+
+      Network.usePublicNetwork();
+      var server = new Server(stellarNet);
+
+      return server.loadAccount(sendingAccPk).then((account) => {
+        var transaction = new TransactionBuilder(account)
+          .addOperation(Operation.payment({ destination: receivingAccPk, asset: Asset.native(), amount: amount.toString() }))
+          .build();
+        transaction.sign(sendingAccPair);
+
+        return server.submitTransaction(transaction).then((status) => {
+          console.log(status);
+          resolve(status);
+        }).catch((err) => {
+          console.log(err);
+          reject(err);
+        });
+      }).catch((e) => {
+        console.error(e);
+        reject(e);
+      });
+    });
+  }
+
+  validateFundsForSubAccount(mainAccPk): Promise<any> {
+    return new Promise((resolve, reject) => {
+
+    });
+  }
+
+  checkInvalidation(subAccountPk, account): boolean {
+
+    for (let i = 0; i < account.subAccounts.length; i++) {
+      if (subAccountPk == account.subAccounts[i].pk) {
+        return account.subAccounts[i].skInvalidated;
+      }
+    }
+  }
+
+  getSubAccountPair(subAccountPk, account) {
+    let pair;
+    for (let i = 0; i < account.subAccounts.length; i++) {
+      if (subAccountPk == account.subAccounts[i].pk) {
+        return Keypair.fromSecret(account.subAccounts[i].skp);
+      }
+    }
+  }
+
+  accountBalance(publicKey) {
+    return new Promise((resolve, reject) => {
+      Network.usePublicNetwork();
+      var server = new Server(stellarNet);
+      server.loadAccount(publicKey).then((account) => {
+        let balances = account.balances;
+        for (let i = 0; i < balances.length; i++) {
+          if (balances[i].asset_type == "native") {
+            resolve(balances[i].balance);
+          }
+        }
+        resolve(0);
+      }).catch((err) => {
+        console.error(err);
+        reject(err);
+      });
+    });
+  }
+
+  accountAssetsCount(publicKey) {
+    return new Promise((resolve, reject) => {
+      Network.usePublicNetwork();
+      var server = new Server(stellarNet);
+      server.loadAccount(publicKey).then((account) => {
+        console.log(account);
+      }).catch((err) => {
+        console.error(err);
+        reject(err);
+      });
+    });
+  }
+
+  subAccountInvalidation(): Promise<any> {
+    return new Promise((resolve, reject) => {
+
+    });
+  }
+
+  checkIfAccountInvalidated(publicKey): Promise<any> {
+    return new Promise((resolve, reject) => {
+      Network.usePublicNetwork();
+      var server = new Server(stellarNet);
+      server.loadAccount(publicKey).then((account) => {
+        let signers = account.signers;
+        if (signers.length == 2) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }).catch((e) => {
+        console.error(e);
+        reject(false);
+      });
+    });
+  }
 }

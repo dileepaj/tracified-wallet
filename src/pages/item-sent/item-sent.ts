@@ -178,15 +178,17 @@ export class ItemSentPage {
         receiverNames.push(obj[key].Receiver);
       }
 
-      this.apiService.getNames(receiverNames).subscribe((resp) => {
-        //@ts-ignore
-        resolve(resp.body.pk)
-      }, (err) => {
-        if (this.isLoadingPresent) {
-          this.dissmissLoading();
-        }
-        reject(err);
-      });
+      // this.apiService.getNames(receiverNames).subscribe((resp) => {
+      //   //@ts-ignore
+      //   resolve(resp.body.pk)
+      // }, (err) => {
+      //   if (this.isLoadingPresent) {
+      //     this.dissmissLoading();
+      //   }
+      //   reject(err);
+      // });
+
+      resolve(["Sharmilan"]);
     });
   }
 

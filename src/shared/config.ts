@@ -32,5 +32,7 @@ export const previosTxnId: string = gateway + '/transaction/lastTxn/'; // GET
 
 export const stellarNet: string = 'https://horizon.stellar.org';
 
+export const subAccountBaseFee: number = 2;
+
 
 
