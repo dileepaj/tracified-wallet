@@ -179,7 +179,13 @@ export class MyApp {
   presentAlert(title: string, message: string) {
     let alert = this.alertCtrl.create({
       title: title,
-      message: message
+      message: message,
+      buttons: [
+        {
+          text: "OK",
+          handler: data => { }
+        }
+      ]
     });
 
     alert.present();

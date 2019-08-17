@@ -41,6 +41,7 @@ import { AccountInfoPageModule } from '../pages/account-info/account-info.module
 import { BcAccountPageModule } from '../pages/bc-account/bc-account.module';
 import { SettingsPageModule } from '../pages/settings/settings.module';
 import { ContentPageModule } from '../pages/content/content.module';
+import { Clipboard } from '@ionic-native/clipboard/index';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -108,7 +109,8 @@ export function createTranslateLoader(http: HttpClient) {
     FileSystemServiceProvider,
     File,
     DataServiceProvider,
-    BlockchainServiceProvider
+    BlockchainServiceProvider,    
+    Clipboard
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
