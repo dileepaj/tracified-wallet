@@ -2,7 +2,7 @@
 <widget id="com.tracified.app.wallet" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Tracified Wallet</name>
     <description />
-    <author email="thananjaje3@gmail.com" href="http://tracified.com/">Tracified Team</author>
+    <author email="thananjaje3@gmail.com" href="http://tracified.com/">Team Tracified</author>
     <content src="index.html" />
     <content original-src="index.html" />
     <access origin="*" />
