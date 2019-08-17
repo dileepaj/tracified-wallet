@@ -169,7 +169,7 @@ export class ApiServiceProvider {
 
   private getN(url, headers?): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.http.get(url, headers).timeout(2500).subscribe(
+      this.http.get(url, headers).timeout(25000).subscribe(
         response => {
           this.logger.info("[SUCCESS]GET", this.properties.skipConsoleLogs, this.properties.writeToFile);
           resolve(response);
@@ -184,7 +184,7 @@ export class ApiServiceProvider {
 
   private postN(url, payload, headers?): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.http.post(url, payload, headers).timeout(2500).subscribe(
+      this.http.post(url, payload, headers).timeout(25000).subscribe(
         response => {
           this.logger.info("[SUCCESS]POST", this.properties.skipConsoleLogs, this.properties.writeToFile);
           resolve(response);

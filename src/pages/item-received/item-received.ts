@@ -352,8 +352,8 @@ export class ItemReceivedPage {
   presentToast(message) {
     let toast = this.toastCtrl.create({
       message: message,
-      duration: 4000,
-      position: "middle"
+      duration: 2500,
+      position: "bottom"
     });
     toast.present();
   }

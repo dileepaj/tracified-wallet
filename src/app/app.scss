@@ -90,6 +90,11 @@ button {
   padding: 4px 8px;
 }
 
+.col {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 /* END IONIC CSS */
 
 /* UTILS */
@@ -218,6 +223,11 @@ button {
   display: flex;
   justify-content: center;
   margin: 0 auto;
+}
+
+.icon-only-btn {
+  background-color: transparent;
+  padding: 0 !important;
 }
 
 /* END UTILS */
