@@ -1,12 +1,10 @@
 <ion-header>
-
   <ion-navbar>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Sent Items</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 <ion-content>
@@ -15,81 +13,80 @@
   </div>
 
   <ion-refresher (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content pullingIcon="refresh" pullingText="" refreshingSpinner="circles" refreshingText="Refreshing...">
+    <ion-refresher-content pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+      refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
 
-
-  <ion-content>
-    <ion-grid no-padding *ngIf="!Citems">
-      <ion-row>
-        <ion-col no-padding text-center>
-          <img class="notification-icon" src="../../assets/imgs/notifications-bell-button.png"/>
-        </ion-col>
-      </ion-row>
-      <ion-row class="row">
-        <ion-col class="noItem">
-          <h1>NOTIFICATIONS</h1>
-        </ion-col>
-      </ion-row>
-      <ion-row  class="row">
-        <ion-col class="noItem-note">
-          <ion-note text-wrap>No notifications available for this period</ion-note>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-content>
-
-  <accordion-list *ngFor="let item of Searcheditems; let index = index" [status]="item.status" [date]="item.date"
-    [uname]="item.uname" [oname]="item.oname" [qty]="item.qty" textColor="#000000" hasMargin="false" headerColor="#ffffff"
-    [expanded]="index === 0">
-    <!-- <img [src]="item.imageUrl"> -->
-    <div *ngIf="item.status == 'pending';else status_Content" id="content">
-    <div id="content">
-      <ion-col left text-left *ngIf="item.itemArr.length > 0">
-        <h2>Transforming Items</h2>
-      </ion-col>
-      <ion-row *ngFor="let assetObj of item.itemArr">
-        <ion-col left text-left>
-          <h2>{{assetObj.asset}}</h2>
-        </ion-col>
-        <ion-col right text-left>
-          <h2>{{assetObj.amount}}</h2>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col left text-left>
-          <ion-note>{{item.validity}}</ion-note>
-        </ion-col>
-        <ion-col left text-left>
-          <ion-note>This request will be valid till </ion-note>
-          <ion-note *ngIf='item.time.days'>{{item.time.days}}d </ion-note>
-          <ion-note *ngIf='item.time.hours !="00" '>{{item.time.hours}}h </ion-note>
-          <ion-note *ngIf='item.time.minutes'>{{item.time.minutes}}m</ion-note>
-        </ion-col>
-      </ion-row>
-      <hr id="hr">
-      <ion-row>
-        <ion-col left text-left>
-          <h2>Status</h2>
-        </ion-col>
-        <ion-col right text-right>
-          <h2>{{item.status}}</h2>
-        </ion-col>
-      </ion-row>
-    </div>
-    </div>
-    <ng-template #status_Content>
-      <div id="content">
+  <ion-grid no-padding class="full-height white-background">
+    <div *ngIf="!Citems">
         <ion-row>
-          <ion-col left text-left>
-            <h2>Status</h2>
-          </ion-col>
-          <ion-col right text-right>
-            <h2>{{item.status}}</h2>
-          </ion-col>
-        </ion-row>
-      </div>
-    </ng-template>
-  </accordion-list>
+            <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+          </ion-row>
+          <ion-row>
+            <div class="full-width text-center line-spacing-small">
+              <h1 class="primary-font">Transactions</h1>
+            </div>
+          </ion-row>
+          <ion-row text-wrap>
+            <div class="full-width text-center">
+              <h3 class="secondary-font">No outgoing transactions at the moment</h3>
+            </div>
+          </ion-row>
+    </div>
+    <div *ngIf="Citems">
+      <accordion-list *ngFor="let item of Searcheditems; let index = index" [status]="item.status" [date]="item.date"
+        [uname]="item.uname" [oname]="item.oname" [qty]="item.qty" textColor="#000000" hasMargin="false"
+        headerColor="#ffffff" [expanded]="index === 0">
+        <!-- <img [src]="item.imageUrl"> -->
+        <div *ngIf="item.status == 'pending';else status_Content" id="content">
+          <div id="content">
+            <ion-col left text-left *ngIf="item.itemArr.length > 0">
+              <h2>Transforming Items</h2>
+            </ion-col>
+            <ion-row *ngFor="let assetObj of item.itemArr">
+              <ion-col left text-left>
+                <h2>{{assetObj.asset}}</h2>
+              </ion-col>
+              <ion-col right text-left>
+                <h2>{{assetObj.amount}}</h2>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col left text-left>
+                <ion-note>{{item.validity}}</ion-note>
+              </ion-col>
+              <ion-col left text-left>
+                <ion-note>This request will be valid till </ion-note>
+                <ion-note *ngIf='item.time.days'>{{item.time.days}}d </ion-note>
+                <ion-note *ngIf='item.time.hours !="00" '>{{item.time.hours}}h </ion-note>
+                <ion-note *ngIf='item.time.minutes'>{{item.time.minutes}}m</ion-note>
+              </ion-col>
+            </ion-row>
+            <hr id="hr">
+            <ion-row>
+              <ion-col left text-left>
+                <h2>Status</h2>
+              </ion-col>
+              <ion-col right text-right>
+                <h2>{{item.status}}</h2>
+              </ion-col>
+            </ion-row>
+          </div>
+        </div>
+        <ng-template #status_Content>
+          <div id="content">
+            <ion-row>
+              <ion-col left text-left>
+                <h2>Status</h2>
+              </ion-col>
+              <ion-col right text-right>
+                <h2>{{item.status}}</h2>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ng-template>
+      </accordion-list>
+    </div>
+  </ion-grid>
 </ion-content>

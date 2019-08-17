@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams, AlertController, ModalController, 
 import { AddAccountPage } from '../add-account/add-account';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
+import { AccountDetailsPage } from '../../pages/account-details/account-details';
+import { DataServiceProvider } from '../../providers/data-service/data-service';
 
 @IonicPage()
 @Component({
@@ -23,8 +25,9 @@ export class BcAccountPage {
     private connectivity: ConnectivityServiceProvider,
     public toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
-    public alertCtrl: AlertController
-    ) { }
+    public alertCtrl: AlertController,
+    public dataService: DataServiceProvider
+  ) { }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad BcAccountPage');
@@ -41,46 +44,22 @@ export class BcAccountPage {
     refresher.complete();
   }
 
-    /**
-* @desc retrieve blockchain main accounts from admin 
-* @param 
-* @author Jaje thananjaje3@gmail.com
-* @return 
-*/
   getMainAccounts() {
-   try {
-    if (this.connectivity.onDevice) {
-      return new Promise((resolve, reject) => {
-        this.presentLoading();
-
-        this.apiService.getBCAccountsN().then((res) => {
-          console.log(res.body)
+    return new Promise((resolve, reject) => {
+      this.presentLoading();
+      this.dataService.getBlockchainAccounts().then((accounts) => {
+        this.dissmissLoading();
+          this.userAcc = accounts;
+          resolve();
+      }).catch((error) => {
+        if (this.isLoadingPresent) {
           this.dissmissLoading();
-          if (res.status === 200) {
-            this.userAcc = res.body.accounts.accounts
-            resolve();
-          } else {
-            this.userError('Error', 'Duplicate main account found!');
-          }
-        }).catch((error) => {
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-            }
-            this.userError('Authentication Failed', 'Retrieving blockchain accounts failed.');
-            console.log(error);
-            // reject();
-          });
-      })
-    } else {
-      this.presentToast('There is no internet connection to complete this operation. Please try again.');
-    }
-   } catch (error) {
-    if (this.isLoadingPresent) {
-      this.dissmissLoading();
-    }
-     console.log(error);
-     
-   }
+        }
+        this.userError('Authentication Failed', 'Retrieving blockchain accounts failed.');
+        console.log(error);
+        reject();
+      });
+    });
   }
 
   userError(title, message) {
@@ -115,6 +94,10 @@ export class BcAccountPage {
       position: 'middle'
     });
     toast.present();
+  }
+
+  viewAccount(account) {
+    this.navCtrl.push(AccountDetailsPage, { account: account });
   }
 }
 

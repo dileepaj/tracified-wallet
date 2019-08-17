@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Account Information</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid class="full-height content-padding">
+    <ion-row class="list-spacing content-start">
+      <img class="img-size-lock" src="assets/images/funding_bg.svg" alt="background-img" />
+    </ion-row>
+    <ion-row lass="list-spacing">
+      <h4 class="secondary-font list-spacing justify-text">Your account will be funded within the next 24 hours. You will be notified
+        once you receive funds.</h4>
+      <div class="button-wrapper list-spacing-top">
+        <button class="btn-green" (click)="exitApp()">Close</button>
+      </div>
+      <div class="button-wrapper line-spacing">
+        <button class="btn-text-only underline-font primary-font" (click)="logOut()">Sign in with a different account</button>
+      </div>
+    </ion-row>
+  </ion-grid>
+</ion-content>

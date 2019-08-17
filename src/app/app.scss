@@ -1,155 +1,308 @@
-// http://ionicframework.com/docs/v2/theming/
+/* BASE CSS */
 
-// App Global Sass
-// --------------------------------------------------
-// Put style rules here that you want to apply globally. These
-// styles are for the entire app and not just one component.
-// Additionally, this file can be also used as an entry point
-// to import other Sass files to be included in the output CSS.
-//
-// Shared Sass variables, which can be used to adjust Ionic's
-// default Sass variables, belong in "theme/variables.scss".
-//
-// To declare rules for a specific mode, create a child rule
-// for the .md, .ios, or .wp mode classes. The mode class is
-// automatically applied to the <body> element in the app.
-
-
-
-// ion-app.md {
-//   font-size: 4vw;
-// }
-
-
-
-/*Refactored css*/
 html {
-  font-size: 10px;
+  font-size: 62.5%;
+}
+
+h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+h2 {
+  font-size: 1.8rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+h3 {
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+h4 {
+  font-size: 1.4rem;
+  font-weight: 400;
+  margin: 0;
+}
+
+h5 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+p {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+li {
+  font-size: 1.4rem;
+  margin: 5px 0;
 }
 
 button {
   padding: 10px 20px;
-  border-radius: 3;
+  border-radius: 3px;
   font-size: 1.4rem;
 }
 
-.green-button {
-  background-color: #00c853;
+/* END BASE CSS */
+
+/* MODULE CSS */
+
+.vertical-separators {
+  height: 90%;
+  width: 0.1em;
 }
 
-.button-wrapper-center-both {
-  width: 100%;  
+/* END MODULE CSS */
+
+/* IONIC CSS */
+
+.toolbar-background {
+  background-color: #474952;
+}
+
+.toolbar-title-md {
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 400;
+  padding: 0 2px;
+}
+
+.bar-button-default-md {
+  color: white;
+}
+
+.bar-button-menutoggle-md {
+  margin: 0;
+}
+
+.back-button-md {
+  margin: 0;
+}
+
+.toolbar-md {
+  padding: 4px 8px;
+}
+
+/* END IONIC CSS */
+
+/* UTILS */
+
+.italic-font {
+  font-style: italic;
+}
+
+.uppercase-font {
+  text-transform: uppercase;
+}
+
+.lowercase-font {
+  text-transform: lowercase;
+}
+
+.capitalize-font {
+  text-transform: capitalize;
+}
+
+.bold-font {
+  font-weight: 600;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.padding-sm {
+  padding: 0.5em;
+}
+
+.left-padding {
+  padding-left: 0.5em;
+}
+
+.right-padding {
+  padding-right: 0.5em;
+}
+
+.list-spacing {
+  margin: 1em 0;
+}
+
+.line-spacing-small {
+  margin: 0.2em 0;
+}
+
+.line-spacing {
+  margin: 0.3em 0;
+}
+
+.hide-div {
+  display: none;
+}
+
+.fixed-margin-top {
+  margin-top: 2em;
+  height: 1px;
+}
+
+.fixed-margin-bottom {
+  margin-bottom: 2em;
+  height: 1px;
+}
+
+.left-float {
+  float: left;
+}
+
+.right-float {
+  float: right;
+}
+
+.clear-float {
+  clear: both;
+}
+
+.text-overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.button-text-wrapper {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+  text-overflow: ellipsis;
+}
+
+.content-center-both {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/*End refactored css*/
-
-.toolbar-md {
-  padding: 15px;
+.word-wrap {
+  overflow: scroll;
 }
 
-ion-app.md [margin] .scroll-content {
-  margin: 16px !important;
-}
-.alert-md [aria-checked="true"] .alert-radio-label {
-  color: #42ad47 !important;
+.content-start {
+  padding-top: 1.6em;
 }
 
-.alert-md [aria-checked="true"] .alert-radio-icon {
-  border-color: #42ad47;
+.text-center {
+  text-align: center;
 }
 
-.alert-md .alert-radio-inner {
-  background-color: #42ad47;
+.row-padding-top-bottom {
+  padding-top: 1em;
+  padding-bottom: 1em;
 }
 
-.toolbar-background {
-  // border-color: #343A40 !important;
-  border-color: #3d3d3d !important;
-  background: #3d3d3d !important;
-  color: white;
-}
-
-.toolbar-title-md {
-  color: white;
-  padding: 0px;
-  font-size: 1em;
-  font-weight: 400;
-  letter-spacing: normal;
-}
-
-.bar-button {
-  color: white;
+.btn-text-only {
   background-color: transparent;
-  padding: 0px 0px 2px 0px;
+  box-shadow: none !important;
 }
 
-.tracified-logo {
-  height: 59px;
-  width: 59px;
+.button-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
 }
 
-.tenant-name {
-  margin: 11px 0 0 0;
+/* END UTILS */
+
+/* COLORS */
+
+.primary-font {
+  color: #4f525d;
 }
 
-#company {
-  font-size: 30px;
-  color: white;
+.secondary-font {
+  color: #b1b1b1;
 }
 
-.user-name {
-  color: white;
+.warning-font {
+  color: #fa4646;
 }
 
-.list-md {
-  margin: -1px 0 16px;
-  padding-top: 24px;
+.green-font {
+  color: #28a745;
 }
 
-#menu-title {
-  font-weight: 600;
+.white-font {
+  color: #fff;
 }
 
-.activeHighlight {
-  color: #28a745 !important;
-  background-color: #d4d4d48a !important;
+.gray-backgroud {
+  background-color: #373940;
 }
 
-
-
-ion-icon {
-  &[class*="custom-"] {
-    margin: 0 5px 0 0;
-    vertical-align: middle;
-    $sz: 20px;
-    width: $sz;
-    height: $sz;
-  } // custom icons
-  &[class*="itemIcon"] {
-    background: url(../../assets/icon/items.svg) no-repeat 50% 50%;
-    background-size: contain;
-  }
-  &[class*="blockchain"] {
-    background: url(../../assets/icon/blockchain.svg) no-repeat 50% 50%;
-    background-size: contain;
-  }
-  &[class*="tutorial"] {
-    background: url(../../assets/icon/tutorial.svg) no-repeat 50% 50%;
-    background-size: contain;
-  }
-  &[class*="settings"] {
-    background: url(../../assets/icon/settings.svg) no-repeat 50% 50%;
-    background-size: contain;
-  }
-  &[class*="about"] {
-    background: url(../../assets/icon/about.svg) no-repeat 50% 50%;
-    background-size: contain;
-  }
-  &[class*="logout"] {
-    background: url(../../assets/icon/logout.svg) no-repeat 50% 50%;
-    background-size: contain;
-  }
+.white-background {
+  background-color: white;
 }
+
+.green-color {
+  background-color: #28a745;
+}
+
+.highlight-font {
+  color: #3f5dcb;
+}
+
+.btn-green {
+  color: #ffffff;
+  background-color: #28a745;
+}
+
+.btn-green-txt-only {
+  color: #28a745;
+  background-color: transparent;
+  box-shadow: none !important;
+}
+
+.btn-primary-txt-only {
+  color: #4f525d;
+  background-color: transparent;
+  box-shadow: none !important;
+}
+
+.btn-bg-gray {
+  background-color: #ebebeb;
+}
+
+.btn-icon-gray {
+  color: #777777;
+}
+
+/* END COLORS */
+
+/* APP.HTML */
+
+.profile-image-holder {
+  width: 6.5em;
+  height: 6.5em;
+  border-radius: 50%;
+  background-color: black;
+  margin: 1em auto;
+}
+
+.icon-alignment {
+  margin-top: 0.4em !important;
+}
+
+.padding-width {
+  width: 95%;
+}
+
+/* END APP.HTML */

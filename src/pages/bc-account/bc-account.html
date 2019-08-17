@@ -1,20 +1,13 @@
 <ion-header>
-
   <ion-navbar>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>Blockchain Accounts</ion-title>
   </ion-navbar>
-
 </ion-header>
 
-
 <ion-content padding>
-  <!-- <div *ngIf="Citems">
-    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
-  </div> -->
-
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
       refreshingText="Refreshing...">
@@ -22,13 +15,23 @@
   </ion-refresher>
 
   <div *ngIf="!userAcc" id="noitemDiv">
-    <img id="notification-icon" src="../../assets/imgs/notifications-bell-button.png">
-    <h2 id="noItem"> ACCOUNTS </h2>
-    <ion-note id="noItem-note">No Accounts available for this period</ion-note>
+    <ion-row>
+      <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+    </ion-row>
+    <ion-row>
+      <div class="full-width text-center line-spacing-small">
+        <h1 class="primary-font">Accounts</h1>
+      </div>
+    </ion-row>
+    <ion-row text-wrap>
+      <div class="full-width text-center">
+        <h3 class="secondary-font">No accounts available for the user</h3>
+      </div>
+    </ion-row>
   </div>
 
-  <ion-card text-wrap *ngFor="let account of userAcc">
-    <ion-item >
+  <ion-card text-wrap *ngFor="let account of userAcc" (click)="viewAccount(account)">
+    <ion-item>
       <ion-row>
         <ion-col col-4 left text-left>
           <h5 class="label">Name: </h5>
@@ -48,32 +51,11 @@
         </ion-col>
       </ion-row>
     </ion-item>
-    <ion-item>
-      <ion-row>
-        <ion-col col-4 left text-left>
-          <h5 class="label">Secret Key: </h5>
-        </ion-col>
-        <ion-col col-8 right text-left>
-          <h5>{{ account.sk}}</h5>
-        </ion-col>
-      </ion-row>
-    </ion-item>
-    <!-- <ion-item>
-      <ion-row>
-        <ion-col col-3 left text-left>
-          <h5 class="label">Sub Acc: </h5>
-        </ion-col>
-        <ion-col col-9 right text-left *ngFor="let subAccount of account.subAccounts">
-          <h5>{{subAccount}}</h5>
-        </ion-col>
-      </ion-row>
-    </ion-item> -->
   </ion-card>
 
   <ion-fab right bottom>
     <button color="secondary" ion-fab (click)="goToAddAccount()">
       <ion-icon name="add"></ion-icon>
     </button>
-
   </ion-fab>
 </ion-content>

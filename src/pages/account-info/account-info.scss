@@ -1,0 +1,22 @@
+page-account-info {
+  h5 {
+    font-size: 1.4rem;
+    font-weight: 400;
+  }
+
+  .list-spacing {
+    margin: 0.6em 0;
+  }
+
+  h5:first-child {
+    margin-top: 0 !important;
+  }
+
+  h4:first-child {
+    margin-top: 0 !important;
+  }
+
+  .toolbar-btn-img {
+    width: 1.8em;
+  }
+}

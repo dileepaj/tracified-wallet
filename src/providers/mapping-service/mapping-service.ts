@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { isObject } from 'ionic-angular/util/util';
+import { AES, enc } from "crypto-js";
 declare const Buffer;
 
 @Injectable()
@@ -40,12 +41,12 @@ export class MappingServiceProvider {
 
   toBase64Url(url, outputFormat) {
     return new Promise((resolve) => {
-    let img = new Image();
-    img.crossOrigin = 'Anonymous';
-    img.onload = () => {
-      let canvas = <HTMLCanvasElement> document.createElement('CANVAS'),
-        ctx = canvas.getContext('2d'),
-        dataURL;
+      let img = new Image();
+      img.crossOrigin = 'Anonymous';
+      img.onload = () => {
+        let canvas = <HTMLCanvasElement>document.createElement('CANVAS'),
+          ctx = canvas.getContext('2d'),
+          dataURL;
         canvas.height = img.height;
         canvas.width = img.width;
         ctx.drawImage(img, 0, 0);
@@ -54,6 +55,28 @@ export class MappingServiceProvider {
         canvas = null;
       };
       img.src = url;
+    });
+  }
+
+  encyrptSecret(key, signer) {
+    return new Promise((resolve, reject) => {
+      try {
+        var encSecretKey = AES.encrypt(key, signer);
+        resolve(encSecretKey.toString());
+      } catch {
+        reject();
+      }
+    });
+  }
+
+  decryptSecret(encKey, sipher) {
+    return new Promise((resolve, reject) => {
+      try {
+        var decKey = AES.decrypt(encKey, sipher);
+        resolve(decKey.toString(enc.Utf8));
+      } catch {
+        reject();
+      }
     });
   }
 

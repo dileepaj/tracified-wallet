@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Rx';
 
 import { Logger } from 'ionic-logger-new';
 import { Properties } from '../../shared/properties';
-import { login, blockchainAccs, addMainAcc, validateMainAcc } from '../../shared/config';
+import { login, blockchainAccs, addMainAcc, validateMainAcc, getMainPublicKey, getMainPublicKeys } from '../../shared/config';
 
 @Injectable()
 export class ApiServiceProvider {
@@ -14,10 +14,10 @@ export class ApiServiceProvider {
 
 
   constructor(
-    public http: HttpClient, 
+    public http: HttpClient,
     private properties: Properties,
     private logger: Logger
-    ) { }
+  ) { }
 
   ionViewDidLoad() { }
 
@@ -57,15 +57,12 @@ export class ApiServiceProvider {
           'Authorization': 'Bearer ' + this.properties.token
         })
       }
-      this.http.post(this.LocalAdminURL + '/' + 'api/bc/key/account/public', body, this.reqOpts)
-        .subscribe(response => {
-
-          resolve(response);
-        },
-          error => {
-            console.log(error);
-            reject(error);
-          });
+      this.http.get(getMainPublicKey + '?accountName=' + body, this.reqOpts).subscribe(response => {
+        resolve(response);
+      }, error => {
+        console.log(error);
+        reject(error);
+      });
     });
   }
 
@@ -79,8 +76,11 @@ export class ApiServiceProvider {
         'Authorization': 'Bearer ' + this.properties.token,
       })
     }
-    console.log(body);
-    return this.http.post(this.LocalAdminURL + '/api/bc/names/account/public', body, this.reqOpts)
+
+    console.log(this.properties.token);
+    console.log(JSON.stringify(body));
+
+    return this.http.post(getMainPublicKeys ,body, this.reqOpts)
   }
 
   addSubAccount(body): Promise<any> {
@@ -205,9 +205,9 @@ export class ApiServiceProvider {
         'Content-Type': 'Application/json'
       })
     };
-    
+
     return this.postN(login, payload, headers);
-    
+
   }
 
   getBCAccountsN(): Promise<any> {
@@ -247,7 +247,7 @@ export class ApiServiceProvider {
       })
     };
 
-    return this.postN(validateMainAcc, payload, headers);
+    return this.getN(validateMainAcc + "?accountName=" + payload, headers);
 
   }
 

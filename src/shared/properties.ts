@@ -6,6 +6,8 @@ export class Properties{
     public company: string;
     public userType: string;
     public displayImage: string;
+    public bcAccounts;
+    public defaultAccount;
 
     public skipConsoleLogs: boolean;
     public writeToFile: boolean;

@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Account Information</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="padding-width">
+  <ion-grid class="content-start">
+    <ion-row class="item-spacing underline-div">
+      <ion-row class="full-width">
+        <h4 class="secondary-font">Account Name</h4>
+      </ion-row>
+      <ion-row class="full-width list-spacing word-wrap">
+        <h4 class="primary-font word-wrap"> {{ account.accName }} </h4>
+      </ion-row>
+    </ion-row>
+    <ion-row class="item-spacing underline-div">
+      <ion-row class="full-width">
+        <h4 class="secondary-font">Public Key</h4>
+      </ion-row>
+      <ion-row class="full-width list-spacing word-wrap">
+        <ion-col col-11>
+          <h4 class="primary-font word-wrap right-padding"> {{ account.publicKey}} </h4>
+        </ion-col>
+        <ion-col col-1>
+          <div class="button-wrapper">
+            <button class="icon-only-btn" (click)="copyToClipboard(1)">
+              <img src="assets/icon/ic_copy_green.png" class="toolbar-btn-img" />
+            </button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-row>
+    <ion-row class="item-spacing underline-div">
+      <ion-row class="full-width">
+        <h4 class="secondary-font">Private Key</h4>
+      </ion-row>
+      <ion-row class="full-width list-spacing word-wrap">
+        <ion-col col-11>
+          <h4 class="primary-font word-wrap right-padding"> {{ account.privateKey}} </h4>
+        </ion-col>
+        <ion-col col-1>
+          <div class="button-wrapper">
+            <button class="icon-only-btn" (click)="copyToClipboard(2)">
+              <img src="assets/icon/ic_copy_green.png" class="toolbar-btn-img" />
+            </button>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-width list-spacing word-wrap">
+        <h5 class="warning-font uppercase-font">Important!</h5>
+        <h5 class="secondary-font line-spacing">Keep this in a safe place since this will be required to change the
+          password of the account.</h5>
+      </ion-row>
+    </ion-row>
+    <ion-row class="full-width item-spacing">
+      <div class="button-wrapper">
+          <button class="btn-green" (click)="continue()">Done</button>
+      </div>      
+    </ion-row>
+  </ion-grid>
+</ion-content>

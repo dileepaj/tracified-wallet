@@ -2,7 +2,7 @@ page-item-detail {
 
   ion-list {
     padding: 0;
-    width: 60vw;
+    width: 80vw;
     height: auto;
     margin-top: 10px !important;
   }
@@ -20,14 +20,6 @@ page-item-detail {
     margin: 8px !important;
   }
 
-  .button-block {
-    width: 40vw;
-  }
-
-  .button-md {
-  height: 8vw;
-  font-size: 2rem;
-  }
   .list-md {
     margin: auto;
   }
@@ -81,11 +73,6 @@ page-item-detail {
     width: calc(100% - 8px - 8px);
   }
 
-  .button {
-    margin: 5vw;
-
-  }
-
   .input-has-focus .label[floating] {
     color: #28a745;
   }
@@ -94,20 +81,6 @@ page-item-detail {
     color: #28a745;
   }
 
-
-
-  .container {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    padding:10px;
-    width: 100%;
-
-
-  }
 
   .item-md.item-input.item-input-has-focus .item-inner,
   .item-md.item-input.input-has-focus .item-inner {

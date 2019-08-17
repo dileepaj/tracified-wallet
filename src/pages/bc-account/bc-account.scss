@@ -1,75 +1,37 @@
 page-bc-account {
+  ion-item {
+    padding: 0px !important;
+    min-height: auto;
+  }
 
-    ion-item{
-        padding: 0px !important;
-        min-height: auto;
-
-    }
-    
-    #noItem{
-        // text-align: center;
-        vertical-align: middle;
-        left: 34%;
-    font-size: 18px;
-    top: 47%;
-        position: absolute;
-        color: black;
-    }
-
-    #noItem-note{
-        // text-align: center;
-        vertical-align: middle;
-        // align-content: center;
-        left: 21%;
-        top: 55%;
-        position: absolute;
-        color: grey !important;
-    }
-    
-    #notification-icon{
-        display: flex;
-        margin-top: 35%;
+  .notification-icon {
+    display: flex;
+    margin-top: 20vh;
     margin-left: auto;
     margin-right: auto;
     height: 100%;
-    width: 35%;
-        background-repeat: repeat-x;
-    }
-    #noitemDiv{
-        // height:100%;
-        // width: 350px;
-        // position: relative;
-        display: block;
-        // zoom: 0.5;
-    }
-    ion-card{
-        padding: 7px 2px 1px 7px;
-        font-size: 14.4px !important;
-    }
+    width: 25vh;
+  }
+  
+  ion-card {
+    padding: 7px 2px 1px 7px;
+    font-size: 14.4px !important;
+  }
 
-    [padding] h5:first-child,{
-        margin-top: 0px !important ;
-    }
+  [padding] h5:first-child {
+    margin-top: 0px !important ;
+  }
 
-    .label{
-        margin-top: 0px !important ;
-        font-weight: 500;
-    }
+  .label {
+    margin-top: 0px !important ;
+    font-weight: 500;
+  }
 
-    h5{
-        // padding-left: 4px;
-        // margin: 0px 0px 0px 4px !important;
-        overflow: inherit;
-        // font-weight: 400;
-    }
-
-    ion-fab{
-        top: auto !important;
-        // color: green;
-
-    }
+  ion-fab {
+    top: auto !important;
+  }
 }
 
 ion-app.md [padding] .scroll-content {
-    padding: 10px !important;
+  padding: 10px !important;
 }

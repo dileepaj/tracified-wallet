@@ -6,6 +6,7 @@ import { ItemDetailPage } from '../item-detail/item-detail';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
 import { AES, enc } from "crypto-js";
+import { stellarNet } from '../../shared/config';
 
 @IonicPage()
 @Component({
@@ -25,7 +26,7 @@ export class TransferPage {
   Searcheditems: any;
   itemPresent: boolean;
   searchTerm: any;
-  BCAccounts: any;
+  mainAccount: any;
 
   constructor(
     private navCtrl: NavController,
@@ -42,24 +43,13 @@ export class TransferPage {
 
   ionViewDidEnter() {
     this.presentLoading();
-
-    this.storage.getBcAccount(this.properties.userName).then(accounts => {
-      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
-      if (this.BCAccounts) {
-        this.getBalance();
-        this.loadReceivers();
-      } else {
-        this.dissmissLoading();
-        console.log("There should be at least one account.");
-        this.dataError("Error", "There should be at least one account.");
-      }
-    });
-
+    this.mainAccount = this.properties.defaultAccount;
+    this.getBalance();
+    // this.loadReceivers();
   }
 
   doRefresh(refresher) {
     this.presentLoading();
-    console.log('Begin async operation', refresher);
     this.getBalance();
     refresher.complete();
   }
@@ -67,8 +57,8 @@ export class TransferPage {
   openItem(item) {
     this.navCtrl.push(ItemDetailPage, {
       item: item,
-      currentItems: this.currentItems,
-      receivers: this.receivers
+      currentItems: this.currentItems
+      // receivers: this.receivers
     });
   }
 
@@ -81,76 +71,62 @@ export class TransferPage {
 
   getBalance() {
     let assets = [];
-
-    var server = new Server('https://horizon-testnet.stellar.org');
-    server.loadAccount(this.BCAccounts[0].pk).then((account) => {
+    var server = new Server(stellarNet);
+    server.loadAccount(this.mainAccount.pk).then((account) => {
       account.balances.forEach((balance) => {
-        // @ts-ignore
-        console.log('Asset_code:', balance.asset_code, ', Balance:', balance.balance);
-        let bal: number = parseFloat(balance.balance)
+        let bal: number = parseFloat(balance.balance);
         // @ts-ignore
         assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
       });
       assets.pop();
+      this.currentItems = assets;
+      this.Searcheditems = this.currentItems;
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
     }).catch((err) => {
       console.error(err);
-    });
-    this.currentItems = assets;
-    this.Searcheditems = this.currentItems;
-    console.log(this.Searcheditems)
-    if (this.isLoadingPresent) {
       this.dissmissLoading();
-    }
+    });
+
   }
 
-  /**
-  * @desc retrieve receivers from the gateway
-  * @param string $pk - the public key of main account
-  * @author Jaje thananjaje3@gmail.com
-  * @return
-  */
-  loadReceivers() {
-    try {
-      // console.log(this.BCAccounts[0].pk);
-      this.itemsProvider.querycocbysender(this.BCAccounts[0].pk).subscribe((resp) => {
-        // @ts-ignore
-        console.log(resp);
-        // @ts-ignore
-        this.receivers = resp;
-        // console.log(this.receivers[0].Receiver);
+  // loadReceivers() {
+  //   try {
+  //     this.itemsProvider.querycocbysender(this.mainAccount.pk).subscribe((resp) => {
+  //       // @ts-ignore
+  //       console.log(resp);
+  //       // @ts-ignore
+  //       this.receivers = resp;
+  //       var obj = {};
+  //       for (var i = 0, len = this.receivers.length; i < len; i++)
+  //         obj[this.receivers[i]['Receiver']] = this.receivers[i];
 
-        // remove duplicates
-        var obj = {};
-        for (var i = 0, len = this.receivers.length; i < len; i++)
-          obj[this.receivers[i]['Receiver']] = this.receivers[i];
+  //       this.receivers = new Array();
 
-        this.receivers = new Array();
+  //       for (var key in obj)
+  //         this.receivers.push(obj[key].Receiver);
 
-        for (var key in obj)
-          this.receivers.push(obj[key].Receiver);
-
-        console.log(this.receivers)
-
-        if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-
-      }, (err) => {
-        console.log('error in querying receivers')
-        if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-      });
-    } catch (error) {
-      console.log(error);
-      if (this.isLoadingPresent) { this.dissmissLoading(); }
-
-    }
-  }
+  //       if (this.isLoadingPresent) {
+  //         this.dissmissLoading();
+  //       }
+  //     }, (err) => {
+  //       if (this.isLoadingPresent) {
+  //         this.dissmissLoading();
+  //       }
+  //     });
+  //   } catch (error) {
+  //     if (this.isLoadingPresent) {
+  //       this.dissmissLoading();
+  //     }
+  //   }
+  // }
 
   presentLoading() {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
-      content: 'pleasewait'
+      content: 'Please Wait'
     });
 
     this.loading.present();

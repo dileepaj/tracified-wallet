@@ -8,12 +8,11 @@ import {
 } from "ionic-angular";
 import { Items } from "../../providers/items/items";
 import { Network, Keypair, Transaction } from "stellar-base";
-Network.useTestNetwork();
+Network.usePublicNetwork();
 import { AES, enc } from "crypto-js";
 import { ApiServiceProvider } from "../../providers/api-service/api-service";
 import { StorageServiceProvider } from "../../providers/storage-service/storage-service";
 import { Properties } from "../../shared/properties";
-import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 @IonicPage()
 @Component({
@@ -44,7 +43,7 @@ export class ItemReceivedPage {
   Citems: any;
 
   items = [];
-  BCAccounts: any;
+  mainAccount: any;
 
   constructor(
     public navCtrl: NavController,
@@ -60,27 +59,20 @@ export class ItemReceivedPage {
   ngOnInit() { }
 
   ionViewDidLoad() {
-    this.presentLoading();
     this.setFilteredItems();
-    this.dissmissLoading();
   }
 
   ionViewDidEnter() {
-    this.storage.getBcAccount(this.properties.userName).then(accounts => {
-      this.BCAccounts = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
-      if (this.BCAccounts) {
-        this.loadCOCReceived();
-      }
-    }).catch(error => {
-      console.log(error);
-      this.dataError("Error", "There should be at least one account.");
-    });
+    this.presentLoading();
+    this.mainAccount = this.properties.defaultAccount;
+    this.loadCOCReceived();
   }
 
   loadCOCReceived() {
     // try {
-    this.itemsProvider.querycocbyReceiver(this.BCAccounts[0].pk).subscribe(
+    this.itemsProvider.querycocbyReceiver(this.mainAccount.pk).subscribe(
       resp => {
+        console.log("Resp: ", resp);
         if (resp != null) {
           this.Citems = resp;
           const Tempitems = [];
@@ -107,7 +99,7 @@ export class ItemReceivedPage {
                 if (tansac.type == "payment") {
                   let assetObj = {
                     source: tansac.source,
-                    sourcename: this.BCAccounts[0].accountName,
+                    sourcename: this.mainAccount.accountName,
                     asset: tansac.asset.code,
                     amount: tansac.amount
                   };
@@ -117,9 +109,13 @@ export class ItemReceivedPage {
               });
 
               const tempLast = itemArr.pop();
-              itemArr.length > 0
-                ? (tempLast.source = itemArr[0].source)
-                : null;
+
+              if (itemArr.length > 0) {
+                tempLast.source = itemArr[0].source
+              } else {
+                tempLast.source = null;
+              }
+
               const obj = {
                 AcceptTxn: item.AcceptTxn,
                 AcceptXdr: item.AcceptXdr,
@@ -156,7 +152,6 @@ export class ItemReceivedPage {
               this.dissmissLoading();
             }
           }).catch(err => {
-            console.log(err);
             if (this.isLoadingPresent) {
               this.dissmissLoading();
             }
@@ -168,7 +163,6 @@ export class ItemReceivedPage {
         }
       },
       err => {
-        console.log(err);
         if (this.isLoadingPresent) {
           this.dissmissLoading();
         }
@@ -179,6 +173,7 @@ export class ItemReceivedPage {
   signXDR(item, status, signerSK) {
     return new Promise((resolve, reject) => {
       var sourceKeypair = Keypair.fromSecret(signerSK);
+
       if (status == "accept") {
         item.status = "accepted";
         const parsedTx = new Transaction(item.AcceptXdr);
@@ -200,81 +195,70 @@ export class ItemReceivedPage {
         item.RejectXdr = x;
         resolve(item);
       }
-    }).catch(function (e) {
-      console.log(e);
+
+    }).catch((e) => {
       // reject(e)
     });
   }
 
   sendSignedXDR(item, status, signerSK) {
     this.presentLoading();
-    this.signXDR(item, status, signerSK)
-      .then(obj => {
-        console.log(obj);
-        this.itemsProvider.updateStatusCOC(obj).subscribe(resp => {
-          console.log(resp);
+    this.signXDR(item, status, signerSK).then(obj => {
+      this.itemsProvider.updateStatusCOC(obj).subscribe(resp => {
+        // @ts-ignore
+        if (resp.Body.Status == "accepted") {
+          this.presentToast("Transaction Success!");
           // @ts-ignore
-          if (resp.Body.Status == "accepted") {
-            this.presentToast("Transaction Success!");
-            // @ts-ignore
-          } else if (resp.Body.Status == "rejected") {
-            this.presentToast("Transaction Success!");
-          }
-          if (this.isLoadingPresent) {
-            this.dissmissLoading();
-          }
-        },
-          err => {
-            console.log(err);
-            item.status = "pending";
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-            }
-            this.presentToast("Transaction Unsuccessfull");
-          }
-        );
-      })
-      .catch(e => {
-        console.log(e);
+        } else if (resp.Body.Status == "rejected") {
+          this.presentToast("Transaction Success!");
+        }
         if (this.isLoadingPresent) {
           this.dissmissLoading();
-          this.presentToast("Error! signing Transaction.");
         }
+      }, err => {
+        item.status = "pending";
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+        }
+        this.presentToast("Transaction Unsuccessfull");
       });
+    }).catch(e => {
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+        this.presentToast("Error! signing Transaction.");
+      }
+    });
   }
 
   getNamesFromKeys(receiverArr) {
     return new Promise((resolve, reject) => {
       var obj = {};
-      for (var i = 0, len = receiverArr.length; i < len; i++)
+      for (var i = 0, len = receiverArr.length; i < len; i++) {
         obj[receiverArr[i]["Sender"]] = receiverArr[i];
+      }
 
       var receiverNames = new Array();
 
-      for (var key in obj) receiverNames.push(obj[key].Sender);
+      for (var key in obj) {
+        receiverNames.push(obj[key].Sender);
+      }
 
-      console.log(receiverNames);
+      // this.apiService.getNames(receiverNames).subscribe(
+      //   resp => {
+      //     //@ts-ignore
+      //     console.log(resp.body.pk);
+      //     //@ts-ignore
+      //     resolve(resp.body.pk);
+      //   },
+      //   err => {
+      //     if (this.isLoadingPresent) {
+      //       this.dissmissLoading();
+      //     }
+      //     reject(err);
+      //   }
+      // );
 
-      const param = {
-        account: {
-          accounts: receiverNames
-        }
-      };
-
-      this.apiService.getNames(param).subscribe(
-        resp => {
-          //@ts-ignore
-          console.log(resp.body.pk);
-          //@ts-ignore
-          resolve(resp.body.pk);
-        },
-        err => {
-          if (this.isLoadingPresent) {
-            this.dissmissLoading();
-          }
-          reject(err);
-        }
-      );
+      resolve(["sharmilan"]);
     });
   }
 
@@ -309,7 +293,7 @@ export class ItemReceivedPage {
       inputs: [
         {
           name: "password",
-          placeholder: "***********",
+          placeholder: "",
           type: "password"
         }
       ],
@@ -321,7 +305,7 @@ export class ItemReceivedPage {
               this.sendSignedXDR(
                 item,
                 buttonStatus,
-                this.decyrptSecret(this.BCAccounts[0].sk, data.password)
+                this.decyrptSecret(this.mainAccount.sk, data.password)
               );
             }
           }
