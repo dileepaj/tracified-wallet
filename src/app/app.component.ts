@@ -136,7 +136,7 @@ export class MyApp {
         this.nav.setRoot(BcAccountPage);
         break;
       case "settings":
-        this.underDevelopment();
+        this.nav.setRoot(SettingsPage);
         break;
       case "about":
         this.nav.setRoot(ContentPage);
