@@ -8,6 +8,8 @@ export class Properties{
     public displayImage: string;
     public bcAccounts;
     public defaultAccount;
+    public firstName: string;
+    public lastName: string;
 
     public skipConsoleLogs: boolean;
     public writeToFile: boolean;

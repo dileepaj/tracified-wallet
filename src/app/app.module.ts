@@ -42,6 +42,8 @@ import { BcAccountPageModule } from '../pages/bc-account/bc-account.module';
 import { SettingsPageModule } from '../pages/settings/settings.module';
 import { ContentPageModule } from '../pages/content/content.module';
 import { Clipboard } from '@ionic-native/clipboard/index';
+import { SettingFormPageModule } from '../pages/setting-form/setting-form.module';
+import { TransferPageModule } from '../pages/transfer/transfer.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -69,6 +71,8 @@ export function createTranslateLoader(http: HttpClient) {
     BcAccountPageModule,
     SettingsPageModule,
     ContentPageModule,
+    SettingFormPageModule,
+    TransferPageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

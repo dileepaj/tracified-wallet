@@ -176,11 +176,13 @@ export class AuthServiceProvider {
   setProperties(decodedToken) {
     this.properties.userName = decodedToken["username"];
     this.properties.tenant = decodedToken['tenantID'];
-    this.properties.displayName = decodedToken['name'];
+    let fullName = decodedToken['name'].split(' ');
+    this.properties.firstName = fullName[0];
+    this.properties.lastName = fullName[1];
     this.properties.company = decodedToken['company'];
     this.properties.userType = decodedToken['type'];
     this.properties.displayImage = decodedToken['displayImage'];
-    this.events.publish('dislayName', this.properties.displayName);
+    this.events.publish('dislayName', this.properties.firstName);
     this.events.publish('company', this.properties.company);
     this.setDisplayImagetoStorage();
   }
@@ -195,4 +197,77 @@ export class AuthServiceProvider {
     }
   }
 
+  changeUserSettings(type, userModel): Promise<any> {
+    var user;
+    if (type === 'profile') {
+      user = {
+        username: AES.encrypt(this.properties.userName, this.adminKey).toString(),
+        firstName: userModel.firstName,
+        lastName: userModel.lastName,
+        imageURL: 'none',
+      };
+    } else if (type === 'password') {
+      user = {
+        username: AES.encrypt(this.properties.userName, this.adminKey).toString(),
+        oldPassword: AES.encrypt(userModel.oldPassword, this.adminKey).toString(),
+        newPassword: AES.encrypt(userModel.newPassword, this.adminKey).toString()
+      };
+    } else if (type === 'image') {
+      user = {
+        username: AES.encrypt(this.properties.userName, this.adminKey).toString(),
+        image: userModel.image,
+        name: userModel.name
+      };
+    }
+    return new Promise((resolve, reject) => {
+      this.apiService.changeUserSettings(type, user, this.properties.token).then((res) => {
+        if (type === 'profile' && res.status === 200) {
+          this.setDisplayName(res.body.Token);
+        } else if (type === 'image' && res.status === 200) {
+          this.setDisplayImage(res.body.Token);
+        }
+        resolve(res);
+      }).catch(err => {
+        reject(err);
+      });
+    });
+  }
+
+  setDisplayName(token): Promise<any> {
+    this.updateStoredToken(this.properties.userName, token);
+    return new Promise((resolve) => {
+      this.decodeToken(token).then(res => {
+        this.properties.displayName = res.payload['name'];
+        if (this.properties.displayName !== undefined) {
+          this.events.publish('dislayName', this.properties.firstName);
+          resolve(true);
+        }
+      });
+    });
+  }
+
+  setDisplayImage(token): Promise<any> {
+    return new Promise((resolve) => {
+      this.decodeToken(token).then(res => {
+        this.properties.displayImage = res.payload['displayImage'];
+        if (this.properties.displayImage !== undefined) {
+          this.events.publish('displayImage', this.properties.displayImage);
+          resolve(true);
+        }
+      });
+    });
+  }
+
+  updateStoredToken(username, token) {
+    this.storageService.setUser(username, AES.encrypt(token, this.key).toString());
+    const decoded = jwt.decode(token);
+    this.setProperties(decoded);
+  }
+
+  decodeToken(token): Promise<any> {
+    return new Promise((resolve) => {
+      const decoded = jwt.decode(token, { complete: true });
+      resolve(decoded);
+    });
+  }
 }

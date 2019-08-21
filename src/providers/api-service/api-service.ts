@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Rx';
 
 import { Logger } from 'ionic-logger-new';
 import { Properties } from '../../shared/properties';
-import { login, blockchainAccs, addMainAcc, validateMainAcc, getMainPublicKey, getMainPublicKeys } from '../../shared/config';
+import { login, blockchainAccs, addMainAcc, validateMainAcc, getMainPublicKey, getMainPublicKeys, detailChange, passwordChange, changeDisplayImage, transactionPasswordChange } from '../../shared/config';
 
 @Injectable()
 export class ApiServiceProvider {
@@ -80,7 +80,7 @@ export class ApiServiceProvider {
     console.log(this.properties.token);
     console.log(JSON.stringify(body));
 
-    return this.http.post(getMainPublicKeys ,body, this.reqOpts)
+    return this.http.post(getMainPublicKeys, body, this.reqOpts)
   }
 
   addSubAccount(body): Promise<any> {
@@ -249,6 +249,56 @@ export class ApiServiceProvider {
 
     return this.getN(validateMainAcc + "?accountName=" + payload, headers);
 
+  }
+
+  changeUserSettings(type, payload, token): Promise<any> {
+    var url;
+    var user = { 'user': payload };
+    if (type === 'profile') {
+      url = detailChange;
+    } else if (type === 'password') {
+      url = passwordChange;
+    } else if (type === 'image') {
+      url = changeDisplayImage;
+    }
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token,
+      })
+    };
+    return this.postN(url, user, headers);
+  }
+
+  changeTranasctionPassword(params): Promise<any> {
+    let sk = encodeURI(params.sk);
+    let accName = encodeURI(params.accName);
+    let url1 = transactionPasswordChange + '?sk=' + sk + '&accountName=' + accName;
+    return new Promise((resolve, reject) => {
+      this.http.put(url1, '', {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+          'Authorization': 'Bearer ' + this.properties.token
+        })
+      })
+        .timeout(25000)
+        .subscribe(
+          response => {
+            this.logger.info('adminPut success', this.properties.skipConsoleLogs, this.properties.writeToFile);
+            console.log(response);
+            resolve(response);
+          },
+          error => {
+            this.logger.error('adminPut error: ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+            console.log(error);
+            reject(error);
+          }
+        );
+    });
   }
 
 

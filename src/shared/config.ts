@@ -9,6 +9,12 @@ export const blockchainAccs: string = admin + '/api/bc/user'; // GET
 
 // Admin POST
 
+
+export const detailChange: string = admin + '/api/changedetails';
+export const passwordChange: string = admin + '/api/changepassword';
+export const changeDisplayImage: string = admin + '/api/user/profilepicture';
+export const transactionPasswordChange: string = admin + '/api/bc/user/mainAccount/sk';
+
 export const addMainAcc: string = admin + '/api/bc/user/mainAccount'; // POST
 export const updateSubAcc: string = admin + '/api/bc/user/subAccount'; // PUT
 export const getMainPublicKey: string = admin + '/api/bc/user/mainAccount/publicKey'; // GET
@@ -33,6 +39,3 @@ export const previosTxnId: string = gateway + '/transaction/lastTxn/'; // GET
 export const stellarNet: string = 'https://horizon.stellar.org';
 
 export const subAccountBaseFee: number = 2;
-
-
-

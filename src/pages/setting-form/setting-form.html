@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Settings</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-grid class="content-start full-height padding-width">
+    <ion-row class="full-height" *ngIf="this.formType == 'displayName'">
+      <form class="full-height" [formGroup]="displayName" (ngSubmit)="changeName()">
+        <h4 class="primary-font">Enter your first and last names to update the details.</h4>
+        <ion-item class="line-spacing">
+          <ion-label>
+            First Name
+          </ion-label>
+          <ion-input type="text" formControlName="fName"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            Last Name
+          </ion-label>
+          <ion-input type="text" formControlName="lName"></ion-input>
+        </ion-item>
+        <div class="button-wrapper content-start">
+          <button class="btn-green" ion-button type="submit" [disabled]="!displayName.valid">Submit</button>
+        </div>
+      </form>
+    </ion-row>
+    <ion-row *ngIf="formType == 'accountPassword'">
+      <form [formGroup]="accountPassword" (ngSubmit)="changePassword()">
+        <h4 class="primary-font">Enter your current password and then enter the new password you wish to have.</h4>
+        <ion-item class="line-spacing">
+          <ion-label>
+            Current Password
+          </ion-label>
+          <ion-input type="password" formControlName="oPassword"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            New Password
+          </ion-label>
+          <ion-input type="password" formControlName="nPassword"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            Confirm Password
+          </ion-label>
+          <ion-input type="password" formControlName="cPassword"></ion-input>
+        </ion-item>
+        <div class="button-wrapper content-start">
+          <button class="btn-green" ion-button type="submit" [disabled]="!accountPassword.valid">Submit</button>
+        </div>
+      </form>
+    </ion-row>
+    <ion-row *ngIf="formType == 'transactionPassword'">
+      <form [formGroup]="transactionPassword" (ngSubmit)="changeTransactionPassword()">
+        <h4 class="primary-font">Enter your current password and then enter the new password you wish to have.</h4>
+        <ion-item class="line-spacing">
+          <ion-label>
+            Account Name
+          </ion-label>
+          <ion-input type="text" formControlName="accName" [readonly]="true"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            Public Key
+          </ion-label>
+          <ion-input type="text" formControlName="pubKey" [readonly]="true"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            Current Password
+          </ion-label>
+          <ion-input type="password" formControlName="oPassword"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            New Password
+          </ion-label>
+          <ion-input type="password" formControlName="nPassword"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            Confirm Password
+          </ion-label>
+          <ion-input type="password" formControlName="cPassword"></ion-input>
+        </ion-item>
+        <div class="button-wrapper content-start">
+          <button class="btn-green" ion-button type="submit" [disabled]="!transactionPassword.valid">Submit</button>
+        </div>
+      </form>
+    </ion-row>
+  </ion-grid>
+</ion-content>
