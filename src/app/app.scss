@@ -103,21 +103,6 @@ button {
   font-size: 1.4rem;
 }
 
-.item-md.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner,
-.item-md.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner {
-  border-bottom: transparent;
-}
-
-.item-md.item-input.item-input-has-focus .item-inner, .item-md.item-input.input-has-focus .item-inner {
-  border-bottom: transparent;
-  box-shadow: inset 0 -1px 0 0 #32db64;
-}
-
-.item-md.item-input.ng-invalid.ng-touched:not(.input-has-focus):not(.item-input-has-focus) .item-inner  {
-  border-bottom: transparent;
-  box-shadow: inset 0 -1px 0 0 #db3232;
-}
-
 /* END IONIC CSS */
 
 /* UTILS */
@@ -298,10 +283,18 @@ button {
   background-color: #28a745;
 }
 
+.btn-green.activated {
+  background-color: #22923d;
+}
+
 .btn-green-txt-only {
   color: #28a745;
   background-color: transparent;
   box-shadow: none !important;
+}
+
+.btn-green-txt-only.activated {
+  background-color: transparent;
 }
 
 .btn-primary-txt-only {
@@ -316,6 +309,10 @@ button {
 
 .btn-icon-gray {
   color: #777777;
+}
+
+.btn-text-only.activated {
+  background-color: transparent; 
 }
 
 /* END COLORS */

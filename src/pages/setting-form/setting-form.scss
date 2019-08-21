@@ -1,3 +1,21 @@
 page-setting-form {
 
+  .item-input-has-focus .label-md[floating],
+  .input-has-focus .label-md[floating] {
+    color: #28a745 !important;
+  }
+
+  ion-item.item-md.item-input.input-has-focus .item-inner,
+  ion-item.item-md.item-input.ng-valid.input-has-value:not(.input-has-focus) .item-inner,
+  ion-item.item-md.item-input.ng-invalid.ng-touched:not(.input-has-focus) .item-inner {
+    border-bottom-color: #28a745 !important;
+    box-shadow: none !important;
+  }
+
+  .passwordIcon{
+    zoom:0.8;
+    padding-top: 35px;
+    z-index:1;
+    color: #bbbbbb;
+ }
 }
