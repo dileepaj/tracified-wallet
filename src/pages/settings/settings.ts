@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { SettingFormPage } from '../../pages/setting-form/setting-form';
 import { Properties } from '../../shared/properties';
 
@@ -13,12 +13,13 @@ export class SettingsPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private properties: Properties
+    private properties: Properties,
+    private alertCtrl: AlertController
   ) {
   }
 
   changeDisplayImage() {
-
+    this.presentAlert("Profile Photo", "Changing profile photo is currently unavailable. Please try again later.");
   }
 
   changeDisplayName() {
@@ -32,5 +33,22 @@ export class SettingsPage {
   changeTransactionPasswords() {
     this.navCtrl.push(SettingFormPage, { type: 'transactionPassword' });
   }
+
+  presentAlert(title: string, message: string) {
+    let alert = this.alertCtrl.create({
+      title: title,
+      message: message,
+      buttons: [
+        {
+          text: "OK",
+          handler: data => { }
+        }
+      ]
+    });
+
+    alert.present();
+  }
+
+
 
 }

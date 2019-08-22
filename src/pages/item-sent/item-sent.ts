@@ -67,7 +67,7 @@ export class ItemSentPage {
         if (resp != null) {
           // @ts-ignore
           this.Citems = resp;
-          const Tempitems = []
+          const Tempitems = [];
 
           this.getNamesFromKeys(this.Citems).then((namedKeys) => {
             this.Citems.forEach(item => {
@@ -84,7 +84,6 @@ export class ItemSentPage {
               let itemArr = [];
               parsedTx.operations.forEach(tansac => {
                 if (tansac.type == 'payment') {
-                  console.log(tansac)
                   let i = 0;
 
                   let assetObj = {
@@ -99,8 +98,8 @@ export class ItemSentPage {
                 }
 
               });
-
               const tempLast = itemArr.pop();
+
               const obj = {
                 AcceptTxn: item.AcceptTxn,
                 AcceptXdr: item.AcceptXdr,

@@ -8,11 +8,11 @@
 </ion-header>
 
 <ion-content>
-  <div *ngIf="Citems">
+  <!-- <div *ngIf="Citems">
     <div class="search">
       <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
     </div>
-  </div>
+  </div> -->
 
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
@@ -36,8 +36,42 @@
         </div>
       </ion-row>
     </div>
-    <div *ngIf="Citems">
-      <accordion-list *ngFor="let item of Searcheditems; let index = index" [status]="item.status" [date]="item.date"
+    <div class="padding-width" *ngIf="Citems">
+      <ion-row class="item-card" *ngFor="let item of Searcheditems; let index = index">
+        <ion-row>
+          <ion-icon name="time"></ion-icon>
+          <h5 class="primary-font margin-fix">{{item.date.days}}d {{item.date.hours}}h {{item.date.minutes}}m</h5>
+        </ion-row>
+        <ion-row>
+          <ion-col col-9>
+            <h1 class="primary-font">{{item.oname}}</h1>
+          </ion-col>
+          <ion-col col-3>
+            <h1 class="primary-font text-right-align-horizontally">{{item.qty}}</h1>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-7>
+            <h4 class="primary-font">{{item.validity}}</h4>
+          </ion-col>
+          <ion-col col-5>
+            <h4 class="primary-font text-right-align-horizontally">{{item.status}}</h4>
+          </ion-col>
+        </ion-row>
+        <ion-row class="block" *ngIf="item.status == 'pending'">
+          <div class="right-float">
+            <button class="btn-red-outline" (click)="passwordPrompt(item, 'reject')" ion-button>
+              REJECT
+            </button>
+            <button class="btn-green" (click)="passwordPrompt(item, 'accept')" ion-button>
+              ACCEPT
+            </button>
+          </div>
+        </ion-row>
+      </ion-row>
+
+
+      <!-- <accordion-list *ngFor="let item of Searcheditems; let index = index" [status]="item.status" [date]="item.date"
         [uname]="item.uname" [oname]="item.oname" [qty]="item.qty" textColor="#000000" hasMargin="false"
         headerColor="#ffffff" [expanded]="index === 0">
         <div *ngIf="item.status == 'pending'; else status_Content" id="content">
@@ -101,7 +135,7 @@
             </ion-row>
           </div>
         </ng-template>
-      </accordion-list>
+      </accordion-list> -->
     </div>
   </ion-grid>
 

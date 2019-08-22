@@ -185,6 +185,10 @@ button {
   clear: both;
 }
 
+.text-right-align-horizontally {
+  text-align: right;
+}
+
 .text-overflow-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -283,6 +287,13 @@ button {
   background-color: #28a745;
 }
 
+.btn-red-outline {
+  color: #df2323;
+  background-color: transparent;
+  border: 1px solid #df2323;
+  box-shadow: 0 0 0 transparent;
+}
+
 .btn-green.activated {
   background-color: #22923d;
 }
@@ -333,6 +344,8 @@ button {
 
 .padding-width {
   width: 95%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* END APP.HTML */
