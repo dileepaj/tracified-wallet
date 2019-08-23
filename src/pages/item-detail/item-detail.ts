@@ -16,6 +16,7 @@ import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { subAccountBaseFee } from '../../shared/config';
 import { rejects } from 'assert';
 import { TabsPage } from '../../pages/tabs/tabs';
+import { TransferPage } from '../../pages/transfer/transfer';
 
 var server = new Server(stellarNet);
 StellarSdk.Network.usePublicNetwork();
@@ -278,8 +279,7 @@ export class ItemDetailPage {
           return res3;
         }).then((res4) => {
           this.addCOC(res, res4).then(() => {
-            this.dissmissLoading();
-            this.navCtrl.setRoot(TabsPage);
+            this.navCtrl.setRoot(TransferPage);
           }).catch((err) => {
             this.dissmissLoading();
             this.navCtrl.setRoot(TabsPage);
@@ -572,8 +572,8 @@ export class ItemDetailPage {
   presentToast(message) {
     let toast = this.toastCtrl.create({
       message: message,
-      duration: 4000,
-      position: 'middle'
+      duration: 2000,
+      position: 'bottom'
     });
     toast.present();
   }

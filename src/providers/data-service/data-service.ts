@@ -8,6 +8,7 @@ import { BlockchainServiceProvider } from '../../providers/blockchain-service/bl
 
 // Shared Services
 import { Properties } from '../../shared/properties';
+import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 
 @Injectable()
 export class DataServiceProvider {
@@ -17,7 +18,8 @@ export class DataServiceProvider {
     private apiService: ApiServiceProvider,
     private storage: StorageServiceProvider,
     private properties: Properties,
-    private blockchainService: BlockchainServiceProvider
+    private blockchainService: BlockchainServiceProvider,
+    private authService: AuthServiceProvider
   ) { }
 
   getBlockchainAccounts(): Promise<any> {
@@ -56,7 +58,7 @@ export class DataServiceProvider {
     return this.apiService.addSubAccount(account);
   }
 
-  clearLocalData(){
+  clearLocalData() {
     this.storage.clearAllLocalStores();
   }
 
@@ -68,5 +70,11 @@ export class DataServiceProvider {
     return this.storage.setDefaultAccount(account);
   }
 
-
+  changeUserDetails(type, userModel): Promise<any> {
+    return this.authService.changeUserSettings(type, userModel);
+  }
+  
+  changeTransactionAccPassword(passwordModel) {
+    return this.blockchainService.changeTransactionPassword(passwordModel);
+  }
 }

@@ -1,6 +1,8 @@
 import { ChangeDetectorRef, Injectable, ApplicationRef } from '@angular/core';
 import { Events, Platform, Toast, ToastController } from 'ionic-angular';
 import { Network } from '@ionic-native/network';
+import { Logger } from 'ionic-logger-new';
+import { Properties } from '../../shared/properties';
 
 @Injectable()
 export class ConnectivityServiceProvider {
@@ -11,8 +13,9 @@ export class ConnectivityServiceProvider {
     private network: Network,
     private toastCtrl: ToastController,
     private events: Events,
-    // private ref: ChangeDetectorRef
-    private ref: ApplicationRef
+    private ref: ApplicationRef,
+    private logger: Logger,
+    private properties: Properties
   ) {
     this.platform.ready().then(() => {
       this.onDevice = this.platform.is('android');
@@ -29,12 +32,14 @@ export class ConnectivityServiceProvider {
       this.onDevice = false;
       this.events.publish('network', false);
       this.presentToast('Your Device is Offline, You will not be able to access certain functionalities');
+      this.logger.error("[INTERNET] Connection interrupted.", this.properties.skipConsoleLogs, this.properties.writeToFile);
     });
     this.network.onConnect().subscribe(() => {
       // @ts-ignore
       this.ref.detectChanges();
       this.onDevice = true;
       this.events.publish('network', true);
+      this.logger.info("[INTERNET] Connection back online.", this.properties.skipConsoleLogs, this.properties.writeToFile);
     });
   }
 
