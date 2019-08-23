@@ -16,6 +16,7 @@ import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { subAccountBaseFee } from '../../shared/config';
 import { rejects } from 'assert';
 import { TabsPage } from '../../pages/tabs/tabs';
+import { TransferPage } from '../../pages/transfer/transfer';
 
 var server = new Server(stellarNet);
 StellarSdk.Network.usePublicNetwork();
@@ -261,7 +262,7 @@ export class ItemDetailPage {
           return res3;
         }).then((res4) => {
           this.addCOC(res, res4).then(() => {
-            this.navCtrl.setRoot(TabsPage);
+            this.navCtrl.setRoot(TransferPage);
           }).catch((err) => {
             this.navCtrl.setRoot(TabsPage);
             console.log("Adding CoC failed: ", err);
@@ -337,7 +338,6 @@ export class ItemDetailPage {
       return this.apiService.subAccountStatus(subAccount).then((res) => {
         console.log(res);
         if (res.status === 200) {
-          this.dissmissLoading();
           resolve(res.body);
         } else {
           this.dissmissLoading();
