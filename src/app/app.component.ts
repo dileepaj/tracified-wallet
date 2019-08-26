@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { Config, Nav, Platform, AlertController } from 'ionic-angular';
+import { Config, Nav, Platform, AlertController, LoadingController } from 'ionic-angular';
 import { Device } from '@ionic-native/device/ngx';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
@@ -19,6 +19,8 @@ import { BlockchainServiceProvider } from '../providers/blockchain-service/block
 import { BcAccountPage } from '../pages/bc-account/bc-account';
 import { SettingsPage } from '../pages/settings/settings';
 import { ContentPage } from '../pages/content/content';
+import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
+import { CodePush, ILocalPackage, IRemotePackage } from '@ionic-native/code-push';
 
 @Component({
   templateUrl: 'app.html'
@@ -30,6 +32,7 @@ export class MyApp {
   userType = 'Admin'
   user: any;
   deviceInfo = null;
+  private loading;
 
   @ViewChild(Nav) nav: Nav;
 
@@ -57,11 +60,37 @@ export class MyApp {
     private logger: Logger,
     private fileSystem: FileSystemServiceProvider,
     private dataService: DataServiceProvider,
-    private blockchainService: BlockchainServiceProvider
+    private blockchainService: BlockchainServiceProvider,
+    private codepushService: CodePushServiceProvider,
+    private loadingCtrl: LoadingController
   ) {
     platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
+      this.codepushService.notifyApplicationReady().then(() => {
+        this.codepushService.checkForUpdate().then((remotePackage: IRemotePackage) => {
+          if (remotePackage.isMandatory) {
+            this.presentUpdating();
+            this.codepushService.doUpdate(remotePackage).then(() => {
+              this.splashScreen.show();
+              this.dismissLoading();
+            }).catch(() => {
+              this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
+              this.dismissLoading();
+            });
+          } else {
+            this.waitResponseAlert("Updates Avaialable", "There is a pending application update. Would you like to install it right now?", "Yes", "No").then(() => {
+              this.codepushService.doUpdate(remotePackage).then(() => {
+                this.splashScreen.show();
+                this.dismissLoading();
+              }).catch(() => {
+                this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
+                this.dismissLoading();
+              });
+            });
+          }
+        });
+      });
       this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
     });
 
@@ -193,5 +222,44 @@ export class MyApp {
 
   languageChange() {
     this.presentAlert("Language", "This feature is under development. You cannot change languages at the moment.");
+  }
+
+  presentUpdating() {
+    this.loading = this.loadingCtrl.create({
+      dismissOnPageChange: false,
+      enableBackdropDismiss: false,
+      showBackdrop: true,
+      content: 'Please wait, downloading required updates..'
+    });
+    this.loading.present();
+  }
+
+  dismissLoading() {
+    this.loading.dismiss();
+  }
+
+  waitResponseAlert(title, message, agreeBtn, disagreeBtn) {
+    return new Promise((resolve, reject) => {
+      let alert = this.alertCtrl.create({
+        title: title,
+        message: message,
+        buttons: [
+          {
+            text: disagreeBtn,
+            handler: data => {
+              reject();
+            }
+          },
+          {
+            text: agreeBtn,
+            handler: data => {
+              resolve();
+            }
+          }
+        ],
+        enableBackdropDismiss: false
+      });
+      alert.present();
+    });
   }
 }
