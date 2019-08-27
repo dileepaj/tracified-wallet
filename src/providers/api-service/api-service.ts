@@ -197,6 +197,21 @@ export class ApiServiceProvider {
     });
   }
 
+  private putN(url, payload?, headers?) {
+    return new Promise((resolve, reject) => {
+      this.http.put(url, payload, headers).timeout(25000).subscribe(
+        response => {
+          this.logger.info("[SUCCESS]PUT", this.properties.skipConsoleLogs, this.properties.writeToFile);
+          resolve(response);
+        },
+        error => {
+          this.logger.error("[ERROR]PUT: " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+          reject(error);
+        }
+      );
+    });
+  }
+
   validateUserN(payload): Promise<any> {
     let headers = {
       observe: 'response',
@@ -276,29 +291,16 @@ export class ApiServiceProvider {
     let sk = encodeURI(params.sk);
     let accName = encodeURI(params.accName);
     let url1 = transactionPasswordChange + '?sk=' + sk + '&accountName=' + accName;
-    return new Promise((resolve, reject) => {
-      this.http.put(url1, '', {
-        observe: 'response',
-        headers: new HttpHeaders({
-          'Accept': 'application/json',
-          'Content-Type': 'Application/json',
-          'Authorization': 'Bearer ' + this.properties.token
-        })
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token
       })
-        .timeout(25000)
-        .subscribe(
-          response => {
-            this.logger.info('adminPut success', this.properties.skipConsoleLogs, this.properties.writeToFile);
-            console.log(response);
-            resolve(response);
-          },
-          error => {
-            this.logger.error('adminPut error: ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
-            console.log(error);
-            reject(error);
-          }
-        );
-    });
+    }
+
+    return this.putN(url1, '', headers);
   }
 
 
