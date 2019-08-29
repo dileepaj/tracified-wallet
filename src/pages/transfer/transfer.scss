@@ -13,6 +13,26 @@ page-transfer {
     width: 25vh;
   }
 
+  ion-row {
+    width: 100%;
+  }
+
+  .item-card {
+    width: 100%;
+    margin: 1em 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    background-color: white;
+    padding: 0.6em;
+  }
+
+  ion-content.has-refresher > .scroll-content {
+    background-color: white;
+  }
+
+  .block {
+    display: inline-block;
+  }
+
   .item-inner {
     border-bottom: 0 !important;
   }

@@ -12,10 +12,11 @@
 <ion-content padding>
 
   <div class="inner">
-    <p>
-      About Tracified
-    </p>
     <img src="assets/imgs/logo.png " alt="Wallet logo">
     <p>Tracified Wallet</p>
+
+    <div *ngIf="updateAvailable" class="button-wrapper">
+      <button ion-button class="btn-green" (click)="updateVersion()">Update Version</button>
+    </div>
   </div>
 </ion-content>
