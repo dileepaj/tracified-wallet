@@ -1,12 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the SettingsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { SettingFormPage } from '../../pages/setting-form/setting-form';
+import { Properties } from '../../shared/properties';
 
 @IonicPage()
 @Component({
@@ -15,11 +10,45 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class SettingsPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private properties: Properties,
+    private alertCtrl: AlertController
+  ) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SettingsPage');
+  changeDisplayImage() {
+    this.presentAlert("Profile Photo", "Changing profile photo is currently unavailable. Please try again later.");
   }
+
+  changeDisplayName() {
+    this.navCtrl.push(SettingFormPage, { type: 'displayName', fName: this.properties.firstName, lName: this.properties.lastName });
+  }
+
+  changePassword() {
+    this.navCtrl.push(SettingFormPage, { type: 'accountPassword' });
+  }
+
+  changeTransactionPasswords() {
+    this.navCtrl.push(SettingFormPage, { type: 'transactionPassword' });
+  }
+
+  presentAlert(title: string, message: string) {
+    let alert = this.alertCtrl.create({
+      title: title,
+      message: message,
+      buttons: [
+        {
+          text: "OK",
+          handler: data => { }
+        }
+      ]
+    });
+
+    alert.present();
+  }
+
+
 
 }

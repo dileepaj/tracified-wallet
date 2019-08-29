@@ -45,9 +45,12 @@ li {
 }
 
 button {
-  padding: 10px 20px;
-  border-radius: 3px;
+  padding: 0 1.6rem;
+  border-radius: 4px;
   font-size: 1.4rem;
+  height: 3.6rem;
+  letter-spacing: 0.1rem;
+  
 }
 
 /* END BASE CSS */
@@ -88,6 +91,16 @@ button {
 
 .toolbar-md {
   padding: 4px 8px;
+}
+
+.col {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.item-md {
+  padding-left: 0;
+  font-size: 1.4rem;
 }
 
 /* END IONIC CSS */
@@ -172,6 +185,10 @@ button {
   clear: both;
 }
 
+.text-right-align-horizontally {
+  text-align: right;
+}
+
 .text-overflow-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -220,6 +237,11 @@ button {
   margin: 0 auto;
 }
 
+.icon-only-btn {
+  background-color: transparent;
+  padding: 0 !important;
+}
+
 /* END UTILS */
 
 /* COLORS */
@@ -265,10 +287,25 @@ button {
   background-color: #28a745;
 }
 
+.btn-red-outline {
+  color: #df2323;
+  background-color: transparent;
+  border: 1px solid #df2323;
+  box-shadow: 0 0 0 transparent;
+}
+
+.btn-green.activated {
+  background-color: #22923d;
+}
+
 .btn-green-txt-only {
   color: #28a745;
   background-color: transparent;
   box-shadow: none !important;
+}
+
+.btn-green-txt-only.activated {
+  background-color: transparent;
 }
 
 .btn-primary-txt-only {
@@ -283,6 +320,10 @@ button {
 
 .btn-icon-gray {
   color: #777777;
+}
+
+.btn-text-only.activated {
+  background-color: transparent; 
 }
 
 /* END COLORS */
@@ -303,6 +344,8 @@ button {
 
 .padding-width {
   width: 95%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* END APP.HTML */

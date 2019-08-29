@@ -5,6 +5,8 @@ import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset
 import { Properties } from '../../shared/properties';
 import { stellarNet } from '../../shared/config';
 import { Logger } from 'ionic-logger-new';
+import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
+import { ApiServiceProvider } from '../../providers/api-service/api-service';
 
 @Injectable()
 export class BlockchainServiceProvider {
@@ -12,7 +14,9 @@ export class BlockchainServiceProvider {
   constructor(
     public http: HttpClient,
     private logger: Logger,
-    private properties: Properties
+    private properties: Properties,
+    private mappingService: MappingServiceProvider,
+    private apiService: ApiServiceProvider
   ) { }
 
   removeFoAccount(accounts) {
@@ -196,6 +200,44 @@ export class BlockchainServiceProvider {
       }).catch((e) => {
         console.error(e);
         reject(false);
+      });
+    });
+  }
+
+  validateTransactionPassword(password, encSecret, pubKey): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.mappingService.decryptSecret(encSecret, password).then((decKey: string) => {
+        let keyPair = Keypair.fromSecret(decKey);
+        if (keyPair.publicKey() == pubKey) {
+          resolve(decKey);
+        } else {
+          reject();
+        }
+      }).catch(() => {
+        reject();
+      });
+    });
+
+  }
+
+  changeTransactionPassword(transactionModel): Promise<any> {
+    return new Promise((resolve, reject) => {
+      return this.validateTransactionPassword(transactionModel.oldPassword, transactionModel.encSecretKey, transactionModel.publicKey).then((decKey) => {
+        this.mappingService.encyrptSecret(decKey, transactionModel.newPassword).then((newSk) => {
+          let params = {
+            accName: transactionModel.accountName,
+            sk: newSk
+          }
+          return this.apiService.changeTranasctionPassword(params).then((res) => {
+            resolve(res);
+          }).catch((err) => {
+            reject(err)
+          });
+        }).catch(() => {
+          reject({status: 11, error: 'Cannot use this password. Please pick a different password.'});
+        });
+      }).catch(() => {
+        reject({status: 10, error: 'Invalid Password'});
       });
     });
   }

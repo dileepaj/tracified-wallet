@@ -5,6 +5,8 @@ import { Keypair } from 'stellar-sdk';
 import { Properties } from '../../shared/properties';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
+import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
+import { currency } from '../../shared/config';
 
 @IonicPage()
 @Component({
@@ -17,7 +19,7 @@ export class AccountDetailsPage {
   private privateKey: string;
   private keyDecrypted: boolean = false;
   private notDefaultAccount: boolean = true;
-  private accountFunds:string = 'Calculating...';
+  private accountFunds: string = 'Calculating...';
 
   constructor(
     public navCtrl: NavController,
@@ -25,11 +27,16 @@ export class AccountDetailsPage {
     private alertCtrl: AlertController,
     private mappingService: MappingServiceProvider,
     private properties: Properties,
-    private dataService: DataServiceProvider
+    private dataService: DataServiceProvider,
+    private blockchainService: BlockchainServiceProvider
   ) {
     this.account = this.navParams.get("account");
     this.defaultAccountCheck();
-    // Get account funds
+    this.blockchainService.accountBalance(this.account.pk).then((balance) => {
+      this.accountFunds = balance.toString() + ' ' + currency;
+    }).catch((err) => {
+      this.accountFunds = '0 ' + currency;
+    });
   }
 
   decryptSecretKey() {
@@ -51,7 +58,6 @@ export class AccountDetailsPage {
   }
 
   ionViewDidLeave() {
-    console.log("Secret Key: ");
     this.keyDecrypted = false;
     this.privateKey = "";
   }

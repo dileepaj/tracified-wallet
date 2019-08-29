@@ -8,9 +8,9 @@
 </ion-header>
 
 <ion-content>
-  <div *ngIf="Citems">
+  <!-- <div *ngIf="Citems">
     <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
-  </div>
+  </div> -->
 
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
@@ -18,27 +18,48 @@
     </ion-refresher-content>
   </ion-refresher>
 
-  <ion-grid no-padding class="full-height white-background">
+  <ion-grid no-padding>
     <div *ngIf="!Citems">
-        <ion-row>
-            <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
-          </ion-row>
-          <ion-row>
-            <div class="full-width text-center line-spacing-small">
-              <h1 class="primary-font">Transactions</h1>
-            </div>
-          </ion-row>
-          <ion-row text-wrap>
-            <div class="full-width text-center">
-              <h3 class="secondary-font">No outgoing transactions at the moment</h3>
-            </div>
-          </ion-row>
+      <ion-row>
+        <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+      </ion-row>
+      <ion-row>
+        <div class="full-width text-center line-spacing-small">
+          <h1 class="primary-font">Transactions</h1>
+        </div>
+      </ion-row>
+      <ion-row text-wrap>
+        <div class="full-width text-center">
+          <h3 class="secondary-font">No outgoing transactions at the moment</h3>
+        </div>
+      </ion-row>
     </div>
-    <div *ngIf="Citems">
-      <accordion-list *ngFor="let item of Searcheditems; let index = index" [status]="item.status" [date]="item.date"
+    <div class="padding-width" *ngIf="Citems">
+      <ion-row class="item-card" *ngFor="let item of Searcheditems; let index = index">
+        <ion-row>
+          <ion-icon name="time"></ion-icon>
+          <h5 class="primary-font margin-fix">{{item.date.days}}d {{item.date.hours}}h {{item.date.minutes}}m</h5>
+        </ion-row>
+        <ion-row>
+          <ion-col col-9>
+            <h1 class="primary-font">{{item.oname}}</h1>
+          </ion-col>
+          <ion-col col-3>
+            <h1 class="primary-font text-right-align-horizontally">{{item.qty}}</h1>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-7>
+              <h4 class="primary-font">{{item.validity}}</h4>
+          </ion-col>
+          <ion-col col-5>
+              <h4 class="primary-font text-right-align-horizontally">{{item.status}}</h4>
+          </ion-col>          
+        </ion-row>
+      </ion-row>
+      <!-- <accordion-list *ngFor="let item of Searcheditems; let index = index" [status]="item.status" [date]="item.date"
         [uname]="item.uname" [oname]="item.oname" [qty]="item.qty" textColor="#000000" hasMargin="false"
         headerColor="#ffffff" [expanded]="index === 0">
-        <!-- <img [src]="item.imageUrl"> -->
         <div *ngIf="item.status == 'pending';else status_Content" id="content">
           <div id="content">
             <ion-col left text-left *ngIf="item.itemArr.length > 0">
@@ -86,7 +107,7 @@
             </ion-row>
           </div>
         </ng-template>
-      </accordion-list>
+      </accordion-list> -->
     </div>
   </ion-grid>
 </ion-content>

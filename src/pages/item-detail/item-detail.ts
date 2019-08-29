@@ -16,6 +16,7 @@ import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { subAccountBaseFee } from '../../shared/config';
 import { rejects } from 'assert';
 import { TabsPage } from '../../pages/tabs/tabs';
+import { TransferPage } from '../../pages/transfer/transfer';
 
 var server = new Server(stellarNet);
 StellarSdk.Network.usePublicNetwork();
@@ -132,11 +133,13 @@ export class ItemDetailPage {
                     resolve(availableArr[0]);
                   }).catch((err) => {
                     console.log("Account Invalidation error: ", err);
+                    this.dissmissLoading();
                     reject(err);
                   });
                 }
               }).catch((err) => {
                 console.log("Account Invalidation Check error: ", err);
+                this.dissmissLoading();
                 reject(err);
               });
             } else {
@@ -149,15 +152,18 @@ export class ItemDetailPage {
                       resolve(availableArr[0]);
                     }).catch((err) => {
                       console.log("Account Invalidation error: ", err);
+                      this.dissmissLoading();
                       reject(err);
                     });
                   }
                 }).catch((err) => {
                   console.log("Account Invalidation Check error: ", err);
+                  this.dissmissLoading();
                   reject(err);
                 });
               }).catch((err) => {
                 console.log("Not enough funds");
+                this.dissmissLoading();
                 reject(err);
               });
             }
@@ -174,18 +180,23 @@ export class ItemDetailPage {
                       resolve(availableArr[0]);
                     }).catch((err) => {
                       console.log("Account Invalidation error: ", err);
-                      // Reject
+                      this.dissmissLoading();
+                      reject();
                     });
                   }
                 }).catch((err) => {
                   console.log("Account Invalidation Check error: ", err);
+                  this.dissmissLoading();
+                  reject();
                 });
               }).catch((err) => {
                 console.log("Fund transfer error: ", err);
+                this.dissmissLoading();
                 reject(err);
               });
             } else {
               console.log("Account balance error: ", err);
+              this.dissmissLoading();
               reject(err);
             }
 
@@ -200,11 +211,13 @@ export class ItemDetailPage {
                 resolve(matchingArr[0]);
               }).catch((err) => {
                 console.log("Not enough funds");
+                this.dissmissLoading();
                 reject(err);
               });
             }
           }).catch((err) => {
             console.log("Could not check the account balance: ", err);
+            this.dissmissLoading();
             reject(err);
           });
           resolve(matchingArr[0]);
@@ -219,24 +232,29 @@ export class ItemDetailPage {
                       resolve(subPair.publicKey());
                     }).catch((err) => {
                       console.log("Invalidating account failed: ", err);
+                      this.dissmissLoading();
                       reject(err);
                     });
                   }).catch((err) => {
                     console.log("Account funding failed: ", err);
+                    this.dissmissLoading();
                     reject(err);
                   });
                 });
               } else {
                 this.userError("Error!", "Main account does not have enough funds to perform this transaction.");
                 console.log("Not enough funds.");
+                this.dissmissLoading();
                 reject();
               }
             }).catch((err) => {
               console.log("Not enough funds.");
+              this.dissmissLoading();
               reject();
             });
           }).catch((err) => {
             console.log("Not enough funds.");
+            this.dissmissLoading();
             reject();
           });
         }
@@ -261,18 +279,22 @@ export class ItemDetailPage {
           return res3;
         }).then((res4) => {
           this.addCOC(res, res4).then(() => {
-            this.navCtrl.setRoot(TabsPage);
+            this.navCtrl.setRoot(TransferPage);
           }).catch((err) => {
+            this.dissmissLoading();
             this.navCtrl.setRoot(TabsPage);
             console.log("Adding CoC failed: ", err);
           });
         }).catch((err) => {
+          this.dissmissLoading();
           console.log("Error: Do CoC1: ", err);
         });
       }).catch((err) => {
+        this.dissmissLoading();
         this.userError("Error!", "Ops! Something went wrong!");
       });
     }).catch((err) => {
+      this.dissmissLoading();
       this.userError("Error!", "Ops! Something went wrong!");
     });
   }
@@ -337,7 +359,6 @@ export class ItemDetailPage {
       return this.apiService.subAccountStatus(subAccount).then((res) => {
         console.log(res);
         if (res.status === 200) {
-          this.dissmissLoading();
           resolve(res.body);
         } else {
           this.dissmissLoading();
@@ -551,8 +572,8 @@ export class ItemDetailPage {
   presentToast(message) {
     let toast = this.toastCtrl.create({
       message: message,
-      duration: 4000,
-      position: 'middle'
+      duration: 2000,
+      position: 'bottom'
     });
     toast.present();
   }
