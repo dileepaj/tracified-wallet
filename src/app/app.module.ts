@@ -42,6 +42,7 @@ import { BcAccountPageModule } from '../pages/bc-account/bc-account.module';
 import { SettingsPageModule } from '../pages/settings/settings.module';
 import { ContentPageModule } from '../pages/content/content.module';
 import { Clipboard } from '@ionic-native/clipboard/index';
+import { CameraSettingsPageModule } from '../pages/camera-settings/camera-settings.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -69,6 +70,7 @@ export function createTranslateLoader(http: HttpClient) {
     BcAccountPageModule,
     SettingsPageModule,
     ContentPageModule,
+    CameraSettingsPageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -109,7 +111,7 @@ export function createTranslateLoader(http: HttpClient) {
     FileSystemServiceProvider,
     File,
     DataServiceProvider,
-    BlockchainServiceProvider,    
+    BlockchainServiceProvider,
     Clipboard
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
