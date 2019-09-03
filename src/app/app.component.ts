@@ -64,6 +64,7 @@ export class MyApp {
     private codepushService: CodePushServiceProvider,
     private loadingCtrl: LoadingController
   ) {
+    console.log("123");
     platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
