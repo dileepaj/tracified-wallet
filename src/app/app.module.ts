@@ -46,6 +46,7 @@ import { SettingFormPageModule } from '../pages/setting-form/setting-form.module
 import { TransferPageModule } from '../pages/transfer/transfer.module';
 import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
 import { CodePush } from '@ionic-native/code-push';
+import { CameraSettingsPageModule } from '../pages/camera-settings/camera-settings.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -75,6 +76,7 @@ export function createTranslateLoader(http: HttpClient) {
     ContentPageModule,
     SettingFormPageModule,
     TransferPageModule,
+    CameraSettingsPageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -115,7 +117,7 @@ export function createTranslateLoader(http: HttpClient) {
     FileSystemServiceProvider,
     File,
     DataServiceProvider,
-    BlockchainServiceProvider,    
+    BlockchainServiceProvider,
     Clipboard,
     CodePushServiceProvider,
     CodePush
