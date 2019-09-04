@@ -77,4 +77,8 @@ export class DataServiceProvider {
   changeTransactionAccPassword(passwordModel) {
     return this.blockchainService.changeTransactionPassword(passwordModel);
   }
+
+  subAccountsStatus(subAccounts) {
+    return this.apiService.getSubAccountsStatus(subAccounts);
+  }
 }

@@ -32,7 +32,7 @@ export const previosTxnId: string = gateway + '/transaction/lastTxn/'; // GET
 
 // Gateway POST
 
-
+export const subAccountsStatus: string = gateway + '/transaction/coc/subAccountStatus'
 
 // stellar access point
 

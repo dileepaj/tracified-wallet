@@ -211,9 +211,11 @@ export class BlockchainServiceProvider {
         if (keyPair.publicKey() == pubKey) {
           resolve(decKey);
         } else {
+          // Log invalid password
           reject();
         }
       }).catch(() => {
+        // Log invalid password
         reject();
       });
     });

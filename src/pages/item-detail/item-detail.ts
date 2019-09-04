@@ -77,36 +77,85 @@ export class ItemDetailPage {
     this.COCForm.selectedItem = this.item.asset_code;
   }
 
-  passwordPrompt() {
-    let alert = this.alertCtrl.create({
-      cssClass: 'submitPassword',
-      title: 'Enter Password : ',
-      inputs: [
-        {
-          name: 'password',
-          type: 'password'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Submit',
-          handler: data => {
-            if (data.password != "") {
-              console.log(data);
-              this.mappingService.decryptSecret(this.mainAccount.sk, data.password).then((decKey) => {
-                this.secretKey = decKey;
-                this.doCOC(decKey);
-              }).catch((err) => {
-                console.log("Invalid Password");
-              });
-            } else {
-              console.log("Empty Password");
-            }
-          }
-        }
-      ]
+  transferAsset() {
+    this.passwordPrompt().then((password) => {
+      this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
+        this.secretKey = decKey;
+        this.presentLoading();
+
+
+
+      }).catch(() => {
+        this.presentAlert("Error", "Invalid transaction password. Please try again.");
+      });
     });
-    alert.present();
+  }
+
+  passwordPrompt(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let alert = this.alertCtrl.create({
+        title: 'Transaction Password',
+        inputs: [
+          {
+            name: 'password',
+            type: 'password',
+            placeholder: 'Password...'
+          }
+        ],
+        buttons: [
+          {
+            text: 'Submit',
+            handler: data => {
+              if (data.password) {
+                resolve(data.password);
+              } else {
+                console.log("Empty Password");
+              }
+            }
+          },
+          {
+            text: 'Cancel',
+            role: 'cancel'
+          }
+        ]
+      });
+      alert.present();
+    });
+  }
+
+  preparesubAccount() {
+    let subPublicKeys = [];
+    this.properties.defaultAccount.subAccounts.forEach((account) => {
+      subPublicKeys.push(account.pk);
+    });
+    const subAccounts = {
+      "User": this.properties.defaultAccount.accountName,
+      "SubAccounts": subPublicKeys
+    };
+    this.dataService.subAccountsStatus(subAccounts).then((res) => {
+      let avaialbeAccounts = [];
+      let matchingAccount = '';
+      let statuses = res.body;
+      statuses.forEach((status) => {
+        if (status.available) {
+          avaialbeAccounts.push(status.subAccount);
+        } else if(status.receiver == this.COCForm.receiver) {
+          matchingAccount = status.subAccount;
+        }
+      });
+
+      if (matchingAccount != '') {
+
+      } else if(avaialbeAccounts.length > 0) {
+
+      } else {
+        // Create new account
+      }
+
+    }).catch((err) => {
+      this.dissmissLoading();
+      this.presentAlert("Error", "Could not get account status. Please try again.");
+    });
   }
 
   subAccountValidator(receiver) {
@@ -226,23 +275,22 @@ export class ItemDetailPage {
             this.blockchainService.accountAssetsCount(this.mainAccount.pk).then((count: number) => {
               let baseFee = (count * 0.5) + 4;
               if (baseFee <= balance) {
-                this.createAddress().then((subPair) => {
-                  this.blockchainService.transferFundsForNewAccounts(this.secretKey, subPair.publicKey(), "2").then(() => {
-                    this.blockchainService.invalidateSubAccountKey(subPair, this.mainAccount).then(() => {
-                      resolve(subPair.publicKey());
-                    }).catch((err) => {
-                      console.log("Invalidating account failed: ", err);
-                      this.dissmissLoading();
-                      reject(err);
-                    });
+                let subPair = this.createAddress();
+                this.blockchainService.transferFundsForNewAccounts(this.secretKey, subPair.publicKey(), "2").then(() => {
+                  this.blockchainService.invalidateSubAccountKey(subPair, this.mainAccount).then(() => {
+                    resolve(subPair.publicKey());
                   }).catch((err) => {
-                    console.log("Account funding failed: ", err);
+                    console.log("Invalidating account failed: ", err);
                     this.dissmissLoading();
                     reject(err);
                   });
+                }).catch((err) => {
+                  console.log("Account funding failed: ", err);
+                  this.dissmissLoading();
+                  reject(err);
                 });
               } else {
-                this.userError("Error!", "Main account does not have enough funds to perform this transaction.");
+                this.presentAlert("Error!", "Main account does not have enough funds to perform this transaction.");
                 console.log("Not enough funds.");
                 this.dissmissLoading();
                 reject();
@@ -291,11 +339,11 @@ export class ItemDetailPage {
         });
       }).catch((err) => {
         this.dissmissLoading();
-        this.userError("Error!", "Ops! Something went wrong!");
+        this.presentAlert("Error!", "Ops! Something went wrong!");
       });
     }).catch((err) => {
       this.dissmissLoading();
-      this.userError("Error!", "Ops! Something went wrong!");
+      this.presentAlert("Error!", "Ops! Something went wrong!");
     });
   }
 
@@ -362,11 +410,11 @@ export class ItemDetailPage {
           resolve(res.body);
         } else {
           this.dissmissLoading();
-          this.userError('Error', 'Something went wrong! Please try again.');
+          this.presentAlert('Error', 'Something went wrong! Please try again.');
         }
       }).catch((error) => {
         this.dissmissLoading();
-        this.userError('Error', 'Something went wrong! Please try again.');
+        this.presentAlert('Error', 'Something went wrong! Please try again.');
         console.log(error);
       });
     });
@@ -510,11 +558,8 @@ export class ItemDetailPage {
     }
   }
 
-  createAddress(): Promise<any> {
-    return new Promise((resolve) => {
-      var pair = Keypair.random();
-      resolve(pair);
-    });
+  createAddress() {
+    return Keypair.random();
   }
 
   addSubAccount(subAcc) {
@@ -532,10 +577,10 @@ export class ItemDetailPage {
           this.mainAccount.subAccounts.push(subAcc.publicKey());
           resolve();
         } else if (res.status === 406) {
-          this.userError('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
+          this.presentAlert('Keys update failed', 'Main account not found or Sub account names or public key alredy exist');
           reject();
         } else {
-          this.userError('Authentication Failed', 'Could not authenticate the sub account.');
+          this.presentAlert('Authentication Failed', 'Could not authenticate the sub account.');
           reject();
         }
       }).catch((err) => {
@@ -544,7 +589,7 @@ export class ItemDetailPage {
     });
   }
 
-  userError(title, message) {
+  presentAlert(title, message) {
     let alert = this.alertCtrl.create();
     alert.setTitle(title);
     alert.setMessage(message);
@@ -577,5 +622,4 @@ export class ItemDetailPage {
     });
     toast.present();
   }
-
 }

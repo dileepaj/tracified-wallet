@@ -1,104 +1,110 @@
 page-item-detail {
-
-  ion-list {
-    padding: 0;
-    width: 80vw;
-    height: auto;
-    margin-top: 10px !important;
+  .select-searchable-label {
+    margin-top: 25px;
   }
 
-
-  ion-item {
-    font-size: 4rem ;
-    padding: 0  !important;
-    border-radius: 2px !important;
-    border: 0.5px solid #e0e0e0 !important;
-    // text-align: center;
+  .select-searchable-value {
+    margin-top: 25px;
   }
 
-  ion-label {
-    margin: 8px !important;
+  .select-searchable-icon {
+    margin-top: 12px;
   }
-
-  .list-md {
-    margin: auto;
-  }
-
-  .item-block {
-    min-height: 8vw;
-    height: 20px !important;
-    display: flex !important;
- }
-
-  [text-wrap] .label-md {
-    font-size: 1em;
-  }
-
-  .label-md[stacked] {
-    font-size: 1rem;
-    margin-left : 0 !important;
-  }
-
-  .item-input .label-md,
-  .item-select .label-md,
-  .item-datetime .label-md {
-    color: Black;
-  }
-
-  .item-md,
-  .item-select .label-md{
-  color: #999 !important;
-  font-size: 1em;
 }
 
-  #cocButton {
-    border-color: #ccc;
-    color: white;
-    background-color: #28a745;
-  }
+//   ion-list {
+//     padding: 0;
+//     width: 80vw;
+//     height: auto;
+//     margin-top: 10px !important;
+//   }
 
-  ion-datetime {
-    padding: 13px 8px 13px 8px !important;
-  }
+//   ion-item {
+//     font-size: 4rem ;
+//     padding: 0  !important;
+//     border-radius: 2px !important;
+//     border: 0.5px solid #e0e0e0 !important;
+//     // text-align: center;
+//   }
 
-  #quantity .input-has-value {
-    border: none !important;
-    color: red !important;
-  }
+//   ion-label {
+//     margin: 8px !important;
+//   }
 
-  #receiverInput {
-    margin: 0px 0px 0px 5px;
-    padding: 0;
-    font-size: initial;
-    width: calc(100% - 8px - 8px);
-  }
+//   .list-md {
+//     margin: auto;
+//   }
 
-  .input-has-focus .label[floating] {
-    color: #28a745;
-  }
+//   .item-block {
+//     min-height: 8vw;
+//     height: 20px !important;
+//     display: flex !important;
+//  }
 
-  .input-has-value .label[floating] {
-    color: #28a745;
-  }
+//   [text-wrap] .label-md {
+//     font-size: 1em;
+//   }
 
+//   .label-md[stacked] {
+//     font-size: 1rem;
+//     margin-left : 0 !important;
+//   }
 
-  .item-md.item-input.item-input-has-focus .item-inner,
-  .item-md.item-input.input-has-focus .item-inner {
-    border-bottom-color: none !important;
-    box-shadow: none !important;
-    -webkit-box-shadow: none !important;
-  }
+//   .item-input .label-md,
+//   .item-select .label-md,
+//   .item-datetime .label-md {
+//     color: Black;
+//   }
 
-  .list-md .item-block .item-inner {
-    border-bottom: none !important;
-  }
+//   .item-md,
+//   .item-select .label-md{
+//   color: #999 !important;
+//   font-size: 1em;
+// }
 
+//   #cocButton {
+//     border-color: #ccc;
+//     color: white;
+//     background-color: #28a745;
+//   }
 
+//   ion-datetime {
+//     padding: 13px 8px 13px 8px !important;
+//   }
 
-  text-input :touch-action {
-    transform: none;
-  }
+//   #quantity .input-has-value {
+//     border: none !important;
+//     color: red !important;
+//   }
 
+//   #receiverInput {
+//     margin: 0px 0px 0px 5px;
+//     padding: 0;
+//     font-size: initial;
+//     width: calc(100% - 8px - 8px);
+//   }
 
+//   .input-has-focus .label[floating] {
+//     color: #28a745;
+//   }
 
-}
+//   .input-has-value .label[floating] {
+//     color: #28a745;
+//   }
+
+//   .item-md.item-input.item-input-has-focus .item-inner,
+//   .item-md.item-input.input-has-focus .item-inner {
+//     border-bottom-color: none !important;
+//     box-shadow: none !important;
+//     -webkit-box-shadow: none !important;
+//   }
+
+//   .list-md .item-block .item-inner {
+//     border-bottom: none !important;
+//   }
+
+//   text-input :touch-action {
+//     transform: none;
+//   }
+
+// }
