@@ -78,11 +78,12 @@ export class ItemDetailPage {
   }
 
   transferAsset() {
+    this.blockchainService.createSubAccount(this.properties.defaultAccount);
     this.passwordPrompt().then((password) => {
       this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
         this.secretKey = decKey;
         this.presentLoading();
-
+        
 
 
       }).catch(() => {
@@ -139,14 +140,14 @@ export class ItemDetailPage {
       statuses.forEach((status) => {
         if (status.available) {
           avaialbeAccounts.push(status.subAccount);
-        } else if(status.receiver == this.COCForm.receiver) {
+        } else if (status.receiver == this.COCForm.receiver) {
           matchingAccount = status.subAccount;
         }
       });
 
       if (matchingAccount != '') {
-
-      } else if(avaialbeAccounts.length > 0) {
+        
+      } else if (avaialbeAccounts.length > 0) {
 
       } else {
         // Create new account
