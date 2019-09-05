@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset } from 'stellar-sdk';
+import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse } from 'stellar-sdk';
 
 import { Properties } from '../../shared/properties';
 import { stellarNet } from '../../shared/config';
@@ -41,7 +41,7 @@ export class BlockchainServiceProvider {
       server.loadAccount(subAccount.publicKey()).then((account) => {
         var transaction = new TransactionBuilder(account).addOperation(Operation.setOptions({
           signer: {
-            ed25519PublicKey: mainAccount,
+            ed25519PublicKey: mainAccount.pk,
             weight: 2
           }
         })).addOperation(Operation.setOptions({
@@ -124,23 +124,7 @@ export class BlockchainServiceProvider {
     });
   }
 
-  validateFundsForSubAccount(mainAccPk): Promise<any> {
-    return new Promise((resolve, reject) => {
-
-    });
-  }
-
-  checkInvalidation(subAccountPk, account): boolean {
-
-    for (let i = 0; i < account.subAccounts.length; i++) {
-      if (subAccountPk == account.subAccounts[i].pk) {
-        return account.subAccounts[i].skInvalidated;
-      }
-    }
-  }
-
   getSubAccountPair(subAccountPk, account) {
-    let pair;
     for (let i = 0; i < account.subAccounts.length; i++) {
       if (subAccountPk == account.subAccounts[i].pk) {
         return Keypair.fromSecret(account.subAccounts[i].skp);
@@ -150,9 +134,7 @@ export class BlockchainServiceProvider {
 
   accountBalance(publicKey) {
     return new Promise((resolve, reject) => {
-      Network.usePublicNetwork();
-      var server = new Server(stellarNet);
-      server.loadAccount(publicKey).then((account) => {
+      this.blockchainAccountInfo(publicKey).then((account: AccountResponse) => {
         let balances = account.balances;
         for (let i = 0; i < balances.length; i++) {
           if (balances[i].asset_type == "native") {
@@ -161,7 +143,6 @@ export class BlockchainServiceProvider {
         }
         resolve(0);
       }).catch((err) => {
-        console.error(err);
         reject(err);
       });
     });
@@ -169,20 +150,30 @@ export class BlockchainServiceProvider {
 
   accountAssetsCount(publicKey) {
     return new Promise((resolve, reject) => {
-      Network.usePublicNetwork();
-      var server = new Server(stellarNet);
-      server.loadAccount(publicKey).then((account) => {
-        console.log(account);
+      let assetCount = 0;
+      this.blockchainAccountInfo(publicKey).then((account: AccountResponse) => {
+        let balances = account.balances;
+        for (let i = 0; i < balances.length; i++) {
+          if (balances[i].asset_type == "credit_alphanum12") {
+            assetCount++;
+          }
+        }
+        resolve(assetCount);
       }).catch((err) => {
-        console.error(err);
         reject(err);
       });
     });
   }
 
-  subAccountInvalidation(): Promise<any> {
+  blockchainAccountInfo(publicKey) {
     return new Promise((resolve, reject) => {
-
+      Network.usePublicNetwork();
+      var server = new Server(stellarNet);
+      server.loadAccount(publicKey).then((account) => {
+        resolve(account);
+      }).catch((err) => {
+        reject(err);
+      });
     });
   }
 
@@ -236,10 +227,74 @@ export class BlockchainServiceProvider {
             reject(err)
           });
         }).catch(() => {
-          reject({status: 11, error: 'Cannot use this password. Please pick a different password.'});
+          reject({ status: 11, error: 'Cannot use this password. Please pick a different password.' });
         });
       }).catch(() => {
-        reject({status: 10, error: 'Invalid Password'});
+        reject({ status: 10, error: 'Invalid Password' });
+      });
+    });
+  }
+
+  getAccountBalanceAssets(mainAccount) {
+    return new Promise((resolve, reject) => {
+      this.blockchainAccountInfo(mainAccount.pk).then((accountInfo: AccountResponse) => {
+        let balances = accountInfo.balances;
+        let balance = "0";
+        let assetCount = 0;
+        for (let i = 0; i < balances.length; i++) {
+          if (balances[i].asset_type == "native") {
+            balance = balances[i].balance;
+          } else if (balances[i].asset_type == "credit_alphanum12") {
+            assetCount++;
+          }
+        }
+        resolve({ balance: balance, assets: assetCount });
+      }).catch((err) => {
+        this.logger.error("Error getting account info: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+        reject(err);
+      });
+    });
+  }
+
+  mainAccountSuffucientFunds(balance, assetCount): any {
+    let baseFee = (assetCount * 0.5) + 4;
+    if (baseFee < (balance - 0.5)) {
+      return { status: true, amount: baseFee };
+    } else {
+      return { status: false, amount: baseFee };
+    }
+  }
+
+  createAddress() {
+    return Keypair.random();
+  }
+
+  createSubAccount(mainAccount) {
+    return new Promise((resolve, reject) => {
+      this.getAccountBalanceAssets(mainAccount).then((accountInfo: any) => {
+        if (accountInfo.balance != 0) {
+          let fundStatus = this.mainAccountSuffucientFunds(accountInfo.balance, accountInfo.assets);
+          if (fundStatus.status) {
+            let keyPair = this.createAddress();
+            // ADD this account to admin before adding funds
+            this.transferFundsForNewAccounts(mainAccount.sk, keyPair.publicKey(), fundStatus.amount).then(() => {
+              this.invalidateSubAccountKey(keyPair, mainAccount).then(() => {
+                
+              }).catch((err) => {
+                reject();
+              });
+            }).catch((err) => {
+              reject();
+            });
+            // End ADD this account to admin before adding funds
+          } else {
+            reject();
+          }
+        } else {
+          reject();
+        }
+      }).catch((err) => {
+        reject();
       });
     });
   }
