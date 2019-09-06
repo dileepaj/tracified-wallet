@@ -4,7 +4,20 @@ import { Observable } from 'rxjs/Rx';
 
 import { Logger } from 'ionic-logger-new';
 import { Properties } from '../../shared/properties';
-import { login, blockchainAccs, addMainAcc, validateMainAcc, getMainPublicKey, getMainPublicKeys, detailChange, passwordChange, changeDisplayImage, transactionPasswordChange, subAccountsStatus } from '../../shared/config';
+import {
+  login,
+  blockchainAccs,
+  addMainAcc,
+  validateMainAcc,
+  getMainPublicKey,
+  getMainPublicKeys,
+  detailChange,
+  passwordChange,
+  changeDisplayImage,
+  transactionPasswordChange,
+  subAccountsStatus,
+  updateSubAcc
+} from '../../shared/config';
 
 @Injectable()
 export class ApiServiceProvider {
@@ -261,6 +274,19 @@ export class ApiServiceProvider {
     };
 
     return this.postN(addMainAcc, payload, headers);
+  }
+
+  addTransactionSubAccount(payload) {
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token,
+      })
+    };
+
+    return this.putN(updateSubAcc, payload, headers)
   }
 
   validateMainAccountN(payload): Promise<any> {

@@ -78,14 +78,17 @@ export class ItemDetailPage {
   }
 
   transferAsset() {
-    this.blockchainService.createSubAccount(this.properties.defaultAccount);
+
     this.passwordPrompt().then((password) => {
       this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
         this.secretKey = decKey;
         this.presentLoading();
-        
+        this.preparesubAccount(this.secretKey).then((subPk) => {
+          let subPair = this.blockchainService.getSubAccountPair(subPk, this.properties.defaultAccount);
 
-
+        }).catch((err) => {
+          console.log("Prepare sub account: " + err);
+        });
       }).catch(() => {
         this.presentAlert("Error", "Invalid transaction password. Please try again.");
       });
@@ -124,38 +127,64 @@ export class ItemDetailPage {
     });
   }
 
-  preparesubAccount() {
-    let subPublicKeys = [];
-    this.properties.defaultAccount.subAccounts.forEach((account) => {
-      subPublicKeys.push(account.pk);
-    });
-    const subAccounts = {
-      "User": this.properties.defaultAccount.accountName,
-      "SubAccounts": subPublicKeys
-    };
-    this.dataService.subAccountsStatus(subAccounts).then((res) => {
-      let avaialbeAccounts = [];
-      let matchingAccount = '';
-      let statuses = res.body;
-      statuses.forEach((status) => {
-        if (status.available) {
-          avaialbeAccounts.push(status.subAccount);
-        } else if (status.receiver == this.COCForm.receiver) {
-          matchingAccount = status.subAccount;
-        }
+  preparesubAccount(mainAccSk) {
+    return new Promise((resolve, reject) => {
+      let subPublicKeys = [];
+      this.properties.defaultAccount.subAccounts.forEach((account) => {
+        subPublicKeys.push(account.pk);
       });
+      const subAccounts = {
+        "User": this.properties.defaultAccount.accountName,
+        "SubAccounts": subPublicKeys
+      };
+      this.dataService.subAccountsStatus(subAccounts).then((res) => {
+        let avaialbeAccounts = [];
+        let matchingAccount = '';
+        let statuses = res.body;
+        statuses.forEach((status) => {
+          if (status.available) {
+            avaialbeAccounts.push(status.subAccount);
+          } else if (status.receiver == this.COCForm.receiver) {
+            matchingAccount = status.subAccount;
+          }
+        });
 
-      if (matchingAccount != '') {
-        
-      } else if (avaialbeAccounts.length > 0) {
+        if (matchingAccount != '') {
+          resolve(matchingAccount);
+        } else if (avaialbeAccounts.length > 0) {
+          console.log("Avaialable Accs: ", avaialbeAccounts);
+          this.blockchainService.checkIfAccountInvalidated(avaialbeAccounts[0]).then((status) => {
+            if (status) {
+              resolve(avaialbeAccounts[0]);
+            } else {
+              let subPair = this.blockchainService.getSubAccountPair(avaialbeAccounts[0], this.properties.defaultAccount);
+              this.blockchainService.invalidateSubAccountKey(subPair, this.properties.defaultAccount).then(() => {
+                resolve(avaialbeAccounts[0]);
+              }).catch((err) => {
+                console.log("Inavalidate sub account err: ", err);
+                reject();
+              });
+            }
+          }).catch((err) => {
+            console.log("Invalidation check failed: ", err);
+            reject();
+          });
+        } else {
+          this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
+            resolve(subKeyPair.publicKey());
+          }).catch((err) => {
+            console.log("Create sub account: ", err);
+            this.dissmissLoading();
+            reject();
+          });
+        }
 
-      } else {
-        // Create new account
-      }
-
-    }).catch((err) => {
-      this.dissmissLoading();
-      this.presentAlert("Error", "Could not get account status. Please try again.");
+      }).catch((err) => {
+        console.log("sub account status: ", err);
+        this.dissmissLoading();
+        this.presentAlert("Error", "Could not get account status. Please try again.");
+        reject();
+      });
     });
   }
 
@@ -447,35 +476,34 @@ export class ItemDetailPage {
 
         // Network.useTestNetwork();
         // var server = new Server('https://horizon-testnet.stellar.org');
-        server.loadAccount(subAcc)
-          .then(function (account) {
-            var transaction = new TransactionBuilder(account, opts)
-            transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
-            transaction.addOperation(Operation.manageData({ name: 'Identifier', value: Identifier, }))
-            transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }))
-            transaction.addOperation(Operation.payment({
-              destination: receiver,
-              asset: asset,
-              amount: quantity,
-              source: senderPublickKey
-            }))
+        server.loadAccount(subAcc).then(function (account) {
+          var transaction = new TransactionBuilder(account, opts)
+          transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
+          transaction.addOperation(Operation.manageData({ name: 'Identifier', value: Identifier, }))
+          transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }))
+          transaction.addOperation(Operation.payment({
+            destination: receiver,
+            asset: asset,
+            amount: quantity,
+            source: senderPublickKey
+          }))
 
-            if (!subAccObj.available) {
-              transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccObj.sequenceNo + 2) }))
-            }
+          if (!subAccObj.available) {
+            transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccObj.sequenceNo + 2) }))
+          }
 
-            const tx = transaction.build();
-            tx.sign(sourceKeypair);
-            XDR = tx.toEnvelope();
-            seqNum = tx.sequence;
-            b64 = XDR.toXDR('base64');
-            const resolveObj = {
-              seqNum: seqNum,
-              b64: b64
-            }
-            resolve(resolveObj);
+          const tx = transaction.build();
+          tx.sign(sourceKeypair);
+          XDR = tx.toEnvelope();
+          seqNum = tx.sequence;
+          b64 = XDR.toXDR('base64');
+          const resolveObj = {
+            seqNum: seqNum,
+            b64: b64
+          }
+          resolve(resolveObj);
 
-          })
+        })
           .catch(function (e) {
             console.log(e);
           });

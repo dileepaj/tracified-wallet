@@ -269,31 +269,54 @@ export class BlockchainServiceProvider {
     return Keypair.random();
   }
 
-  createSubAccount(mainAccount) {
+  createSubAccount(mainAccount, mainSk) {
     return new Promise((resolve, reject) => {
       this.getAccountBalanceAssets(mainAccount).then((accountInfo: any) => {
         if (accountInfo.balance != 0) {
           let fundStatus = this.mainAccountSuffucientFunds(accountInfo.balance, accountInfo.assets);
           if (fundStatus.status) {
             let keyPair = this.createAddress();
-            // ADD this account to admin before adding funds
-            this.transferFundsForNewAccounts(mainAccount.sk, keyPair.publicKey(), fundStatus.amount).then(() => {
-              this.invalidateSubAccountKey(keyPair, mainAccount).then(() => {
-                
-              }).catch((err) => {
+            const account = {
+              "account": {
+                "subKey": keyPair.publicKey(),
+                "pk": this.properties.defaultAccount.pk,
+                "sk": keyPair.secret(),
+                "skp": keyPair.secret(),
+                "skInvalidated": false
+              }
+            };
+            this.apiService.addSubAccount(account).then((res) => {
+              if (res.status == 200) {
+                this.properties.defaultAccount.subAccounts.push({ "pk": keyPair.publicKey(), "sk": keyPair.secret(), "skp": keyPair.secret(), "skInvalidated": false });
+                this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), fundStatus.amount).then(() => {
+                  this.invalidateSubAccountKey(keyPair, mainAccount).then(() => {
+                    resolve(keyPair);
+                  }).catch((err) => {
+                    console.log("Invalidate sub account: ", err);
+                    reject();
+                  });
+                }).catch((err) => {
+                  console.log("Transfer funds for new account: ", err);
+                  reject();
+                });
+              } else {
+                console.log("Error add sub account: ", res.status);
                 reject();
-              });
+              }
             }).catch((err) => {
+              console.log("Add sub account: ", err);
               reject();
             });
-            // End ADD this account to admin before adding funds
           } else {
+            console.log("Fund status: 0");
             reject();
           }
         } else {
+          console.log("Main account balance: Insufficient");
           reject();
         }
       }).catch((err) => {
+        console.log("Account balance and assets: ", err);
         reject();
       });
     });
