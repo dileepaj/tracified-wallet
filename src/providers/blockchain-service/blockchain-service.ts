@@ -321,4 +321,118 @@ export class BlockchainServiceProvider {
       });
     });
   }
+
+  verifyCoC(secretKey, identifier, receiverPk, item, qty, validityPeriod) {
+    return new Promise((resolve, reject) => {
+      var sourceKeypair = Keypair.fromSecret(secretKey);
+      Network.usePublicNetwork();
+      var server = new Server(stellarNet);
+      server.loadAccount(sourceKeypair.publicKey()).then(function (account) {
+        var transaction = new TransactionBuilder(account)
+          .addOperation(Operation.manageData({ name: 'Transaction Type', value: '11', }))
+          .addOperation(Operation.manageData({ name: 'Identifier', value: identifier }))
+          .addOperation(Operation.manageData({ name: 'Receiver', value: receiverPk }))
+          .addOperation(Operation.manageData({ name: 'Asset', value: item }))
+          .addOperation(Operation.manageData({ name: 'Amount', value: qty }))
+          .addOperation(Operation.manageData({ name: 'MaxBound', value: JSON.stringify(validityPeriod), }))
+          .build();
+        transaction.sign(sourceKeypair);
+        return server.submitTransaction(transaction);
+      }).then((transactionResult) => {
+        resolve(transactionResult.hash);
+      }).catch((err) => {
+        console.log(err);
+        reject();
+      });
+    });
+  }
+
+  acceptTransactionXdr(identifier, receiver, qty, item, validity, proofHash, subAccount, signerSK) {
+    return new Promise((resolve, reject) => {
+      let XDR;
+      let b64;
+      let seqNum;
+
+      const senderPublickKey = this.properties.defaultAccount.pk;
+
+      var minTime = Math.round(new Date().getTime() / 1000.0);
+      
+      var maxTime = new Date(validity).getTime() / 1000.0;
+      var sourceKeypair = Keypair.fromSecret(signerSK);
+
+      var asset = new Asset(item, 'GA34R3AQUTUGARS6AZCXKVW5GKUQQB3IFQVG4T47R6OOKN4T4O3KKHNP');
+      var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+
+      Network.usePublicNetwork();
+      var server = new Server(stellarNet);
+      server.loadAccount(subAccount.publicKey).then(function (account) {
+        var transaction = new TransactionBuilder(account, opts)
+        transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
+        transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, }))
+        transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }))
+        transaction.addOperation(Operation.payment({
+          destination: receiver,
+          asset: asset,
+          amount: qty,
+          source: senderPublickKey
+        }))
+
+        if (!subAccount.available) {
+          transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccount.sequenceNo + 2) }))
+        }
+
+        const tx = transaction.build();
+        tx.sign(sourceKeypair);
+        XDR = tx.toEnvelope();
+        seqNum = tx.sequence;
+        b64 = XDR.toXDR('base64');
+        const resolveObj = {
+          seqNum: seqNum,
+          b64: b64
+        }
+        resolve(resolveObj);
+
+      }).catch((err) => {
+        console.log(err);
+        reject(err);
+      });
+    })
+
+  }
+
+  rejectTransactionXdr(receiver, validity, proofHash, subAccount, signerSK) {
+
+    return new Promise((resolve, reject) => {
+      let XDR;
+      let b64;
+      const senderPublickKey = this.properties.defaultAccount.pk;
+
+      var minTime = Math.round(new Date().getTime() / 1000.0);
+      var maxTime = new Date(validity).getTime() / 1000.0;
+      var sourceKeypair = Keypair.fromSecret(signerSK);
+      var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+
+      Network.usePublicNetwork();
+      var server = new Server(stellarNet);
+      server.loadAccount(subAccount.publicKey).then(function (account) {
+        var transaction = new TransactionBuilder(account, opts).addOperation(Operation.manageData({
+          name: 'Status', value: 'rejected', source: receiver
+        })).addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))
+
+        if (!subAccount.available) {
+          transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccount.sequenceNo + 2) }))
+        }
+
+        const tx = transaction.build();
+        tx.sign(sourceKeypair);
+        XDR = tx.toEnvelope();
+        b64 = XDR.toXDR('base64');
+
+        resolve(b64);
+      }).catch((err) => {        
+        console.log(err);
+        reject();
+      });
+    });
+  }
 }

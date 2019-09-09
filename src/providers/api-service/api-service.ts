@@ -16,7 +16,8 @@ import {
   changeDisplayImage,
   transactionPasswordChange,
   subAccountsStatus,
-  updateSubAcc
+  updateSubAcc,
+  sendCoC
 } from '../../shared/config';
 
 @Injectable()
@@ -341,5 +342,9 @@ export class ApiServiceProvider {
     return this.putN(url1, '', headers);
   }
 
-
+  sendCoC(coc): Promise<any> {
+    let headers = { 'Content-Type': 'application/json' };
+    return this.postN(sendCoC, coc, headers);
+  }
+  
 }

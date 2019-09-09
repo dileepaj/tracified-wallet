@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { Items } from '../../providers/items/items';
 import { Network, Operation, Server, TransactionBuilder, Asset, Keypair } from 'stellar-sdk';
-import { AES, enc } from "crypto-js";
-import { get } from 'request';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 var StellarSdk = require('stellar-sdk')
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
@@ -14,7 +12,6 @@ import { BlockchainServiceProvider } from '../../providers/blockchain-service/bl
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { subAccountBaseFee } from '../../shared/config';
-import { rejects } from 'assert';
 import { TabsPage } from '../../pages/tabs/tabs';
 import { TransferPage } from '../../pages/transfer/transfer';
 
@@ -33,14 +30,11 @@ export class ItemDetailPage {
 
   selectedItem2: any;
   itemRequired: any;
-  // itemList: any = [];
   item: any;
   user: any;
   currentItems: any;
-  // receivers = [];
   loading;
   isLoadingPresent: boolean;
-  // selectedItem: string;
   selectedReceiver: any;
   COCForm: { selectedItem: string, identifier: string, qty: string, receiver: string, vaidity: Date } = {
     selectedItem: '',
@@ -49,6 +43,8 @@ export class ItemDetailPage {
     receiver: '',
     vaidity: new Date()
   };
+
+  private selectedItem;
 
   private secretKey;
 
@@ -71,21 +67,53 @@ export class ItemDetailPage {
     this.mainAccount = this.properties.defaultAccount;
     this.item = navParams.get('item');
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
+    console.log(this.item);
   }
 
   ionViewDidLoad() {
     this.COCForm.selectedItem = this.item.asset_code;
+    this.selectedItem = this.item.asset_code;
   }
 
   transferAsset() {
-
     this.passwordPrompt().then((password) => {
       this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
         this.secretKey = decKey;
         this.presentLoading();
-        this.preparesubAccount(this.secretKey).then((subPk) => {
-          let subPair = this.blockchainService.getSubAccountPair(subPk, this.properties.defaultAccount);
+        this.preparesubAccount(this.secretKey).then((subAcc: any) => {
+          let subPair = this.blockchainService.getSubAccountPair(subAcc.publicKey, this.properties.defaultAccount);
+          this.blockchainService.verifyCoC(this.secretKey, this.COCForm.identifier, this.COCForm.receiver, this.COCForm.selectedItem, this.COCForm.qty, this.COCForm.vaidity).then((transactionHash) => {
+            Promise.all([this.blockchainService.acceptTransactionXdr(this.COCForm.identifier, this.COCForm.receiver, this.COCForm.qty, this.COCForm.selectedItem, this.COCForm.vaidity, transactionHash, subAcc, this.secretKey),
+            this.blockchainService.rejectTransactionXdr(this.COCForm.receiver, this.COCForm.vaidity, transactionHash, subAcc, this.secretKey)]).then((xdrs: any) => {
+              const coc = {
+                "Sender": this.properties.defaultAccount.pk,
+                "Receiver": this.COCForm.receiver,
+                "SubAccount": subPair.publicKey,
+                "SequenceNo": Number(xdrs[0].seqNum + 2),
+                "AcceptXdr": xdrs[0].b64,
+                "RejectXdr": xdrs[1],
+                "Identifier": this.COCForm.identifier,
+                "Status": "pending"
+              }
+              this.dataService.sendCoC(coc).then((res) => {
+                this.dissmissLoading();
+                console.log("[SUCCESS] CoC Successfully sent.", res);
 
+                if (res.Message == "Success") {
+                  this.presentToast(this.item.asset_code + ' transfered succesfully.');
+                  this.navCtrl.setRoot(TabsPage);
+                } else {
+                  this.presentToast('Transaction failed. Please try again.');
+                }
+              }).catch((err) => {
+                console.log("Sending CoC failed: ", err);
+              });
+            }).catch((err) => {
+              console.log("Accept or Reject build fail: ", err);
+            });
+          }).catch((err) => {
+            console.log("CoC verify error: ", err);
+          });
         }).catch((err) => {
           console.log("Prepare sub account: " + err);
         });
@@ -139,27 +167,42 @@ export class ItemDetailPage {
       };
       this.dataService.subAccountsStatus(subAccounts).then((res) => {
         let avaialbeAccounts = [];
-        let matchingAccount = '';
+        let matchingAccount;
         let statuses = res.body;
         statuses.forEach((status) => {
           if (status.available) {
             avaialbeAccounts.push(status.subAccount);
           } else if (status.receiver == this.COCForm.receiver) {
-            matchingAccount = status.subAccount;
+            matchingAccount = status;
           }
         });
-
+        console.log("Matching Account: ", matchingAccount);
         if (matchingAccount != '') {
-          resolve(matchingAccount);
+          let subAcc = {
+            publicKey: matchingAccount.subAccount,
+            available: false,
+            sequenceNo: matchingAccount.sequenceNo
+          };
+          resolve(subAcc);
         } else if (avaialbeAccounts.length > 0) {
           console.log("Avaialable Accs: ", avaialbeAccounts);
           this.blockchainService.checkIfAccountInvalidated(avaialbeAccounts[0]).then((status) => {
             if (status) {
-              resolve(avaialbeAccounts[0]);
+              let subAcc = {
+                publicKey: avaialbeAccounts[0],
+                available: true,
+                sequenceNo: 0
+              };
+              resolve(subAcc);
             } else {
               let subPair = this.blockchainService.getSubAccountPair(avaialbeAccounts[0], this.properties.defaultAccount);
               this.blockchainService.invalidateSubAccountKey(subPair, this.properties.defaultAccount).then(() => {
-                resolve(avaialbeAccounts[0]);
+                let subAcc = {
+                  publicKey: avaialbeAccounts[0],
+                  available: true,
+                  sequenceNo: 0
+                };
+                resolve(subAcc);
               }).catch((err) => {
                 console.log("Inavalidate sub account err: ", err);
                 reject();
@@ -171,7 +214,11 @@ export class ItemDetailPage {
           });
         } else {
           this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
-            resolve(subKeyPair.publicKey());
+            let subAcc = {
+              publicKey: subKeyPair.publicKey(),
+              available: false
+            };
+            resolve(subAcc);
           }).catch((err) => {
             console.log("Create sub account: ", err);
             this.dissmissLoading();
@@ -386,7 +433,6 @@ export class ItemDetailPage {
         "SubAccount": res2.subAccount,
         //@ts-ignore
         "SequenceNo": Number(res4[0].seqNum + 2),
-        // (subAcc) ? : ;
         //@ts-ignore
         "AcceptXdr": res4[0].b64,
         "RejectXdr": res4[1],
@@ -464,9 +510,7 @@ export class ItemDetailPage {
         const senderPublickKey = this.mainAccount.pk;
 
         var minTime = Math.round(new Date().getTime() / 1000.0);
-        // var myDate = new Date("July 1, 1978 02:30:00"); // Your timezone!
         var maxTime = time.getTime() / 1000.0;
-        // var maxTime = 1542860820;
         var sourceKeypair = Keypair.fromSecret(signerSK);
 
         console.log(subAccObj);
@@ -474,8 +518,6 @@ export class ItemDetailPage {
         var asset = new Asset(item, 'GA34R3AQUTUGARS6AZCXKVW5GKUQQB3IFQVG4T47R6OOKN4T4O3KKHNP');
         var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
-        // Network.useTestNetwork();
-        // var server = new Server('https://horizon-testnet.stellar.org');
         server.loadAccount(subAcc).then(function (account) {
           var transaction = new TransactionBuilder(account, opts)
           transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
@@ -503,10 +545,9 @@ export class ItemDetailPage {
           }
           resolve(resolveObj);
 
-        })
-          .catch(function (e) {
-            console.log(e);
-          });
+        }).catch(function (e) {
+          console.log(e);
+        });
       } catch (error) {
         console.log(error)
       }
@@ -559,7 +600,6 @@ export class ItemDetailPage {
     const form = this.COCForm;
     try {
       return new Promise((resolve, reject) => {
-
         var sourceKeypair = Keypair.fromSecret(signerSK);
         var server = new Server(stellarNet);
         server.loadAccount(sourceKeypair.publicKey()).then(function (account) {

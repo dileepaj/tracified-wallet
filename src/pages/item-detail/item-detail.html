@@ -18,21 +18,21 @@
       <ion-row>
         <ion-item>
           <ion-label floating>Item</ion-label>
-          <ion-select>
-            <ion-option>Test</ion-option>
+          <ion-select [(ngModel)]="selectedItem">
+            <ion-option *ngFor="let item of currentItems">{{item.asset_code}}</ion-option>
           </ion-select>
         </ion-item>
       </ion-row>
       <ion-row>
         <ion-item>
           <ion-label floating>Identifier</ion-label>
-          <ion-input text-wrap no-boarder type="text"></ion-input>
+          <ion-input text-wrap no-boarder [(ngModel)]="COCForm.identifier" type="text"></ion-input>
         </ion-item>
       </ion-row>
       <ion-row>
         <ion-item>
           <ion-label floating>Quantity</ion-label>
-          <ion-input text-wrap no-boarder type="number"></ion-input>
+          <ion-input text-wrap no-boarder [(ngModel)]="COCForm.qty" type="number"></ion-input>
         </ion-item>
       </ion-row>
       <ion-row>
@@ -46,7 +46,7 @@
       <ion-row>
         <ion-item>
           <ion-label floating>Valid till</ion-label>
-          <ion-datetime pickerFormat="YYYY-MM-DD hh mm A" displayFormat="YYYY/MM/DD hh:mm A"
+          <ion-datetime pickerFormat="YYYY-MM-DD hh mm A" [(ngModel)]="COCForm.vaidity" displayFormat="YYYY/MM/DD hh:mm A"
             min="2018-11-29T06:25:48Z" max="2050"></ion-datetime>
         </ion-item>
       </ion-row>

@@ -81,4 +81,8 @@ export class DataServiceProvider {
   subAccountsStatus(subAccounts) {
     return this.apiService.getSubAccountsStatus(subAccounts);
   }
+
+  sendCoC(coc): Promise<any> {
+    return this.apiService.sendCoC(coc);
+  }
 }
