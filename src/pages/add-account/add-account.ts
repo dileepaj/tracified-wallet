@@ -79,59 +79,61 @@ export class AddAccountPage {
           let subPair = this.createKeyPair();
 
           this.mappingService.encyrptSecret(mainPair.secret(), this.form.value.password).then((encMainSecretKey) => {
-            this.mappingService.encyrptSecret(subPair.secret(), this.form.value.password).then((encSubSecretKey) => {
-              const mainAccount = {
-                accName: this.form.value.accName,
-                publicKey: mainPair.publicKey(),
-                privateKey: mainPair.secret()
-              };
-              const account = {
-                "account": {
-                  "mainAccount": {
-                    "accountName": this.form.value.accName,
-                    "pk": mainPair.publicKey(),
-                    "sk": encMainSecretKey,
-                    "skp": mainPair.secret(),
-                    "FO": false,
-                    "subAccounts": [{
-                      "pk": subPair.publicKey(),
-                      "sk": encSubSecretKey,
-                      "skp": subPair.secret(),
-                      "skInvalidated": false
-                    }]
-                  }
+            // this.mappingService.encyrptSecret(subPair.secret(), this.form.value.password).then((encSubSecretKey) => {
+            const mainAccount = {
+              accName: this.form.value.accName,
+              publicKey: mainPair.publicKey(),
+              privateKey: mainPair.secret()
+            };
+            const account = {
+              "account": {
+                "mainAccount": {
+                  "accountName": this.form.value.accName,
+                  "pk": mainPair.publicKey(),
+                  "sk": encMainSecretKey,
+                  "skp": mainPair.secret(),
+                  "FO": false,
+                  "subAccounts": [
+                    // {
+                    //   "pk": subPair.publicKey(),
+                    //   "sk": encSubSecretKey,
+                    //   "skp": subPair.secret(),
+                    //   "skInvalidated": false
+                    // }
+                  ]
                 }
               }
+            }
 
-              // Save to local storage
-              this.dataService.addTransactionAccount(account).then((res) => {
-                this.dissmissLoading();
-                if (res.status === 200) {
-                  this.presentToast('Transaction account added successfully!');
-                  this.navCtrl.setRoot(AccountInfoPage, { account: mainAccount, navigation: this.navigation });
-                } else {
-                  this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
-                }
-              }, (err) => {
-                this.dissmissLoading();
-                if (err.status == 403) {
-                  this.presentAlert('Authentication Failed', 'Your account is blocked. Please contact an admin.');
-                } else {
-                  this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
-                }
-              }).catch((error) => {
-                this.dissmissLoading();
-                this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
-                this.logger.error("Failed to add transaction account: " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
-              });
-            }).catch((err) => {
+            // Save to local storage
+            this.dataService.addTransactionAccount(account).then((res) => {
               this.dissmissLoading();
-              this.logger.error("Encrypting private key failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+              if (res.status === 200) {
+                this.presentToast('Transaction account added successfully!');
+                this.navCtrl.setRoot(AccountInfoPage, { account: mainAccount, navigation: this.navigation });
+              } else {
+                this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+              }
+            }, (err) => {
+              this.dissmissLoading();
+              if (err.status == 403) {
+                this.presentAlert('Authentication Failed', 'Your account is blocked. Please contact an admin.');
+              } else {
+                this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+              }
+            }).catch((error) => {
+              this.dissmissLoading();
+              this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+              this.logger.error("Failed to add transaction account: " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
           }).catch((err) => {
             this.dissmissLoading();
             this.logger.error("Encrypting private key failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
           });
+          // }).catch((err) => {
+          //   this.dissmissLoading();
+          //   this.logger.error("Encrypting private key failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+          // });
         } else {
           this.dissmissLoading();
           this.presentAlert("Error", "Account name already exists. Please pick a different name for the account.");

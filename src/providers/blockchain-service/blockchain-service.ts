@@ -55,9 +55,9 @@ export class BlockchainServiceProvider {
 
         return server.submitTransaction(transaction);
       }).then((transactionResult) => {
+        this.logger.info("Invalidation successful: " + JSON.stringify(transactionResult), this.properties.skipConsoleLogs, this.properties.writeToFile);
         resolve();
       }).catch((err) => {
-        console.log(err);
         this.logger.error("Invalidating sub account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();
       });
@@ -83,14 +83,14 @@ export class BlockchainServiceProvider {
         transaction.sign(sendingAccPair);
 
         return server.submitTransaction(transaction).then((status) => {
-          console.log(status);
+          this.logger.info("Funds transferred successfully for the new account: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
           resolve(status);
         }).catch((err) => {
-          console.log(err);
+          this.logger.error("Fund transfer transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
           reject(err);
         });
       }).catch((e) => {
-        console.error(e);
+        this.logger.error("Failed to transfer funds for the new account: " + JSON.stringify(e), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject(e);
       });
     });
@@ -111,14 +111,14 @@ export class BlockchainServiceProvider {
         transaction.sign(sendingAccPair);
 
         return server.submitTransaction(transaction).then((status) => {
-          console.log(status);
+          this.logger.info("Successfully transferred funds: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
           resolve(status);
         }).catch((err) => {
-          console.log(err);
+          this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
           reject(err);
         });
       }).catch((e) => {
-        console.error(e);
+        this.logger.error("Failed to transfer funds for the account: " + JSON.stringify(e), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject(e);
       });
     });
@@ -143,6 +143,7 @@ export class BlockchainServiceProvider {
         }
         resolve(0);
       }).catch((err) => {
+        this.logger.error("Failed to check the account balance: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject(err);
       });
     });
@@ -160,6 +161,7 @@ export class BlockchainServiceProvider {
         }
         resolve(assetCount);
       }).catch((err) => {
+        this.logger.error("Failed to get accounts asset count: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject(err);
       });
     });
@@ -172,6 +174,7 @@ export class BlockchainServiceProvider {
       server.loadAccount(publicKey).then((account) => {
         resolve(account);
       }).catch((err) => {
+        this.logger.error("Failed to get account info: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject(err);
       });
     });
@@ -189,7 +192,7 @@ export class BlockchainServiceProvider {
           resolve(false);
         }
       }).catch((e) => {
-        console.error(e);
+        this.logger.error("Failed to check account invalidation status: " + JSON.stringify(e), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject(false);
       });
     });
@@ -202,11 +205,11 @@ export class BlockchainServiceProvider {
         if (keyPair.publicKey() == pubKey) {
           resolve(decKey);
         } else {
-          // Log invalid password
+          this.logger.error("Invalid transaction password.", this.properties.skipConsoleLogs, this.properties.writeToFile);
           reject();
         }
       }).catch(() => {
-        // Log invalid password
+        this.logger.error("Invalid transaction password", this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();
       });
     });
@@ -224,12 +227,15 @@ export class BlockchainServiceProvider {
           return this.apiService.changeTranasctionPassword(params).then((res) => {
             resolve(res);
           }).catch((err) => {
+            this.logger.error("Failed to change the transaction password: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
             reject(err)
           });
         }).catch(() => {
+          this.logger.error("Failed to encrypt new password", this.properties.skipConsoleLogs, this.properties.writeToFile);
           reject({ status: 11, error: 'Cannot use this password. Please pick a different password.' });
         });
       }).catch(() => {
+        this.logger.error("Old transaction password is incorrect.", this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject({ status: 10, error: 'Invalid Password' });
       });
     });
@@ -250,7 +256,7 @@ export class BlockchainServiceProvider {
         }
         resolve({ balance: balance, assets: assetCount });
       }).catch((err) => {
-        this.logger.error("Error getting account info: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+        this.logger.error("Error getting account info: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject(err);
       });
     });
@@ -272,7 +278,7 @@ export class BlockchainServiceProvider {
   createSubAccount(mainAccount, mainSk) {
     return new Promise((resolve, reject) => {
       this.getAccountBalanceAssets(mainAccount).then((accountInfo: any) => {
-        if (accountInfo.balance != 0) {
+        if (accountInfo.balance > 0) {
           let fundStatus = this.mainAccountSuffucientFunds(accountInfo.balance, accountInfo.assets);
           if (fundStatus.status) {
             let keyPair = this.createAddress();
@@ -290,33 +296,34 @@ export class BlockchainServiceProvider {
                 this.properties.defaultAccount.subAccounts.push({ "pk": keyPair.publicKey(), "sk": keyPair.secret(), "skp": keyPair.secret(), "skInvalidated": false });
                 this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), fundStatus.amount).then(() => {
                   this.invalidateSubAccountKey(keyPair, mainAccount).then(() => {
+                    this.logger.info("Successfully invalidated the account", this.properties.skipConsoleLogs, this.properties.writeToFile);
                     resolve(keyPair);
                   }).catch((err) => {
-                    console.log("Invalidate sub account: ", err);
+                    this.logger.error("Failed to invalidate the account: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
                     reject();
                   });
                 }).catch((err) => {
-                  console.log("Transfer funds for new account: ", err);
+                  this.logger.error("Failed to transfer funds for the new account: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
                   reject();
                 });
               } else {
-                console.log("Error add sub account: ", res.status);
+                this.logger.error("Failed to transfer funds for the new account: " + JSON.stringify(res), this.properties.skipConsoleLogs, this.properties.writeToFile);
                 reject();
               }
             }).catch((err) => {
-              console.log("Add sub account: ", err);
+              this.logger.error("Failed to add the sub account: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
               reject();
             });
           } else {
-            console.log("Fund status: 0");
+            this.logger.error("Main account does not have sufficient funds.", this.properties.skipConsoleLogs, this.properties.writeToFile);
             reject();
           }
         } else {
-          console.log("Main account balance: Insufficient");
+          this.logger.error("Main account balance is 0 lumens", this.properties.skipConsoleLogs, this.properties.writeToFile);
           reject();
         }
       }).catch((err) => {
-        console.log("Account balance and assets: ", err);
+        this.logger.error("Failed to get the account balance: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();
       });
     });
@@ -327,7 +334,7 @@ export class BlockchainServiceProvider {
       var sourceKeypair = Keypair.fromSecret(secretKey);
       Network.usePublicNetwork();
       var server = new Server(stellarNet);
-      server.loadAccount(sourceKeypair.publicKey()).then(function (account) {
+      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
         var transaction = new TransactionBuilder(account)
           .addOperation(Operation.manageData({ name: 'Transaction Type', value: '11', }))
           .addOperation(Operation.manageData({ name: 'Identifier', value: identifier }))
@@ -339,9 +346,10 @@ export class BlockchainServiceProvider {
         transaction.sign(sourceKeypair);
         return server.submitTransaction(transaction);
       }).then((transactionResult) => {
+        this.logger.info("Verified CoC successfully", this.properties.skipConsoleLogs, this.properties.writeToFile);
         resolve(transactionResult.hash);
       }).catch((err) => {
-        console.log(err);
+        this.logger.error("Failed to verify CoC: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();
       });
     });
@@ -356,7 +364,7 @@ export class BlockchainServiceProvider {
       const senderPublickKey = this.properties.defaultAccount.pk;
 
       var minTime = Math.round(new Date().getTime() / 1000.0);
-      
+
       var maxTime = new Date(validity).getTime() / 1000.0;
       var sourceKeypair = Keypair.fromSecret(signerSK);
 
@@ -393,7 +401,7 @@ export class BlockchainServiceProvider {
         resolve(resolveObj);
 
       }).catch((err) => {
-        console.log(err);
+        this.logger.error("Failed to build accept XDR: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject(err);
       });
     })
@@ -429,8 +437,8 @@ export class BlockchainServiceProvider {
         b64 = XDR.toXDR('base64');
 
         resolve(b64);
-      }).catch((err) => {        
-        console.log(err);
+      }).catch((err) => {
+        this.logger.error("Failed to build reject XDR: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();
       });
     });

@@ -92,6 +92,8 @@ export class MyApp {
         });
       });
       this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
+      this.properties.skipConsoleLogs = true;
+      this.properties.writeToFile = true;
     });
 
     this.initTranslate();
