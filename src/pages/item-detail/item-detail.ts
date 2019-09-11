@@ -37,12 +37,12 @@ export class ItemDetailPage {
   loading;
   isLoadingPresent: boolean;
   selectedReceiver: any;
-  COCForm: { selectedItem: string, identifier: string, qty: string, receiver: string, vaidity: Date } = {
+  COCForm: { selectedItem: string, identifier: string, qty: string, receiver: string, vaidity: string } = {
     selectedItem: '',
     identifier: '',
     qty: '',
     receiver: '',
-    vaidity: new Date()
+    vaidity: ''
   };
 
   private selectedItem;
@@ -77,6 +77,11 @@ export class ItemDetailPage {
   }
 
   transferAsset() {
+    let status = this.checkIfFormEmpty();
+    if (!status) {
+      this.presentAlert("Error", "Make sure to fill out all the fields before submitting the form.");
+      return;
+    }
     this.passwordPrompt().then((password) => {
       this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
         this.secretKey = decKey;
@@ -98,8 +103,8 @@ export class ItemDetailPage {
               }
               this.dataService.sendCoC(coc).then((res) => {
                 this.dissmissLoading();
-                this.presentToast("Assets successfully transferred. You can view the transaction status in Sent page.");
-                this.navCtrl.setRoot(TabsPage);
+                this.presentAlert("Success", "Assets successfully transferred. You can view the transaction status in Sent page.");
+                this.navCtrl.setRoot(TransferPage);
                 this.logger.info("Item transferred successfully: " + this.item.asset_code, this.properties.skipConsoleLogs, this.properties.writeToFile);
               }).catch((err) => {
                 this.dissmissLoading();
@@ -144,11 +149,13 @@ export class ItemDetailPage {
           {
             text: 'Submit',
             handler: data => {
+
               if (data.password) {
                 resolve(data.password);
               } else {
                 console.log("Empty Password");
               }
+
             }
           },
           {
@@ -159,6 +166,14 @@ export class ItemDetailPage {
       });
       alert.present();
     });
+  }
+
+  checkIfFormEmpty(): boolean {
+    if (this.COCForm.identifier != '' && this.COCForm.qty != '' && this.COCForm.receiver != '' && this.COCForm.selectedItem != '' && this.COCForm.vaidity != '') {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   preparesubAccount(mainAccSk) {

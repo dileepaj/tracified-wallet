@@ -35,26 +35,52 @@
       </ion-row>
     </div>
     <div class="padding-width" *ngIf="Citems">
-      <ion-row class="item-card" *ngFor="let item of Searcheditems; let index = index">
+      <ion-row class="item-card" *ngFor="let item of items; let index = index">
         <ion-row>
           <ion-icon name="time"></ion-icon>
-          <h5 class="primary-font margin-fix">{{item.date.days}}d {{item.date.hours}}h {{item.date.minutes}}m</h5>
+          <h5 class="primary-font margin-fix">{{item.date.days}}d {{item.date.hours}}h {{item.date.minutes}}m ago</h5>
         </ion-row>
         <ion-row>
-          <ion-col col-9>
-            <h1 class="primary-font">{{item.oname}}</h1>
+          <ion-col col-9 class="padding-bottom-cancel">
+            <h4 class="secondary-font">Item</h4>
           </ion-col>
-          <ion-col col-3>
+          <ion-col col-3 class="padding-bottom-cancel">
+            <h4 class="secondary-font text-right-align-horizontally">Quantity</h4>
+          </ion-col>
+          <ion-col col-9 class="padding-top-cancel">
+            <h1 class="primary-font first-capital">{{item.oname}}</h1>
+          </ion-col>
+          <ion-col col-3 class="padding-top-cancel">
             <h1 class="primary-font text-right-align-horizontally">{{item.qty}}</h1>
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col col-7>
-              <h4 class="primary-font">{{item.validity}}</h4>
+          <ion-col col-6 class="padding-bottom-cancel">
+            <h4 class="secondary-font">Identifier</h4>
           </ion-col>
-          <ion-col col-5>
-              <h4 class="primary-font text-right-align-horizontally">{{item.status}}</h4>
-          </ion-col>          
+          <ion-col col-6 class="padding-bottom-cancel">
+            <h4 class="secondary-font text-right-align-horizontally">Receiver</h4>
+          </ion-col>
+          <ion-col col-6 class="padding-top-cancel">
+            <h4 class="primary-font">{{item.identifier}}</h4>
+          </ion-col>
+          <ion-col col-6 class="padding-top-cancel">
+            <h4 class="primary-font text-right-align-horizontally">{{item.uname}}</h4>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-7 class="padding-bottom-cancel">
+            <h4 class="secondary-font">Valid till</h4>
+          </ion-col>
+          <ion-col col-5 class="padding-bottom-cancel">
+            <h4 class="secondary-font text-right-align-horizontally">Status</h4>
+          </ion-col>
+          <ion-col col-7 class="padding-top-cancel">
+            <h4 class="primary-font">{{item.validity}}</h4>
+          </ion-col>
+          <ion-col col-5 class="padding-top-cancel">
+            <h4 class="primary-font text-right-align-horizontally first-capital">{{item.status}}</h4>
+          </ion-col>
         </ion-row>
       </ion-row>
       <!-- <accordion-list *ngFor="let item of Searcheditems; let index = index" [status]="item.status" [date]="item.date"

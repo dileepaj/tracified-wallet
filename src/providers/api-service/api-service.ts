@@ -91,9 +91,6 @@ export class ApiServiceProvider {
       })
     }
 
-    console.log(this.properties.token);
-    console.log(JSON.stringify(body));
-
     return this.http.post(getMainPublicKeys, body, this.reqOpts)
   }
 

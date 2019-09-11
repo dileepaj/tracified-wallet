@@ -39,7 +39,7 @@ export class ItemSentPage {
   ngOnInit() { }
 
   ionViewDidLoad() {
-    this.setFilteredItems();
+    // this.setFilteredItems();
   }
 
   ionViewDidEnter() {
@@ -82,16 +82,16 @@ export class ItemSentPage {
               var validTill = this.timeDuration(newDate, now);
 
               let itemArr = [];
-              parsedTx.operations.forEach(tansac => {
-                if (tansac.type == 'payment') {
+              parsedTx.operations.forEach(transac => {
+                if (transac.type == 'payment') {
                   let i = 0;
 
                   let assetObj = {
-                    "source": tansac.source,
+                    "source": transac.source,
                     "sourcename": this.mainAccount.accountName,
-                    "asset": tansac.asset.code,
-                    "amount": tansac.amount,
-                    "destination": tansac.destination
+                    "asset": transac.asset.code,
+                    "amount": transac.amount,
+                    "destination": transac.destination
                   }
 
                   itemArr.push(assetObj);
@@ -105,8 +105,6 @@ export class ItemSentPage {
                 AcceptXdr: item.AcceptXdr,
                 RejectTxn: item.RejectTxn,
                 RejectXdr: item.RejectXdr,
-                // @ts-ignore
-                // date: oldDate.toLocaleString(),
                 date: hoursAgo,
                 itemArr: itemArr,
                 uname: tempLast.destination,
@@ -117,13 +115,15 @@ export class ItemSentPage {
                 // @ts-ignore
                 validity: newDate.toLocaleString(),
                 time: validTill,
-                status: item.Status
+                status: item.Status,
+                identifier: item.Identifier
+
               }
               // console.log(obj)
               Tempitems.push(obj)
               // console.log(Tempitems)
               this.items = Tempitems.reverse();
-              this.setFilteredItems();
+              // this.setFilteredItems();
 
             });
             return namedKeys
@@ -143,10 +143,11 @@ export class ItemSentPage {
               this.dissmissLoading();
             }
 
-          })
+          });
         } else {
-          if (this.isLoadingPresent) { this.dissmissLoading(); }
-
+          if (this.isLoadingPresent) { 
+            this.dissmissLoading(); 
+          }
         }
       }, (err) => {
         if (this.isLoadingPresent) {
@@ -177,17 +178,23 @@ export class ItemSentPage {
         receiverNames.push(obj[key].Receiver);
       }
 
-      // this.apiService.getNames(receiverNames).subscribe((resp) => {
-      //   //@ts-ignore
-      //   resolve(resp.body.pk)
-      // }, (err) => {
-      //   if (this.isLoadingPresent) {
-      //     this.dissmissLoading();
-      //   }
-      //   reject(err);
-      // });
+      const param = {
+        "account": {
+          "accounts": receiverNames
+        }
+      }
 
-      resolve(["Sharmilan"]);
+      this.apiService.getNames(param).subscribe((resp: any) => {
+        console.log(resp);
+        resolve(resp.body.pk)
+      }, (err) => {
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+        }
+        reject(err);
+      });
+
+      // resolve(["Sharmilan"]);
     });
   }
 

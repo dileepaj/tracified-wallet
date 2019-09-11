@@ -95,13 +95,13 @@ export class ItemReceivedPage {
               var validTill = this.timeDuration(newDate, now);
 
               let itemArr = [];
-              parsedTx.operations.forEach(tansac => {
-                if (tansac.type == "payment") {
+              parsedTx.operations.forEach(transac => {
+                if (transac.type == "payment") {
                   let assetObj = {
-                    source: tansac.source,
-                    sourcename: this.mainAccount.accountName,
-                    asset: tansac.asset.code,
-                    amount: tansac.amount
+                    "source": transac.source,
+                    "sourcename": this.mainAccount.accountName,
+                    "asset": transac.asset.code,
+                    "amount": transac.amount
                   };
 
                   itemArr.push(assetObj);
@@ -116,6 +116,8 @@ export class ItemReceivedPage {
                 tempLast.source = null;
               }
 
+              // console.log("tempLast.source: ", tempLast.source);
+
               const obj = {
                 AcceptTxn: item.AcceptTxn,
                 AcceptXdr: item.AcceptXdr,
@@ -123,7 +125,8 @@ export class ItemReceivedPage {
                 RejectXdr: item.RejectXdr,
                 date: hoursAgo,
                 itemArr: itemArr,
-                uname: tempLast.source,
+                uname: 'GB6LZPFMYLHY3EYFXAO7H7257QWHIFVFOMQ4ECFXF43FUQ5NH74ULWD3',
+                // uname: tempLast.source,
                 oname: tempLast.asset,
                 qty: tempLast.amount,
                 validity: newDate.toLocaleString(),
@@ -143,9 +146,12 @@ export class ItemReceivedPage {
             });
             return namedKeys;
           }).then(namedKeys => {
+
             this.items.forEach(element => {
+              console.log("Named Keys: ", namedKeys);
+              console.log("Uname: ", element.uname);
               //@ts-ignore
-              element.uname = namedKeys.find((o) => { element.uname === o.pk }).accountName;
+              element.uname = namedKeys.find(o => element.uname === o.pk ).accountName;
             });
 
             if (this.isLoadingPresent) {
@@ -207,10 +213,10 @@ export class ItemReceivedPage {
       this.itemsProvider.updateStatusCOC(obj).subscribe(resp => {
         // @ts-ignore
         if (resp.Body.Status == "accepted") {
-          this.presentToast("Transaction Success!");
+          this.presentAlert("Success", "Successfully transferred the assets. You can check available assets in Transfer page.");
           // @ts-ignore
         } else if (resp.Body.Status == "rejected") {
-          this.presentToast("Transaction Success!");
+          this.presentAlert("Error", "Asset could not be accepted due to an error. Please try again or contact an admin.");
         }
         if (this.isLoadingPresent) {
           this.dissmissLoading();
@@ -220,12 +226,12 @@ export class ItemReceivedPage {
         if (this.isLoadingPresent) {
           this.dissmissLoading();
         }
-        this.presentToast("Transaction Unsuccessfull");
+        this.presentAlert("Error", "Asset could not be accepted due to an error. Please try again or contact an admin.");
       });
     }).catch(e => {
       if (this.isLoadingPresent) {
         this.dissmissLoading();
-        this.presentToast("Error! signing Transaction.");
+        this.presentAlert("Error", "Asset could not be accepted due to an error. Please try again or contact an admin.");
       }
     });
   }
@@ -243,22 +249,27 @@ export class ItemReceivedPage {
         receiverNames.push(obj[key].Sender);
       }
 
-      // this.apiService.getNames(receiverNames).subscribe(
-      //   resp => {
-      //     //@ts-ignore
-      //     console.log(resp.body.pk);
-      //     //@ts-ignore
-      //     resolve(resp.body.pk);
-      //   },
-      //   err => {
-      //     if (this.isLoadingPresent) {
-      //       this.dissmissLoading();
-      //     }
-      //     reject(err);
-      //   }
-      // );
+      const param = {
+        "account": {
+          "accounts": receiverNames
+        }
+      }
 
-      resolve(["sharmilan"]);
+      this.apiService.getNames(param).subscribe(
+        resp => {
+          //@ts-ignore
+          console.log(resp.body.pk);
+          //@ts-ignore
+          resolve(resp.body.pk);
+        },
+        err => {
+          if (this.isLoadingPresent) {
+            this.dissmissLoading();
+          }
+          reject(err);
+        }
+      );
+
     });
   }
 
@@ -364,6 +375,16 @@ export class ItemReceivedPage {
     alert.setMessage(message);
     alert.addButton({
       text: "close"
+    });
+    alert.present();
+  }
+
+  presentAlert(title, message) {
+    let alert = this.alertCtrl.create();
+    alert.setTitle(title);
+    alert.setMessage(message);
+    alert.addButton({
+      text: 'OK'
     });
     alert.present();
   }

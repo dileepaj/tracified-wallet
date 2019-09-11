@@ -105,7 +105,6 @@ export class AddAccountPage {
               }
             }
 
-            // Save to local storage
             this.dataService.addTransactionAccount(account).then((res) => {
               this.dissmissLoading();
               if (res.status === 200) {

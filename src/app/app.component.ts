@@ -29,7 +29,7 @@ export class MyApp {
   activePage: any;
   rootPage;
   company = 'Tracified Wallet';
-  userType = 'Admin'
+  userType = 'Wallet User'
   user: any;
   deviceInfo = null;
   private loading;
