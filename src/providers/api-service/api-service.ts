@@ -61,24 +61,7 @@ export class ApiServiceProvider {
     return this.http.post(this.url + '/' + endpoint, body, reqOpts);
   }
 
-  getPublickey(body: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.reqOpts = {
-        observe: 'response',
-        headers: new HttpHeaders({
-          'Accept': 'application/json',
-          'Content-Type': 'Application/json',
-          'Authorization': 'Bearer ' + this.properties.token
-        })
-      }
-      this.http.get(getMainPublicKey + '?accountName=' + body, this.reqOpts).subscribe(response => {
-        resolve(response);
-      }, error => {
-        console.log(error);
-        reject(error);
-      });
-    });
-  }
+
 
   getNames(body) {
 
@@ -343,5 +326,20 @@ export class ApiServiceProvider {
     let headers = { 'Content-Type': 'application/json' };
     return this.postN(sendCoC, coc, headers);
   }
-  
+
+  getPublickey(body: any): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token
+      })
+    }
+
+    let url = getMainPublicKey + '?accountName=' + body;
+
+    return this.getN(url, header);
+  }
+
 }

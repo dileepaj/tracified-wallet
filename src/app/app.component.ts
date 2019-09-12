@@ -91,9 +91,9 @@ export class MyApp {
           }
         });
       });
-      this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
-      this.properties.skipConsoleLogs = true;
+      this.properties.skipConsoleLogs = false;
       this.properties.writeToFile = true;
+      this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
     });
 
     this.initTranslate();

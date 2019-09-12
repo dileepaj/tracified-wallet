@@ -90,35 +90,22 @@ export class SelectSearchablePage {
         this.selectedItems.push(item);
     }
 
-        /**
-* @desc get public key from admin (name - public key mapping)  
-* @param string $name - the name to be mapped with public key
-* @author Jaje thananjaje3@gmail.com
-* @return public key as a string
-*/
     getPublickey(name) {
         if (this.connectivity.onDevice) {
             this.presentLoading();
             return new Promise((resolve, reject) => {
-
                 this.apiService.getPublickey(name).then((res) => {
                     this.dissmissLoading();
                     if (res.status === 200) {
-                        console.log(res.body)
                         resolve(res.body.pk)
-                    } else if (res.status === 404) {
-                        this.userError(name, 'Public key not found');
-                        reject()
                     }
-                })
-                    .catch((error) => {
-                        this.dissmissLoading();
-                        this.userError(name, 'Public key not found');
-                        console.log(error);
-                        reject()
-                    });
-            })
-
+                }).catch((error) => {
+                    this.dissmissLoading();
+                    this.userError(name, 'Public key not found');
+                    console.log(error);
+                    reject()
+                });
+            });
         } else {
             this.presentToast('There is no internet at the moment.');
         }
@@ -186,20 +173,18 @@ export class SelectSearchablePage {
             }
 
             let filterText = this.selectComponent.filterText.trim().toLowerCase();
-            this.getPublickey(this.selectComponent.filterText)
-                .then((pk) => {
-                    if (pk) {
-                        this.filteredItems = [pk];
-                    } else {
-                        this.filteredItems = this.selectComponent.items.filter(item => {
-                            if (typeof item === 'object') {
-                                return item[this.selectComponent.itemTextField].toLowerCase().indexOf(filterText.toLowerCase()) > -1;
-                            }
-                            return item.toLowerCase().indexOf(filterText.toLowerCase()) > -1;
-                        });
-                    }
-                })
-                .catch((err) => console.log(err))
+            this.getPublickey(this.selectComponent.filterText).then((pk) => {
+                if (pk) {
+                    this.filteredItems = [pk];
+                } else {
+                    this.filteredItems = this.selectComponent.items.filter(item => {
+                        if (typeof item === 'object') {
+                            return item[this.selectComponent.itemTextField].toLowerCase().indexOf(filterText.toLowerCase()) > -1;
+                        }
+                        return item.toLowerCase().indexOf(filterText.toLowerCase()) > -1;
+                    });
+                }
+            }).catch((err) => console.log(err))
 
         }
     }

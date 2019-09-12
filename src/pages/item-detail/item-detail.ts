@@ -147,6 +147,10 @@ export class ItemDetailPage {
         ],
         buttons: [
           {
+            text: 'Cancel',
+            role: 'cancel'
+          },
+          {
             text: 'Submit',
             handler: data => {
 
@@ -157,11 +161,7 @@ export class ItemDetailPage {
               }
 
             }
-          },
-          {
-            text: 'Cancel',
-            role: 'cancel'
-          }
+          },          
         ]
       });
       alert.present();
