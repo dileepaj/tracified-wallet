@@ -108,22 +108,22 @@ export class ItemDetailPage {
                 this.logger.info("Item transferred successfully: " + this.item.asset_code, this.properties.skipConsoleLogs, this.properties.writeToFile);
               }).catch((err) => {
                 this.dissmissLoading();
-                this.presentAlert("Error", "Invalid transaction password. Please try again.");
-                this.logger.error("SSending CoC to gateway failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+                this.presentAlert("Error", "Failed to send the transaction. Please try again.");
+                this.logger.error("Sending CoC to gateway failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
               });
             }).catch((err) => {
               this.dissmissLoading();
-              this.presentAlert("Error", "Invalid transaction password. Please try again.");
+              this.presentAlert("Error", "Failed to build the transaction. Please try again.");
               this.logger.error("Accept and Reject xdr build failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
           }).catch((err) => {
             this.dissmissLoading();
-            this.presentAlert("Error", "Invalid transaction password. Please try again.");
+            this.presentAlert("Error", "Failed to verify transaction. Please try again.");
             this.logger.error("Verify CoC failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
           });
         }).catch((err) => {
           this.dissmissLoading();
-          this.presentAlert("Error", "Invalid transaction password. Please try again.");
+          this.presentAlert("Error", "Failed to prepare the transaction. Please try again.");
           this.logger.error("Preparing sub account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
       }).catch((err) => {
@@ -161,7 +161,7 @@ export class ItemDetailPage {
               }
 
             }
-          },          
+          },
         ]
       });
       alert.present();
@@ -190,46 +190,63 @@ export class ItemDetailPage {
         let avaialbeAccounts = [];
         let matchingAccount;
         let statuses = res.body;
-        statuses.forEach((status) => {
-          if (status.available) {
-            avaialbeAccounts.push(status.subAccount);
-          } else if (status.receiver == this.COCForm.receiver) {
-            matchingAccount = status;
-          }
-        });
-        if (matchingAccount != '') {
-          let subAcc = {
-            publicKey: matchingAccount.subAccount,
-            available: false,
-            sequenceNo: matchingAccount.sequenceNo
-          };
-          resolve(subAcc);
-        } else if (avaialbeAccounts.length > 0) {
-          this.blockchainService.checkIfAccountInvalidated(avaialbeAccounts[0]).then((status) => {
-            if (status) {
-              let subAcc = {
-                publicKey: avaialbeAccounts[0],
-                available: true,
-                sequenceNo: 0
-              };
-              resolve(subAcc);
-            } else {
-              let subPair = this.blockchainService.getSubAccountPair(avaialbeAccounts[0], this.properties.defaultAccount);
-              this.blockchainService.invalidateSubAccountKey(subPair, this.properties.defaultAccount).then(() => {
+        if (statuses) {
+          statuses.forEach((status) => {
+            if (status.available) {
+              avaialbeAccounts.push(status.subAccount);
+            } else if (status.receiver == this.COCForm.receiver) {
+              matchingAccount = status;
+            }
+          });
+          console.log("Matching account: ", matchingAccount);
+          if (matchingAccount) {
+            console.log("Matching Account");
+            let subAcc = {
+              publicKey: matchingAccount.subAccount,
+              available: false,
+              sequenceNo: matchingAccount.sequenceNo
+            };
+            resolve(subAcc);
+          } else if (avaialbeAccounts.length > 0) {
+            console.log("Available Account", avaialbeAccounts[0]);
+            this.blockchainService.checkIfAccountInvalidated(avaialbeAccounts[0]).then((status) => {
+              if (status) {
                 let subAcc = {
                   publicKey: avaialbeAccounts[0],
                   available: true,
                   sequenceNo: 0
                 };
                 resolve(subAcc);
-              }).catch((err) => {
-                reject(err);
-              });
-            }
-          }).catch((err) => {
-            reject(err);
-          });
+              } else {
+                let subPair = this.blockchainService.getSubAccountPair(avaialbeAccounts[0], this.properties.defaultAccount);
+                this.blockchainService.invalidateSubAccountKey(subPair, this.properties.defaultAccount).then(() => {
+                  let subAcc = {
+                    publicKey: avaialbeAccounts[0],
+                    available: true,
+                    sequenceNo: 0
+                  };
+                  resolve(subAcc);
+                }).catch((err) => {
+                  reject(err);
+                });
+              }
+            }).catch((err) => {
+              reject(err);
+            });
+          } else {
+            console.log("New Account");
+            this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
+              let subAcc = {
+                publicKey: subKeyPair.publicKey(),
+                available: false
+              };
+              resolve(subAcc);
+            }).catch((err) => {
+              reject(err);
+            });
+          }
         } else {
+          console.log("New Account");
           this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
             let subAcc = {
               publicKey: subKeyPair.publicKey(),

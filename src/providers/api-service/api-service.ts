@@ -87,7 +87,7 @@ export class ApiServiceProvider {
           'Authorization': 'Bearer ' + this.properties.token,
         })
       }
-      this.http.put(this.LocalAdminURL + '/api/bc/key/sub', body, this.reqOpts)
+      this.http.put(this.LocalAdminURL + '/api/bc/user/subAccount', body, this.reqOpts)
         .subscribe(response => {
           // console.log(response);
 
@@ -257,7 +257,7 @@ export class ApiServiceProvider {
     return this.postN(addMainAcc, payload, headers);
   }
 
-  addTransactionSubAccount(payload) {
+  addTransactionSubAccount(payload): Promise<any> {
     let headers = {
       observe: 'response',
       headers: new HttpHeaders({
@@ -267,7 +267,7 @@ export class ApiServiceProvider {
       })
     };
 
-    return this.putN(updateSubAcc, payload, headers)
+    return this.putN(updateSubAcc, payload, headers);
   }
 
   validateMainAccountN(payload): Promise<any> {

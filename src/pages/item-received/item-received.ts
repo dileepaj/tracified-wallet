@@ -148,8 +148,6 @@ export class ItemReceivedPage {
           }).then(namedKeys => {
 
             this.items.forEach(element => {
-              console.log("Named Keys: ", namedKeys);
-              console.log("Uname: ", element.uname);
               //@ts-ignore
               element.uname = namedKeys.find(o => element.uname === o.pk ).accountName;
             });

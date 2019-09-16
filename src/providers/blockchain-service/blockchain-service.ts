@@ -7,6 +7,7 @@ import { stellarNet } from '../../shared/config';
 import { Logger } from 'ionic-logger-new';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 
 @Injectable()
 export class BlockchainServiceProvider {
@@ -16,7 +17,8 @@ export class BlockchainServiceProvider {
     private logger: Logger,
     private properties: Properties,
     private mappingService: MappingServiceProvider,
-    private apiService: ApiServiceProvider
+    private apiService: ApiServiceProvider,
+    private storageService: StorageServiceProvider
   ) { }
 
   removeFoAccount(accounts) {
@@ -284,16 +286,19 @@ export class BlockchainServiceProvider {
             let keyPair = this.createAddress();
             const account = {
               "account": {
-                "subKey": keyPair.publicKey(),
-                "pk": this.properties.defaultAccount.pk,
-                "sk": keyPair.secret(),
-                "skp": keyPair.secret(),
-                "skInvalidated": false
+                "subAccount": {
+                  "pk": keyPair.publicKey(),
+                  "sk": keyPair.secret(),
+                  "skp": keyPair.secret(),
+                  "skInvalidated": false
+                },
+                "pk": this.properties.defaultAccount.pk
               }
-            };
-            this.apiService.addSubAccount(account).then((res) => {
+            }
+            this.apiService.addTransactionSubAccount(account).then((res) => {
               if (res.status == 200) {
                 this.properties.defaultAccount.subAccounts.push({ "pk": keyPair.publicKey(), "sk": keyPair.secret(), "skp": keyPair.secret(), "skInvalidated": false });
+                this.storageService.setDefaultAccount(this.properties.defaultAccount);
                 this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), fundStatus.amount).then(() => {
                   this.invalidateSubAccountKey(keyPair, mainAccount).then(() => {
                     this.logger.info("Successfully invalidated the account", this.properties.skipConsoleLogs, this.properties.writeToFile);
