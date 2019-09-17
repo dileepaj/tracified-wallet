@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, ToastController, LoadingController, Toast, AlertController, NavParams } from 'ionic-angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Network, Server, Keypair, Asset, TransactionBuilder, Operation } from 'stellar-sdk';
+import { Keypair } from 'stellar-sdk';
 import { AES, enc } from "crypto-js";
-import { stellarNet } from '../../shared/config';
 
-Network.usePublicNetwork();
-var server = new Server(stellarNet);
+// Network.usePublicNetwork();
+// var server = new Server(stellarNet);
 const setup = require("hsimp-purescript");
 const periods = require("hsimp-purescript/dictionaries/periods");
 const top10 = require("hsimp-purescript/dictionaries/top10");
@@ -190,33 +189,33 @@ export class AddAccountPage {
     return Keypair.random();
   }
 
-  multisignSubAccount(subAccount, mainAccount) {
-    return new Promise((resolve, reject) => {
-      server.loadAccount(subAccount.publicKey()).then(function (account) {
-        var transaction = new TransactionBuilder(account).addOperation(Operation.setOptions({
-          signer: {
-            ed25519PublicKey: mainAccount,
-            weight: 2
-          }
-        })).addOperation(Operation.setOptions({
-          masterWeight: 0, // set master key weight
-          lowThreshold: 2,
-          medThreshold: 2, // a payment is medium threshold
-          highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
-        })).build();
+  // multisignSubAccount(subAccount, mainAccount) {
+  //   return new Promise((resolve, reject) => {
+  //     server.loadAccount(subAccount.publicKey()).then(function (account) {
+  //       var transaction = new TransactionBuilder(account).addOperation(Operation.setOptions({
+  //         signer: {
+  //           ed25519PublicKey: mainAccount,
+  //           weight: 2
+  //         }
+  //       })).addOperation(Operation.setOptions({
+  //         masterWeight: 0, // set master key weight
+  //         lowThreshold: 2,
+  //         medThreshold: 2, // a payment is medium threshold
+  //         highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
+  //       })).build();
 
-        transaction.sign(subAccount); // sign the transaction
+  //       transaction.sign(subAccount); // sign the transaction
 
-        return server.submitTransaction(transaction);
-      }).then(function (transactionResult) {
-        console.log(transactionResult);
-        resolve()
-      }).catch(function (err) {
-        console.error(err);
-        reject()
-      });
-    });
-  }
+  //       return server.submitTransaction(transaction);
+  //     }).then(function (transactionResult) {
+  //       console.log(transactionResult);
+  //       resolve()
+  //     }).catch(function (err) {
+  //       console.error(err);
+  //       reject()
+  //     });
+  //   });
+  // }
 
   encyrptSecret(key, signer) {
     return new Promise((resolve, reject) => {

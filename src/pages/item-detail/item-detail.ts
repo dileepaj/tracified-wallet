@@ -1,23 +1,16 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { Items } from '../../providers/items/items';
-import { Network, Operation, Server, TransactionBuilder, Asset, Keypair } from 'stellar-sdk';
+import { Keypair } from 'stellar-sdk';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
-var StellarSdk = require('stellar-sdk')
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
-import { stellarNet } from '../../shared/config';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
-import { subAccountBaseFee } from '../../shared/config';
-import { TabsPage } from '../../pages/tabs/tabs';
 import { TransferPage } from '../../pages/transfer/transfer';
 import { Logger } from 'ionic-logger-new';
-
-var server = new Server(stellarNet);
-StellarSdk.Network.usePublicNetwork();
 
 @IonicPage()
 

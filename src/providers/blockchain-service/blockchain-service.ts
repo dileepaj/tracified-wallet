@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse } from 'stellar-sdk';
 
 import { Properties } from '../../shared/properties';
-import { stellarNet } from '../../shared/config';
+import { blockchainNet } from '../../shared/config';
+import { blockchainNetType } from '../../shared/config';
 import { Logger } from 'ionic-logger-new';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
@@ -39,7 +40,12 @@ export class BlockchainServiceProvider {
 
   invalidateSubAccountKey(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
-      var server = new Server(stellarNet);
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      let server = new Server(blockchainNet);
       server.loadAccount(subAccount.publicKey()).then((account) => {
         var transaction = new TransactionBuilder(account).addOperation(Operation.setOptions({
           signer: {
@@ -75,8 +81,12 @@ export class BlockchainServiceProvider {
       var sendingAccPair = Keypair.fromSecret(sendingAccSk);
       var sendingAccPk = sendingAccPair.publicKey();
 
-      Network.usePublicNetwork();
-      var server = new Server(stellarNet);
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      let server = new Server(blockchainNet);
 
       return server.loadAccount(sendingAccPk).then((account) => {
         var transaction = new TransactionBuilder(account)
@@ -103,8 +113,12 @@ export class BlockchainServiceProvider {
       var sendingAccPair = Keypair.fromSecret(sendingAccSk);
       var sendingAccPk = sendingAccPair.publicKey();
 
-      Network.usePublicNetwork();
-      var server = new Server(stellarNet);
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      let server = new Server(blockchainNet);
 
       return server.loadAccount(sendingAccPk).then((account) => {
         var transaction = new TransactionBuilder(account)
@@ -171,8 +185,12 @@ export class BlockchainServiceProvider {
 
   blockchainAccountInfo(publicKey) {
     return new Promise((resolve, reject) => {
-      Network.usePublicNetwork();
-      var server = new Server(stellarNet);
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      let server = new Server(blockchainNet);
       server.loadAccount(publicKey).then((account) => {
         resolve(account);
       }).catch((err) => {
@@ -184,8 +202,12 @@ export class BlockchainServiceProvider {
 
   checkIfAccountInvalidated(publicKey): Promise<any> {
     return new Promise((resolve, reject) => {
-      Network.usePublicNetwork();
-      var server = new Server(stellarNet);
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      let server = new Server(blockchainNet);
       server.loadAccount(publicKey).then((account) => {
         let signers = account.signers;
         if (signers.length == 2) {
@@ -336,9 +358,13 @@ export class BlockchainServiceProvider {
 
   verifyCoC(secretKey, identifier, receiverPk, item, qty, validityPeriod) {
     return new Promise((resolve, reject) => {
-      var sourceKeypair = Keypair.fromSecret(secretKey);
-      Network.usePublicNetwork();
-      var server = new Server(stellarNet);
+      let sourceKeypair = Keypair.fromSecret(secretKey);
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      let server = new Server(blockchainNet);
       server.loadAccount(sourceKeypair.publicKey()).then((account) => {
         var transaction = new TransactionBuilder(account)
           .addOperation(Operation.manageData({ name: 'Transaction Type', value: '11', }))
@@ -373,11 +399,15 @@ export class BlockchainServiceProvider {
       var maxTime = new Date(validity).getTime() / 1000.0;
       var sourceKeypair = Keypair.fromSecret(signerSK);
 
-      var asset = new Asset(item, 'GA34R3AQUTUGARS6AZCXKVW5GKUQQB3IFQVG4T47R6OOKN4T4O3KKHNP');
+      var asset = new Asset(item, 'GAJWMUMLOWHZUENSNQLSJJJLOS5QVYZGVSYRP3MSH35WFXI5PT3CP6BO');
       var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
-      Network.usePublicNetwork();
-      var server = new Server(stellarNet);
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      let server = new Server(blockchainNet);
       server.loadAccount(subAccount.publicKey).then(function (account) {
         var transaction = new TransactionBuilder(account, opts)
         transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
@@ -425,8 +455,12 @@ export class BlockchainServiceProvider {
       var sourceKeypair = Keypair.fromSecret(signerSK);
       var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
-      Network.usePublicNetwork();
-      var server = new Server(stellarNet);
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      let server = new Server(blockchainNet);
       server.loadAccount(subAccount.publicKey).then(function (account) {
         var transaction = new TransactionBuilder(account, opts).addOperation(Operation.manageData({
           name: 'Status', value: 'rejected', source: receiver

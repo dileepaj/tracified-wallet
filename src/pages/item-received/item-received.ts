@@ -8,7 +8,7 @@ import {
 } from "ionic-angular";
 import { Items } from "../../providers/items/items";
 import { Network, Keypair, Transaction } from "stellar-base";
-Network.usePublicNetwork();
+// Network.usePublicNetwork();
 import { AES, enc } from "crypto-js";
 import { ApiServiceProvider } from "../../providers/api-service/api-service";
 import { StorageServiceProvider } from "../../providers/storage-service/storage-service";

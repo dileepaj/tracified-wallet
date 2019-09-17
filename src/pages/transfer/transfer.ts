@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, ModalController, LoadingController, AlertController } from 'ionic-angular';
-import { Server, Transaction } from 'stellar-sdk';
+import { Server, Transaction, Network } from 'stellar-sdk';
 import { Items } from '../../providers/items/items';
 import { ItemDetailPage } from '../item-detail/item-detail';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
-import { AES, enc } from "crypto-js";
-import { stellarNet } from '../../shared/config';
+import { blockchainNet } from '../../shared/config';
+import { blockchainNetType } from '../../shared/config';
+
 
 @IonicPage()
 @Component({
@@ -71,11 +72,15 @@ export class TransferPage {
 
   getBalance() {
     let assets = [];
-    var server = new Server(stellarNet);
+    if (blockchainNetType === 'live') {
+      Network.usePublicNetwork();
+    } else {
+      Network.useTestNetwork();
+    }
+    let server = new Server(blockchainNet);
     server.loadAccount(this.mainAccount.pk).then((account) => {
-      account.balances.forEach((balance) => {
+      account.balances.forEach((balance: any) => {
         let bal: number = parseFloat(balance.balance);
-        // @ts-ignore
         assets.push({ 'asset_code': balance.asset_code, 'balance': bal.toFixed(0) });
       });
       assets.pop();
