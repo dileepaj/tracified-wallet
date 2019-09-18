@@ -31,6 +31,8 @@ export const resetPassword: string = admin + '/sign/forgetpassword'; // POST
 // Gateway GET
 
 export const previosTxnId: string = gateway + '/transaction/lastTxn/'; // GET
+export const cocReceived: string = gateway + '/getcocbyreceiver/';
+export const cocSent: string = gateway + '/getcocbysender/';
 
 // Gateway POST
 

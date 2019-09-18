@@ -85,4 +85,12 @@ export class DataServiceProvider {
   sendCoC(coc): Promise<any> {
     return this.apiService.sendCoC(coc);
   }
+
+  getAccountNamesOfKeys(accountKeys): Promise<any> {
+    return this.apiService.getAccountNames(accountKeys);
+  }
+
+  getAllCoCs(accountKey): Promise<any> {
+    return this.apiService.queryAllCoCs(accountKey);
+  }
 }

@@ -95,7 +95,7 @@ export class BlockchainServiceProvider {
         transaction.sign(sendingAccPair);
 
         return server.submitTransaction(transaction).then((status) => {
-          this.logger.info("Funds transferred successfully for the new account: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
+          this.logger.info("Funds transferred successfully for the new account: " + amount + " coins. " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
           resolve(status);
         }).catch((err) => {
           this.logger.error("Fund transfer transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);

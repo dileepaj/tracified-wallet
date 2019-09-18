@@ -13,6 +13,8 @@ import { AES, enc } from "crypto-js";
 import { ApiServiceProvider } from "../../providers/api-service/api-service";
 import { StorageServiceProvider } from "../../providers/storage-service/storage-service";
 import { Properties } from "../../shared/properties";
+import { DataServiceProvider } from "../../providers/data-service/data-service";
+import { Logger } from "ionic-logger-new";
 
 @IonicPage()
 @Component({
@@ -21,10 +23,7 @@ import { Properties } from "../../shared/properties";
 })
 export class ItemReceivedPage {
   key: string = "ejHu3Gtucptt93py1xS4qWvIrweMBaO";
-  adminKey: string = "hackerkaidagalbanisbaby"
-    .split("")
-    .reverse()
-    .join("");
+  adminKey: string = "hackerkaidagalbanisbaby".split("").reverse().join("");
 
   searchTerm: any = "";
   Searcheditems: {
@@ -53,7 +52,9 @@ export class ItemReceivedPage {
     public toastCtrl: ToastController,
     public itemsProvider: Items,
     private storage: StorageServiceProvider,
-    private properties: Properties
+    private properties: Properties,
+    private dataService: DataServiceProvider,
+    private logger: Logger
   ) { }
 
   ngOnInit() { }
@@ -65,11 +66,40 @@ export class ItemReceivedPage {
   ionViewDidEnter() {
     this.presentLoading();
     this.mainAccount = this.properties.defaultAccount;
-    this.loadCOCReceived();
+    this.getAllCoCs();
+  }
+
+  getAllCoCs() {
+    this.dataService.getAllCoCs(this.mainAccount.pk).then((res) => {
+      let cocs = res.body;
+      console.log(cocs);
+      if (cocs.length > 0) {
+        let senderPks = new Array();
+        for (let i = 0; i < cocs.length; i++) {
+          senderPks.push(cocs[i].sender);
+        }
+        const param = {
+          "account": {
+            "accounts": senderPks
+          }
+        }
+
+        this.dataService.getAccountNamesOfKeys(param).then((accountNames) => {
+          console.log("Account Names: ", accountNames);
+        }).catch((err) => {
+          // User error
+          this.logger.error("Could not get the account names: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+        });
+      } else {
+
+      }
+    }).catch((err) => {
+      // User error
+      this.logger.error("Could not load CoCs: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+    });
   }
 
   loadCOCReceived() {
-    // try {
     this.itemsProvider.querycocbyReceiver(this.mainAccount.pk).subscribe(
       resp => {
         console.log("Resp: ", resp);
@@ -80,6 +110,7 @@ export class ItemReceivedPage {
           this.getNamesFromKeys(this.Citems).then(namedKeys => {
             this.Citems.forEach(item => {
               const parsedTx = new Transaction(item.AcceptXdr);
+              console.log("Transaction: ", parsedTx);
               // @ts-ignore
               const oldDate: number = new Date(
                 parsedTx.timeBounds.minTime * 1000
@@ -116,8 +147,6 @@ export class ItemReceivedPage {
                 tempLast.source = null;
               }
 
-              // console.log("tempLast.source: ", tempLast.source);
-
               const obj = {
                 AcceptTxn: item.AcceptTxn,
                 AcceptXdr: item.AcceptXdr,
@@ -125,8 +154,7 @@ export class ItemReceivedPage {
                 RejectXdr: item.RejectXdr,
                 date: hoursAgo,
                 itemArr: itemArr,
-                uname: 'GB6LZPFMYLHY3EYFXAO7H7257QWHIFVFOMQ4ECFXF43FUQ5NH74ULWD3',
-                // uname: tempLast.source,
+                uname: tempLast.source,
                 oname: tempLast.asset,
                 qty: tempLast.amount,
                 validity: newDate.toLocaleString(),
@@ -145,11 +173,10 @@ export class ItemReceivedPage {
               this.setFilteredItems();
             });
             return namedKeys;
-          }).then(namedKeys => {
+          }).then((namedKeys: any) => {
 
             this.items.forEach(element => {
-              //@ts-ignore
-              element.uname = namedKeys.find(o => element.uname === o.pk ).accountName;
+              element.uname = namedKeys.find(o => element.uname === o.pk).accountName;
             });
 
             if (this.isLoadingPresent) {
@@ -236,17 +263,21 @@ export class ItemReceivedPage {
 
   getNamesFromKeys(receiverArr) {
     return new Promise((resolve, reject) => {
+      console.log("Receiver Arr before: ", receiverArr);
       var obj = {};
       for (var i = 0, len = receiverArr.length; i < len; i++) {
         obj[receiverArr[i]["Sender"]] = receiverArr[i];
       }
+
+      console.log("Receiver Obj: ", obj);
+      console.log("Receiver Arr: ", receiverArr);
 
       var receiverNames = new Array();
 
       for (var key in obj) {
         receiverNames.push(obj[key].Sender);
       }
-
+      console.log("Receiver Keys: ", receiverNames);
       const param = {
         "account": {
           "accounts": receiverNames

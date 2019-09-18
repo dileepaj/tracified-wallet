@@ -17,7 +17,8 @@ import {
   transactionPasswordChange,
   subAccountsStatus,
   updateSubAcc,
-  sendCoC
+  sendCoC,
+  cocReceived
 } from '../../shared/config';
 
 @Injectable()
@@ -340,6 +341,30 @@ export class ApiServiceProvider {
     let url = getMainPublicKey + '?accountName=' + body;
 
     return this.getN(url, header);
+  }
+
+  getAccountNames(accountKeys): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token,
+      })
+    }
+
+    return this.postN(getMainPublicKeys, accountKeys, header);
+  }
+
+  queryAllCoCs(accountKey): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    return this.getN(cocReceived +  accountKey, header);
   }
 
 }
