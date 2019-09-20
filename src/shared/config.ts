@@ -38,6 +38,7 @@ export const cocSent: string = gateway + '/getcocbysender/';
 
 export const subAccountsStatus: string = gateway + '/transaction/coc/subAccountStatus'
 export const sendCoC: string = gateway + '/insertcoccollection';
+export const updateCoC: string = gateway + '/insertcoccollection';
 
 // Blockchain access point
 

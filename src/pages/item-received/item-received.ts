@@ -15,6 +15,7 @@ import { StorageServiceProvider } from "../../providers/storage-service/storage-
 import { Properties } from "../../shared/properties";
 import { DataServiceProvider } from "../../providers/data-service/data-service";
 import { Logger } from "ionic-logger-new";
+import { BlockchainServiceProvider } from "../../providers/blockchain-service/blockchain-service";
 
 @IonicPage()
 @Component({
@@ -44,6 +45,9 @@ export class ItemReceivedPage {
   items = [];
   mainAccount: any;
 
+
+  private cocReceived = new Array();
+
   constructor(
     public navCtrl: NavController,
     public apiService: ApiServiceProvider,
@@ -54,7 +58,8 @@ export class ItemReceivedPage {
     private storage: StorageServiceProvider,
     private properties: Properties,
     private dataService: DataServiceProvider,
-    private logger: Logger
+    private logger: Logger,
+    private blockchainService: BlockchainServiceProvider
   ) { }
 
   ngOnInit() { }
@@ -64,19 +69,18 @@ export class ItemReceivedPage {
   }
 
   ionViewDidEnter() {
-    this.presentLoading();
     this.mainAccount = this.properties.defaultAccount;
     this.getAllCoCs();
   }
 
   getAllCoCs() {
+    this.presentLoading();
     this.dataService.getAllCoCs(this.mainAccount.pk).then((res) => {
       let cocs = res.body;
-      console.log(cocs);
       if (cocs.length > 0) {
         let senderPks = new Array();
         for (let i = 0; i < cocs.length; i++) {
-          senderPks.push(cocs[i].sender);
+          senderPks.push(cocs[i].Sender);
         }
         const param = {
           "account": {
@@ -84,275 +88,153 @@ export class ItemReceivedPage {
           }
         }
 
-        this.dataService.getAccountNamesOfKeys(param).then((accountNames) => {
-          console.log("Account Names: ", accountNames);
+        this.dataService.getAccountNamesOfKeys(param).then((res) => {
+          let accountNames = res.body.pk;
+          cocs.forEach((coc) => {
+            const transaction = new Transaction(coc.AcceptXdr);
+            let minTime = new Date(transaction.timeBounds.minTime * 1000);
+            let maxTime = new Date(transaction.timeBounds.maxTime * 1000);
+
+            let assetName;
+            let amount;
+            let sender;
+
+            let itemArr = [];
+
+            transaction.operations.forEach((operation) => {
+              if (operation.type == "payment") {
+                assetName = operation.asset.code;
+                amount = operation.amount;
+                sender = operation.source;
+
+                let assetObj = {
+                  source: operation.source,
+                  sourcename: this.mainAccount.accountName,
+                  asset: operation.asset.code,
+                  amount: operation.amount
+                };
+
+                itemArr.push(assetObj);
+              }
+            });
+
+            // let cocObj = {
+            //   assetCode: assetName,
+            //   quantity: amount,
+            //   sender: sender,
+            //   identifier: coc.Identifier,
+            //   validTill: maxTime.toLocaleString(),
+            //   sentDate: minTime.toLocaleString(),
+            //   AcceptXDR: coc.AcceptXdr,
+            //   RejectXDR: coc.RejectXdr,
+            //   status: coc.Status
+            // }
+
+            let cocObj = {
+              AcceptTxn: coc.AcceptTxn,
+              AcceptXdr: coc.AcceptXdr,
+              RejectTxn: coc.RejectTxn,
+              RejectXdr: coc.RejectXdr,
+              date: minTime.toLocaleString(),
+              itemArr: itemArr,
+              uname: sender,
+              oname: assetName,
+              qty: amount,
+              validity: maxTime.toLocaleString(),
+              time: maxTime.toLocaleString(),
+              status: coc.Status,
+
+              Identifier: coc.Identifier,
+              Receiver: coc.Receiver,
+              Sender: coc.Sender,
+              SequenceNo: coc.SequenceNo,
+              SubAccount: coc.SubAccount,
+              TxnHash: coc.TxnHash
+            }
+
+            cocObj.uname = accountNames.find(o => cocObj.uname == o.pk).accountName;
+            this.cocReceived.push(cocObj);
+            console.log("Final Arr: ", this.cocReceived);
+            this.dissmissLoading();
+          });
         }).catch((err) => {
-          // User error
+          this.dissmissLoading();
+          this.presentAlert("Error", "Failed to fetch the account details for received items. Please try again.");
           this.logger.error("Could not get the account names: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
       } else {
-
+        this.dissmissLoading();
       }
     }).catch((err) => {
-      // User error
+      this.dissmissLoading()
+      this.presentAlert("Error", "Failed to fetch the received items. Please try again.");
       this.logger.error("Could not load CoCs: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
     });
   }
 
-  loadCOCReceived() {
-    this.itemsProvider.querycocbyReceiver(this.mainAccount.pk).subscribe(
-      resp => {
-        console.log("Resp: ", resp);
-        if (resp != null) {
-          this.Citems = resp;
-          const Tempitems = [];
-
-          this.getNamesFromKeys(this.Citems).then(namedKeys => {
-            this.Citems.forEach(item => {
-              const parsedTx = new Transaction(item.AcceptXdr);
-              console.log("Transaction: ", parsedTx);
-              // @ts-ignore
-              const oldDate: number = new Date(
-                parsedTx.timeBounds.minTime * 1000
-              );
-              // @ts-ignore
-              const newDate: number = new Date(
-                parsedTx.timeBounds.maxTime * 1000
-              );
-
-              // @ts-ignore
-              let now: number = new Date();
-              var hoursAgo = this.timeDuration(now, oldDate);
-              var validTill = this.timeDuration(newDate, now);
-
-              let itemArr = [];
-              parsedTx.operations.forEach(transac => {
-                if (transac.type == "payment") {
-                  let assetObj = {
-                    "source": transac.source,
-                    "sourcename": this.mainAccount.accountName,
-                    "asset": transac.asset.code,
-                    "amount": transac.amount
-                  };
-
-                  itemArr.push(assetObj);
-                }
-              });
-
-              const tempLast = itemArr.pop();
-
-              if (itemArr.length > 0) {
-                tempLast.source = itemArr[0].source
-              } else {
-                tempLast.source = null;
-              }
-
-              const obj = {
-                AcceptTxn: item.AcceptTxn,
-                AcceptXdr: item.AcceptXdr,
-                RejectTxn: item.RejectTxn,
-                RejectXdr: item.RejectXdr,
-                date: hoursAgo,
-                itemArr: itemArr,
-                uname: tempLast.source,
-                oname: tempLast.asset,
-                qty: tempLast.amount,
-                validity: newDate.toLocaleString(),
-                time: validTill,
-                status: item.Status,
-
-                Identifier: item.Identifier,
-                Receiver: item.Receiver,
-                Sender: item.Sender,
-                SequenceNo: item.SequenceNo,
-                SubAccount: item.SubAccount,
-                TxnHash: item.TxnHash
-              };
-              Tempitems.push(obj);
-              this.items = Tempitems.reverse();
-              this.setFilteredItems();
-            });
-            return namedKeys;
-          }).then((namedKeys: any) => {
-
-            this.items.forEach(element => {
-              element.uname = namedKeys.find(o => element.uname === o.pk).accountName;
-            });
-
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-            }
-          }).catch(err => {
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-            }
-          });
-        } else {
-          if (this.isLoadingPresent) {
-            this.dissmissLoading();
+  updateCoC(coc, status) {
+    this.passwordPromptResponseWait().then((password) => {
+      this.presentLoading();
+      this.blockchainService.validateTransactionPassword(password, this.mainAccount.sk, this.mainAccount.pk).then((decKey) => {
+        if (status == 'accept') {
+          coc.AcceptXdr = this.blockchainService.signXdr(coc.AcceptXdr, decKey);
+        } else if (status == 'reject') {
+          coc.RejectXdr = this.blockchainService.signXdr(coc.RejectXdr, decKey);
+        }
+        this.dataService.updateCoC(coc).then((res) => {
+          this.dissmissLoading();
+          if (status == 'accept') {
+            this.presentAlert("Success", "Successfully accepted " + coc.oname + ". You can see the updated results in Transfer page.");
+          } else if (status == 'reject') {
+            this.presentAlert("Success", "Successfully rejected " + coc.oname + ". Your asset amout will not be changed.");
           }
-        }
-      },
-      err => {
-        if (this.isLoadingPresent) {
+        }).catch((err) => {
           this.dissmissLoading();
-        }
-      }
-    );
-  }
-
-  signXDR(item, status, signerSK) {
-    return new Promise((resolve, reject) => {
-      var sourceKeypair = Keypair.fromSecret(signerSK);
-
-      if (status == "accept") {
-        item.status = "accepted";
-        const parsedTx = new Transaction(item.AcceptXdr);
-        parsedTx.sign(sourceKeypair);
-        let x = parsedTx
-          .toEnvelope()
-          .toXDR()
-          .toString("base64");
-        item.AcceptXdr = x;
-        resolve(item);
-      } else {
-        item.status = "rejected";
-        const parsedTx = new Transaction(item.RejectXdr);
-        parsedTx.sign(sourceKeypair);
-        let x = parsedTx
-          .toEnvelope()
-          .toXDR()
-          .toString("base64");
-        item.RejectXdr = x;
-        resolve(item);
-      }
-
-    }).catch((e) => {
-      // reject(e)
-    });
-  }
-
-  sendSignedXDR(item, status, signerSK) {
-    this.presentLoading();
-    this.signXDR(item, status, signerSK).then(obj => {
-      this.itemsProvider.updateStatusCOC(obj).subscribe(resp => {
-        // @ts-ignore
-        if (resp.Body.Status == "accepted") {
-          this.presentAlert("Success", "Successfully transferred the assets. You can check available assets in Transfer page.");
-          // @ts-ignore
-        } else if (resp.Body.Status == "rejected") {
-          this.presentAlert("Error", "Asset could not be accepted due to an error. Please try again or contact an admin.");
-        }
-        if (this.isLoadingPresent) {
-          this.dissmissLoading();
-        }
-      }, err => {
-        item.status = "pending";
-        if (this.isLoadingPresent) {
-          this.dissmissLoading();
-        }
-        this.presentAlert("Error", "Asset could not be accepted due to an error. Please try again or contact an admin.");
-      });
-    }).catch(e => {
-      if (this.isLoadingPresent) {
+          this.presentAlert("Error", "Could not proceed with the action. Please try again.");
+          this.logger.error("Failed to update the CoC: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+        });
+      }).catch((err) => {
         this.dissmissLoading();
-        this.presentAlert("Error", "Asset could not be accepted due to an error. Please try again or contact an admin.");
-      }
+        this.presentAlert("Error", "Invalid password. Please try again.");
+        this.logger.error("Validating password failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+      });
+    }).catch((err) => {
+      this.presentAlert("Error", "Invalid password. Please try again.");
+      this.logger.error("Invalid password: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
     });
   }
 
-  getNamesFromKeys(receiverArr) {
+  passwordPromptResponseWait() {
     return new Promise((resolve, reject) => {
-      console.log("Receiver Arr before: ", receiverArr);
-      var obj = {};
-      for (var i = 0, len = receiverArr.length; i < len; i++) {
-        obj[receiverArr[i]["Sender"]] = receiverArr[i];
-      }
-
-      console.log("Receiver Obj: ", obj);
-      console.log("Receiver Arr: ", receiverArr);
-
-      var receiverNames = new Array();
-
-      for (var key in obj) {
-        receiverNames.push(obj[key].Sender);
-      }
-      console.log("Receiver Keys: ", receiverNames);
-      const param = {
-        "account": {
-          "accounts": receiverNames
-        }
-      }
-
-      this.apiService.getNames(param).subscribe(
-        resp => {
-          //@ts-ignore
-          console.log(resp.body.pk);
-          //@ts-ignore
-          resolve(resp.body.pk);
-        },
-        err => {
-          if (this.isLoadingPresent) {
-            this.dissmissLoading();
+      let passwordPrompt = this.alertCtrl.create({
+        title: 'Transaction Password',
+        inputs: [
+          {
+            name: "password",
+            placeholder: "Password...",
+            type: "password"
           }
-          reject(err);
-        }
-      );
-
-    });
-  }
-
-  timeDuration(now, oldDate) {
-    // @ts-ignore
-    var sec_num = (now - oldDate) / 1000;
-    var days = Math.floor(sec_num / (3600 * 24));
-    var hours = Math.floor((sec_num - days * (3600 * 24)) / 3600);
-    var minutes = Math.floor(
-      (sec_num - days * (3600 * 24) - hours * 3600) / 60
-    );
-    // @ts-ignore
-    if (hours < 10) {
-      hours = 0 + hours;
-    }
-    // @ts-ignore
-    if (minutes < 10) {
-      minutes = 0 + minutes;
-    }
-
-    return {
-      days: days,
-      hours: hours,
-      minutes: minutes
-    };
-  }
-
-  passwordPrompt(item, buttonStatus) {
-    let alert = this.alertCtrl.create({
-      cssClass: "submitPassword",
-      title: "Enter Password : ",
-      inputs: [
-        {
-          name: "password",
-          placeholder: "",
-          type: "password"
-        }
-      ],
-      buttons: [
-        {
-          text: "Submit",
-          handler: data => {
-            if (data.password != "") {
-              this.sendSignedXDR(
-                item,
-                buttonStatus,
-                this.decyrptSecret(this.mainAccount.sk, data.password)
-              );
+        ],
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            handler: data => {
+              reject();
+            }
+          },
+          {
+            text: "Submit",
+            handler: data => {
+              if (data.password != "") {
+                resolve(data.password);
+              }
             }
           }
-        }
-      ]
+        ]
+      });
+      passwordPrompt.present();
     });
-    alert.present();
   }
 
   setFilteredItems() {
@@ -369,8 +251,7 @@ export class ItemReceivedPage {
   }
 
   doRefresh(refresher) {
-    this.presentLoading();
-    this.loadCOCReceived();
+    this.getAllCoCs();
     refresher.complete();
   }
 
@@ -417,4 +298,252 @@ export class ItemReceivedPage {
     });
     alert.present();
   }
+
+  // getNamesFromKeys(receiverArr) {
+  //   return new Promise((resolve, reject) => {
+  //     console.log("Receiver Arr before: ", receiverArr);
+  //     var obj = {};
+  //     for (var i = 0, len = receiverArr.length; i < len; i++) {
+  //       obj[receiverArr[i]["Sender"]] = receiverArr[i];
+  //     }
+
+  //     console.log("Receiver Obj: ", obj);
+  //     console.log("Receiver Arr: ", receiverArr);
+
+  //     var receiverNames = new Array();
+
+  //     for (var key in obj) {
+  //       receiverNames.push(obj[key].Sender);
+  //     }
+  //     console.log("Receiver Keys: ", receiverNames);
+  //     const param = {
+  //       "account": {
+  //         "accounts": receiverNames
+  //       }
+  //     }
+
+  //     this.apiService.getNames(param).subscribe(
+  //       resp => {
+  //         //@ts-ignore
+  //         console.log(resp.body.pk);
+  //         //@ts-ignore
+  //         resolve(resp.body.pk);
+  //       },
+  //       err => {
+  //         if (this.isLoadingPresent) {
+  //           this.dissmissLoading();
+  //         }
+  //         reject(err);
+  //       }
+  //     );
+
+  //   });
+  // }
+
+  // loadCOCReceived() {
+  //   this.itemsProvider.querycocbyReceiver(this.mainAccount.pk).subscribe(
+  //     resp => {
+  //       console.log("Resp: ", resp);
+  //       if (resp != null) {
+  //         this.Citems = resp;
+  //         const Tempitems = [];
+
+  //         this.getNamesFromKeys(this.Citems).then(namedKeys => {
+  //           this.Citems.forEach(item => {
+  //             const parsedTx = new Transaction(item.AcceptXdr);
+  //             console.log("Transaction: ", parsedTx);
+  //             // @ts-ignore
+  //             const oldDate: number = new Date(
+  //               parsedTx.timeBounds.minTime * 1000
+  //             );
+  //             // @ts-ignore
+  //             const newDate: number = new Date(
+  //               parsedTx.timeBounds.maxTime * 1000
+  //             );
+
+  //             // @ts-ignore
+  //             let now: number = new Date();
+  //             var hoursAgo = this.timeDuration(now, oldDate);
+  //             var validTill = this.timeDuration(newDate, now);
+
+  //             let itemArr = [];
+  //             parsedTx.operations.forEach(transac => {
+  //               if (transac.type == "payment") {
+  //                 let assetObj = {
+  //                   "source": transac.source,
+  //                   "sourcename": this.mainAccount.accountName,
+  //                   "asset": transac.asset.code,
+  //                   "amount": transac.amount
+  //                 };
+
+  //                 itemArr.push(assetObj);
+  //               }
+  //             });
+
+  //             const tempLast = itemArr.pop();
+
+  //             if (itemArr.length > 0) {
+  //               tempLast.source = itemArr[0].source
+  //             } else {
+  //               tempLast.source = null;
+  //             }
+
+  //             const obj = {
+  //               AcceptTxn: item.AcceptTxn,
+  //               AcceptXdr: item.AcceptXdr,
+  //               RejectTxn: item.RejectTxn,
+  //               RejectXdr: item.RejectXdr,
+  //               date: hoursAgo,
+  //               itemArr: itemArr,
+  //               uname: tempLast.source,
+  //               oname: tempLast.asset,
+  //               qty: tempLast.amount,
+  //               validity: newDate.toLocaleString(),
+  //               time: validTill,
+  //               status: item.Status,
+
+  //               Identifier: item.Identifier,
+  //               Receiver: item.Receiver,
+  //               Sender: item.Sender,
+  //               SequenceNo: item.SequenceNo,
+  //               SubAccount: item.SubAccount,
+  //               TxnHash: item.TxnHash
+  //             };
+  //             Tempitems.push(obj);
+  //             this.items = Tempitems.reverse();
+  //             this.setFilteredItems();
+  //           });
+  //           return namedKeys;
+  //         }).then((namedKeys: any) => {
+  //           console.log("Named Keys: ", namedKeys);
+  //           this.items.forEach(element => {
+  //             element.uname = namedKeys.find(o => element.uname === o.pk).accountName;
+  //           });
+
+  //           if (this.isLoadingPresent) {
+  //             this.dissmissLoading();
+  //           }
+  //         }).catch(err => {
+  //           if (this.isLoadingPresent) {
+  //             this.dissmissLoading();
+  //           }
+  //         });
+  //       } else {
+  //         if (this.isLoadingPresent) {
+  //           this.dissmissLoading();
+  //         }
+  //       }
+  //     },
+  //     err => {
+  //       if (this.isLoadingPresent) {
+  //         this.dissmissLoading();
+  //       }
+  //     }
+  //   );
+  // }
+
+  // timeDuration(now, oldDate) {
+  //   // @ts-ignore
+  //   var sec_num = (now - oldDate) / 1000;
+  //   var days = Math.floor(sec_num / (3600 * 24));
+  //   var hours = Math.floor((sec_num - days * (3600 * 24)) / 3600);
+  //   var minutes = Math.floor(
+  //     (sec_num - days * (3600 * 24) - hours * 3600) / 60
+  //   );
+  //   // @ts-ignore
+  //   if (hours < 10) {
+  //     hours = 0 + hours;
+  //   }
+  //   // @ts-ignore
+  //   if (minutes < 10) {
+  //     minutes = 0 + minutes;
+  //   }
+
+  //   return {
+  //     days: days,
+  //     hours: hours,
+  //     minutes: minutes
+  //   };
+  // }
+
+  // passwordPrompt(item, buttonStatus) {
+  //   let alert = this.alertCtrl.create({
+  //     title: "Transaction Password",
+  //     inputs: [
+  //       {
+  //         name: "password",
+  //         placeholder: "Password...",
+  //         type: "password"
+  //       }
+  //     ],
+  //     buttons: [
+  //       {
+  //         text: "Submit",
+  //         handler: data => {
+  //           if (data.password != "") {
+  //             this.sendSignedXDR(
+  //               item,
+  //               buttonStatus,
+  //               this.decyrptSecret(this.mainAccount.sk, data.password)
+  //             );
+  //           }
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   alert.present();
+  // }
+
+  // signXDR(item, status, signerSK) {
+  //   return new Promise((resolve, reject) => {
+  //     var sourceKeypair = Keypair.fromSecret(signerSK);
+
+  //     if (status == "accept") {
+  //       item.status = "accepted";
+  //       const parsedTx = new Transaction(item.AcceptXdr);
+  //       parsedTx.sign(sourceKeypair);
+  //       let x = parsedTx.toEnvelope().toXDR().toString("base64");
+  //       item.AcceptXdr = x;
+  //       resolve(item);
+  //     } else {
+  //       item.status = "rejected";
+  //       const parsedTx = new Transaction(item.RejectXdr);
+  //       parsedTx.sign(sourceKeypair);
+  //       let x = parsedTx.toEnvelope().toXDR().toString("base64");
+  //       item.RejectXdr = x;
+  //       resolve(item);
+  //     }
+  //   }).catch((e) => {
+  //     // reject(e)
+  //   });
+  // }
+
+  // sendSignedXDR(item, status, signerSK) {
+  //   this.presentLoading();
+  //   this.signXDR(item, status, signerSK).then(obj => {
+  //     this.itemsProvider.updateStatusCOC(obj).subscribe(resp => {
+  //       // @ts-ignore
+  //       if (resp.Body.Status == "accepted") {
+  //         this.presentAlert("Success", "Successfully transferred the assets. You can check available assets in Transfer page.");
+  //         // @ts-ignore
+  //       } else if (resp.Body.Status == "rejected") {
+  //         this.presentAlert("Error", "Asset could not be accepted due to an error. Please try again or contact an admin.");
+  //       }
+  //       if (this.isLoadingPresent) {
+  //         this.dissmissLoading();
+  //       }
+  //     }, err => {
+  //       item.status = "pending";
+  //       if (this.isLoadingPresent) {
+  //         this.dissmissLoading();
+  //       }
+  //       this.presentAlert("Error", "Asset could not be accepted due to an error. Please try again or contact an admin.");
+  //     });
+  //   }).catch(e => {
+  //     if (this.isLoadingPresent) {
+  //       this.dissmissLoading();
+  //       this.presentAlert("Error", "Asset could not be accepted due to an error. Please try again or contact an admin.");
+  //     }
+  //   });
+  // }
 }

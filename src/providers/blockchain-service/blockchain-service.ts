@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse } from 'stellar-sdk';
+import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction } from 'stellar-sdk';
 
 import { Properties } from '../../shared/properties';
 import { blockchainNet } from '../../shared/config';
@@ -229,7 +229,7 @@ export class BlockchainServiceProvider {
         if (keyPair.publicKey() == pubKey) {
           resolve(decKey);
         } else {
-          this.logger.error("Invalid transaction password.", this.properties.skipConsoleLogs, this.properties.writeToFile);
+          this.logger.error("Invalid transaction password. Keys dont match", this.properties.skipConsoleLogs, this.properties.writeToFile);
           reject();
         }
       }).catch(() => {
@@ -481,5 +481,20 @@ export class BlockchainServiceProvider {
         reject();
       });
     });
+  }
+
+  signXdr(xdr, decKey) {
+    console.log("XDR: ", xdr);
+    let keyPair = Keypair.fromSecret(decKey);
+    if (blockchainNetType === 'live') {
+      Network.usePublicNetwork();
+    } else {
+      Network.useTestNetwork();
+    }
+    const transaction = new Transaction(xdr);
+    transaction.sign(keyPair);
+    let signedTrans = transaction.toEnvelope().toXDR().toString("base64");
+
+    return signedTrans;
   }
 }

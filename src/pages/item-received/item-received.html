@@ -8,12 +8,6 @@
 </ion-header>
 
 <ion-content>
-  <!-- <div *ngIf="Citems">
-    <div class="search">
-      <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
-    </div>
-  </div> -->
-
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
       refreshingText="Refreshing...">
@@ -21,7 +15,7 @@
   </ion-refresher>
 
   <ion-grid no-padding class="full-height white-background">
-    <div *ngIf="!Citems">
+    <div *ngIf="!cocReceived">
       <ion-row>
         <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
       </ion-row>
@@ -36,11 +30,11 @@
         </div>
       </ion-row>
     </div>
-    <div class="padding-width" *ngIf="Citems">
-      <ion-row class="item-card" *ngFor="let item of items; let index = index">
+    <div class="padding-width" *ngIf="cocReceived">
+      <ion-row class="item-card" *ngFor="let item of cocReceived; let index = index">
         <ion-row>
           <ion-icon name="time"></ion-icon>
-          <h5 class="primary-font margin-fix">{{item.date.days}}d {{item.date.hours}}h {{item.date.minutes}}m ago</h5>
+          <h5 class="primary-font margin-fix">{{item.date}}</h5>
         </ion-row>
         <ion-row>
           <ion-col col-9 class="padding-bottom-cancel">
@@ -61,7 +55,7 @@
             <h4 class="secondary-font">Identifier</h4>
           </ion-col>
           <ion-col col-6 class="padding-bottom-cancel">
-            <h4 class="secondary-font text-right-align-horizontally">Receiver</h4>
+            <h4 class="secondary-font text-right-align-horizontally">Sender</h4>
           </ion-col>
           <ion-col col-6 class="padding-top-cancel">
             <h4 class="primary-font">{{item.Identifier}}</h4>
@@ -86,10 +80,10 @@
         </ion-row>
         <ion-row class="block" *ngIf="item.status == 'pending'">
           <div class="right-float">
-            <button class="btn-red-outline" (click)="passwordPrompt(item, 'reject')" ion-button>
+            <button class="btn-red-outline" (click)="updateCoC(item, 'reject')" ion-button>
               REJECT
             </button>
-            <button class="btn-green" (click)="passwordPrompt(item, 'accept')" ion-button>
+            <button class="btn-green" (click)="updateCoC(item, 'accept')" ion-button>
               ACCEPT
             </button>
           </div>

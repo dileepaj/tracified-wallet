@@ -73,7 +73,7 @@ export class DataServiceProvider {
   changeUserDetails(type, userModel): Promise<any> {
     return this.authService.changeUserSettings(type, userModel);
   }
-  
+
   changeTransactionAccPassword(passwordModel) {
     return this.blockchainService.changeTransactionPassword(passwordModel);
   }
@@ -84,6 +84,10 @@ export class DataServiceProvider {
 
   sendCoC(coc): Promise<any> {
     return this.apiService.sendCoC(coc);
+  }
+
+  updateCoC(updatedCoC): Promise<any> {
+    return this.apiService.updateCoC(updatedCoC);
   }
 
   getAccountNamesOfKeys(accountKeys): Promise<any> {

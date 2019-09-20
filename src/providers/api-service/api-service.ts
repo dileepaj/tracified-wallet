@@ -18,7 +18,8 @@ import {
   subAccountsStatus,
   updateSubAcc,
   sendCoC,
-  cocReceived
+  cocReceived,
+  updateCoC
 } from '../../shared/config';
 
 @Injectable()
@@ -327,6 +328,11 @@ export class ApiServiceProvider {
     let headers = { 'Content-Type': 'application/json' };
     return this.postN(sendCoC, coc, headers);
   }
+
+  updateCoC(updatedCoC): Promise<any> {
+    let headers = { 'Content-Type': 'application/json' };
+    return this.putN(updateCoC, updatedCoC, headers);
+  } 
 
   getPublickey(body: any): Promise<any> {
     let header = {
