@@ -94,7 +94,11 @@ export class DataServiceProvider {
     return this.apiService.getAccountNames(accountKeys);
   }
 
-  getAllCoCs(accountKey): Promise<any> {
-    return this.apiService.queryAllCoCs(accountKey);
+  getAllReceivedCoCs(accountKey): Promise<any> {
+    return this.apiService.queryAllReceivedCoCs(accountKey);
+  }
+
+  getAllSentCoCs(accountKey): Promise<any> {
+    return this.apiService.queryAllSentCoCs(accountKey);
   }
 }

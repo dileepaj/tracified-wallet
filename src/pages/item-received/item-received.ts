@@ -8,7 +8,6 @@ import {
 } from "ionic-angular";
 import { Items } from "../../providers/items/items";
 import { Network, Keypair, Transaction } from "stellar-base";
-// Network.usePublicNetwork();
 import { AES, enc } from "crypto-js";
 import { ApiServiceProvider } from "../../providers/api-service/api-service";
 import { StorageServiceProvider } from "../../providers/storage-service/storage-service";
@@ -40,8 +39,6 @@ export class ItemReceivedPage {
   user: any;
   loading;
   isLoadingPresent: boolean;
-  Citems: any;
-
   items = [];
   mainAccount: any;
 
@@ -55,7 +52,6 @@ export class ItemReceivedPage {
     private loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
     public itemsProvider: Items,
-    private storage: StorageServiceProvider,
     private properties: Properties,
     private dataService: DataServiceProvider,
     private logger: Logger,
@@ -65,7 +61,7 @@ export class ItemReceivedPage {
   ngOnInit() { }
 
   ionViewDidLoad() {
-    this.setFilteredItems();
+    // this.setFilteredItems();
   }
 
   ionViewDidEnter() {
@@ -75,7 +71,8 @@ export class ItemReceivedPage {
 
   getAllCoCs() {
     this.presentLoading();
-    this.dataService.getAllCoCs(this.mainAccount.pk).then((res) => {
+    this.cocReceived = [];
+    this.dataService.getAllReceivedCoCs(this.mainAccount.pk).then((res) => {
       let cocs = res.body;
       if (cocs.length > 0) {
         let senderPks = new Array();
@@ -99,60 +96,35 @@ export class ItemReceivedPage {
             let amount;
             let sender;
 
-            let itemArr = [];
-
             transaction.operations.forEach((operation) => {
               if (operation.type == "payment") {
                 assetName = operation.asset.code;
                 amount = operation.amount;
                 sender = operation.source;
-
-                let assetObj = {
-                  source: operation.source,
-                  sourcename: this.mainAccount.accountName,
-                  asset: operation.asset.code,
-                  amount: operation.amount
-                };
-
-                itemArr.push(assetObj);
               }
             });
-
-            // let cocObj = {
-            //   assetCode: assetName,
-            //   quantity: amount,
-            //   sender: sender,
-            //   identifier: coc.Identifier,
-            //   validTill: maxTime.toLocaleString(),
-            //   sentDate: minTime.toLocaleString(),
-            //   AcceptXDR: coc.AcceptXdr,
-            //   RejectXDR: coc.RejectXdr,
-            //   status: coc.Status
-            // }
 
             let cocObj = {
               AcceptTxn: coc.AcceptTxn,
               AcceptXdr: coc.AcceptXdr,
               RejectTxn: coc.RejectTxn,
               RejectXdr: coc.RejectXdr,
-              date: minTime.toLocaleString(),
-              itemArr: itemArr,
-              uname: sender,
-              oname: assetName,
-              qty: amount,
-              validity: maxTime.toLocaleString(),
-              time: maxTime.toLocaleString(),
-              status: coc.Status,
-
-              Identifier: coc.Identifier,
               Receiver: coc.Receiver,
               Sender: coc.Sender,
               SequenceNo: coc.SequenceNo,
-              SubAccount: coc.SubAccount,
-              TxnHash: coc.TxnHash
+              SubAccount: "",
+              TxnHash: "",
+              Status: coc.Status,
+              Identifier: coc.Identifier,
+
+              sender: sender,
+              assetCode: assetName,
+              quantity: amount,
+              validTill: maxTime.toLocaleString(),
+              sentDate: minTime.toLocaleString()
             }
 
-            cocObj.uname = accountNames.find(o => cocObj.uname == o.pk).accountName;
+            cocObj.sender = accountNames.find(o => cocObj.sender == o.pk).accountName;
             this.cocReceived.push(cocObj);
             console.log("Final Arr: ", this.cocReceived);
             this.dissmissLoading();
@@ -166,8 +138,10 @@ export class ItemReceivedPage {
         this.dissmissLoading();
       }
     }).catch((err) => {
-      this.dissmissLoading()
-      this.presentAlert("Error", "Failed to fetch the received items. Please try again.");
+      this.dissmissLoading();
+      if (err.status != 400) {
+        this.presentAlert("Error", "Failed to fetch the received items. Please try again.");
+      }
       this.logger.error("Could not load CoCs: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
     });
   }
@@ -237,18 +211,11 @@ export class ItemReceivedPage {
     });
   }
 
-  setFilteredItems() {
-    this.Searcheditems = this.items.filter(item => {
-      return item.oname.toLowerCase().includes(this.searchTerm.toLowerCase());
-    });
-  }
-
-  decyrptSecret(ciphertext, signer) {
-    var decrypted = AES.decrypt(ciphertext.toString(), signer).toString(
-      enc.Utf8
-    );
-    return decrypted;
-  }
+  // setFilteredItems() {
+  //   this.Searcheditems = this.items.filter(item => {
+  //     return item.oname.toLowerCase().includes(this.searchTerm.toLowerCase());
+  //   });
+  // }
 
   doRefresh(refresher) {
     this.getAllCoCs();
@@ -277,16 +244,6 @@ export class ItemReceivedPage {
       position: "bottom"
     });
     toast.present();
-  }
-
-  dataError(title, message) {
-    let alert = this.alertCtrl.create();
-    alert.setTitle(title);
-    alert.setMessage(message);
-    alert.addButton({
-      text: "close"
-    });
-    alert.present();
   }
 
   presentAlert(title, message) {

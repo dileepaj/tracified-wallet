@@ -19,7 +19,8 @@ import {
   updateSubAcc,
   sendCoC,
   cocReceived,
-  updateCoC
+  updateCoC,
+  cocSent
 } from '../../shared/config';
 
 @Injectable()
@@ -362,7 +363,7 @@ export class ApiServiceProvider {
     return this.postN(getMainPublicKeys, accountKeys, header);
   }
 
-  queryAllCoCs(accountKey): Promise<any> {
+  queryAllReceivedCoCs(accountKey): Promise<any> {
     let header = {
       observe: 'response',
       headers: new HttpHeaders({
@@ -371,6 +372,17 @@ export class ApiServiceProvider {
     }
 
     return this.getN(cocReceived +  accountKey, header);
+  }
+
+  queryAllSentCoCs(accountKey): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    return this.getN(cocSent +  accountKey, header);
   }
 
 }
