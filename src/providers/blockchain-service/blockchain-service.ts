@@ -287,11 +287,11 @@ export class BlockchainServiceProvider {
   }
 
   mainAccountSuffucientFunds(balance, assetCount): any {
-    let baseFee = (assetCount * 0.5) + 4;
+    let baseFee = (assetCount * 0.5) + 4 + 3;
     if (baseFee < (balance - 0.5)) {
-      return { status: true, amount: baseFee };
+      return true;
     } else {
-      return { status: false, amount: baseFee };
+      return false;
     }
   }
 
@@ -304,7 +304,7 @@ export class BlockchainServiceProvider {
       this.getAccountBalanceAssets(mainAccount).then((accountInfo: any) => {
         if (accountInfo.balance > 0) {
           let fundStatus = this.mainAccountSuffucientFunds(accountInfo.balance, accountInfo.assets);
-          if (fundStatus.status) {
+          if (fundStatus) {
             let keyPair = this.createAddress();
             const account = {
               "account": {
@@ -321,7 +321,7 @@ export class BlockchainServiceProvider {
               if (res.status == 200) {
                 this.properties.defaultAccount.subAccounts.push({ "pk": keyPair.publicKey(), "sk": keyPair.secret(), "skp": keyPair.secret(), "skInvalidated": false });
                 this.storageService.setDefaultAccount(this.properties.defaultAccount);
-                this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), fundStatus.amount).then(() => {
+                this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), 2).then(() => {
                   this.invalidateSubAccountKey(keyPair, mainAccount).then(() => {
                     this.logger.info("Successfully invalidated the account", this.properties.skipConsoleLogs, this.properties.writeToFile);
                     resolve(keyPair);
