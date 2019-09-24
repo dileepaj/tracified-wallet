@@ -121,14 +121,17 @@ export class ItemReceivedPage {
               assetCode: assetName,
               quantity: amount,
               validTill: maxTime.toLocaleString(),
-              sentDate: minTime.toLocaleString()
+              sentDate: minTime.toLocaleString(),
+              sentOriginal: minTime
             }
 
             cocObj.sender = accountNames.find(o => cocObj.sender == o.pk).accountName;
             this.cocReceived.push(cocObj);
-            console.log("Final Arr: ", this.cocReceived);
-            this.dissmissLoading();
           });
+          this.cocReceived.sort((a, b) => (a.sentOriginal < b.sentOriginal) ? 1 : -1);
+          
+          console.log("Final Arr: ", this.cocReceived);
+          this.dissmissLoading();
         }).catch((err) => {
           this.dissmissLoading();
           this.presentAlert("Error", "Failed to fetch the account details for received items. Please try again.");

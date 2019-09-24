@@ -116,12 +116,14 @@ export class ItemSentPage {
               assetCode: assetName,
               quantity: amount,
               validTill: maxTime.toLocaleString(),
-              sentDate: minTime.toLocaleString()
+              sentDate: minTime.toLocaleString(),
+              sentOriginal: minTime
             }
             cocObj.receiver = accountNames.find(o => cocObj.receiver == o.pk).accountName;
-            this.cocSent.push(cocObj);
-            this.dissmissLoading();
+            this.cocSent.push(cocObj);            
           });
+          this.cocSent.sort((a, b) => (a.sentOriginal < b.sentOriginal) ? 1 : -1);
+          this.dissmissLoading();
         }).catch((err) => {
           this.dissmissLoading();
           this.presentAlert("Error", "Failed to fetch the account details for sent items. Please try again.");
