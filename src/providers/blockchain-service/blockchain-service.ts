@@ -386,7 +386,7 @@ export class BlockchainServiceProvider {
     });
   }
 
-  acceptTransactionXdr(identifier, receiver, qty, item, validity, proofHash, subAccount, signerSK) {
+  acceptTransactionXdr(identifier, receiver, qty, item, validity, proofHash, subAccount, issuer, signerSK) {
     return new Promise((resolve, reject) => {
       let XDR;
       let b64;
@@ -399,7 +399,7 @@ export class BlockchainServiceProvider {
       var maxTime = new Date(validity).getTime() / 1000.0;
       var sourceKeypair = Keypair.fromSecret(signerSK);
 
-      var asset = new Asset(item, 'GAJWMUMLOWHZUENSNQLSJJJLOS5QVYZGVSYRP3MSH35WFXI5PT3CP6BO');
+      var asset = new Asset(item, issuer);
       var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
       if (blockchainNetType === 'live') {
@@ -496,5 +496,26 @@ export class BlockchainServiceProvider {
     let signedTrans = transaction.toEnvelope().toXDR().toString("base64");
 
     return signedTrans;
+  }
+
+  getAssetIssuer(accountPubKey, asset_code): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.blockchainAccountInfo(accountPubKey).then((account: AccountResponse) => {
+        let balances: any = account.balances;
+        if (balances.length > 0) {
+          for (let i = 0; i < balances.length; i++) {
+            if (balances[i].asset_type == "credit_alphanum12" && balances[i].asset_code == asset_code) {
+              resolve(balances[i].asset_issuer);
+            }
+          }
+          reject();
+        } else {
+          reject();
+        }
+      }).catch((err) => {
+        this.logger.error("Failed to get asset issuer: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+        reject();
+      });
+    });
   }
 }

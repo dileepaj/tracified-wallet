@@ -82,32 +82,38 @@ export class ItemDetailPage {
         this.preparesubAccount(this.secretKey).then((subAcc: any) => {
           let subPair = this.blockchainService.getSubAccountPair(subAcc.publicKey, this.properties.defaultAccount);
           this.blockchainService.verifyCoC(this.secretKey, this.COCForm.identifier, this.COCForm.receiver, this.COCForm.selectedItem, this.COCForm.qty, this.COCForm.vaidity).then((transactionHash) => {
-            Promise.all([this.blockchainService.acceptTransactionXdr(this.COCForm.identifier, this.COCForm.receiver, this.COCForm.qty, this.COCForm.selectedItem, this.COCForm.vaidity, transactionHash, subAcc, this.secretKey),
-            this.blockchainService.rejectTransactionXdr(this.COCForm.receiver, this.COCForm.vaidity, transactionHash, subAcc, this.secretKey)]).then((xdrs: any) => {
-              const coc = {
-                "Sender": this.properties.defaultAccount.pk,
-                "Receiver": this.COCForm.receiver,
-                "SubAccount": subPair.publicKey,
-                "SequenceNo": Number(xdrs[0].seqNum + 2),
-                "AcceptXdr": xdrs[0].b64,
-                "RejectXdr": xdrs[1],
-                "Identifier": this.COCForm.identifier,
-                "Status": "pending"
-              }
-              this.dataService.sendCoC(coc).then((res) => {
-                this.dissmissLoading();
-                this.presentAlert("Success", "Assets successfully transferred. You can view the transaction status in Sent page.");
-                this.navCtrl.setRoot(TransferPage);
-                this.logger.info("Item transferred successfully: " + this.item.asset_code, this.properties.skipConsoleLogs, this.properties.writeToFile);
+            this.blockchainService.getAssetIssuer(this.properties.defaultAccount.pk, this.COCForm.selectedItem).then((issuer) => {
+              Promise.all([this.blockchainService.acceptTransactionXdr(this.COCForm.identifier, this.COCForm.receiver, this.COCForm.qty, this.COCForm.selectedItem, this.COCForm.vaidity, transactionHash, subAcc, issuer, this.secretKey),
+              this.blockchainService.rejectTransactionXdr(this.COCForm.receiver, this.COCForm.vaidity, transactionHash, subAcc, this.secretKey)]).then((xdrs: any) => {
+                const coc = {
+                  "Sender": this.properties.defaultAccount.pk,
+                  "Receiver": this.COCForm.receiver,
+                  "SubAccount": subPair.publicKey,
+                  "SequenceNo": Number(xdrs[0].seqNum + 2),
+                  "AcceptXdr": xdrs[0].b64,
+                  "RejectXdr": xdrs[1],
+                  "Identifier": this.COCForm.identifier,
+                  "Status": "pending"
+                }
+                this.dataService.sendCoC(coc).then((res) => {
+                  this.dissmissLoading();
+                  this.presentAlert("Success", "Assets successfully transferred. You can view the transaction status in Sent page.");
+                  this.navCtrl.setRoot(TransferPage);
+                  this.logger.info("Item transferred successfully: " + this.item.asset_code, this.properties.skipConsoleLogs, this.properties.writeToFile);
+                }).catch((err) => {
+                  this.dissmissLoading();
+                  this.presentAlert("Error", "Failed to send the transaction. Please try again.");
+                  this.logger.error("Sending CoC to gateway failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+                });
               }).catch((err) => {
                 this.dissmissLoading();
-                this.presentAlert("Error", "Failed to send the transaction. Please try again.");
-                this.logger.error("Sending CoC to gateway failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+                this.presentAlert("Error", "Failed to build the transaction. Please try again.");
+                this.logger.error("Accept and Reject xdr build failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
               });
             }).catch((err) => {
               this.dissmissLoading();
-              this.presentAlert("Error", "Failed to build the transaction. Please try again.");
-              this.logger.error("Accept and Reject xdr build failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+            this.presentAlert("Error", "Failed to verify the asset issuer. Please try again.");
+            this.logger.error("Failed to get the asset issuer: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
           }).catch((err) => {
             this.dissmissLoading();
@@ -192,6 +198,7 @@ export class ItemDetailPage {
             }
           });
           console.log("Matching account: ", matchingAccount);
+          console.log("Available accounts: ", avaialbeAccounts);
           if (matchingAccount) {
             console.log("Matching Account");
             let subAcc = {
