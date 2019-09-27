@@ -17,6 +17,7 @@ import { subAccountBaseFee } from '../../shared/config';
 import { rejects } from 'assert';
 import { TabsPage } from '../../pages/tabs/tabs';
 import { TransferPage } from '../../pages/transfer/transfer';
+import { ScannerViewPage } from "../scanner-view/scanner-view";
 
 var server = new Server(stellarNet);
 StellarSdk.Network.usePublicNetwork();
@@ -68,13 +69,18 @@ export class ItemDetailPage {
     private mappingService: MappingServiceProvider,
     private dataService: DataServiceProvider
   ) {
+    this.COCForm.identifier = this.navParams.get('text');
     this.mainAccount = this.properties.defaultAccount;
     this.item = navParams.get('item');
-    this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
+    this.currentItems = navParams.get('currentItems');
   }
 
   ionViewDidLoad() {
     this.COCForm.selectedItem = this.item.asset_code;
+  }
+
+  viewScannerPage(){
+    this.navCtrl.setRoot(ScannerViewPage);
   }
 
   passwordPrompt() {

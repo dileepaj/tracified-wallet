@@ -93,12 +93,17 @@ page-item-detail {
     border-bottom: none !important;
   }
 
+  .indenText {
+    float: left;
+    width: 50%;
+  }
 
+  ion-icon {
+    color: #28a745;
+  }
 
   text-input :touch-action {
     transform: none;
   }
-
-
 
 }

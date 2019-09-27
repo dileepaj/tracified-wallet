@@ -13,7 +13,7 @@
 <div class="container">
       <form class="content-start">
         <ion-list id="list-COC">
-          
+
           <h4 class="secondary-font line-spacing">Item</h4>
           <ion-item class="line-spacing">
             <ion-label >Item</ion-label>
@@ -24,9 +24,12 @@
 
           <h4 class="secondary-font line-spacing">Identifier</h4>
           <ion-item class="line-spacing">
-            <ion-input type="text" placeholder="Identifier"
+            <ion-input class = "indenText" type="text" placeholder="Identifier"
               [(ngModel)]="COCForm.identifier" name="identifier"></ion-input>
-          </ion-item>
+              <button ion-button item-right clear (click)= "viewScannerPage()">
+                  <ion-icon name="qr-scanner"></ion-icon>
+              </button>
+            </ion-item>
 
           <h4 class="secondary-font line-spacing">Quantity</h4>
           <ion-item id="rounded" class="line-spacing">

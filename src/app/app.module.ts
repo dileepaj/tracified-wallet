@@ -44,8 +44,10 @@ import { ContentPageModule } from '../pages/content/content.module';
 import { Clipboard } from '@ionic-native/clipboard/index';
 import { SettingFormPageModule } from '../pages/setting-form/setting-form.module';
 import { TransferPageModule } from '../pages/transfer/transfer.module';
+import { ScannerViewPageModule } from '../pages/scanner-view/scanner-view.module';
 import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
 import { CodePush } from '@ionic-native/code-push';
+import { QRScanner } from '@ionic-native/qr-scanner';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -75,6 +77,7 @@ export function createTranslateLoader(http: HttpClient) {
     ContentPageModule,
     SettingFormPageModule,
     TransferPageModule,
+    ScannerViewPageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -115,10 +118,11 @@ export function createTranslateLoader(http: HttpClient) {
     FileSystemServiceProvider,
     File,
     DataServiceProvider,
-    BlockchainServiceProvider,    
+    BlockchainServiceProvider,
     Clipboard,
     CodePushServiceProvider,
-    CodePush
+    CodePush,
+    QRScanner,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
