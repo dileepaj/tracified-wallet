@@ -105,18 +105,19 @@ export class ItemReceivedPage {
             });
 
             let cocObj = {
-              AcceptTxn: coc.AcceptTxn,
-              AcceptXdr: coc.AcceptXdr,
-              RejectTxn: coc.RejectTxn,
-              RejectXdr: coc.RejectXdr,
-              Receiver: coc.Receiver,
-              Sender: coc.Sender,
-              SequenceNo: coc.SequenceNo,
-              SubAccount: "",
-              TxnHash: "",
-              Status: coc.Status,
-              Identifier: coc.Identifier,
-
+              cocOriginal: {
+                AcceptTxn: coc.AcceptTxn,
+                AcceptXdr: coc.AcceptXdr,
+                RejectTxn: coc.RejectTxn,
+                RejectXdr: coc.RejectXdr,
+                Receiver: coc.Receiver,
+                Sender: coc.Sender,
+                SequenceNo: coc.SequenceNo,
+                SubAccount: coc.SubAccount,
+                TxnHash: coc.TxnHash,
+                Status: coc.Status,
+                Identifier: coc.Identifier
+              },
               sender: sender,
               assetCode: assetName,
               quantity: amount,
@@ -129,8 +130,7 @@ export class ItemReceivedPage {
             this.cocReceived.push(cocObj);
           });
           this.cocReceived.sort((a, b) => (a.sentOriginal < b.sentOriginal) ? 1 : -1);
-          
-          console.log("Final Arr: ", this.cocReceived);
+
           this.dissmissLoading();
         }).catch((err) => {
           this.dissmissLoading();
@@ -154,16 +154,18 @@ export class ItemReceivedPage {
       this.presentLoading();
       this.blockchainService.validateTransactionPassword(password, this.mainAccount.sk, this.mainAccount.pk).then((decKey) => {
         if (status == 'accept') {
-          coc.AcceptXdr = this.blockchainService.signXdr(coc.AcceptXdr, decKey);
+          coc.cocOriginal.AcceptXdr = this.blockchainService.signXdr(coc.cocOriginal.AcceptXdr, decKey);
+          coc.cocOriginal.Status = 'accepted';
         } else if (status == 'reject') {
-          coc.RejectXdr = this.blockchainService.signXdr(coc.RejectXdr, decKey);
+          coc.cocOriginal.RejectXdr = this.blockchainService.signXdr(coc.cocOriginal.RejectXdr, decKey);
+          coc.cocOriginal.Status = 'rejected';
         }
-        this.dataService.updateCoC(coc).then((res) => {
+        this.dataService.updateCoC(coc.cocOriginal).then((res) => {
           this.dissmissLoading();
           if (status == 'accept') {
-            this.presentAlert("Success", "Successfully accepted " + coc.oname + ". You can see the updated results in Transfer page.");
+            this.presentAlert("Success", "Successfully accepted " + coc.assetCode + ". You can see the updated results in Transfer page.");
           } else if (status == 'reject') {
-            this.presentAlert("Success", "Successfully rejected " + coc.oname + ". Your asset amout will not be changed.");
+            this.presentAlert("Success", "Successfully rejected " + coc.assetCode + ". Your asset amout will not be changed.");
           }
         }).catch((err) => {
           this.dissmissLoading();

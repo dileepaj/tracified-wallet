@@ -107,8 +107,8 @@ export class ItemSentPage {
               Receiver: coc.Receiver,
               Sender: coc.Sender,
               SequenceNo: coc.SequenceNo,
-              SubAccount: "",
-              TxnHash: "",
+              SubAccount: coc.SubAccount,
+              TxnHash: coc.TxnHash,
               Status: coc.Status,
               Identifier: coc.Identifier,
 

@@ -421,7 +421,7 @@ export class BlockchainServiceProvider {
         }))
 
         if (!subAccount.available) {
-          transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccount.sequenceNo + 2) }))
+          transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(Number(subAccount.sequenceNo) + 2) }))
         }
 
         const tx = transaction.build();
@@ -467,7 +467,7 @@ export class BlockchainServiceProvider {
         })).addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))
 
         if (!subAccount.available) {
-          transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(subAccount.sequenceNo + 2) }))
+          transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(Number(subAccount.sequenceNo) + 2) }))
         }
 
         const tx = transaction.build();

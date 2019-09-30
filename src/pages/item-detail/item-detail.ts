@@ -88,8 +88,8 @@ export class ItemDetailPage {
                 const coc = {
                   "Sender": this.properties.defaultAccount.pk,
                   "Receiver": this.COCForm.receiver,
-                  "SubAccount": subPair.publicKey,
-                  "SequenceNo": Number(xdrs[0].seqNum + 2),
+                  "SubAccount": subPair.publicKey(),
+                  "SequenceNo": JSON.stringify(xdrs[0].seqNum + 2),
                   "AcceptXdr": xdrs[0].b64,
                   "RejectXdr": xdrs[1],
                   "Identifier": this.COCForm.identifier,
