@@ -409,16 +409,16 @@ export class BlockchainServiceProvider {
       }
       let server = new Server(blockchainNet);
       server.loadAccount(subAccount.publicKey).then(function (account) {
-        var transaction = new TransactionBuilder(account, opts)
-        transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }))
-        transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, }))
-        transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }))
+        var transaction = new TransactionBuilder(account, opts);
+        transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }));
+        transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, }));
+        transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }));
         transaction.addOperation(Operation.payment({
           destination: receiver,
           asset: asset,
           amount: qty,
           source: senderPublickKey
-        }))
+        }));
 
         if (!subAccount.available) {
           transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(Number(subAccount.sequenceNo) + 2) }))

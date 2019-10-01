@@ -80,6 +80,7 @@ export class ItemDetailPage {
         this.secretKey = decKey;
         this.presentLoading();
         this.preparesubAccount(this.secretKey).then((subAcc: any) => {
+          console.log("Sub Account: ", subAcc);
           let subPair = this.blockchainService.getSubAccountPair(subAcc.publicKey, this.properties.defaultAccount);
           this.blockchainService.verifyCoC(this.secretKey, this.COCForm.identifier, this.COCForm.receiver, this.COCForm.selectedItem, this.COCForm.qty, this.COCForm.vaidity).then((transactionHash) => {
             this.blockchainService.getAssetIssuer(this.properties.defaultAccount.pk, this.COCForm.selectedItem).then((issuer) => {
@@ -192,15 +193,12 @@ export class ItemDetailPage {
         if (statuses) {
           statuses.forEach((status) => {
             if (status.available) {
-              avaialbeAccounts.push(status.subAccount);
+              avaialbeAccounts.push(status);
             } else if (status.receiver == this.COCForm.receiver) {
               matchingAccount = status;
             }
           });
-          console.log("Matching account: ", matchingAccount);
-          console.log("Available accounts: ", avaialbeAccounts);
           if (matchingAccount) {
-            console.log("Matching Account");
             let subAcc = {
               publicKey: matchingAccount.subAccount,
               available: false,
@@ -208,22 +206,21 @@ export class ItemDetailPage {
             };
             resolve(subAcc);
           } else if (avaialbeAccounts.length > 0) {
-            console.log("Available Account", avaialbeAccounts[0]);
-            this.blockchainService.checkIfAccountInvalidated(avaialbeAccounts[0]).then((status) => {
+            this.blockchainService.checkIfAccountInvalidated(avaialbeAccounts[0].subAccount).then((status) => {
               if (status) {
                 let subAcc = {
-                  publicKey: avaialbeAccounts[0],
+                  publicKey: avaialbeAccounts[0].subAccount,
                   available: true,
-                  sequenceNo: 0
+                  sequenceNo: avaialbeAccounts[0].sequenceNo
                 };
                 resolve(subAcc);
               } else {
-                let subPair = this.blockchainService.getSubAccountPair(avaialbeAccounts[0], this.properties.defaultAccount);
+                let subPair = this.blockchainService.getSubAccountPair(avaialbeAccounts[0].subAccount, this.properties.defaultAccount);
                 this.blockchainService.invalidateSubAccountKey(subPair, this.properties.defaultAccount).then(() => {
                   let subAcc = {
-                    publicKey: avaialbeAccounts[0],
+                    publicKey: avaialbeAccounts[0].subAccount,
                     available: true,
-                    sequenceNo: 0
+                    sequenceNo: avaialbeAccounts[0].sequenceNo
                   };
                   resolve(subAcc);
                 }).catch((err) => {
