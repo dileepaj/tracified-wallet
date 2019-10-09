@@ -150,6 +150,11 @@ export class ItemReceivedPage {
   }
 
   updateCoC(coc, status) {
+    let count = this.pendingCoCCount(coc.sentOriginal, this.cocReceived);
+    if(count > 0){
+      this.presentAlert("Error", "Please accept or reject pending CoC transactions before. There are currently " + count + " pending CoC transactions.");
+      return;
+    }
     this.passwordPromptResponseWait().then((password) => {
       this.presentLoading();
       this.blockchainService.validateTransactionPassword(password, this.mainAccount.sk, this.mainAccount.pk).then((decKey) => {
@@ -214,6 +219,16 @@ export class ItemReceivedPage {
       });
       passwordPrompt.present();
     });
+  }
+
+  pendingCoCCount(date: Date, array: any) {
+    let count = 0;
+     for (var i = 0; i < array.length; i++) {
+        if (array[i].sentOriginal.getTime() < date.getTime() && array[i].cocOriginal.Status == 'pending'){
+          count++;
+        }
+     }
+     return count;
   }
 
   // setFilteredItems() {
