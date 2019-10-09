@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MenuController, NavController, NavParams, Toast, ToastController, LoadingController } from 'ionic-angular';
+import { MenuController, NavController, NavParams, Toast, ToastController, LoadingController,  AlertController } from 'ionic-angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
@@ -13,8 +13,12 @@ export class ResetPasswordPage {
   private username;
   private code;
   private type;
-  passwordType: string = 'password';
-  passwordIcon: string = 'eye-off';
+  private accountPassword: FormGroup;
+  passwordTypeN: string = 'password';
+  passwordTypeC: string = 'password';
+  passwordIconO: string = 'eye-off';
+  passwordIconN: string = 'eye-off';
+  passwordIconC: string = 'eye-off';
   submitAttempt: boolean = false;
   resetPass: boolean = false;
   loading;
@@ -30,7 +34,8 @@ export class ResetPasswordPage {
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
     private authService: AuthServiceProvider,
-    private connectivity: ConnectivityServiceProvider
+    private connectivity: ConnectivityServiceProvider,
+    private alertCtrl: AlertController,
   ) {
     console.log(navParams);
     this.username = this.navParams.get('username');
@@ -42,7 +47,8 @@ export class ResetPasswordPage {
     });
     this.resetForm = new FormGroup({
       code: new FormControl(''),
-      password: new FormControl('', Validators.compose([Validators.pattern('^(?=.{8,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$'), Validators.required])),
+      nPassword: new FormControl('', Validators.compose([Validators.pattern('^(?=.{8,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$'), Validators.required])),
+      cPassword: new FormControl('', Validators.compose([Validators.pattern('^(?=.{8,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$'), Validators.required])),
     });
     this.forgotform = new FormGroup({
       username: new FormControl({ value: this.username, disabled: true }),
@@ -68,10 +74,18 @@ export class ResetPasswordPage {
         newPassword: this.forgotform.value.password
       };
       console.log(authmodel);
+      let cPassword = this.accountPassword.get('cPassword').value;
+      let nPassword = this.accountPassword.get('nPassword').value;
+
+      if (cPassword !== nPassword) {
+        this.presentAlert("Error", "New password and confirm password do not match.");
+        this.dissmissLoading();
+        return;
+      }
       this.authService.validateUser(authmodel).then((res) => {
         this.dissmissLoading();
         console.log(res);
-        if (res.status === 200) {          
+        if (res.status === 200) {
           this.presentToast('You have successfully changed your password. Please use the new password and log back again.');
           this.navCtrl.setRoot(LoginPage);
         } else {
@@ -133,9 +147,14 @@ export class ResetPasswordPage {
     }
   }
 
-  hideShowPassword() {
-    this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
-    this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
+  hideShowPassword(option) {
+    if (option == 1) {
+      this.passwordTypeN = this.passwordTypeN === 'text' ? 'password' : 'text';
+      this.passwordIconN = this.passwordIconN === 'eye-off' ? 'eye' : 'eye-off';
+    } else if (option == 2) {
+      this.passwordTypeC = this.passwordTypeC === 'text' ? 'password' : 'text';
+      this.passwordIconC = this.passwordIconC === 'eye-off' ? 'eye' : 'eye-off';
+    }
   }
 
   presentToast(message) {
@@ -161,6 +180,21 @@ export class ResetPasswordPage {
     });
     // });
     this.loading.present();
+  }
+
+  presentAlert(title: string, message: string) {
+    let alert = this.alertCtrl.create({
+      title: title,
+      message: message,
+      buttons: [
+        {
+          text: "OK",
+          handler: data => { }
+        }
+      ]
+    });
+
+    alert.present();
   }
 
   dissmissLoading() {
