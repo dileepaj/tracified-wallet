@@ -26,6 +26,7 @@ h4 {
   font-size: 1.4rem;
   font-weight: 400;
   margin: 0;
+  line-height: 1.5;
 }
 
 h5 {
@@ -37,6 +38,7 @@ h5 {
 p {
   font-size: 1.4rem;
   margin: 0;
+  line-height: 1.5;
 }
 
 li {
@@ -65,6 +67,14 @@ button {
 /* END MODULE CSS */
 
 /* IONIC CSS */
+
+ion-row {
+  width: 100%;
+}
+
+.datetime-md {
+  padding-left: 8px;
+}
 
 .toolbar-background {
   background-color: #474952;
@@ -101,6 +111,10 @@ button {
 .item-md {
   padding-left: 0;
   font-size: 1.4rem;
+}
+
+.picker-md .picker-opt {
+  font-size: 0.8em;
 }
 
 /* END IONIC CSS */

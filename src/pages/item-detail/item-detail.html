@@ -9,53 +9,97 @@
 
 </ion-header>
 
-<ion-content>
-<div class="container">
-      <form class="content-start">
-        <ion-list id="list-COC">
-          
-          <h4 class="secondary-font line-spacing">Item</h4>
-          <ion-item class="line-spacing">
-            <ion-label >Item</ion-label>
-           <ion-select name="item">
-              <ion-option *ngFor="let Item of currentItems">{{Item.asset_code}}</ion-option>
-            </ion-select>
-          </ion-item>
-
-          <h4 class="secondary-font line-spacing">Identifier</h4>
-          <ion-item class="line-spacing">
-            <ion-input type="text" placeholder="Identifier"
-              [(ngModel)]="COCForm.identifier" name="identifier"></ion-input>
-          </ion-item>
-
-          <h4 class="secondary-font line-spacing">Quantity</h4>
-          <ion-item id="rounded" class="line-spacing">
-            <ion-input type="number" placeholder="Quantity" [(ngModel)]="COCForm.qty"
-              name="qty"></ion-input>
-          </ion-item>
-
-          <h4 class="secondary-font line-spacing">Receiver</h4>
-          <ion-item text-wrap class="line-spacing">
-            <select-searchable [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}"
-              (ionInput)="setFilteredItems()" title=" Receiver" canSearch="true" [items]="receivers"
-              itemTextField="itemName" emptyMessage="No data">
-            </select-searchable>
-          </ion-item>
-
-          <h4 class="secondary-font line-spacing">Validity</h4>
-          <ion-item class="line-spacing">
-            <ion-datetime  placeholder="Validity" displayFormat="YYYY-MM-DDTHH:mm:ssTZD"
-              min="2018-11-29T06:25:48Z" max="2050" [(ngModel)]="COCForm.vaidity" name="vaidity"></ion-datetime>
-          </ion-item>
-        </ion-list>
-
+<ion-content padding>
+  <ion-grid class="padding-width">
+    <ion-row class="content-start">
+      <h4 class="primary-font">Fill up all the fields and press Transfer button to transfer assets to another user.</h4>
+    </ion-row>
+    <ion-row>
+      <ion-row>
+        <ion-item>
+          <ion-label floating>Item</ion-label>
+          <ion-select [(ngModel)]="selectedItem">
+            <ion-option *ngFor="let item of currentItems">{{item.asset_code}}</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-row>
+      <ion-row>
+        <ion-item>
+          <ion-label floating>Identifier</ion-label>
+          <ion-input text-wrap no-boarder [(ngModel)]="COCForm.identifier" type="text"></ion-input>
+        </ion-item>
+      </ion-row>
+      <ion-row>
+        <ion-item>
+          <ion-label floating>Quantity</ion-label>
+          <ion-input text-wrap no-boarder [(ngModel)]="COCForm.qty" type="number"></ion-input>
+        </ion-item>
+      </ion-row>
+      <ion-row>
+        <ion-item>
+          <select-searchable [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}"
+            (ionInput)="setFilteredItems()" title=" Receiver" canSearch="true" [items]="receivers"
+            itemTextField="itemName" emptyMessage="No data">
+          </select-searchable>
+        </ion-item>
+      </ion-row>
+      <ion-row>
+        <ion-item>
+          <ion-label floating>Valid till</ion-label>
+          <ion-datetime pickerFormat="YYYY-MM-DD hh mm A" [(ngModel)]="COCForm.vaidity"
+            displayFormat="YYYY/MM/DD hh:mm A" min="2018-11-29T06:25:48Z" max="2050"></ion-datetime>
+        </ion-item>
+      </ion-row>
+      <ion-row class="content-start">
         <div class="button-wrapper">
-          <button (click)="passwordPrompt()" class="btn-green" [disabled]="COCForm.invalid" ion-button>Transfer</button>
+          <button class="btn-green" (click)="transferAsset()">Transfer</button>
         </div>
+      </ion-row>
+    </ion-row>
+  </ion-grid>
 
-      </form>
-</div>
+  <!-- <div class="container">
+    <form class="content-start">
+      <ion-list id="list-COC">
+
+        <h4 class="secondary-font line-spacing">Item</h4>
+        <ion-item class="line-spacing">
+          <ion-label>Item</ion-label>
+          <ion-select name="item">
+            <ion-option *ngFor="let Item of currentItems">{{Item.asset_code}}</ion-option>
+          </ion-select>
+        </ion-item>
+
+        <h4 class="secondary-font line-spacing">Identifier</h4>
+        <ion-item class="line-spacing">
+          <ion-input type="text" placeholder="Identifier" [(ngModel)]="COCForm.identifier" name="identifier">
+          </ion-input>
+        </ion-item>
+
+        <h4 class="secondary-font line-spacing">Quantity</h4>
+        <ion-item id="rounded" class="line-spacing">
+          <ion-input type="number" placeholder="Quantity" [(ngModel)]="COCForm.qty" name="qty"></ion-input>
+        </ion-item>
+
+        <h4 class="secondary-font line-spacing">Receiver</h4>
+        <ion-item text-wrap class="line-spacing">
+          <select-searchable [(ngModel)]="COCForm.receiver" [ngModelOptions]="{standalone: true}"
+            (ionInput)="setFilteredItems()" title=" Receiver" canSearch="true" [items]="receivers"
+            itemTextField="itemName" emptyMessage="No data">
+          </select-searchable>
+        </ion-item>
+
+        <h4 class="secondary-font line-spacing">Validity</h4>
+        <ion-item class="line-spacing">
+          <ion-datetime placeholder="Validity" displayFormat="YYYY-MM-DDTHH:mm:ssTZD" min="2018-11-29T06:25:48Z"
+            max="2050" [(ngModel)]="COCForm.vaidity" name="vaidity"></ion-datetime>
+        </ion-item>
+      </ion-list>
+
+      <div class="button-wrapper">
+        <button (click)="passwordPrompt()" class="btn-green" [disabled]="COCForm.invalid" ion-button>Transfer</button>
+      </div>
+
+    </form>
+  </div> -->
 </ion-content>
-
-
-

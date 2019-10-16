@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, ToastController, LoadingController, Toast, AlertController, NavParams } from 'ionic-angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Network, Server, Keypair, Asset, TransactionBuilder, Operation } from 'stellar-sdk';
+import { Keypair } from 'stellar-sdk';
 import { AES, enc } from "crypto-js";
-import { stellarNet } from '../../shared/config';
 
-Network.usePublicNetwork();
-var server = new Server(stellarNet);
+// Network.usePublicNetwork();
+// var server = new Server(stellarNet);
 const setup = require("hsimp-purescript");
 const periods = require("hsimp-purescript/dictionaries/periods");
 const top10 = require("hsimp-purescript/dictionaries/top10");
@@ -79,59 +78,60 @@ export class AddAccountPage {
           let subPair = this.createKeyPair();
 
           this.mappingService.encyrptSecret(mainPair.secret(), this.form.value.password).then((encMainSecretKey) => {
-            this.mappingService.encyrptSecret(subPair.secret(), this.form.value.password).then((encSubSecretKey) => {
-              const mainAccount = {
-                accName: this.form.value.accName,
-                publicKey: mainPair.publicKey(),
-                privateKey: mainPair.secret()
-              };
-              const account = {
-                "account": {
-                  "mainAccount": {
-                    "accountName": this.form.value.accName,
-                    "pk": mainPair.publicKey(),
-                    "sk": encMainSecretKey,
-                    "skp": mainPair.secret(),
-                    "FO": false,
-                    "subAccounts": [{
-                      "pk": subPair.publicKey(),
-                      "sk": encSubSecretKey,
-                      "skp": subPair.secret(),
-                      "skInvalidated": false
-                    }]
-                  }
+            // this.mappingService.encyrptSecret(subPair.secret(), this.form.value.password).then((encSubSecretKey) => {
+            const mainAccount = {
+              accName: this.form.value.accName,
+              publicKey: mainPair.publicKey(),
+              privateKey: mainPair.secret()
+            };
+            const account = {
+              "account": {
+                "mainAccount": {
+                  "accountName": this.form.value.accName,
+                  "pk": mainPair.publicKey(),
+                  "sk": encMainSecretKey,
+                  "skp": mainPair.secret(),
+                  "FO": false,
+                  "subAccounts": [
+                    // {
+                    //   "pk": subPair.publicKey(),
+                    //   "sk": encSubSecretKey,
+                    //   "skp": subPair.secret(),
+                    //   "skInvalidated": false
+                    // }
+                  ]
                 }
               }
+            }
 
-              // Save to local storage
-              this.dataService.addTransactionAccount(account).then((res) => {
-                this.dissmissLoading();
-                if (res.status === 200) {
-                  this.presentToast('Transaction account added successfully!');
-                  this.navCtrl.setRoot(AccountInfoPage, { account: mainAccount, navigation: this.navigation });
-                } else {
-                  this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
-                }
-              }, (err) => {
-                this.dissmissLoading();
-                if (err.status == 403) {
-                  this.presentAlert('Authentication Failed', 'Your account is blocked. Please contact an admin.');
-                } else {
-                  this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
-                }
-              }).catch((error) => {
-                this.dissmissLoading();
-                this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
-                this.logger.error("Failed to add transaction account: " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
-              });
-            }).catch((err) => {
+            this.dataService.addTransactionAccount(account).then((res) => {
               this.dissmissLoading();
-              this.logger.error("Encrypting private key failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+              if (res.status === 200) {
+                this.presentToast('Transaction account added successfully!');
+                this.navCtrl.setRoot(AccountInfoPage, { account: mainAccount, navigation: this.navigation });
+              } else {
+                this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+              }
+            }, (err) => {
+              this.dissmissLoading();
+              if (err.status == 403) {
+                this.presentAlert('Authentication Failed', 'Your account is blocked. Please contact an admin.');
+              } else {
+                this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+              }
+            }).catch((error) => {
+              this.dissmissLoading();
+              this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+              this.logger.error("Failed to add transaction account: " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
           }).catch((err) => {
             this.dissmissLoading();
             this.logger.error("Encrypting private key failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
           });
+          // }).catch((err) => {
+          //   this.dissmissLoading();
+          //   this.logger.error("Encrypting private key failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+          // });
         } else {
           this.dissmissLoading();
           this.presentAlert("Error", "Account name already exists. Please pick a different name for the account.");
@@ -189,33 +189,33 @@ export class AddAccountPage {
     return Keypair.random();
   }
 
-  multisignSubAccount(subAccount, mainAccount) {
-    return new Promise((resolve, reject) => {
-      server.loadAccount(subAccount.publicKey()).then(function (account) {
-        var transaction = new TransactionBuilder(account).addOperation(Operation.setOptions({
-          signer: {
-            ed25519PublicKey: mainAccount,
-            weight: 2
-          }
-        })).addOperation(Operation.setOptions({
-          masterWeight: 0, // set master key weight
-          lowThreshold: 2,
-          medThreshold: 2, // a payment is medium threshold
-          highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
-        })).build();
+  // multisignSubAccount(subAccount, mainAccount) {
+  //   return new Promise((resolve, reject) => {
+  //     server.loadAccount(subAccount.publicKey()).then(function (account) {
+  //       var transaction = new TransactionBuilder(account).addOperation(Operation.setOptions({
+  //         signer: {
+  //           ed25519PublicKey: mainAccount,
+  //           weight: 2
+  //         }
+  //       })).addOperation(Operation.setOptions({
+  //         masterWeight: 0, // set master key weight
+  //         lowThreshold: 2,
+  //         medThreshold: 2, // a payment is medium threshold
+  //         highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
+  //       })).build();
 
-        transaction.sign(subAccount); // sign the transaction
+  //       transaction.sign(subAccount); // sign the transaction
 
-        return server.submitTransaction(transaction);
-      }).then(function (transactionResult) {
-        console.log(transactionResult);
-        resolve()
-      }).catch(function (err) {
-        console.error(err);
-        reject()
-      });
-    });
-  }
+  //       return server.submitTransaction(transaction);
+  //     }).then(function (transactionResult) {
+  //       console.log(transactionResult);
+  //       resolve()
+  //     }).catch(function (err) {
+  //       console.error(err);
+  //       reject()
+  //     });
+  //   });
+  // }
 
   encyrptSecret(key, signer) {
     return new Promise((resolve, reject) => {

@@ -2,6 +2,8 @@ import { ENV } from '@app/env';
 
 const gateway = ENV.GATEWAY;
 const admin = ENV.API_ADMIN;
+const blockchainNetwork = ENV.BLOCKCHAIN_NETWORK;
+const blockchainType = ENV.NETWORK_TYPE;
 
 // Admin GET
 
@@ -29,15 +31,18 @@ export const resetPassword: string = admin + '/sign/forgetpassword'; // POST
 // Gateway GET
 
 export const previosTxnId: string = gateway + '/transaction/lastTxn/'; // GET
+export const cocReceived: string = gateway + '/getcocbyreceiver/';
+export const cocSent: string = gateway + '/getcocbysender/';
 
 // Gateway POST
 
+export const subAccountsStatus: string = gateway + '/transaction/coc/subAccountStatus'
+export const sendCoC: string = gateway + '/insertcoccollection';
+export const updateCoC: string = gateway + '/insertcoccollection';
 
+// Blockchain access point
 
-// stellar access point
-
-export const stellarNet: string = 'https://horizon.stellar.org';
-
-export const subAccountBaseFee: number = 2;
+export const blockchainNet: string = blockchainNetwork;
+export const blockchainNetType: string = blockchainType;
 
 export const currency: string = 'Lumens';

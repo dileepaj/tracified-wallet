@@ -8,12 +8,6 @@
 </ion-header>
 
 <ion-content>
-  <!-- <div *ngIf="Citems">
-    <div class="search">
-      <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
-    </div>
-  </div> -->
-
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
       refreshingText="Refreshing...">
@@ -21,7 +15,7 @@
   </ion-refresher>
 
   <ion-grid no-padding class="full-height white-background">
-    <div *ngIf="!Citems">
+    <div *ngIf="cocReceived.length == 0">
       <ion-row>
         <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
       </ion-row>
@@ -36,106 +30,66 @@
         </div>
       </ion-row>
     </div>
-    <div class="padding-width" *ngIf="Citems">
-      <ion-row class="item-card" *ngFor="let item of Searcheditems; let index = index">
+    <div class="padding-width" *ngIf="cocReceived.length > 0">
+      <ion-row class="item-card" *ngFor="let item of cocReceived; let index = index">
         <ion-row>
           <ion-icon name="time"></ion-icon>
-          <h5 class="primary-font margin-fix">{{item.date.days}}d {{item.date.hours}}h {{item.date.minutes}}m</h5>
+          <h5 class="primary-font margin-fix">{{item.sentDate}}</h5>
         </ion-row>
         <ion-row>
-          <ion-col col-9>
-            <h1 class="primary-font">{{item.oname}}</h1>
+          <ion-col col-9 class="padding-bottom-cancel">
+            <h4 class="secondary-font">Item</h4>
           </ion-col>
-          <ion-col col-3>
-            <h1 class="primary-font text-right-align-horizontally">{{item.qty}}</h1>
+          <ion-col col-3 class="padding-bottom-cancel">
+            <h4 class="secondary-font text-right-align-horizontally">Quantity</h4>
+          </ion-col>
+          <ion-col col-9 class="padding-top-cancel">
+            <h1 class="primary-font first-capital">{{item.assetCode}}</h1>
+          </ion-col>
+          <ion-col col-3 class="padding-top-cancel">
+            <h1 class="primary-font text-right-align-horizontally">{{item.quantity}}</h1>
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col col-7>
-            <h4 class="primary-font">{{item.validity}}</h4>
+          <ion-col col-6 class="padding-bottom-cancel">
+            <h4 class="secondary-font">Identifier</h4>
           </ion-col>
-          <ion-col col-5>
-            <h4 class="primary-font text-right-align-horizontally">{{item.status}}</h4>
+          <ion-col col-6 class="padding-bottom-cancel">
+            <h4 class="secondary-font text-right-align-horizontally">Sender</h4>
+          </ion-col>
+          <ion-col col-6 class="padding-top-cancel">
+            <h4 class="primary-font">{{item.cocOriginal.Identifier}}</h4>
+          </ion-col>
+          <ion-col col-6 class="padding-top-cancel">
+            <h4 class="primary-font text-right-align-horizontally">{{item.sender}}</h4>
           </ion-col>
         </ion-row>
-        <ion-row class="block" *ngIf="item.status == 'pending'">
+        <ion-row>
+          <ion-col col-7 class="padding-bottom-cancel">
+            <h4 class="secondary-font">Valid till</h4>
+          </ion-col>
+          <ion-col col-5 class="padding-bottom-cancel">
+            <h4 class="secondary-font text-right-align-horizontally">Status</h4>
+          </ion-col>
+          <ion-col col-7 class="padding-top-cancel">
+            <h4 class="primary-font">{{item.validTill}}</h4>
+          </ion-col>
+          <ion-col col-5 class="padding-top-cancel">
+            <h4 class="primary-font text-right-align-horizontally first-capital">{{item.cocOriginal.Status}}</h4>
+          </ion-col>
+        </ion-row>
+        <ion-row class="block" *ngIf="item.cocOriginal.Status == 'pending'">
           <div class="right-float">
-            <button class="btn-red-outline" (click)="passwordPrompt(item, 'reject')" ion-button>
+            <button class="btn-red-outline" (click)="updateCoC(item, 'reject')" ion-button>
               REJECT
             </button>
-            <button class="btn-green" (click)="passwordPrompt(item, 'accept')" ion-button>
+            <button class="btn-green" (click)="updateCoC(item, 'accept')" ion-button>
               ACCEPT
             </button>
           </div>
         </ion-row>
       </ion-row>
-
-
-      <!-- <accordion-list *ngFor="let item of Searcheditems; let index = index" [status]="item.status" [date]="item.date"
-        [uname]="item.uname" [oname]="item.oname" [qty]="item.qty" textColor="#000000" hasMargin="false"
-        headerColor="#ffffff" [expanded]="index === 0">
-        <div *ngIf="item.status == 'pending'; else status_Content" id="content">
-          <ion-col left text-left *ngIf="item.itemArr.length > 0">
-            <h2>Transforming Items</h2>
-          </ion-col>
-          <ion-row *ngFor="let assetObj of item.itemArr">
-            <ion-col left text-left>
-              <h2>{{ assetObj.asset }}</h2>
-            </ion-col>
-            <ion-col right text-left>
-              <h2>{{ assetObj.amount }}</h2>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col left text-left>
-              <ion-note>{{ item.validity }}</ion-note>
-            </ion-col>
-            <ion-col left text-left>
-              <ion-note>This request will be valid till </ion-note>
-              <ion-note *ngIf="item.time.days">{{ item.time.days }}d </ion-note>
-              <ion-note *ngIf="item.time.hours != '00'">{{ item.time.hours }}h
-              </ion-note>
-              <ion-note *ngIf="item.time.minutes">{{ item.time.minutes }}m</ion-note>
-            </ion-col>
-          </ion-row>
-          <hr />
-          <ion-row>
-            <ion-col>
-              <button (click)="passwordPrompt(item, 'reject')" id="reject" ion-button block outline>
-                REJECT
-              </button>
-            </ion-col>
-            <ion-col>
-              <button (click)="passwordPrompt(item, 'accept')" id="accept" ion-button block color="secondary">
-                ACCEPT
-              </button>
-            </ion-col>
-          </ion-row>
-        </div>
-        <ng-template #status_Content>
-          <div id="content">
-            <ion-col left text-left *ngIf="item.itemArr.length > 0">
-              <h2>Transforming Items</h2>
-            </ion-col>
-            <ion-row *ngFor="let assetObj of item.itemArr">
-              <ion-col left text-left>
-                <h2>{{ assetObj.asset }}</h2>
-              </ion-col>
-              <ion-col right text-left>
-                <h2>{{ assetObj.amount }}</h2>
-              </ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col left text-left>
-                <h2>Status</h2>
-              </ion-col>
-              <ion-col right text-right>
-                <h2>{{ item.status }}</h2>
-              </ion-col>
-            </ion-row>
-          </div>
-        </ng-template>
-      </accordion-list> -->
+     
     </div>
   </ion-grid>
 

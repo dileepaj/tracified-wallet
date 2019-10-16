@@ -73,8 +73,32 @@ export class DataServiceProvider {
   changeUserDetails(type, userModel): Promise<any> {
     return this.authService.changeUserSettings(type, userModel);
   }
-  
+
   changeTransactionAccPassword(passwordModel) {
     return this.blockchainService.changeTransactionPassword(passwordModel);
+  }
+
+  subAccountsStatus(subAccounts) {
+    return this.apiService.getSubAccountsStatus(subAccounts);
+  }
+
+  sendCoC(coc): Promise<any> {
+    return this.apiService.sendCoC(coc);
+  }
+
+  updateCoC(updatedCoC): Promise<any> {
+    return this.apiService.updateCoC(updatedCoC);
+  }
+
+  getAccountNamesOfKeys(accountKeys): Promise<any> {
+    return this.apiService.getAccountNames(accountKeys);
+  }
+
+  getAllReceivedCoCs(accountKey): Promise<any> {
+    return this.apiService.queryAllReceivedCoCs(accountKey);
+  }
+
+  getAllSentCoCs(accountKey): Promise<any> {
+    return this.apiService.queryAllSentCoCs(accountKey);
   }
 }

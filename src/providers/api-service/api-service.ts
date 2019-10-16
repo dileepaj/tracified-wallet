@@ -4,7 +4,24 @@ import { Observable } from 'rxjs/Rx';
 
 import { Logger } from 'ionic-logger-new';
 import { Properties } from '../../shared/properties';
-import { login, blockchainAccs, addMainAcc, validateMainAcc, getMainPublicKey, getMainPublicKeys, detailChange, passwordChange, changeDisplayImage, transactionPasswordChange } from '../../shared/config';
+import {
+  login,
+  blockchainAccs,
+  addMainAcc,
+  validateMainAcc,
+  getMainPublicKey,
+  getMainPublicKeys,
+  detailChange,
+  passwordChange,
+  changeDisplayImage,
+  transactionPasswordChange,
+  subAccountsStatus,
+  updateSubAcc,
+  sendCoC,
+  cocReceived,
+  updateCoC,
+  cocSent
+} from '../../shared/config';
 
 @Injectable()
 export class ApiServiceProvider {
@@ -47,24 +64,7 @@ export class ApiServiceProvider {
     return this.http.post(this.url + '/' + endpoint, body, reqOpts);
   }
 
-  getPublickey(body: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.reqOpts = {
-        observe: 'response',
-        headers: new HttpHeaders({
-          'Accept': 'application/json',
-          'Content-Type': 'Application/json',
-          'Authorization': 'Bearer ' + this.properties.token
-        })
-      }
-      this.http.get(getMainPublicKey + '?accountName=' + body, this.reqOpts).subscribe(response => {
-        resolve(response);
-      }, error => {
-        console.log(error);
-        reject(error);
-      });
-    });
-  }
+
 
   getNames(body) {
 
@@ -76,9 +76,6 @@ export class ApiServiceProvider {
         'Authorization': 'Bearer ' + this.properties.token,
       })
     }
-
-    console.log(this.properties.token);
-    console.log(JSON.stringify(body));
 
     return this.http.post(getMainPublicKeys, body, this.reqOpts)
   }
@@ -93,7 +90,7 @@ export class ApiServiceProvider {
           'Authorization': 'Bearer ' + this.properties.token,
         })
       }
-      this.http.put(this.LocalAdminURL + '/api/bc/key/sub', body, this.reqOpts)
+      this.http.put(this.LocalAdminURL + '/api/bc/user/subAccount', body, this.reqOpts)
         .subscribe(response => {
           // console.log(response);
 
@@ -225,6 +222,18 @@ export class ApiServiceProvider {
 
   }
 
+  getSubAccountsStatus(payload): Promise<any> {
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+      })
+    }
+
+    return this.postN(subAccountsStatus, payload, headers);
+  }
+
   getBCAccountsN(): Promise<any> {
     let headers = {
       observe: 'response',
@@ -249,6 +258,19 @@ export class ApiServiceProvider {
     };
 
     return this.postN(addMainAcc, payload, headers);
+  }
+
+  addTransactionSubAccount(payload): Promise<any> {
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token,
+      })
+    };
+
+    return this.putN(updateSubAcc, payload, headers);
   }
 
   validateMainAccountN(payload): Promise<any> {
@@ -303,5 +325,64 @@ export class ApiServiceProvider {
     return this.putN(url1, '', headers);
   }
 
+  sendCoC(coc): Promise<any> {
+    let headers = { 'Content-Type': 'application/json' };
+    return this.postN(sendCoC, coc, headers);
+  }
+
+  updateCoC(updatedCoC): Promise<any> {
+    let headers = { 'Content-Type': 'application/json' };
+    return this.putN(updateCoC, updatedCoC, headers);
+  } 
+
+  getPublickey(body: any): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token
+      })
+    }
+
+    let url = getMainPublicKey + '?accountName=' + body;
+
+    return this.getN(url, header);
+  }
+
+  getAccountNames(accountKeys): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token,
+      })
+    }
+
+    return this.postN(getMainPublicKeys, accountKeys, header);
+  }
+
+  queryAllReceivedCoCs(accountKey): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    return this.getN(cocReceived +  accountKey, header);
+  }
+
+  queryAllSentCoCs(accountKey): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    return this.getN(cocSent +  accountKey, header);
+  }
 
 }

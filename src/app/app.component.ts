@@ -29,7 +29,7 @@ export class MyApp {
   activePage: any;
   rootPage;
   company = 'Tracified Wallet';
-  userType = 'Admin'
+  userType = 'Wallet User'
   user: any;
   deviceInfo = null;
   private loading;
@@ -91,6 +91,8 @@ export class MyApp {
           }
         });
       });
+      this.properties.skipConsoleLogs = false;
+      this.properties.writeToFile = true;
       this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
     });
 
