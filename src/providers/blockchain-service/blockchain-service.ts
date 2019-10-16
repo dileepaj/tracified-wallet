@@ -408,7 +408,7 @@ export class BlockchainServiceProvider {
         Network.useTestNetwork();
       }
       let server = new Server(blockchainNet);
-      server.loadAccount(subAccount.publicKey).then(function (account) {
+      server.loadAccount(subAccount.publicKey).then((account) => {
         var transaction = new TransactionBuilder(account, opts);
         transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }));
         transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, }));
@@ -461,7 +461,7 @@ export class BlockchainServiceProvider {
         Network.useTestNetwork();
       }
       let server = new Server(blockchainNet);
-      server.loadAccount(subAccount.publicKey).then(function (account) {
+      server.loadAccount(subAccount.publicKey).then((account) => {
         var transaction = new TransactionBuilder(account, opts).addOperation(Operation.manageData({
           name: 'Status', value: 'rejected', source: receiver
         })).addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))

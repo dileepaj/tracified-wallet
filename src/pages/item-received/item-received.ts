@@ -130,7 +130,7 @@ export class ItemReceivedPage {
             this.cocReceived.push(cocObj);
           });
           this.cocReceived.sort((a, b) => (a.sentOriginal < b.sentOriginal) ? 1 : -1);
-
+          
           this.dissmissLoading();
         }).catch((err) => {
           this.dissmissLoading();
