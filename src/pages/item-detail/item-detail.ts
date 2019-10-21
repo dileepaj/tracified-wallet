@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { Items } from '../../providers/items/items';
-import { Keypair } from 'stellar-sdk';
+import { Keypair, AccountResponse } from 'stellar-sdk';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
@@ -113,8 +113,8 @@ export class ItemDetailPage {
               });
             }).catch((err) => {
               this.dissmissLoading();
-            this.presentAlert("Error", "Failed to verify the asset issuer. Please try again.");
-            this.logger.error("Failed to get the asset issuer: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+              this.presentAlert("Error", "Failed to verify the asset issuer. Please try again.");
+              this.logger.error("Failed to get the asset issuer: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
           }).catch((err) => {
             this.dissmissLoading();
@@ -233,11 +233,16 @@ export class ItemDetailPage {
           } else {
             console.log("New Account");
             this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
-              let subAcc = {
-                publicKey: subKeyPair.publicKey(),
-                available: false
-              };
-              resolve(subAcc);
+              this.blockchainService.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
+                let subAcc = {
+                  publicKey: subKeyPair.publicKey(),
+                  available: false,
+                  sequenceNo: accountInfo.sequence
+                };
+                resolve(subAcc);
+              }).catch((err) => {
+                reject(err);
+              });
             }).catch((err) => {
               reject(err);
             });
@@ -245,11 +250,16 @@ export class ItemDetailPage {
         } else {
           console.log("New Account");
           this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
-            let subAcc = {
-              publicKey: subKeyPair.publicKey(),
-              available: false
-            };
-            resolve(subAcc);
+            this.blockchainService.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
+              let subAcc = {
+                publicKey: subKeyPair.publicKey(),
+                available: false,
+                sequenceNo: accountInfo.sequence
+              };
+              resolve(subAcc);
+            }).catch((err) => {
+              reject(err);
+            });
           }).catch((err) => {
             reject(err);
           });
