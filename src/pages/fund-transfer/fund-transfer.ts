@@ -50,8 +50,13 @@ export class FundTransferPage {
           this.presentAlert("Success", "Transfer of funds successful to the account.");
         }).catch((err) => {
           this.dissmissLoading();
-          this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-          this.presentAlert("Error", "Failed to transfer funds for the account.");
+          if (err.status != 200) {
+            this.logger.error("No sufficient funds in the user's account to transfer: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+            this.presentAlert("Error", "There are no sufficient funds to transfer funds in your account.");
+          } else {
+            this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+            this.presentAlert("Error", "Failed to transfer funds for the account.");
+         }
         });
     }).catch(err => {
       this.dissmissLoading();
