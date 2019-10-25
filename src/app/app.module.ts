@@ -121,7 +121,7 @@ export function createTranslateLoader(http: HttpClient) {
     BlockchainServiceProvider,
     Clipboard,
     CodePushServiceProvider,
-    CodePush,
+    CodePush
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

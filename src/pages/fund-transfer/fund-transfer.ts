@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams,  AlertController, LoadingController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams,  AlertController, LoadingController, ToastController, MenuController } from 'ionic-angular';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { Properties } from '../../shared/properties';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
@@ -30,6 +30,7 @@ export class FundTransferPage {
   private properties: Properties,
   public dataService: DataServiceProvider,
   private logger: Logger,
+  public menuCtrl: MenuController,
   private apiService: ApiServiceProvider,
   private connectivity: ConnectivityServiceProvider,
   ) {
@@ -37,13 +38,14 @@ export class FundTransferPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad FundTransferPage');
+    this.menuCtrl.enable(false);
+    this.logger.info("Fund Transfer Page Load" + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
   }
 
   transferFunds() {
+    this.presentLoading();
     this.passwordPrompt().then((password) => {
       this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
-        this.presentLoading();
         this.blockchainService.transferFunds(decKey, this.receiverPK , this.transferAmount).then((status) => {
           this.dissmissLoading();
           this.logger.info("Successfully transferred funds: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -72,14 +74,13 @@ export class FundTransferPage {
       this.dataService.getBlockchainAccounts().then((accounts) => {
         this.dissmissLoading();
           this.userAcc = accounts;
-          console.log("User Accounts: ", this.userAcc);
           resolve();
       }).catch((error) => {
         if (this.isLoadingPresent) {
           this.dissmissLoading();
         }
         this.presentAlert('Authentication Failed', 'Retrieving blockchain accounts failed.');
-        console.log(error);
+        this.logger.error("Failiure in retrieving Blockchain accounts" + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();
       });
     });
