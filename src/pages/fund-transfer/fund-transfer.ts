@@ -38,7 +38,6 @@ export class FundTransferPage {
   }
 
   ionViewDidLoad() {
-    this.menuCtrl.enable(false);
     this.logger.info("Fund Transfer Page Load" + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
   }
 
