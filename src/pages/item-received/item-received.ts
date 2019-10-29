@@ -173,6 +173,7 @@ export class ItemReceivedPage {
             this.presentAlert("Success", "Successfully rejected " + coc.assetCode + ". Your asset amout will not be changed.");
           }
         }).catch((err) => {
+          coc.cocOriginal.Status = 'pending';
           this.dissmissLoading();
           this.presentAlert("Error", "Could not proceed with the action. Please try again.");
           this.logger.error("Failed to update the CoC: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);

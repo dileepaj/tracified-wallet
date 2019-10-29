@@ -80,12 +80,14 @@ export class ItemDetailPage {
         this.secretKey = decKey;
         this.presentLoading();
         this.preparesubAccount(this.secretKey).then((subAcc: any) => {
-          console.log("Sub Account: ", subAcc);
+          console.log("Returned Sub Account: ", subAcc);
           let subPair = this.blockchainService.getSubAccountPair(subAcc.publicKey, this.properties.defaultAccount);
           this.blockchainService.verifyCoC(this.secretKey, this.COCForm.identifier, this.COCForm.receiver, this.COCForm.selectedItem, this.COCForm.qty, this.COCForm.vaidity).then((transactionHash) => {
             this.blockchainService.getAssetIssuer(this.properties.defaultAccount.pk, this.COCForm.selectedItem).then((issuer) => {
               Promise.all([this.blockchainService.acceptTransactionXdr(this.COCForm.identifier, this.COCForm.receiver, this.COCForm.qty, this.COCForm.selectedItem, this.COCForm.vaidity, transactionHash, subAcc, issuer, this.secretKey),
               this.blockchainService.rejectTransactionXdr(this.COCForm.receiver, this.COCForm.vaidity, transactionHash, subAcc, this.secretKey)]).then((xdrs: any) => {
+                console.log("Accept XDR sequence: ", xdrs[0].seqNum);
+                console.log("Reject XDR sequence: ", xdrs[1].seqNum);
                 const coc = {
                   "Sender": this.properties.defaultAccount.pk,
                   "Receiver": this.COCForm.receiver,
@@ -187,6 +189,7 @@ export class ItemDetailPage {
         "SubAccounts": subPublicKeys
       };
       this.dataService.subAccountsStatus(subAccounts).then((res) => {
+        console.log("All Sub Accounts: ", res);
         let avaialbeAccounts = [];
         let matchingAccount;
         let statuses = res.body;
