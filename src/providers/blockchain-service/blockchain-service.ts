@@ -429,8 +429,8 @@ export class BlockchainServiceProvider {
     var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
     var transaction = new TransactionBuilder(account, opts);
-    transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }));
-    transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, }));
+    transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', source: sourceKeypair.publicKey()}));
+    transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, source: sourceKeypair.publicKey()}));
     transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }));
     transaction.addOperation(Operation.payment({
       destination: receiver,
