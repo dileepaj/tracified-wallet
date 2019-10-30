@@ -38,6 +38,10 @@ export class ItemDetailPage {
     vaidity: ''
   };
 
+  private idAvailable: boolean;
+  private idEmpty: boolean;
+  private itemSearching: boolean;
+
   private selectedItem;
 
   private secretKey;
@@ -75,6 +79,14 @@ export class ItemDetailPage {
       this.presentAlert("Error", "Make sure to fill out all the fields before submitting the form.");
       return;
     }
+    if (this.itemSearching) {
+      this.presentAlert("Error", "Identifier data is not available. Please try again after the blue notification bar dissappears from top.");
+      return;
+    } else if (!this.idAvailable) {
+      this.presentAlert("Error", "Identifier provided does not belong to any item. Please enter a valid identifier.");
+      return;
+    }
+
     this.passwordPrompt().then((password) => {
       this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
         this.secretKey = decKey;
@@ -273,6 +285,21 @@ export class ItemDetailPage {
     });
   }
 
+  identifierLostFocus() {
+    this.idAvailable = false;
+    this.itemSearching = true;
+    let encodedID = this.mappingService.toBase64Id(this.COCForm.identifier);
+    this.dataService.getIdentifierStatus(encodedID).then((res) => {
+      let idStatus = res.body[0];
+      this.idAvailable = idStatus.status;
+      this.itemSearching = false;
+    }).catch((err) => {
+      this.itemSearching = false;
+      this.idAvailable = false;
+      this.logger.error("Failed to get identifier status: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+    });
+  }
+
   presentAlert(title, message) {
     let alert = this.alertCtrl.create();
     alert.setTitle(title);
@@ -305,6 +332,32 @@ export class ItemDetailPage {
       position: 'bottom'
     });
     toast.present();
+  }
+
+  presentToastAwait(title, message) {
+    return new Promise((resolve, reject) => {
+      let alert = this.alertCtrl.create({
+        title: title,
+        message: message,
+        buttons: [
+          {
+            text: 'Cancel',
+            handler: data => {
+              reject();
+            }
+          },
+          {
+            text: 'Continue',
+            handler: data => {
+              resolve();
+            }
+          }
+        ]
+      });
+
+      alert.present();
+    });
+
   }
 
   // createAddress() {

@@ -101,4 +101,8 @@ export class DataServiceProvider {
   getAllSentCoCs(accountKey): Promise<any> {
     return this.apiService.queryAllSentCoCs(accountKey);
   }
+
+  getIdentifierStatus(identifiers): Promise<any> {
+    return this.apiService.getIdentifierStatus(identifiers);
+  }
 }

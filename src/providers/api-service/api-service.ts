@@ -20,7 +20,8 @@ import {
   sendCoC,
   cocReceived,
   updateCoC,
-  cocSent
+  cocSent,
+  identifierStatus
 } from '../../shared/config';
 
 @Injectable()
@@ -288,6 +289,19 @@ export class ApiServiceProvider {
 
   }
 
+  getIdentifierStatus(encodedIds) {
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token
+      })
+    };
+
+    return this.getN(identifierStatus + "/" + encodedIds, headers);
+  }
+
   changeUserSettings(type, payload, token): Promise<any> {
     var url;
     var user = { 'user': payload };
@@ -333,7 +347,7 @@ export class ApiServiceProvider {
   updateCoC(updatedCoC): Promise<any> {
     let headers = { 'Content-Type': 'application/json' };
     return this.putN(updateCoC, updatedCoC, headers);
-  } 
+  }
 
   getPublickey(body: any): Promise<any> {
     let header = {
@@ -371,7 +385,7 @@ export class ApiServiceProvider {
       })
     }
 
-    return this.getN(cocReceived +  accountKey, header);
+    return this.getN(cocReceived + accountKey, header);
   }
 
   queryAllSentCoCs(accountKey): Promise<any> {
@@ -382,7 +396,7 @@ export class ApiServiceProvider {
       })
     }
 
-    return this.getN(cocSent +  accountKey, header);
+    return this.getN(cocSent + accountKey, header);
   }
 
 }
