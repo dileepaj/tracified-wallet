@@ -321,7 +321,7 @@ export class BlockchainServiceProvider {
               if (res.status == 200) {
                 this.properties.defaultAccount.subAccounts.push({ "pk": keyPair.publicKey(), "sk": keyPair.secret(), "skp": keyPair.secret(), "skInvalidated": false });
                 this.storageService.setDefaultAccount(this.properties.defaultAccount);
-                this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), 2).then(() => {
+                this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), 10).then(() => {
                   this.invalidateSubAccountKey(keyPair, mainAccount).then(() => {
                     this.logger.info("Successfully invalidated the account", this.properties.skipConsoleLogs, this.properties.writeToFile);
                     resolve(keyPair);
