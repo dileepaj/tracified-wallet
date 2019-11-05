@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { Items } from '../../providers/items/items';
-import { Keypair } from 'stellar-sdk';
+import { Keypair, AccountResponse } from 'stellar-sdk';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
@@ -37,6 +37,10 @@ export class ItemDetailPage {
     receiver: '',
     vaidity: ''
   };
+
+  private idAvailable: boolean;
+  private idEmpty: boolean;
+  private itemSearching: boolean;
 
   private selectedItem;
 
@@ -75,17 +79,27 @@ export class ItemDetailPage {
       this.presentAlert("Error", "Make sure to fill out all the fields before submitting the form.");
       return;
     }
+    if (this.itemSearching) {
+      this.presentAlert("Error", "Identifier data is not available. Please try again after the blue notification bar dissappears from top.");
+      return;
+    } else if (!this.idAvailable) {
+      this.presentAlert("Error", "Identifier provided does not belong to any item. Please enter a valid identifier.");
+      return;
+    }
+
     this.passwordPrompt().then((password) => {
       this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
         this.secretKey = decKey;
         this.presentLoading();
         this.preparesubAccount(this.secretKey).then((subAcc: any) => {
-          console.log("Sub Account: ", subAcc);
+          console.log("Returned Sub Account: ", subAcc);
           let subPair = this.blockchainService.getSubAccountPair(subAcc.publicKey, this.properties.defaultAccount);
           this.blockchainService.verifyCoC(this.secretKey, this.COCForm.identifier, this.COCForm.receiver, this.COCForm.selectedItem, this.COCForm.qty, this.COCForm.vaidity).then((transactionHash) => {
             this.blockchainService.getAssetIssuer(this.properties.defaultAccount.pk, this.COCForm.selectedItem).then((issuer) => {
               Promise.all([this.blockchainService.acceptTransactionXdr(this.COCForm.identifier, this.COCForm.receiver, this.COCForm.qty, this.COCForm.selectedItem, this.COCForm.vaidity, transactionHash, subAcc, issuer, this.secretKey),
               this.blockchainService.rejectTransactionXdr(this.COCForm.receiver, this.COCForm.vaidity, transactionHash, subAcc, this.secretKey)]).then((xdrs: any) => {
+                console.log("Accept XDR sequence: ", xdrs[0].seqNum);
+                console.log("Reject XDR sequence: ", xdrs[1].seqNum);
                 const coc = {
                   "Sender": this.properties.defaultAccount.pk,
                   "Receiver": this.COCForm.receiver,
@@ -113,8 +127,8 @@ export class ItemDetailPage {
               });
             }).catch((err) => {
               this.dissmissLoading();
-            this.presentAlert("Error", "Failed to verify the asset issuer. Please try again.");
-            this.logger.error("Failed to get the asset issuer: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+              this.presentAlert("Error", "Failed to verify the asset issuer. Please try again.");
+              this.logger.error("Failed to get the asset issuer: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
           }).catch((err) => {
             this.dissmissLoading();
@@ -187,6 +201,7 @@ export class ItemDetailPage {
         "SubAccounts": subPublicKeys
       };
       this.dataService.subAccountsStatus(subAccounts).then((res) => {
+        console.log("All Sub Accounts: ", res);
         let avaialbeAccounts = [];
         let matchingAccount;
         let statuses = res.body;
@@ -233,11 +248,16 @@ export class ItemDetailPage {
           } else {
             console.log("New Account");
             this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
-              let subAcc = {
-                publicKey: subKeyPair.publicKey(),
-                available: false
-              };
-              resolve(subAcc);
+              this.blockchainService.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
+                let subAcc = {
+                  publicKey: subKeyPair.publicKey(),
+                  available: false,
+                  sequenceNo: accountInfo.sequence
+                };
+                resolve(subAcc);
+              }).catch((err) => {
+                reject(err);
+              });
             }).catch((err) => {
               reject(err);
             });
@@ -245,11 +265,16 @@ export class ItemDetailPage {
         } else {
           console.log("New Account");
           this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
-            let subAcc = {
-              publicKey: subKeyPair.publicKey(),
-              available: false
-            };
-            resolve(subAcc);
+            this.blockchainService.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
+              let subAcc = {
+                publicKey: subKeyPair.publicKey(),
+                available: false,
+                sequenceNo: accountInfo.sequence
+              };
+              resolve(subAcc);
+            }).catch((err) => {
+              reject(err);
+            });
           }).catch((err) => {
             reject(err);
           });
@@ -257,6 +282,21 @@ export class ItemDetailPage {
       }).catch((err) => {
         reject(err);
       });
+    });
+  }
+
+  identifierLostFocus() {
+    this.idAvailable = false;
+    this.itemSearching = true;
+    let encodedID = this.mappingService.toBase64Id(this.COCForm.identifier);
+    this.dataService.getIdentifierStatus(encodedID).then((res) => {
+      let idStatus = res.body[0];
+      this.idAvailable = idStatus.status;
+      this.itemSearching = false;
+    }).catch((err) => {
+      this.itemSearching = false;
+      this.idAvailable = false;
+      this.logger.error("Failed to get identifier status: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
     });
   }
 
@@ -292,6 +332,32 @@ export class ItemDetailPage {
       position: 'bottom'
     });
     toast.present();
+  }
+
+  presentToastAwait(title, message) {
+    return new Promise((resolve, reject) => {
+      let alert = this.alertCtrl.create({
+        title: title,
+        message: message,
+        buttons: [
+          {
+            text: 'Cancel',
+            handler: data => {
+              reject();
+            }
+          },
+          {
+            text: 'Continue',
+            handler: data => {
+              resolve();
+            }
+          }
+        ]
+      });
+
+      alert.present();
+    });
+
   }
 
   // createAddress() {

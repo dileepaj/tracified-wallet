@@ -8,9 +8,11 @@
   </ion-navbar>
 
 </ion-header>
-
-<ion-content padding>
-  <ion-grid class="padding-width">
+<ion-content>
+  <div *ngIf="itemSearching" class="pinned-alert">
+    <ion-spinner></ion-spinner> Getting identifier data. Please wait.
+  </div>
+  <ion-grid class="padding-content">
     <ion-row class="content-start">
       <h4 class="primary-font">Fill up all the fields and press Transfer button to transfer assets to another user.</h4>
     </ion-row>
@@ -26,7 +28,8 @@
       <ion-row>
         <ion-item>
           <ion-label floating>Identifier</ion-label>
-          <ion-input text-wrap no-boarder [(ngModel)]="COCForm.identifier" type="text"></ion-input>
+          <ion-input text-wrap no-boarder [(ngModel)]="COCForm.identifier" (ionBlur)="identifierLostFocus()"
+            type="text"></ion-input>
         </ion-item>
       </ion-row>
       <ion-row>
