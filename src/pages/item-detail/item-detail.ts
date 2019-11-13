@@ -79,18 +79,28 @@ export class ItemDetailPage {
       this.presentAlert("Error", "Make sure to fill out all the fields before submitting the form.");
       return;
     }
-    if (this.itemSearching) {
-      this.presentAlert("Error", "Identifier data is not available. Please try again after the blue notification bar dissappears from top.");
+
+    if (Number(this.COCForm.qty) < 1) {
+      this.presentAlert("Error", "Invalid asset quantity. Please try with a valid amount.");
       return;
-    } else if (!this.idAvailable) {
-      this.presentAlert("Error", "Identifier provided does not belong to any item. Please enter a valid identifier.");
+    } else if (this.item.balance < this.COCForm.qty) {
+      this.presentAlert("Error", "Not enough assests to transfer. Please try with a valid amount.");
       return;
     }
 
+    if (this.itemSearching) {
+      this.presentAlert("Error", "Identifier data is not available. Please try again after the blue notification bar dissappears from top.");
+      return;
+    } 
+    // else if (!this.idAvailable) {
+    //   this.presentAlert("Error", "Identifier provided does not belong to any item. Please enter a valid identifier.");
+    //   return;
+    // }
+
     this.passwordPrompt().then((password) => {
+      this.presentLoading();
       this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
         this.secretKey = decKey;
-        this.presentLoading();
         this.preparesubAccount(this.secretKey).then((subAcc: any) => {
           console.log("Returned Sub Account: ", subAcc);
           let subPair = this.blockchainService.getSubAccountPair(subAcc.publicKey, this.properties.defaultAccount);
