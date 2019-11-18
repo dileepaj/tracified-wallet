@@ -287,7 +287,7 @@ export class BlockchainServiceProvider {
   }
 
   mainAccountSuffucientFunds(balance, assetCount): any {
-    let baseFee = (assetCount * 0.5) + 4 + 3;
+    let baseFee = (assetCount * 0.5) + 4 + 3 + 2;
     if (baseFee < (balance - 0.5)) {
       return true;
     } else {
