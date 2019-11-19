@@ -83,7 +83,7 @@ export class ItemDetailPage {
     if (Number(this.COCForm.qty) < 1) {
       this.presentAlert("Error", "Invalid asset quantity. Please try with a valid amount.");
       return;
-    } else if (this.item.balance < this.COCForm.qty) {
+    } else if (Number(this.item.balance) < Number(this.COCForm.qty)) {
       this.presentAlert("Error", "Not enough assests to transfer. Please try with a valid amount.");
       return;
     }
@@ -91,7 +91,7 @@ export class ItemDetailPage {
     if (this.itemSearching) {
       this.presentAlert("Error", "Identifier data is not available. Please try again after the blue notification bar dissappears from top.");
       return;
-    } 
+    }
     // else if (!this.idAvailable) {
     //   this.presentAlert("Error", "Identifier provided does not belong to any item. Please enter a valid identifier.");
     //   return;
@@ -430,7 +430,7 @@ export class ItemDetailPage {
   //   catch (err_1) {
   //     console.log("CoC Verification: ", err_1);
   //   }
-  // }  
+  // }
 
   // AcceptBuild(Identifier, proofHash, subAcc, subAccObj, signerSK) {
 
