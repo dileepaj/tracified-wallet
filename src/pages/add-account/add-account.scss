@@ -11,8 +11,8 @@ page-add-account {
           align-self: center;
           padding-left: 8%;
         }
-        
-       
+
+
         .note{
           padding-top: 5%;
           width: auto;
@@ -57,7 +57,13 @@ page-add-account {
         .passwordIcon{
           zoom:0.8;
           padding-top: 35px;
-          z-index:1
+          z-index:1;
+        }
+
+       .confirmPasswordIcon {
+          zoom:0.8;
+          padding-top: 35px;
+          z-index:1;
        }
     }
 }

@@ -41,6 +41,8 @@ export class AddAccountPage {
   StrengthPassword: any;
   passwordType: string = 'password';
   passwordIcon: string = 'eye-off';
+  confirmPasswordType: string = 'password';
+  confirmPasswordIcon:string = 'eye-off';
   private toastInstance: Toast;
   loading;
   form: FormGroup;
@@ -63,7 +65,8 @@ export class AddAccountPage {
     this.form = new FormGroup({
       accName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
       strength: new FormControl(''),
-      password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required]))
+      password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
+      confirmPassword: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
     });
 
     this.navigation = this.navParams.get('navigation');
@@ -76,6 +79,15 @@ export class AddAccountPage {
         if (status) {
           let mainPair = this.createKeyPair();
           let subPair = this.createKeyPair();
+
+          let password = this.form.get('password').value;
+          let confirmPassword = this.form.get('confirmPassword').value;
+
+          if(password != confirmPassword) {
+            this.presentAlert("Error", "New password and confirm password do not match.");
+            this.dissmissLoading();
+            return;
+          }
 
           this.mappingService.encyrptSecret(mainPair.secret(), this.form.value.password).then((encMainSecretKey) => {
             // this.mappingService.encyrptSecret(subPair.secret(), this.form.value.password).then((encSubSecretKey) => {
@@ -228,9 +240,14 @@ export class AddAccountPage {
     });
   }
 
-  hideShowPassword() {
-    this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
-    this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
+  hideShowPassword(option) {
+    if(option == 1) {
+      this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
+      this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
+    } else if(option == 2) {
+      this.confirmPasswordType = this.confirmPasswordType === 'text' ? 'password' : 'text';
+      this.confirmPasswordIcon = this.confirmPasswordIcon === 'eye-off' ? 'eye' : 'eye-off';
+    }
   }
 
   presentAlert(title, message) {
