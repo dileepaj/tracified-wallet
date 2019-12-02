@@ -1,11 +1,9 @@
 page-fund-transfer {
   .item-inner {
-    border-bottom: 0 !important;
-    border-bottom-color:  #4F525D !important;
     box-shadow: none !important;
   }
 
-  .item-input-has-focus .label-md[floating], .input-has-focus .label-md[floating]{
-    color: #4F525D !important;
+  .item-md.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner, .item-md.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner {
+    border-bottom: 1px solid #dedede;
   }
 }

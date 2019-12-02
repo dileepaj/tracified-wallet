@@ -1,11 +1,10 @@
-import { Component} from '@angular/core';
-import { IonicPage, NavController, NavParams,  AlertController, LoadingController, ToastController, MenuController } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, AlertController, LoadingController, ToastController, MenuController } from 'ionic-angular';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { Properties } from '../../shared/properties';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { Logger } from 'ionic-logger-new';
-import { ApiServiceProvider } from '../../providers/api-service/api-service';
-import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
+import { BcAccountPage } from '../../pages/bc-account/bc-account';
 
 @IonicPage()
 @Component({
@@ -22,16 +21,15 @@ export class FundTransferPage {
   showaccount: Array<string> = [];
 
   constructor(
-  public navCtrl: NavController,
-  public navParams: NavParams,
-  private alertCtrl: AlertController,
-  private loadingCtrl: LoadingController,
-  private toastCtrl: ToastController,
-  private blockchainService: BlockchainServiceProvider,
-  private properties: Properties,
-  public dataService: DataServiceProvider,
-  private logger: Logger,
-  public menuCtrl: MenuController,
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private alertCtrl: AlertController,
+    private loadingCtrl: LoadingController,
+    private blockchainService: BlockchainServiceProvider,
+    private properties: Properties,
+    public dataService: DataServiceProvider,
+    private logger: Logger,
+    public menuCtrl: MenuController,
   ) {
     this.mainAccount = this.properties.defaultAccount;
     this.getMainAccounts();
@@ -42,36 +40,36 @@ export class FundTransferPage {
   }
 
   transferFunds() {
-    if(this.transferAmount !== "" && this.receiverPK !== "") {
+    if (this.transferAmount || this.receiverPK) {
       this.presentLoading();
       this.blockchainService.accountBalance(this.mainAccount.pk).then((balance) => {
-        if ((Number(balance))  < this.transferAmount) {
+        if ((Number(balance)) < this.transferAmount) {
           this.dissmissLoading();
           this.presentAlert("Error", "No sufficient funds. Please try again.");
         } else {
           this.passwordPrompt().then((password) => {
             this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
-            this.blockchainService.transferFunds(decKey, this.receiverPK , this.transferAmount).then((status) => {
-              this.transferAmount = "";
-              this.receiverPK = "";
+              this.blockchainService.transferFunds(decKey, this.receiverPK, this.transferAmount).then((status) => {
+                this.transferAmount = "";
+                this.receiverPK = "";
+                this.dissmissLoading();
+                this.logger.info("Successfully transferred funds: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                this.presentAlert("Success", "Transfer of funds successful to the account.");
+              }).catch((err) => {
+                this.dissmissLoading();
+                this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                this.presentAlert("Error", "Failed to transfer funds for the account.");
+              });
+            }).catch(err => {
               this.dissmissLoading();
-              this.logger.info("Successfully transferred funds: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
-              this.presentAlert("Success", "Transfer of funds successful to the account.");
-            }).catch((err) => {
-              this.dissmissLoading();
-              this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-              this.presentAlert("Error", "Failed to transfer funds for the account.");
+              this.presentAlert("Error", "Invalid transaction password. Please try again.");
+              this.logger.error("Password validation failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
-          }).catch(err => {
+          }).catch((err) => {
             this.dissmissLoading();
-            this.presentAlert("Error", "Invalid transaction password. Please try again.");
-            this.logger.error("Password validation failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
           });
-        }).catch((err) => {
-         this.dissmissLoading();
-        });
         }
-      }).catch (err => {
+      }).catch(err => {
         this.dissmissLoading();
         this.presentAlert("Error", "Failure to retrieve account balance.");
         this.logger.error("Failure in retrieving account balance: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -87,13 +85,19 @@ export class FundTransferPage {
       this.presentLoading();
       this.dataService.getBlockchainAccounts().then((accounts) => {
         this.dissmissLoading();
-          this.userAcc = accounts;
-          for(var i = 0; i < Object.keys(this.userAcc).length; i++) {
-            if(this.properties.defaultAccount.accountName != this.userAcc[i].accountName) {
-              this.showaccount.push(this.userAcc[i]);
-            }
+
+        if (accounts.length < 2) {
+          this.goBackAlert("Warning", "Could not find any other accounts. Please try again after creating a new Transaction account.");
+          return;
+        }
+
+        this.userAcc = accounts;
+        for (var i = 0; i < Object.keys(this.userAcc).length; i++) {
+          if (this.properties.defaultAccount.accountName != this.userAcc[i].accountName) {
+            this.showaccount.push(this.userAcc[i]);
           }
-          resolve();
+        }
+        resolve();
       }).catch((error) => {
         if (this.isLoadingPresent) {
           this.dissmissLoading();
@@ -135,6 +139,24 @@ export class FundTransferPage {
       });
       alert.present();
     });
+  }
+
+  goBackAlert(title, message) {
+    let alert = this.alertCtrl.create({
+      title: title,
+      message: message,
+      buttons: [
+        {
+          text: "Go Back",
+          handler: data => {
+            this.navCtrl.setRoot(BcAccountPage);
+          }
+        }
+      ],
+      enableBackdropDismiss: false
+    });
+
+    alert.present();
   }
 
   presentAlert(title, message) {
