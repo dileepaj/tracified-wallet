@@ -91,11 +91,10 @@ export class ItemDetailPage {
     if (this.itemSearching) {
       this.presentAlert("Error", "Identifier data is not available. Please try again after the blue notification bar dissappears from top.");
       return;
+    } else if (!this.idAvailable) {
+      this.presentAlert("Error", "Identifier provided does not belong to any item. Please enter a valid identifier.");
+      return;
     }
-    // else if (!this.idAvailable) {
-    //   this.presentAlert("Error", "Identifier provided does not belong to any item. Please enter a valid identifier.");
-    //   return;
-    // }
 
     this.passwordPrompt().then((password) => {
       this.presentLoading();
