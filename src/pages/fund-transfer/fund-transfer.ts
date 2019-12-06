@@ -40,13 +40,26 @@ export class FundTransferPage {
   }
 
   transferFunds() {
-    if (this.transferAmount || this.receiverPK) {
+    if (this.transferAmount && this.receiverPK) {
       this.presentLoading();
-      this.blockchainService.accountBalance(this.mainAccount.pk).then((balance) => {
-        if ((Number(balance)) < this.transferAmount) {
+      this.blockchainService.accountBalanceBoth(this.mainAccount.pk).then((balances: any) => {
+        let minBalance = 1.5 + (Number(balances.assetCount) * 0.5);
+        let effectiveBalance = Number(balances.balance) - minBalance;
+        if (effectiveBalance < this.transferAmount) {
           this.dissmissLoading();
-          this.presentAlert("Error", "No sufficient funds. Please try again.");
+          this.presentAlert("Error", "Your effective balance is " + effectiveBalance + " lumens. Please try again with a valid amount.");
+        } else if (this.transferAmount < 2) {
+          this.dissmissLoading();
+          this.presentAlert("Error", "Minimum transfer amount should be greater than 2 lumens. Please try again with a valid amount.");
         } else {
+          this.blockchainService.blockchainAccountInfo(this.receiverPK).then((res) => {
+            console.log("RES: ", res);
+            return;
+          }).catch((err) => {
+            console.log("Err: ", err);
+            return;
+          });
+
           this.passwordPrompt().then((password) => {
             this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
               this.blockchainService.transferFunds(decKey, this.receiverPK, this.transferAmount).then((status) => {
@@ -54,7 +67,7 @@ export class FundTransferPage {
                 this.receiverPK = "";
                 this.dissmissLoading();
                 this.logger.info("Successfully transferred funds: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
-                this.presentAlert("Success", "Transfer of funds successful to the account.");
+                this.presentAlert("Success", "Successfully transferred " + this.transferAmount + "lumens. View account information to see the updated amount.");
               }).catch((err) => {
                 this.dissmissLoading();
                 this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -135,7 +148,8 @@ export class FundTransferPage {
               }
             }
           },
-        ]
+        ],
+        enableBackdropDismiss: false
       });
       alert.present();
     });

@@ -46,3 +46,4 @@ export const blockchainNet: string = blockchainNetwork;
 export const blockchainNetType: string = blockchainType;
 
 export const currency: string = 'Lumens';
+export const mainAccountBalance: number = 1;
