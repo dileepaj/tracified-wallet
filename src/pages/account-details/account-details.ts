@@ -62,6 +62,11 @@ export class AccountDetailsPage {
     this.privateKey = "";
   }
 
+  hideKey() {
+    this.keyDecrypted = false;
+    this.privateKey = "";
+  }
+
   transactionPasswordPopUp(): Promise<string> {
     let resolveFunction: (password: string) => void;
 

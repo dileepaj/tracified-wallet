@@ -31,7 +31,10 @@
         <h4 class="secondary-font">Private key</h4>
       </ion-row>
       <ion-row class="full-width line-spacing" *ngIf="keyDecrypted" text-wrap>
-        <h3 class="primary-font word-wrap">{{ privateKey }}</h3>
+        <ion-item no-lines>
+          <h3 class="primary-font word-wrap">{{ privateKey }}</h3>
+          <button class="btn-text-only green-font" ion-button (click)="hideKey()">Hide key</button>
+        </ion-item>
       </ion-row>
       <ion-row class="full-width" *ngIf="!keyDecrypted">
         <button class="btn-text-only green-font" ion-button (click)="decryptSecretKey()">View key</button>
@@ -48,7 +51,7 @@
     <ion-row class="full-width line-spacing" *ngIf="notDefaultAccount">
       <div class="button-wrapper">
           <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
-      </div>          
+      </div>
     </ion-row>
   </ion-grid>
 </ion-content>
