@@ -256,6 +256,16 @@ ion-row {
   padding: 0 !important;
 }
 
+.no-padding-x {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.no-margin-x {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 /* END UTILS */
 
 /* COLORS */
@@ -315,6 +325,13 @@ ion-row {
 .btn-green-txt-only {
   color: #28a745;
   background-color: transparent;
+  box-shadow: none !important;
+}
+
+.btn-green-outline {
+  color: #28a745;
+  background-color: transparent;
+  border: 1px solid #28a745;
   box-shadow: none !important;
 }
 

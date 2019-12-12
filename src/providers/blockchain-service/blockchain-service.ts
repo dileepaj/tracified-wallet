@@ -196,7 +196,7 @@ export class BlockchainServiceProvider {
             assetCount++;
           }
         }
-        resolve({balance: nativeBalance, assetCount: assetCount});
+        resolve({ balance: nativeBalance, assetCount: assetCount });
       }).catch((err) => {
         this.logger.error("Failed to get accounts asset count: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject(err);
@@ -536,6 +536,22 @@ export class BlockchainServiceProvider {
       }).catch((err) => {
         this.logger.error("Failed to get asset issuer: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();
+      });
+    });
+  }
+
+  checkAccountValidity(publicKey): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.blockchainAccountInfo(publicKey).then((res) => {
+        resolve(true);
+      }).catch((err) => {
+        if (err.response.status == 404 && err.response.title == "Resource Missing") {
+          this.logger.error("Invalid Public Key: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+          resolve(false);
+        } else {
+          this.logger.error("Failed to check account validity: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+          reject(err);
+        }
       });
     });
   }

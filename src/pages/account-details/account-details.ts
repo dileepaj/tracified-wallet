@@ -6,7 +6,6 @@ import { Properties } from '../../shared/properties';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
-import { currency } from '../../shared/config';
 
 @IonicPage()
 @Component({
@@ -33,9 +32,9 @@ export class AccountDetailsPage {
     this.account = this.navParams.get("account");
     this.defaultAccountCheck();
     this.blockchainService.accountBalance(this.account.pk).then((balance) => {
-      this.accountFunds = balance.toString() + ' ' + currency;
+      this.accountFunds = balance.toString();
     }).catch((err) => {
-      this.accountFunds = '0 ' + currency;
+      this.accountFunds = '0 ';
     });
   }
 
