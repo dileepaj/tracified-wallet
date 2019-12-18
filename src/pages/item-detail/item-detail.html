@@ -4,22 +4,22 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Transfer Item</ion-title>
+    <ion-title>{{'TRANSFER_ITEM' | translate}}</ion-title>
   </ion-navbar>
 
 </ion-header>
 <ion-content>
   <div *ngIf="itemSearching" class="pinned-alert">
-    <ion-spinner></ion-spinner> Getting identifier data. Please wait.
+    <ion-spinner></ion-spinner> {{'GET_ID_DATA' | translate}}
   </div>
   <ion-grid class="padding-content">
     <ion-row class="content-start">
-      <h4 class="primary-font">Fill up all the fields and press Transfer button to transfer assets to another user.</h4>
+      <h4 class="primary-font">{{'FILL_FIELDS' | translate}}</h4>
     </ion-row>
     <ion-row>
       <ion-row>
         <ion-item>
-          <ion-label floating>Item</ion-label>
+          <ion-label floating>{{'ITEM' | translate}}</ion-label>
           <ion-select [(ngModel)]="selectedItem">
             <ion-option *ngFor="let item of currentItems">{{item.asset_code}}</ion-option>
           </ion-select>
@@ -27,14 +27,14 @@
       </ion-row>
       <ion-row>
         <ion-item>
-          <ion-label floating>Identifier</ion-label>
+          <ion-label floating>{{'IDENTIFIER' | translate}}</ion-label>
           <ion-input text-wrap no-boarder [(ngModel)]="COCForm.identifier" (ionBlur)="identifierLostFocus()"
             type="text"></ion-input>
         </ion-item>
       </ion-row>
       <ion-row>
         <ion-item>
-          <ion-label floating>Quantity</ion-label>
+          <ion-label floating>{{'QUANTITY' | translate}}</ion-label>
           <ion-input text-wrap no-boarder [(ngModel)]="COCForm.qty" type="number"></ion-input>
         </ion-item>
       </ion-row>
@@ -48,14 +48,14 @@
       </ion-row>
       <ion-row>
         <ion-item>
-          <ion-label floating>Valid till</ion-label>
+          <ion-label floating>{{ 'VALID_TILL' | translate}}</ion-label>
           <ion-datetime pickerFormat="YYYY-MM-DD hh mm A" [(ngModel)]="COCForm.vaidity"
             displayFormat="YYYY/MM/DD hh:mm A" min="2018-11-29T06:25:48Z" max="2050"></ion-datetime>
         </ion-item>
       </ion-row>
       <ion-row class="content-start">
         <div class="button-wrapper">
-          <button class="btn-green" (click)="transferAsset()">Transfer</button>
+          <button class="btn-green" (click)="transferAsset()">{{ 'TRANSFER' | translate}}</button>
         </div>
       </ion-row>
     </ion-row>

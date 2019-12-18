@@ -27,6 +27,11 @@ export class StorageServiceProvider {
     storeName: "misc"
   });
 
+  public language = localforage.createInstance({
+    name: 'language',
+    storeName: 'language'
+  });
+
   constructor(
     private logger: Logger,
     private properties: Properties
@@ -157,4 +162,9 @@ export class StorageServiceProvider {
       });
     });
   }
+
+  public setLanguage(language) {
+    this.language.setItem('language', language);
+  }
+
 }

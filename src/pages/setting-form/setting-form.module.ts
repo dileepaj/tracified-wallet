@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { SettingFormPage } from './setting-form';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -8,6 +9,7 @@ import { SettingFormPage } from './setting-form';
   ],
   imports: [
     IonicPageModule.forChild(SettingFormPage),
+    TranslateModule.forChild()
   ],
 })
 export class SettingFormPageModule {}

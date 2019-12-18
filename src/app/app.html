@@ -16,36 +16,36 @@
     <ion-list no-lines padding>
       <button text-wrap ion-item menuClose (click)="openPage('items')">
         <ion-icon class="primary-font" name="clipboard" item-start></ion-icon>
-        <h5 class="line-spacing icon-alignment primary-font">Items</h5>
+        <h5 class="line-spacing icon-alignment primary-font">{{'LIST_MASTER_TITLE'|translate}}</h5>
       </button>
       <button text-wrap ion-item menuClose (click)="openPage('accounts')">
         <ion-icon class="primary-font" name="contacts" item-start></ion-icon>
-        <h5 class="line-spacing icon-alignment primary-font">Accounts</h5>
+        <h5 class="line-spacing icon-alignment primary-font">{{'ACCOUNTS' | translate}}</h5>
       </button>
       <button text-wrap ion-item menuClose (click)="openPage('settings')">
         <ion-icon class="primary-font" name="settings" item-start></ion-icon>
-        <h5 class="line-spacing icon-alignment primary-font">Settings</h5>
-      </button> 
+        <h5 class="line-spacing icon-alignment primary-font">{{'SETTINGS_TITLE' | translate}}</h5>
+      </button>
       <button text-wrap ion-item menuClose (click)="openPage('about')">
         <ion-icon class="primary-font" name="information-circle" item-start></ion-icon>
-        <h5 class="line-spacing icon-alignment primary-font">About</h5>
+        <h5 class="line-spacing icon-alignment primary-font">{{'ABOUT' | translate}}</h5>
       </button>
       <button text-wrap ion-item menuClose (click)="openPage('logout')">
         <ion-icon class="primary-font" name="power" item-start></ion-icon>
-        <h5 class="line-spacing icon-alignment primary-font">Logout</h5>
+        <h5 class="line-spacing icon-alignment primary-font">{{'LOGOUT' | translate}}</h5>
       </button>
     </ion-list>
   </ion-content>
   <ion-footer>
     <ion-row>
       <ion-col col-4>
-        <button ion-button (click)="languageChange()" class="btn-text-only primary-font padding-width capitalize-font">English</button>
+        <button ion-button (click)="languageChange('english')" class="btn-text-only primary-font padding-width capitalize-font">{{'ENGLISH' | translate}}</button>
       </ion-col>
       <ion-col col-4>
-        <button ion-button (click)="languageChange()" class="btn-text-only primary-font padding-width capitalize-font">Sinhala</button>
+        <button ion-button (click)="languageChange('sinhala')" class="btn-text-only primary-font padding-width capitalize-font">{{'SINHALA' | translate}}</button>
       </ion-col>
       <ion-col col-4>
-        <button ion-button (click)="languageChange()" class="btn-text-only primary-font padding-width capitalize-font">Tamil</button>
+        <button ion-button (click)="languageChange('tamil')" class="btn-text-only primary-font padding-width capitalize-font">{{'TAMIL' | translate}}</button>
       </ion-col>
     </ion-row>
   </ion-footer>

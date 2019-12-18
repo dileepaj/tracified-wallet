@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Account Details</ion-title>
+    <ion-title>{{'ACCOUNT_DETAILS' | translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -12,7 +12,7 @@
   <ion-grid class="padding-width content-start">
     <ion-row class="full-width line-spacing">
       <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">Account name</h4>
+        <h4 class="secondary-font">{{'ACCOUNT_NAME' | translate}}</h4>
       </ion-row>
       <ion-row class="full-width line-spacing">
         <h3 class="primary-font">{{ account.accountName }}</h3>
@@ -20,7 +20,7 @@
     </ion-row>
     <ion-row class="full-width line-spacing">
       <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">Public key</h4>
+        <h4 class="secondary-font">{{'PUBLIC_KEY' | translate}}</h4>
       </ion-row>
       <ion-row class="full-width line-spacing" text-wrap>
         <h3 class="primary-font word-wrap" text-wrap>{{ account.pk }}</h3>
@@ -28,18 +28,18 @@
     </ion-row>
     <ion-row class="full-width line-spacing">
       <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">Private key</h4>
+        <h4 class="secondary-font">{{'PRIVATE_KEY' | translate}}</h4>
       </ion-row>
       <ion-row class="full-width line-spacing" *ngIf="keyDecrypted" text-wrap>
         <h3 class="primary-font word-wrap">{{ privateKey }}</h3>
       </ion-row>
       <ion-row class="full-width" *ngIf="!keyDecrypted">
-        <button class="btn-text-only green-font" ion-button (click)="decryptSecretKey()">View key</button>
+        <button class="btn-text-only green-font" ion-button (click)="decryptSecretKey()">{{'VIEW_KEY' | translate}}</button>
       </ion-row>
     </ion-row>
     <ion-row class="full-width line-spacing">
       <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">Available Funds</h4>
+        <h4 class="secondary-font">{{'AVAILABLE_FUNDS' | translate}}</h4>
       </ion-row>
       <ion-row class="full-width line-spacing" text-wrap>
         <h3 class="primary-font word-wrap" text-wrap>{{ accountFunds }}</h3>
@@ -47,8 +47,8 @@
     </ion-row>
     <ion-row class="full-width line-spacing" *ngIf="notDefaultAccount">
       <div class="button-wrapper">
-          <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
-      </div>          
+          <button ion-button class="btn-green" (click)="makeDefaultAccount()">{{'MAKE_DEFAULT' | translate}}</button>
+      </div>
     </ion-row>
   </ion-grid>
 </ion-content>

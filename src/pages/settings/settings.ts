@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { SettingFormPage } from '../../pages/setting-form/setting-form';
 import { Properties } from '../../shared/properties';
+import { TranslateService } from '@ngx-translate/core';
 
 @IonicPage()
 @Component({
@@ -14,7 +15,8 @@ export class SettingsPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private properties: Properties,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private translate: TranslateService
   ) {
   }
 

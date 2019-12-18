@@ -105,4 +105,8 @@ export class DataServiceProvider {
   getIdentifierStatus(identifiers): Promise<any> {
     return this.apiService.getIdentifierStatus(identifiers);
   }
+
+  setLanguage(language) {
+    this.storage.setLanguage(language);
+  }
 }
