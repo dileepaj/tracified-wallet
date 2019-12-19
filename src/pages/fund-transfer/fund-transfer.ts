@@ -62,14 +62,14 @@ export class FundTransferPage {
             this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
               this.blockchainService.checkAccountValidity(this.receiverPK).then((status) => {
                 if (status) {
-                  this.blockchainService.transferFunds(decKey, this.receiverPK, this.transferAmount).then((status) => {
-                    this.transferAmount = "";
-                    this.receiverPK = "";
+                  this.blockchainService.transferFunds(decKey, this.receiverPK, this.transferAmount).then((status) => {                    
                     this.dissmissLoading();
                     this.logger.info("Successfully transferred funds: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
                     this.logger.info("[FUND_TRANSFER][RECEIVER] " + this.receiverPK, this.properties.skipConsoleLogs, this.properties.writeToFile);
                     this.logger.info("[FUND_TRANSFER][AMOUNT] " + this.transferAmount, this.properties.skipConsoleLogs, this.properties.writeToFile);
                     this.presentAlert("Success", "Successfully transferred " + this.transferAmount + "lumens. View account information to see the updated amount.");
+                    this.transferAmount = "";
+                    this.receiverPK = "";
                   }).catch((err) => {
                     this.dissmissLoading();
                     this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);

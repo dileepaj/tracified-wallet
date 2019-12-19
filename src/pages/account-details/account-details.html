@@ -22,11 +22,11 @@
         </div>
       </ion-row>
     </ion-row>
-    <ion-row class="line-spacing">
+    <!-- <ion-row class="line-spacing">
       <div class="button-wrapper">
         <button class="btn-green-outline">Transfer</button>
       </div>
-    </ion-row>
+    </ion-row> -->
     <ion-row class="full-width line-spacing mt-1">
       <ion-row class="full-width line-spacing">
         <h4 class="secondary-font">Account name</h4>
@@ -53,12 +53,20 @@
       <ion-row class="full-width" *ngIf="!keyDecrypted">
         <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="decryptSecretKey()">View key</button>
       </ion-row>
+      <ion-row class="full-width" *ngIf="keyDecrypted">
+        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="encryptSecretKey()">Hide key</button>
+      </ion-row>
     </ion-row>
     <ion-row class="full-width line-spacing mt-2" *ngIf="!notDefaultAccount">
       <h4 class="primary-font">Note: This is your primary account. This account will be used to do all the transactions.</h4>
       <!-- <div class="button-wrapper">
         <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
       </div> -->
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-2" *ngIf="notDefaultAccount">
+      <div class="button-wrapper">
+        <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
+      </div>
     </ion-row>
   </ion-grid>
 </ion-content>

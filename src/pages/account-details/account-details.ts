@@ -56,6 +56,11 @@ export class AccountDetailsPage {
     });
   }
 
+  encryptSecretKey() {
+    this.keyDecrypted = false;
+    this.privateKey = "";
+  }
+
   ionViewDidLeave() {
     this.keyDecrypted = false;
     this.privateKey = "";
