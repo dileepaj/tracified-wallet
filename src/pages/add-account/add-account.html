@@ -19,7 +19,14 @@
           <ion-label floating>Secured Password</ion-label>
           <ion-input formControlName="password" [(ngModel)]="StrengthPassword" (ionChange)="checkStrength()"
             name="password" [type]="passwordType" clearOnEdit="false"></ion-input>
-          <ion-icon item-end [name]="passwordIcon" color="secondary" class="passwordIcon" (click)='hideShowPassword()'>
+          <ion-icon item-end [name]="passwordIcon" color="secondary" class="passwordIcon" (click)='hideShowPassword(1)'>
+          </ion-icon>
+        </ion-item>
+        <ion-item>
+          <ion-label floating>Confirm Password</ion-label>
+          <ion-input formControlName="confirmPassword"
+            name="confirmPassword" [type]="confirmPasswordType" clearOnEdit="false"></ion-input>
+          <ion-icon item-end [name]="confirmPasswordIcon" color="secondary" class="confirmPasswordIcon" (click)='hideShowPassword(2)'>
           </ion-icon>
         </ion-item>
         <h4 *ngIf="form.valid == true" class="desc">It takes {{PasswordStrength}} to crack your password!</h4>

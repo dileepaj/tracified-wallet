@@ -13,7 +13,6 @@ export class ResetPasswordPage {
   private username;
   private code;
   private type;
-  private accountPassword: FormGroup;
   passwordTypeN: string = 'password';
   passwordTypeC: string = 'password';
   passwordIconO: string = 'eye-off';
@@ -74,14 +73,7 @@ export class ResetPasswordPage {
         newPassword: this.forgotform.value.password
       };
       console.log(authmodel);
-      let cPassword = this.accountPassword.get('cPassword').value;
-      let nPassword = this.accountPassword.get('nPassword').value;
 
-      if (cPassword !== nPassword) {
-        this.presentAlert("Error", "New password and confirm password do not match.");
-        this.dissmissLoading();
-        return;
-      }
       this.authService.validateUser(authmodel).then((res) => {
         this.dissmissLoading();
         console.log(res);
@@ -125,7 +117,16 @@ export class ResetPasswordPage {
     if (this.connectivity.onDevice) {
       this.presentLoading();
       this.submitAttempt = true;
-      this.authService.resetPassword(this.verifyForm.value.email, this.resetForm.value.password, this.resetForm.value.code).then(res => {
+      let cPassword = this.resetForm.get('cPassword').value;
+      let nPassword = this.resetForm.get('nPassword').value;
+
+      if (cPassword !== nPassword) {
+        this.presentAlert("Error", "Passwords do not match. Please try again.");
+        this.dissmissLoading();
+        return;
+      }
+
+      this.authService.resetPassword(this.verifyForm.value.email, this.resetForm.value.nPassword , this.resetForm.value.code).then(res => {
         this.dissmissLoading();
         if (res.status === 200) {
           this.presentToast('You have successfully changed your password. Please use the new password and log back again.');

@@ -41,6 +41,8 @@ export class AddAccountPage {
   StrengthPassword: any;
   passwordType: string = 'password';
   passwordIcon: string = 'eye-off';
+  confirmPasswordType: string = 'password';
+  confirmPasswordIcon: string = 'eye-off';
   private toastInstance: Toast;
   loading;
   form: FormGroup;
@@ -63,22 +65,30 @@ export class AddAccountPage {
     this.form = new FormGroup({
       accName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
       strength: new FormControl(''),
-      password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required]))
+      password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
+      confirmPassword: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
     });
 
     this.navigation = this.navParams.get('navigation');
   }
 
   addMainAccount() {
+
+    let password = this.form.get('password').value;
+    let confirmPassword = this.form.get('confirmPassword').value;
+
+    if (password != confirmPassword) {
+      this.presentAlert("Error", "New password and confirm password do not match.");
+      return;
+    }
+
     if (this.connectivity.onDevice) {
       this.presentLoading();
       this.validateAccountName(this.form.value.accName).then((status) => {
         if (status) {
           let mainPair = this.createKeyPair();
-          let subPair = this.createKeyPair();
 
           this.mappingService.encyrptSecret(mainPair.secret(), this.form.value.password).then((encMainSecretKey) => {
-            // this.mappingService.encyrptSecret(subPair.secret(), this.form.value.password).then((encSubSecretKey) => {
             const mainAccount = {
               accName: this.form.value.accName,
               publicKey: mainPair.publicKey(),
@@ -92,14 +102,7 @@ export class AddAccountPage {
                   "sk": encMainSecretKey,
                   "skp": mainPair.secret(),
                   "FO": false,
-                  "subAccounts": [
-                    // {
-                    //   "pk": subPair.publicKey(),
-                    //   "sk": encSubSecretKey,
-                    //   "skp": subPair.secret(),
-                    //   "skInvalidated": false
-                    // }
-                  ]
+                  "subAccounts": [ ]
                 }
               }
             }
@@ -128,10 +131,6 @@ export class AddAccountPage {
             this.dissmissLoading();
             this.logger.error("Encrypting private key failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
           });
-          // }).catch((err) => {
-          //   this.dissmissLoading();
-          //   this.logger.error("Encrypting private key failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-          // });
         } else {
           this.dissmissLoading();
           this.presentAlert("Error", "Account name already exists. Please pick a different name for the account.");
@@ -189,33 +188,6 @@ export class AddAccountPage {
     return Keypair.random();
   }
 
-  // multisignSubAccount(subAccount, mainAccount) {
-  //   return new Promise((resolve, reject) => {
-  //     server.loadAccount(subAccount.publicKey()).then(function (account) {
-  //       var transaction = new TransactionBuilder(account).addOperation(Operation.setOptions({
-  //         signer: {
-  //           ed25519PublicKey: mainAccount,
-  //           weight: 2
-  //         }
-  //       })).addOperation(Operation.setOptions({
-  //         masterWeight: 0, // set master key weight
-  //         lowThreshold: 2,
-  //         medThreshold: 2, // a payment is medium threshold
-  //         highThreshold: 2 // make sure to have enough weight to add up to the high threshold!
-  //       })).build();
-
-  //       transaction.sign(subAccount); // sign the transaction
-
-  //       return server.submitTransaction(transaction);
-  //     }).then(function (transactionResult) {
-  //       console.log(transactionResult);
-  //       resolve()
-  //     }).catch(function (err) {
-  //       console.error(err);
-  //       reject()
-  //     });
-  //   });
-  // }
 
   encyrptSecret(key, signer) {
     return new Promise((resolve, reject) => {
@@ -228,9 +200,14 @@ export class AddAccountPage {
     });
   }
 
-  hideShowPassword() {
-    this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
-    this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
+  hideShowPassword(option) {
+    if (option == 1) {
+      this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
+      this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
+    } else if (option == 2) {
+      this.confirmPasswordType = this.confirmPasswordType === 'text' ? 'password' : 'text';
+      this.confirmPasswordIcon = this.confirmPasswordIcon === 'eye-off' ? 'eye' : 'eye-off';
+    }
   }
 
   presentAlert(title, message) {

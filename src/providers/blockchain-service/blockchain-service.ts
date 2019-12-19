@@ -308,7 +308,7 @@ export class BlockchainServiceProvider {
   }
 
   mainAccountSuffucientFunds(balance, assetCount): any {
-    let baseFee = (assetCount * 0.5) + 4 + 3;
+    let baseFee = (assetCount * 0.5) + 4 + 3 + 2;
     if (baseFee < (balance - 0.5)) {
       return true;
     } else {
@@ -342,7 +342,7 @@ export class BlockchainServiceProvider {
               if (res.status == 200) {
                 this.properties.defaultAccount.subAccounts.push({ "pk": keyPair.publicKey(), "sk": keyPair.secret(), "skp": keyPair.secret(), "skInvalidated": false });
                 this.storageService.setDefaultAccount(this.properties.defaultAccount);
-                this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), 2).then(() => {
+                this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), 10).then(() => {
                   this.invalidateSubAccountKey(keyPair, mainAccount).then(() => {
                     this.logger.info("Successfully invalidated the account", this.properties.skipConsoleLogs, this.properties.writeToFile);
                     resolve(keyPair);
@@ -409,72 +409,78 @@ export class BlockchainServiceProvider {
 
   acceptTransactionXdr(identifier, receiver, qty, item, validity, proofHash, subAccount, issuer, signerSK) {
     return new Promise((resolve, reject) => {
-      let XDR;
-      let b64;
-      let seqNum;
-
-      const senderPublickKey = this.properties.defaultAccount.pk;
-
-      var minTime = Math.round(new Date().getTime() / 1000.0);
-
-      var maxTime = new Date(validity).getTime() / 1000.0;
-      var sourceKeypair = Keypair.fromSecret(signerSK);
-
-      var asset = new Asset(item, issuer);
-      var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
-
       if (blockchainNetType === 'live') {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
       let server = new Server(blockchainNet);
-      server.loadAccount(subAccount.publicKey).then((account) => {
-        var transaction = new TransactionBuilder(account, opts);
-        transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', }));
-        transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, }));
-        transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }));
-        transaction.addOperation(Operation.payment({
-          destination: receiver,
-          asset: asset,
-          amount: qty,
-          source: senderPublickKey
-        }));
 
-        if (!subAccount.available) {
-          transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(Number(subAccount.sequenceNo) + 2) }))
-        }
+      if (subAccount.sequenceNo == "") {
+        console.log("No Sequence found.");
+        server.loadAccount(subAccount.publicKey).then((account) => {
+          let txn = this.acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount);
+          resolve(txn);
+        }).catch((err) => {
+          this.logger.error("Failed to load the account: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+          reject(err);
+        });
+      } else {
+        let account = new Account(subAccount.publicKey, subAccount.sequenceNo);
+        let txn = this.acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount);
+        resolve(txn);
+      }
+    });
+  }
 
-        const tx = transaction.build();
-        tx.sign(sourceKeypair);
-        XDR = tx.toEnvelope();
-        seqNum = tx.sequence;
-        b64 = XDR.toXDR('base64');
-        const resolveObj = {
-          seqNum: seqNum,
-          b64: b64
-        }
-        resolve(resolveObj);
+  acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount) {
 
-      }).catch((err) => {
-        this.logger.error("Failed to build accept XDR: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject(err);
-      });
-    })
+    let XDR;
+    let b64;
+    let seqNum;
 
+    const senderPublickKey = this.properties.defaultAccount.pk;
+
+    var minTime = Math.round(new Date().getTime() / 1000.0);
+
+    var maxTime = new Date(validity).getTime() / 1000.0;
+    var sourceKeypair = Keypair.fromSecret(signerSK);
+
+    var asset = new Asset(item, issuer);
+    var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+
+    var transaction = new TransactionBuilder(account, opts);
+    transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', source: sourceKeypair.publicKey()}));
+    transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, source: sourceKeypair.publicKey()}));
+    transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }));
+    transaction.addOperation(Operation.payment({
+      destination: receiver,
+      asset: asset,
+      amount: qty,
+      source: senderPublickKey
+    }));
+
+    // if (!subAccount.available) {
+    //   console.log("Bumping Sequence in Accept: ", subAccount.sequenceNo);
+    //   transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }));
+    // }
+
+    const tx = transaction.build();
+    tx.sign(sourceKeypair);
+    XDR = tx.toEnvelope();
+    seqNum = tx.sequence;
+    b64 = XDR.toXDR('base64');
+    const resolveObj = {
+      seqNum: seqNum,
+      b64: b64
+    }
+
+    return resolveObj;
   }
 
   rejectTransactionXdr(receiver, validity, proofHash, subAccount, signerSK) {
 
     return new Promise((resolve, reject) => {
-      let XDR;
-      let b64;
-      const senderPublickKey = this.properties.defaultAccount.pk;
-
-      var minTime = Math.round(new Date().getTime() / 1000.0);
-      var maxTime = new Date(validity).getTime() / 1000.0;
-      var sourceKeypair = Keypair.fromSecret(signerSK);
-      var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
       if (blockchainNetType === 'live') {
         Network.usePublicNetwork();
@@ -482,26 +488,49 @@ export class BlockchainServiceProvider {
         Network.useTestNetwork();
       }
       let server = new Server(blockchainNet);
-      server.loadAccount(subAccount.publicKey).then((account) => {
-        var transaction = new TransactionBuilder(account, opts).addOperation(Operation.manageData({
-          name: 'Status', value: 'rejected', source: receiver
-        })).addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))
 
-        if (!subAccount.available) {
-          transaction.addOperation(Operation.bumpSequence({ bumpTo: JSON.stringify(Number(subAccount.sequenceNo) + 2) }))
-        }
-
-        const tx = transaction.build();
-        tx.sign(sourceKeypair);
-        XDR = tx.toEnvelope();
-        b64 = XDR.toXDR('base64');
-
-        resolve(b64);
-      }).catch((err) => {
-        this.logger.error("Failed to build reject XDR: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject();
-      });
+      if (subAccount.sequenceNo == "") {
+        console.log("No Sequence found.");
+        server.loadAccount(subAccount.publicKey).then((account) => {
+          let txn = this.rejectTxnBuilder(account, validity, signerSK, proofHash, receiver, subAccount);
+          resolve(txn);
+        }).catch((err) => {
+          this.logger.error("Failed to load the account: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+          reject(err);
+        });
+      } else {
+        let account = new Account(subAccount.publicKey, subAccount.sequenceNo);
+        let txn = this.rejectTxnBuilder(account, validity, signerSK, proofHash, receiver, subAccount);
+        resolve(txn);
+      }
     });
+  }
+
+  rejectTxnBuilder(account, validity, signerSK, proofHash, receiver, subAccount) {
+
+    let XDR;
+    let b64;
+
+    var minTime = Math.round(new Date().getTime() / 1000.0);
+    var maxTime = new Date(validity).getTime() / 1000.0;
+    var sourceKeypair = Keypair.fromSecret(signerSK);
+    var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+
+    var transaction = new TransactionBuilder(account, opts).addOperation(Operation.manageData({
+      name: 'Status', value: 'rejected', source: receiver
+    })).addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))
+
+    // if (!subAccount.available) {
+    //   console.log("Bumping Sequence in Reject");
+    //   transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }))
+    // }
+
+    const tx = transaction.build();
+    tx.sign(sourceKeypair);
+    XDR = tx.toEnvelope();
+    b64 = XDR.toXDR('base64');
+
+    return b64;
   }
 
   signXdr(xdr, decKey) {
