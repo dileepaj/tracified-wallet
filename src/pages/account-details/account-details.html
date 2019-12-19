@@ -10,7 +10,24 @@
 
 <ion-content padding>
   <ion-grid class="padding-width content-start">
-    <ion-row class="full-width line-spacing">
+    <ion-row class="full-width line-spacing mt-2">
+      <ion-row class="full-width line-spacing">
+        <div class="full-width text-center">
+          <h2 class="primary-font fund-amount">{{ accountFunds }}</h2>
+        </div>
+      </ion-row>
+      <ion-row class="full-width line-spacing">
+        <div class="full-width text-center">
+          <h3 class="secondary-font">lumens</h3>
+        </div>
+      </ion-row>
+    </ion-row>
+    <!-- <ion-row class="line-spacing">
+      <div class="button-wrapper">
+        <button class="btn-green-outline">Transfer</button>
+      </div>
+    </ion-row> -->
+    <ion-row class="full-width line-spacing mt-1">
       <ion-row class="full-width line-spacing">
         <h4 class="secondary-font">Account name</h4>
       </ion-row>
@@ -18,7 +35,7 @@
         <h3 class="primary-font">{{ account.accountName }}</h3>
       </ion-row>
     </ion-row>
-    <ion-row class="full-width line-spacing">
+    <ion-row class="full-width line-spacing mt-1">
       <ion-row class="full-width line-spacing">
         <h4 class="secondary-font">Public key</h4>
       </ion-row>
@@ -26,7 +43,7 @@
         <h3 class="primary-font word-wrap" text-wrap>{{ account.pk }}</h3>
       </ion-row>
     </ion-row>
-    <ion-row class="full-width line-spacing">
+    <ion-row class="full-width line-spacing mt-1">
       <ion-row class="full-width line-spacing">
         <h4 class="secondary-font">Private key</h4>
       </ion-row>
@@ -34,21 +51,22 @@
         <h3 class="primary-font word-wrap">{{ privateKey }}</h3>
       </ion-row>
       <ion-row class="full-width" *ngIf="!keyDecrypted">
-        <button class="btn-text-only green-font" ion-button (click)="decryptSecretKey()">View key</button>
+        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="decryptSecretKey()">View key</button>
+      </ion-row>
+      <ion-row class="full-width" *ngIf="keyDecrypted">
+        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="encryptSecretKey()">Hide key</button>
       </ion-row>
     </ion-row>
-    <ion-row class="full-width line-spacing">
-      <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">Available Funds</h4>
-      </ion-row>
-      <ion-row class="full-width line-spacing" text-wrap>
-        <h3 class="primary-font word-wrap" text-wrap>{{ accountFunds }}</h3>
-      </ion-row>
+    <ion-row class="full-width line-spacing mt-2" *ngIf="!notDefaultAccount">
+      <h4 class="primary-font">Note: This is your primary account. This account will be used to do all the transactions.</h4>
+      <!-- <div class="button-wrapper">
+        <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
+      </div> -->
     </ion-row>
-    <ion-row class="full-width line-spacing" *ngIf="notDefaultAccount">
+    <ion-row class="full-width line-spacing mt-2" *ngIf="notDefaultAccount">
       <div class="button-wrapper">
-          <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
-      </div>          
+        <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
+      </div>
     </ion-row>
   </ion-grid>
 </ion-content>
