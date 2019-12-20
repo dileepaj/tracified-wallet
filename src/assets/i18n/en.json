@@ -121,5 +121,6 @@
   "ITEM": "Item",
   "IDENTIFIER": "Identifier",
   "QUANTITY": "Quantity",
-  "VALID_TILL": "Valid till"
+  "VALID_TILL": "Valid till",
+  "FUND_TRANSFER": "Fund Transfer"
 }

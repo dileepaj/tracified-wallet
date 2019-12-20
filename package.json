@@ -1,8 +1,8 @@
 {
   "name": "tracified-wallet",
-  "version": "1.0.0",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "version": "1.1.0",
+  "author": "Team Tracified",
+  "homepage": "http://tracified.com/",
   "private": true,
   "scripts": {
     "start": "ionic-app-scripts serve",
