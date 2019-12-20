@@ -4,6 +4,7 @@ import { AddAccountPage } from '../add-account/add-account';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { AccountDetailsPage } from '../../pages/account-details/account-details';
+import { FundTransferPage } from '../../pages/fund-transfer/fund-transfer';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 
 @IonicPage()

@@ -17,6 +17,7 @@ import { FileSystemServiceProvider } from '../providers/file-service/file-system
 import { DataServiceProvider } from '../providers/data-service/data-service';
 import { BlockchainServiceProvider } from '../providers/blockchain-service/blockchain-service';
 import { BcAccountPage } from '../pages/bc-account/bc-account';
+import { FundTransferPage } from '../pages/fund-transfer/fund-transfer';
 import { SettingsPage } from '../pages/settings/settings';
 import { ContentPage } from '../pages/content/content';
 import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
@@ -39,6 +40,7 @@ export class MyApp {
   pages: any[] = [
     { icon: 'custom-itemIcon', title: 'Items', component: 'TabsPage', action: null },
     { icon: 'custom-blockchain', title: 'Accounts', component: 'BcAccountPage', action: null },
+    { icon: 'custom-fundTransfer', title: 'Fund Transfer', component: 'FundTransferPage', action: null },
     { icon: 'custom-settings', title: 'Settings', component: 'SettingsPage', action: null },
     { icon: 'custom-about', title: 'About', component: 'ContentPage', action: null },
     { icon: 'custom-logout', title: 'Logout', component: 'LoginPage', action: this.logOut.bind(this) }
@@ -165,6 +167,9 @@ export class MyApp {
         break;
       case "accounts":
         this.nav.setRoot(BcAccountPage);
+        break;
+      case "fundTransfer":
+        this.nav.setRoot(FundTransferPage);
         break;
       case "settings":
         this.nav.setRoot(SettingsPage);
