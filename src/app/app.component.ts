@@ -227,8 +227,16 @@ export class MyApp {
     alert.present();
   }
 
-  languageChange() {
-    this.presentAlert("Language", "This feature is under development. You cannot change languages at the moment.");
+  languageChange(language) {
+    if (language === 'english') {
+      this.translate.use('en');
+      this.dataService.setLanguage(language);
+    } else if (language === 'sinhala') {
+      this.translate.use('si');
+      this.dataService.setLanguage(language);
+    } else if (language === 'tamil') {
+      this.presentAlert("Language", "This feature is under development. You cannot change languages at the moment.");
+    }
   }
 
   presentUpdating() {

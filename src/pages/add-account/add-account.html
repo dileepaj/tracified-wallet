@@ -12,18 +12,18 @@
     <form [formGroup]="form">
       <ion-row class="formbox">
         <ion-item>
-          <ion-label class="login-lables" floating>Account Name</ion-label>
+          <ion-label class="login-lables" floating>{{'ACCOUNT_NAME' | translate}}</ion-label>
           <ion-input formControlName="accName" type="text" name="accName" keyNext></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label floating>Secured Password</ion-label>
+          <ion-label floating>{{'SECURED_PASSWORD'| translate}}</ion-label>
           <ion-input formControlName="password" [(ngModel)]="StrengthPassword" (ionChange)="checkStrength()"
             name="password" [type]="passwordType" clearOnEdit="false"></ion-input>
           <ion-icon item-end [name]="passwordIcon" color="secondary" class="passwordIcon" (click)='hideShowPassword(1)'>
           </ion-icon>
         </ion-item>
         <ion-item>
-          <ion-label floating>Confirm Password</ion-label>
+          <ion-label floating>{{'CONFIRM_PASSWORD' | translate}}</ion-label>
           <ion-input formControlName="confirmPassword"
             name="confirmPassword" [type]="confirmPasswordType" clearOnEdit="false"></ion-input>
           <ion-icon item-end [name]="confirmPasswordIcon" color="secondary" class="confirmPasswordIcon" (click)='hideShowPassword(2)'>

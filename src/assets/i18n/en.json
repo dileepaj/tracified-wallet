@@ -49,8 +49,11 @@
   "SIGNUP_TITLE": "Sign up",
   "SIGNUP_ERROR": "Unable to create account. Please check your account information and try again.",
   "SIGNUP_BUTTON": "Sign up",
+  "LOGOUT": "Log out",
 
   "LIST_MASTER_TITLE": "Items",
+  "ACCOUNTS":"Accounts",
+  "ABOUT": "About",
 
   "ITEM_CREATE_TITLE": "New Item",
   "ITEM_CREATE_CHOOSE_IMAGE": "Add Image",
@@ -65,5 +68,58 @@
   "CARDS_TITLE": "Social",
 
   "SEARCH_TITLE": "Search",
-  "SEARCH_PLACEHOLDER": "Search the items list, e.g. \"Donald Duck\""
+  "SEARCH_PLACEHOLDER": "Search the items list, e.g. \"Donald Duck\"",
+
+  "RECEIVED_ITEMS": "Received Items",
+  "SENT_ITEMS": "Sent Items",
+  "ASSETS": "Assets",
+
+  "RECEIVED": "Received",
+  "SENT": "Sent",
+  "TRANSFER": "Transfer",
+
+  "SETTINGS": "Settings",
+
+  "GENERAL": "General",
+  "CHANGE_IMAGE": "Change display name",
+  "CHANGE_NAME": "Change display name",
+  "CHANGE_PASSWORD": "Change account password",
+  "CHANGE_TRA_PASSWORD": "Change transaction passwords",
+
+
+  "FIRST_NAME": "First Name",
+  "LAST_NAME": "Last Name",
+  "ACCOUNT_NAME": "Account Name",
+  "PUBLIC_KEY": "Public Key",
+  "CURRENT_PASSWORD": "Current Password",
+  "NEW_PASSWORD": "New Password",
+  "CONFIRM_PASSWORD": "Confirm Password",
+
+  "SUBMIT": "Submit",
+
+  "ENTER_NAME_DESC": "Enter your first and last names to update the details.",
+  "ENTER_PASS_DESC": "Enter your current password and then enter the new password you wish to have.",
+
+  "ACCOUNT_DETAILS": "Account Details",
+  "PRIVATE_KEY":"Private Key",
+  "VIEW_KEY": "View Key",
+  "AVAILABLE_FUNDS": "Available Funds",
+  "MAKE_DEFAULT": "Make default account",
+  "SECURED_PASSWORD": "Secured Password",
+
+  "TRANSACTIONS": "Transactions",
+  "NO_TRANSACTIONS": "No incoming transactions at the moment",
+  "NO_ASSETS":"No assets assigned to your account at the moment",
+
+  "ENGLISH": "English",
+  "SINHALA": "Sinhala",
+  "TAMIL": "Tamil",
+
+  "TRANSFER_ITEM": "Transfer Item",
+  "GET_ID_DATA": "Getting identifier data. Please wait.",
+  "FILL_FIELDS": "Fill up all the fields and press Transfer button to transfer assets to another user.",
+  "ITEM": "Item",
+  "IDENTIFIER": "Identifier",
+  "QUANTITY": "Quantity",
+  "VALID_TILL": "Valid till"
 }

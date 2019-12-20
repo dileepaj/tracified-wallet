@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Blockchain Accounts</ion-title>
+    <ion-title>Blockchain {{'ACCOUNTS' | translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -20,7 +20,7 @@
     </ion-row>
     <ion-row>
       <div class="full-width text-center line-spacing-small">
-        <h1 class="primary-font">Accounts</h1>
+        <h1 class="primary-font">{{'ACCOUNTS' | translate}}</h1>
       </div>
     </ion-row>
     <ion-row text-wrap>
@@ -34,7 +34,7 @@
     <ion-item>
       <ion-row>
         <ion-col col-4 left text-left>
-          <h5 class="label">Name: </h5>
+          <h5 class="label">{{ 'NAME' | translate}}:</h5>
         </ion-col>
         <ion-col col-8 left text-left>
           <h5>{{ account.accountName}}</h5>
@@ -44,7 +44,7 @@
     <ion-item>
       <ion-row>
         <ion-col col-4 left text-left>
-          <h5 class="label">Public Key: </h5>
+          <h5 class="label">{{ 'PUBLIC_KEY' | translate}}:</h5>
         </ion-col>
         <ion-col col-8 left text-left>
           <h5>{{ account.pk}}</h5>

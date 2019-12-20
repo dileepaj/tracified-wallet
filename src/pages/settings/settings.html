@@ -3,34 +3,34 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Settings</ion-title>
+    <ion-title>{{'SETTINGS' | translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <ion-grid class="padding-width content-start">
     <ion-row>
-      <h4 class="secondary-font">General</h4>
+      <h4 class="secondary-font">{{'GENERAL' | translate}}</h4>
     </ion-row>
     <ion-row>
       <ion-item (click)="changeDisplayImage()">
         <ion-label class="primary-font">
-          Change display image
+          {{'CHANGE_IMAGE' | translate}}
         </ion-label>
       </ion-item>
       <ion-item (click)="changeDisplayName()">
         <ion-label class="primary-font">
-          Change display name
+          {{'CHANGE_NAME' | translate}}
         </ion-label>
       </ion-item>
       <ion-item (click)="changePassword()">
         <ion-label class="primary-font">
-          Change account password
+          {{'CHANGE_PASSWORD' | translate}}
         </ion-label>
       </ion-item>
       <ion-item (click)="changeTransactionPasswords()">
         <ion-label class="primary-font">
-          Change transaction passwords
+          {{'CHANGE_TRA_PASSWORD' | translate}}
         </ion-label>
       </ion-item>
     </ion-row>
