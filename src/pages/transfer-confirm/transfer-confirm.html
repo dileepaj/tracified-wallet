@@ -3,28 +3,37 @@
     <ion-row class= "full-width line-spacing">
       <h3 class="primary-font">Are you sure you want to transfer?</h3>
     </ion-row>
+    <ion-row class="content-start icon-spacing">
+      <div class="full-width text-center">
+      <ion-icon name="information-circle" class= "info-icon"></ion-icon>
+      </div>
+    </ion-row>
     <ion-row class="full-width line-spacing content-start">
       <div class="full-width text-center">
         <h2 class="primary-font fund-amount">{{ transferAmount }} lumens</h2>
       </div>
     </ion-row>
     <ion-row class="full-width content-start">
-      <h2 class="primary-font">From</h2>
+      <div class="full-width text-center">
+        <h2 class="primary-font">from</h2>
+      </div>
     </ion-row>
     <ion-row class="full-width line-spacing mt-2">
-      <ion-row class="full-width line-spacing content-start">
-        <div class="full-width">
-          <h2 class="primary-font">Public Key: {{ senderPK }}</h2>
+      <ion-row class="full-width line-spacing">
+        <div class="full-width text-center">
+          <h2 class="primary-font">{{ senderPK }}</h2>
         </div>
       </ion-row>
     </ion-row>
-    <ion-row class="full-width content-start">
-      <h2 class="primary-font">To</h2>
+    <ion-row class="full-width content-start text-center">
+      <div class="full-width text-center content-start">
+        <h2 class="primary-font">to</h2>
+      </div>
     </ion-row>
     <ion-row class="full-width line-spacing mt-2">
-      <ion-row class="full-width line-spacing content-start">
-        <div class="full-width">
-          <h2 class="primary-font">Public Key: {{ receiverPK }}</h2>
+      <ion-row class="full-width line-spacing">
+        <div class="full-width text-center">
+          <h2 class="primary-font">{{ receiverPK }}</h2>
         </div>
       </ion-row>
     </ion-row>
