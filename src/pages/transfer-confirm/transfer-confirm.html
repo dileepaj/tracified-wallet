@@ -1,0 +1,45 @@
+<ion-content padding>
+  <ion-grid class= "padding-width content-start">
+    <ion-row class= "full-width line-spacing">
+      <h3 class="primary-font">Are you sure you want to transfer?</h3>
+    </ion-row>
+    <ion-row class="content-start icon-spacing">
+      <div class="full-width text-center">
+      <ion-icon name="information-circle" class= "info-icon"></ion-icon>
+      </div>
+    </ion-row>
+    <ion-row class="full-width line-spacing content-start">
+      <div class="full-width text-center">
+        <h2 class="primary-font fund-amount">{{ transferAmount }} lumens</h2>
+      </div>
+    </ion-row>
+    <ion-row class="full-width content-start">
+      <div class="full-width text-center">
+        <h2 class="primary-font">from</h2>
+      </div>
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-2">
+      <ion-row class="full-width line-spacing">
+        <div class="full-width text-center">
+          <h2 class="primary-font">{{ senderPK }}</h2>
+        </div>
+      </ion-row>
+    </ion-row>
+    <ion-row class="full-width content-start text-center">
+      <div class="full-width text-center content-start">
+        <h2 class="primary-font">to</h2>
+      </div>
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-2">
+      <ion-row class="full-width line-spacing">
+        <div class="full-width text-center">
+          <h2 class="primary-font">{{ receiverPK }}</h2>
+        </div>
+      </ion-row>
+    </ion-row>
+    <ion-row class= "btn-end content-start">
+      <button ion-button class= "btn-margin" (click)= 'cancel()'>Cancel</button>
+      <button ion-button class= "btn-margin" (click)= 'confirm()'>Confirm</button>
+    </ion-row>
+  </ion-grid>
+</ion-content>

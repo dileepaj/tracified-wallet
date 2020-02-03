@@ -42,6 +42,7 @@ import { BcAccountPageModule } from '../pages/bc-account/bc-account.module';
 import { FundTransferPageModule } from '../pages/fund-transfer/fund-transfer.module';
 import { SettingsPageModule } from '../pages/settings/settings.module';
 import { ContentPageModule } from '../pages/content/content.module';
+import { TransferConfirmPageModule } from '../pages/transfer-confirm/transfer-confirm.module';
 import { Clipboard } from '@ionic-native/clipboard/index';
 import { SettingFormPageModule } from '../pages/setting-form/setting-form.module';
 import { TransferPageModule } from '../pages/transfer/transfer.module';
@@ -78,6 +79,7 @@ export function createTranslateLoader(http: HttpClient) {
     SettingFormPageModule,
     TransferPageModule,
     FundTransferPageModule,
+    TransferConfirmPageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

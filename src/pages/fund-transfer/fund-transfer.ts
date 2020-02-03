@@ -5,6 +5,8 @@ import { Properties } from '../../shared/properties';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { Logger } from 'ionic-logger-new';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
+import { TransferConfirmPage } from '../../pages/transfer-confirm/transfer-confirm';
+import { Account } from 'stellar-sdk';
 
 @IonicPage()
 @Component({
@@ -57,51 +59,13 @@ export class FundTransferPage {
           this.dissmissLoading();
           this.presentAlert("Error", "Minimum transfer amount should be greater than 2 lumens. Please try again with a valid amount.");
         } else {
-          // SECURITY: Anyone can change the HTML and pass an outside public key as the receiver. Can transfer money out of the tenant.          
-          this.passwordPrompt().then((password) => {
-            this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
-              this.blockchainService.checkAccountValidity(this.receiverPK).then((status) => {
-                if (status) {
-                  this.blockchainService.transferFunds(decKey, this.receiverPK, this.transferAmount).then((status) => {                    
-                    this.dissmissLoading();
-                    this.logger.info("Successfully transferred funds: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
-                    this.logger.info("[FUND_TRANSFER][RECEIVER] " + this.receiverPK, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                    this.logger.info("[FUND_TRANSFER][AMOUNT] " + this.transferAmount, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                    this.presentAlert("Success", "Successfully transferred " + this.transferAmount + "lumens. View account information to see the updated amount.");
-                    this.transferAmount = "";
-                    this.receiverPK = "";
-                  }).catch((err) => {
-                    this.dissmissLoading();
-                    this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-                    this.presentAlert("Error", "Failed to transfer funds for the account.");
-                  });
-                } else {
-                  this.blockchainService.transferFundsForNewAccounts(decKey, this.receiverPK, this.transferAmount).then(() => {
-                    this.transferAmount = "";
-                    this.receiverPK = "";
-                    this.dissmissLoading();
-                    this.logger.info("Successfully transferred funds: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
-                    this.logger.info("[FUND_TRANSFER][RECEIVER] " + this.receiverPK, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                    this.logger.info("[FUND_TRANSFER][AMOUNT] " + this.transferAmount, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                    this.presentAlert("Success", "Successfully transferred " + this.transferAmount + "lumens. View account information to see the updated amount.");
-                  }).catch((err) => {
-                    this.dissmissLoading();
-                    this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-                    this.presentAlert("Error", "Failed to transfer funds for the account.");
-                  });
-                }
-              }).catch(err => {
-                this.dissmissLoading();
-                this.presentAlert("Error", "Failed to identify the receivers account. Please try again.");
-                this.logger.error("Failed to validate account ID: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-              });
-            }).catch((err) => {
-              this.dissmissLoading();
-              this.presentAlert("Error", "Invalid transaction password. Please try again.");
-              this.logger.error("Password validation failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-            });
-          }).catch((err) => {
-            this.dissmissLoading();
+          this.dissmissLoading();
+          this.navCtrl.setRoot(TransferConfirmPage, {
+            transferAmount: this.transferAmount,
+            senderName: this.mainAccount.accountName,
+            senderPK: this.mainAccount.pk,
+            recieverPK: this.receiverPK,
+            recieverName: this.receiverPK
           });
         }
       }).catch(err => {
