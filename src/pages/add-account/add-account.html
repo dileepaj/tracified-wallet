@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Add Blockchain Account</ion-title>
+    <ion-title>{{'ADD_BK_ACC' | translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -34,7 +34,7 @@
       <ion-row>
         <div class="button-wrapper">
           <button class="login-button" [disabled]="!form.valid" (click)="addMainAccount()" ion-button
-            color="secondary">Generate Blockchain Address</button>
+            color="secondary">{{ 'GENERATE_BK' | translate}}</button>
         </div>
       </ion-row>
     </form>

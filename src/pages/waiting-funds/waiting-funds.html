@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Account Information</ion-title>
+    <ion-title>{{ 'ACCOUNT_INFO' | translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -13,13 +13,12 @@
       <img class="img-size-lock" src="assets/images/funding_bg.svg" alt="background-img" />
     </ion-row>
     <ion-row lass="list-spacing">
-      <h4 class="secondary-font list-spacing justify-text">Your account will be funded within the next 24 hours. You will be notified
-        once you receive funds.</h4>
+      <h4 class="secondary-font list-spacing justify-text">{{'ACC_FUND_NOTI' | translate}}</h4>
       <div class="button-wrapper list-spacing-top">
-        <button class="btn-green" (click)="exitApp()">Close</button>
+        <button class="btn-green" (click)="exitApp()">{{'CLOSE' | translate}}</button>
       </div>
       <div class="button-wrapper line-spacing">
-        <button class="btn-text-only underline-font primary-font" (click)="logOut()">Sign in with a different account</button>
+        <button class="btn-text-only underline-font primary-font" (click)="logOut()">{{ 'DIFF_ACC' | translate}}</button>
       </div>
     </ion-row>
   </ion-grid>

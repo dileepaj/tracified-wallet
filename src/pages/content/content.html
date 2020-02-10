@@ -16,7 +16,7 @@
     <p>Tracified Wallet</p>
 
     <div *ngIf="updateAvailable" class="button-wrapper">
-      <button ion-button class="btn-green" (click)="updateVersion()">Update Version</button>
+      <button ion-button class="btn-green" (click)="updateVersion()">{{ 'UPDATE_VERSION' | translate }}</button>
     </div>
   </div>
 </ion-content>

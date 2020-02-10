@@ -121,5 +121,48 @@
   "ITEM": "Item",
   "IDENTIFIER": "Identifier",
   "QUANTITY": "Quantity",
-  "VALID_TILL": "Valid till"
+  "VALID_TILL": "Valid till",
+  "LUMENS": "Lumens",
+  "HIDE_KEY": "Hide Key",
+  "ACC_MSG": "Note: This is your primary account. This account will be used to do all the transactions.",
+  "ADD_BK_ACC": "Add Blockchain Account",
+  "GENERATE_BK": "Generate Blockchain Address",
+  "NO_ACCOUNTS": "No accounts available for the user",
+  "UPDATE_VERSION": "Update Version",
+  "SENDER": "Sender",
+  "RECEIVER": "Receiver",
+
+  "FUND_TRANSFER": "Fund Transfer",
+  "FILL_FIELD_TRANSFER": "Fill up all the fields and press Transfer button to transfer funds to your accounts",
+  "NOTE": "Note",
+  "DEFAULT_ACC_TRANSFER": "This the fund transfer will be done using the default account.",
+  "ENTER_AMOUNT": "Enter amount",
+  "SELECT_ACC": "Select Account",
+  "TRANSFER_FUNDS": "Transfer Funds",
+
+  "STATUS": "Status",
+  "REJECT": "REJECT",
+  "ACCEPT": "ACCEPT",
+
+  "TRANSFER_CONFIRM": "Are you sure you want to transfer?",
+  "FROM": "from",
+  "TO": "to",
+  "CANCEL": "Cancel",
+  "CONFIRM": "Confirm",
+
+  "RESET_PASSWORD": "Reset Password",
+  "RESET_PASSWORD_MSG": "An e-mail will be sent to this address with the steps to reset your password.",
+  "EMAIL_USERNAME": "Email/Username",
+  "RESET_CODE_MSG": "Please enter the reset code we sent to your email address.",
+  "RESET_CODE": "Reset Code",
+  "NO_OUTGOING_TRANSACTIONS": "No outgoing transactions at the moment",
+
+  "ACCOUNT_INFO": "Account Information",
+  "ACC_FUND_NOTI": "Your account will be funded within the next 24 hours. You will be notified once you receive funds.",
+  "CLOSE": "Close",
+  "DIFF_ACC": "Sign in with a different account",
+
+  "DONE": "Done",
+  "IMPORTANT": "IMPORTANT",
+  "SAFE_KEY": "Keep this in a safe place since this will be required to change the password of the account."
 }

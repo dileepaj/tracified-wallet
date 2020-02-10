@@ -3,7 +3,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Account Information</ion-title>
+    <ion-title>{{'ACCOUNT_INFO' | translate}}</ion-title>
   </ion-navbar>
 </ion-header>
 
@@ -11,7 +11,7 @@
   <ion-grid class="content-start">
     <ion-row class="item-spacing underline-div">
       <ion-row class="full-width">
-        <h4 class="secondary-font">Account Name</h4>
+        <h4 class="secondary-font">{{'ACCOUNT_NAME' | translate}}</h4>
       </ion-row>
       <ion-row class="full-width list-spacing word-wrap">
         <h4 class="primary-font word-wrap"> {{ account.accName }} </h4>
@@ -19,7 +19,7 @@
     </ion-row>
     <ion-row class="item-spacing underline-div">
       <ion-row class="full-width">
-        <h4 class="secondary-font">Public Key</h4>
+        <h4 class="secondary-font">{{'PUBLIC_KEY' | translate}}</h4>
       </ion-row>
       <ion-row class="full-width list-spacing word-wrap">
         <ion-col col-11>
@@ -36,7 +36,7 @@
     </ion-row>
     <ion-row class="item-spacing underline-div">
       <ion-row class="full-width">
-        <h4 class="secondary-font">Private Key</h4>
+        <h4 class="secondary-font">{{'PRIVATE_KEY' | translate}}</h4>
       </ion-row>
       <ion-row class="full-width list-spacing word-wrap">
         <ion-col col-11>
@@ -51,15 +51,14 @@
         </ion-col>
       </ion-row>
       <ion-row class="full-width list-spacing word-wrap">
-        <h5 class="warning-font uppercase-font">Important!</h5>
-        <h5 class="secondary-font line-spacing">Keep this in a safe place since this will be required to change the
-          password of the account.</h5>
+        <h5 class="warning-font uppercase-font">{{'IMPORTANT' | translate}}!</h5>
+        <h5 class="secondary-font line-spacing">{{ 'SAFE_KEY' | translate}}</h5>
       </ion-row>
     </ion-row>
     <ion-row class="full-width item-spacing">
       <div class="button-wrapper">
-          <button class="btn-green" (click)="continue()">Done</button>
-      </div>      
+          <button class="btn-green" (click)="continue()">{{'DONE' | translate}}</button>
+      </div>
     </ion-row>
   </ion-grid>
 </ion-content>

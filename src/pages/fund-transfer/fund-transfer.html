@@ -4,7 +4,7 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Fund Transfer</ion-title>
+    <ion-title>{{ 'FUND_TRANSFER' | translate}}</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -12,18 +12,18 @@
 <ion-content padding>
   <ion-grid class="padding-width">
     <ion-row class="content-start">
-      <h4 class="primary-font">Fill up all the fields and press Transfer button to transfer funds to your accounts</h4>
-      <h4 class="primary-font content-start"><b>Note:</b> This the fund transfer will be done using the default account.</h4>
+      <h4 class="primary-font">{{ 'FILL_FIELD_TRANSFER' | translate}}</h4>
+      <h4 class="primary-font content-start"><b>{{ 'NOTE' | translate}}</b> {{'DEFAULT_ACC_TRANSFER' | translate}}</h4>
     </ion-row>
     <ion-row>
       <ion-item>
-        <ion-label floating>Enter amount</ion-label>
+        <ion-label floating>{{ 'ENTER_AMOUNT' | translate}}</ion-label>
         <ion-input type="number" [(ngModel)]="transferAmount"></ion-input>
       </ion-item>
     </ion-row>
     <ion-row class="content-start">
       <ion-item>
-        <ion-label>Select account</ion-label>
+        <ion-label>{{ 'SELECT_ACC' | translate}}</ion-label>
         <ion-select [(ngModel)]="receiverPK" >
           <ion-option *ngFor="let account of showaccount" [value]="account.pk">{{account.accountName}}</ion-option>
         </ion-select>
@@ -31,7 +31,7 @@
     </ion-row>
     <ion-row class="content-start">
       <div class="button-wrapper">
-        <button class="btn-green" (click)='transferFunds()'>Transfer Funds</button>
+        <button class="btn-green" (click)='transferFunds()'>{{ 'TRANSFER_FUNDS' | translate}}</button>
       </div>
     </ion-row>
   </ion-grid>

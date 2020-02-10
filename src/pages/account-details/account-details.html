@@ -18,7 +18,7 @@
       </ion-row>
       <ion-row class="full-width line-spacing">
         <div class="full-width text-center">
-          <h3 class="secondary-font">lumens</h3>
+          <h3 class="secondary-font">{{'LUMENS' | translate}}</h3>
         </div>
       </ion-row>
     </ion-row>
@@ -51,14 +51,14 @@
         <h3 class="primary-font word-wrap">{{ privateKey }}</h3>
       </ion-row>
       <ion-row class="full-width" *ngIf="!keyDecrypted">
-        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="decryptSecretKey()">View key</button>
-      </ion-row>        
+        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="decryptSecretKey()">{{'VIEW_KEY' | translate}}</button>
+      </ion-row>
       <ion-row class="full-width" *ngIf="keyDecrypted">
-        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="encryptSecretKey()">Hide key</button>
+        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="encryptSecretKey()">{{'HIDE_KEY' | translate}}</button>
       </ion-row>
     </ion-row>
     <ion-row class="full-width line-spacing mt-2" *ngIf="!notDefaultAccount">
-      <h4 class="primary-font">Note: This is your primary account. This account will be used to do all the transactions.</h4>
+      <h4 class="primary-font">{{'ACC_MSG' | translate}}</h4>
       <!-- <div class="button-wrapper">
         <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
       </div> -->
@@ -66,7 +66,6 @@
     <ion-row class="full-width line-spacing mt-2" *ngIf="notDefaultAccount">
       <div class="button-wrapper">
           <button ion-button class="btn-green" (click)="makeDefaultAccount()">{{'MAKE_DEFAULT' | translate}}</button>
-
       </div>
     </ion-row>
   </ion-grid>
