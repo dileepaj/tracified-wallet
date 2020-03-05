@@ -52,7 +52,8 @@ export class LoginPage {
     private properties: Properties,
     private logger: Logger,
     private dataService: DataServiceProvider,
-    private blockchainService: BlockchainServiceProvider
+    private blockchainService: BlockchainServiceProvider,
+    private translate: TranslateService
   ) {
     this.form = new FormGroup({
       username: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
@@ -90,7 +91,9 @@ export class LoginPage {
               this.navCtrl.setRoot(TabsPage);
             }).catch((err) => {
               this.dissmissLoading();
-              this.presentAlert('Error', 'Failed to store transaction accounts in memory.');
+              this.translate.get(['ERROR', 'FAILED_TO_STORE_TRANS_ACC']).subscribe(text => {
+                this.presentAlert(text['ERROR'], text['FAILED_TO_STORE_TRANS_ACC']);
+              });
               this.logger.error("Storing BC accounts error: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
           }).catch((err) => {
@@ -98,7 +101,9 @@ export class LoginPage {
             if (err.status == 406) {
               this.navCtrl.push(AddAccountPage, { navigation: 'initial' });
             } else {
-              this.presentAlert('Error', 'Failed to fetch transaction accounts.');
+              this.translate.get(['ERROR', 'FAILED_TO_FETCH_TRANS']).subscribe(text => {
+                this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_TRANS']);
+              });
             }
             this.logger.error("Get Blockchain accounts error: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
           });
@@ -107,23 +112,33 @@ export class LoginPage {
           this.navCtrl.push(ResetPasswordPage, { type: 'initial', username: this.form.value.username, code: this.form.value.password });
         } else {
           this.dissmissLoading();
-          this.presentAlert('Authentication Failed', 'Failed to log into your account.');
+          this.translate.get(['AUTHENTICATION_FAILED', 'FAILED_TO_LOGIN']).subscribe(text => {
+            this.presentAlert(text['AUTHENTICATION_FAILED'], text['FAILED_TO_LOGIN']);
+          });
         }
       }, (err) => {
         if (err.status === 403) {
           this.dissmissLoading();
-          this.presentAlert('Authentication Failed', 'Your account is blocked. Please contact an Admin.');
+          this.translate.get(['AUTHENTICATION_FAILED', 'ACCOUNT_BLOCKED']).subscribe(text => {
+            this.presentAlert(text['AUTHENTICATION_FAILED'], text['ACCOUNT_BLOCKED']);
+          });
         } else {
           this.dissmissLoading();
-          this.presentAlert('Authentication Failed', 'Failed to log into your account.');
+          this.translate.get(['AUTHENTICATION_FAILED', 'FAILED_TO_LOGIN']).subscribe(text => {
+            this.presentAlert(text['AUTHENTICATION_FAILED'], text['FAILED_TO_LOGIN']);
+          });
         }
       }).catch((error) => {
         this.dissmissLoading();
-        this.presentAlert('Authentication Failed', 'Failed to log into your account.');
+        this.translate.get(['AUTHENTICATION_FAILED', 'FAILED_TO_LOGIN']).subscribe(text => {
+          this.presentAlert(text['AUTHENTICATION_FAILED'], text['FAILED_TO_LOGIN']);
+        });
         this.logger.error("User validation error: " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
       });
     } else {
-      this.presentToast('There is no internet at the moment.');
+      this.translate.get(['NO_INTERNET_MOMENT']).subscribe(text => {
+        this.presentToast(text['NO_INTERNET_MOMENT']);
+      });
     }
   }
 

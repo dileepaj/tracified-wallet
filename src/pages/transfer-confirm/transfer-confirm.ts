@@ -6,6 +6,7 @@ import { Logger } from 'ionic-logger-new';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { Properties } from '../../shared/properties';
+import { TranslateService } from '@ngx-translate/core';
 
 @IonicPage()
 @Component({
@@ -22,7 +23,7 @@ export class TransferConfirmPage {
   loading;
   isLoadingPresent: boolean;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public dataService: DataServiceProvider,
+  constructor(public navCtrl: NavController, public navParams: NavParams, public dataService: DataServiceProvider, private translate: TranslateService,
     private logger: Logger,  private blockchainService: BlockchainServiceProvider, private properties: Properties, public loadingCtrl: LoadingController, private alertCtrl: AlertController) {
     this.transferAmount = this.navParams.get('transferAmount');
     this.senderPK = this.navParams.get('senderPK');
@@ -54,7 +55,9 @@ export class TransferConfirmPage {
             }).catch((err) => {
               this.dissmissLoading();
               this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-              this.presentAlert("Error", "Failed to transfer funds for the account.");
+              this.translate.get(['ERROR', 'FAILED_TO_TRANSFER']).subscribe(text => {
+                this.presentAlert(text['ERROR'], text['FAILED_TO_TRANSFER']);
+              });
             });
           } else {
             this.blockchainService.transferFundsForNewAccounts(decKey, this.receiverPK, this.transferAmount).then(() => {
@@ -64,22 +67,30 @@ export class TransferConfirmPage {
               this.logger.info("Successfully transferred funds: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
               this.logger.info("[FUND_TRANSFER][RECEIVER] " + this.receiverPK, this.properties.skipConsoleLogs, this.properties.writeToFile);
               this.logger.info("[FUND_TRANSFER][AMOUNT] " + this.transferAmount, this.properties.skipConsoleLogs, this.properties.writeToFile);
-              this.presentAlert("Success", "Successfully transferred " + this.transferAmount + " lumens. View account information to see the updated amount.");
+              this.translate.get(['SUCCESS', 'SUCCESSFULLY_TRANSFERED', 'VIEW_ACC_INFO']).subscribe(text => {
+                this.presentAlert(text['SUCCESS'], text['SUCCESSFULLY_TRANSFERED'] + this.transferAmount + text['VIEW_ACC_INFO']);
+              });
               this.navCtrl.setRoot(FundTransferPage);
             }).catch((err) => {
               this.dissmissLoading();
               this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-              this.presentAlert("Error", "Failed to transfer funds for the account.");
+              this.translate.get(['ERROR', 'FAILED_TO_TRANSFER']).subscribe(text => {
+                this.presentAlert(text['ERROR'], text['FAILED_TO_TRANSFER']);
+              });
             });
           }
         }).catch(err => {
           this.dissmissLoading();
-          this.presentAlert("Error", "Failed to identify the receivers account. Please try again.");
+          this.translate.get(['ERROR', 'FAILED_TO_IDENTIFY_RECEIVER']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['FAILED_TO_IDENTIFY_RECEIVER']);
+          });
           this.logger.error("Failed to validate account ID: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
       }).catch((err) => {
         this.dissmissLoading();
-        this.presentAlert("Error", "Invalid transaction password. Please try again.");
+        this.translate.get(['ERROR', 'INVALID_TRANSACTION_PASS']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['INVALID_TRANSACTION_PASS']);
+        });
         this.logger.error("Password validation failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       });
     }).catch((err) => {

@@ -15,22 +15,6 @@
 
   "MAP_TITLE": "Map",
 
-  "TUTORIAL_SKIP_BUTTON": "Skip",
-  "TUTORIAL_CONTINUE_BUTTON": "Continue",
-
-  "TUTORIAL_SLIDE1_TITLE": "Welcome to the Ionic Super Starter",
-  "TUTORIAL_SLIDE1_DESCRIPTION": "The <b>Ionic Super Starter</b> is a fully-featured Ionic starter with many pre-built pages and best practices.",
-
-  "TUTORIAL_SLIDE2_TITLE": "How to use the Super Starter",
-  "TUTORIAL_SLIDE2_DESCRIPTION": "Assemble the various page types you want and remove the ones you don't. We've provided many common mobile app page layouts, like login and signup pages, tabs, and this tutorial page.",
-
-  "TUTORIAL_SLIDE3_TITLE": "Getting Started",
-  "TUTORIAL_SLIDE3_DESCRIPTION": "Need help? Check out the Super Starter README for a full tutorial",
-
-  "TUTORIAL_SLIDE4_TITLE": "Ready to Play?",
-
-  "WELCOME_INTRO": "The starting point for your next great Ionic app",
-
   "SETTINGS_TITLE": "Settings",
   "SETTINGS_OPTION1": "Option 1",
   "SETTINGS_OPTION2": "Option 2",
@@ -164,5 +148,98 @@
 
   "DONE": "Done",
   "IMPORTANT": "IMPORTANT",
-  "SAFE_KEY": "Keep this in a safe place since this will be required to change the password of the account."
+  "SAFE_KEY": "Keep this in a safe place since this will be required to change the password of the account.",
+
+  "ERROR": "Error",
+  "INCORRECT_PASSWORD": "Incorrect password. Please try again",
+  "TRANSACTION_PASSWORD": "Transaction Password",
+  "OK":"OK",
+
+  "PUBLIC_KEY_COPIED": "Public key copied to clipboard.",
+  "PRIVATE_KEY_COPIED": "Private key copied to clipboard.",
+  "FALIED_TO_COPY_KEY": "Failed to copy the key. Manually copy or write it down somewhere safe.",
+  "PASSWORD_DONOT_MATCH": "New password and confirm password do not match.",
+  "TRANSACTION_ACCOUNT_ADDED": "Transaction account added successfully!",
+  "FAILED_ADD_TRANSACTION": "Failed to add the transaction account. Please try again or contact an admin.",
+  "ACC_BLOCKED": "Your account is blocked. Please contact an admin.",
+  "AUTHENTICATION_FAILED": "Authentication Failed",
+  "ACC_NAME_EXISTS": "Account name already exists. Please pick a different name for the account.",
+  "NOT_VALIDATE_ACC_NAME": "Error occured. Could not validate account name.",
+  "NO_CONNECTION": "There is no internet connection to complete this task. Please try again.",
+
+  "CHECK_UPDATES": "Checking for updates...",
+  "UPDATED_SUCCESS": "Updated Successfully",
+  "APP_UPDATED_RESTART": "Application updated successfully. Please restart the application to apply the changes.",
+  "COULD_NOT_UPDATE": "Could not update the application due to an error. Please try again later.",
+  "WRONG_UPDATE": "There is something wrong with the new update. Please try again later.",
+  "NO_INTERNET": "There is no internet connection at the moment. Please check your connectivity settings in the device.",
+
+  "BALANCE_IS": "Your transferable balance is ",
+  "TRY_AGAIN_VALID_AMOUNT": " lumens. Please try again with a valid amount.",
+  "MINIMUM_TRANSFER_AMOUNT": "Minimum transfer amount should be greater than 2 lumens. Please try again with a valid amount.",
+  "FAIL_ACC_BAL": "Failure to retrieve account balance.",
+  "FILL_REQUIRED": "Please fill in all the required fields.",
+  "WARNING": "Warning",
+  "CANNOT_FIND_ACC": "Could not find any other accounts. Please try again after creating a new Transaction account.",
+  "RETRIEVE_ACC_FAILED": "Retrieving blockchain accounts failed.",
+  "FILL_ALL_FIELDS": "Make sure to fill out all the fields before submitting the form.",
+  "INVALID_ASSET": "Invalid asset quantity. Please try with a valid amount.",
+  "NOT_ENOUGH_ASSETS": "Not enough assests to transfer. Please try with a valid amount.",
+  "IDENTIFIER_DATA_NOT_AVAILABLE": "Identifier data is not available. Please try again after the blue notification bar dissappears from top.",
+  "VALID_ID": "Identifier provided does not belong to any item. Please enter a valid identifier.",
+  "ASSET_TRANSFER_SUCCESS": "Assets successfully transferred. You can view the transaction status in Sent page.",
+  "FAILED_TO_SEND_TRANSACTION": "Failed to send the transaction. Please try again.",
+  "FAILED_TO_BUILD_TRANSACTION" : "Failed to build the transaction. Please try again.",
+  "FAILED_TO_VERIFY_ASSET": "Failed to verify the asset issuer. Please try again.",
+  "FAILED_TO_VERIFY_TRANSC": "Failed to verify transaction. Please try again.",
+  "FAILED_TO_PREPARE_TRANSACTION": "Failed to prepare the transaction. Please try again.",
+  "INVALID_TRANSACTION_PASSWORD": "Invalid transaction password. Please try again.",
+
+  "FAILED_TO_FETCH_ACCOUNT": "Failed to fetch the account details for received items. Please try again.",
+  "FAILED_TO_FETCH_RECEIVED": "Failed to fetch the received items. Please try again.",
+  "ACC_REJECT_PENDING_COC": "Please accept or reject pending CoC transactions before. There are currently ",
+  "PENDING_COC": " pending CoC transactions.",
+  "SUCCESS_ACCEPTED": "Successfully accepted",
+  "SUCCESS_REJECTED": "Successfully rejected",
+  "UPDATED_RESULTS_TRANSFER": "You can see the updated results in Transfer page.",
+  "ASSET_NOT_CHANGE": "Your asset amout will not be changed.",
+  "COULD_NOT_PROCEED": "Could not proceed with the action. Please try again.",
+  "INVALID_PASSWORD": "Invalid password. Please try again.",
+
+  "FAILED_TO_FETCH_ACCOUNT_SENT": "Failed to fetch the account details for sent items. Please try again.",
+  "FAILED_TO_FETCH_SENT": "Failed to fetch the sent items. Please try again.",
+
+  "FAILED_TO_STORE_TRANS_ACC": "Failed to store transaction accounts in memory.",
+  "FAILED_TO_FETCH_TRANS": "Failed to fetch transaction accounts.",
+  "FAILED_TO_LOGIN": "Failed to log into your account.",
+  "ACCOUNT_BLOCKED": "Your account is blocked. Please contact an Admin.",
+  "NO_INTERNET_MOMENT": "There is no internet at the moment.",
+
+  "SUCCESS_CHANGED_PASSWORD": "You have successfully changed your password. Please use the new password and log back again.",
+  "COULD_NOT_RESET": "Could not reset the password. Something went wrong.",
+  "COULD_NOT_VERIFY": "Could not verify the email. Something went wrong.",
+  "OPS_SOMETHING_WENT_WRONG": "Ops! Something went wrong.",
+  "PASSWORDS_DONOT_MATCH": "Passwords do not match. Please try again.",
+
+  "NAME_CHANGED_SUCCESS": "Name successfully changed.",
+  "FAILED_TO_CHANGE_ACC_NAME": "Failed to change the account name. Please try again later.",
+  "CANNOT_CHANGE_ACC_NAME": "Cannot change the account name at the moment.",
+  "CHANGE_PASSWORD_LOGGED_OUT": "Once you change the account password you will be automatically logged out from the application. Do you want to continue?",
+  "PASSWORD_CHANGED": "Password successfully changed.",
+  "FAILED_TO_CHANGE_PASSWORD": "Failed to change the account password. Please try again later.",
+  "CANNOT_CHANGE_PASSWORD": "Cannot change the account password at the moment.",
+  "CHANGE_TRANS_PASS_LOGOUT": "Once you change the transaction password you will be automatically logged out from the application. Do you want to continue?",
+  "TRANS_SUCCESS_CHANGE": "Transaction password successfully changed.",
+  "CANNOT_CHANGE_TRAS_PASSWORD": "Cannot change the transaction password at the moment.",
+
+  "SUCCESSFUL": "Successful",
+  "PROFILE_PHOTO": "Profile Photo",
+  "CHANGING_PHOTO_UNAVAILABLE": "Changing profile photo is currently unavailable. Please try again later.",
+
+  "FAILED_TO_TRANSFER": "Failed to transfer funds for the account.",
+  "FAILED_TO_IDENTIFY_RECEIVER": "Failed to identify the receivers account. Please try again.",
+  "INVALID_TRANSACTION_PASS": "Invalid transaction password. Please try again.",
+  "SUCCESS": "Success",
+  "SUCCESSFULLY_TRANSFERED": "Successfully transferred ",
+  "VIEW_ACC_INFO": " lumens. View account information to see the updated amount."
 }

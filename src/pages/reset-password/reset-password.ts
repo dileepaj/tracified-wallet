@@ -4,6 +4,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { LoginPage } from '../login/login';
+import { TranslateService } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'page-reset-password',
@@ -35,6 +37,7 @@ export class ResetPasswordPage {
     private authService: AuthServiceProvider,
     private connectivity: ConnectivityServiceProvider,
     private alertCtrl: AlertController,
+    private translate: TranslateService
   ) {
     console.log(navParams);
     this.username = this.navParams.get('username');
@@ -78,14 +81,20 @@ export class ResetPasswordPage {
         this.dissmissLoading();
         console.log(res);
         if (res.status === 200) {
-          this.presentToast('You have successfully changed your password. Please use the new password and log back again.');
+          this.translate.get(['SUCCESS_CHANGED_PASSWORD']).subscribe(text => {
+            this.presentToast(text['SUCCESS_CHANGED_PASSWORD']);
+          });
           this.navCtrl.setRoot(LoginPage);
         } else {
-          this.presentToast('Could not reset the password. Something went wrong.');
+          this.translate.get(['COULD_NOT_RESET']).subscribe(text => {
+            this.presentToast(text['COULD_NOT_RESET']);
+          });
         }
       });
     } else {
-      this.presentToast('There is no internet at the moment.');
+      this.translate.get(['NO_INTERNET_MOMENT']).subscribe(text => {
+        this.presentToast(text['NO_INTERNET_MOMENT']);
+      });
     }
   }
 
@@ -97,7 +106,9 @@ export class ResetPasswordPage {
         if (res.status === 200) {
           this.resetPass = true;
         } else {
-          this.presentToast('Could not verify the email. Something went wrong.');
+          this.translate.get(['COULD_NOT_VERIFY']).subscribe(text => {
+            this.presentToast(text['COULD_NOT_VERIFY']);
+          });
         }
       }).catch(err => {
         if (err.status === 401) {
@@ -105,11 +116,15 @@ export class ResetPasswordPage {
           this.presentToast(err.error);
         } else {
           this.dissmissLoading();
-          this.presentToast('Ops! Something went wrong.');
+          this.translate.get(['OPS_SOMETHING_WENT_WRONG']).subscribe(text => {
+            this.presentToast(text['OPS_SOMETHING_WENT_WRONG']);
+          });
         }
       });
     } else {
-      this.presentToast('There is no internet at the moment.');
+      this.translate.get(['NO_INTERNET_MOMENT']).subscribe(text => {
+        this.presentToast(text['NO_INTERNET_MOMENT']);
+      });
     }
   }
 
@@ -121,7 +136,9 @@ export class ResetPasswordPage {
       let nPassword = this.resetForm.get('nPassword').value;
 
       if (cPassword !== nPassword) {
-        this.presentAlert("Error", "Passwords do not match. Please try again.");
+        this.translate.get(['ERROR', 'PASSWORDS_DONOT_MATCH']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['PASSWORDS_DONOT_MATCH']);
+        });
         this.dissmissLoading();
         return;
       }
@@ -129,10 +146,14 @@ export class ResetPasswordPage {
       this.authService.resetPassword(this.verifyForm.value.email, this.resetForm.value.nPassword , this.resetForm.value.code).then(res => {
         this.dissmissLoading();
         if (res.status === 200) {
-          this.presentToast('You have successfully changed your password. Please use the new password and log back again.');
+          this.translate.get(['SUCCESS_CHANGED_PASSWORD']).subscribe(text => {
+            this.presentToast(text['SUCCESS_CHANGED_PASSWORD']);
+          });
           this.navCtrl.setRoot(LoginPage);
         } else {
-          this.presentToast('Could not reset the password. Something went wrong.');
+          this.translate.get(['COULD_NOT_RESET']).subscribe(text => {
+            this.presentToast(text['COULD_NOT_RESET']);
+          });
         }
       }).catch(err => {
         if (err.status === 403) {
@@ -140,11 +161,15 @@ export class ResetPasswordPage {
           this.presentToast(err.error);
         } else {
           this.dissmissLoading();
-          this.presentToast('Ops! Something went wrong.');
+          this.translate.get(['OPS_SOMETHING_WENT_WRONG']).subscribe(text => {
+            this.presentToast(text['OPS_SOMETHING_WENT_WRONG']);
+          });
         }
       });
     } else {
-      this.presentToast('There is no internet at the moment.');
+      this.translate.get(['NO_INTERNET_MOMENT']).subscribe(text => {
+        this.presentToast(text['NO_INTERNET_MOMENT']);
+      });
     }
   }
 

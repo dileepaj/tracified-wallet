@@ -21,7 +21,9 @@ export class SettingsPage {
   }
 
   changeDisplayImage() {
-    this.presentAlert("Profile Photo", "Changing profile photo is currently unavailable. Please try again later.");
+    this.translate.get(['PROFILE_PHOTO', 'CHANGING_PHOTO_UNAVAILABLE']).subscribe(text => {
+      this.presentAlert(text['PROFILE_PHOTO'], text['CHANGING_PHOTO_UNAVAILABLE']);
+    });
   }
 
   changeDisplayName() {

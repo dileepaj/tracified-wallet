@@ -7,6 +7,7 @@ import { Logger } from 'ionic-logger-new';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { TransferConfirmPage } from '../../pages/transfer-confirm/transfer-confirm';
 import { Account } from 'stellar-sdk';
+import { TranslateService } from '@ngx-translate/core';
 
 @IonicPage()
 @Component({
@@ -32,6 +33,7 @@ export class FundTransferPage {
     public dataService: DataServiceProvider,
     private logger: Logger,
     public menuCtrl: MenuController,
+    private translate: TranslateService
   ) {
     this.mainAccount = this.properties.defaultAccount;
     this.getMainAccounts();
@@ -54,10 +56,14 @@ export class FundTransferPage {
 
         if (effectiveBalance < this.transferAmount) {
           this.dissmissLoading();
-          this.presentAlert("Error", "Your transferable balance is " + effectiveBalance + " lumens. Please try again with a valid amount.");
+          this.translate.get(['ERROR', 'FALIED_TO_COPY_KEY']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['BALANCE_IS'] + effectiveBalance + text['TRY_AGAIN_VALID_AMOUNT']);
+          });
         } else if (this.transferAmount < 2) {
           this.dissmissLoading();
-          this.presentAlert("Error", "Minimum transfer amount should be greater than 2 lumens. Please try again with a valid amount.");
+          this.translate.get(['ERROR', 'MINIMUM_TRANSFER_AMOUNT']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['MINIMUM_TRANSFER_AMOUNT']);
+          });
         } else {
           this.dissmissLoading();
           this.navCtrl.setRoot(TransferConfirmPage, {
@@ -70,12 +76,16 @@ export class FundTransferPage {
         }
       }).catch(err => {
         this.dissmissLoading();
-        this.presentAlert("Error", "Failure to retrieve account balance.");
+        this.translate.get(['ERROR', 'FAIL_ACC_BAL']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['FAIL_ACC_BAL']);
+        });
         this.logger.error("Failure in retrieving account balance: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       });
     } else {
       this.dissmissLoading();
-      this.presentAlert("Error", "Please fill in all the required fields.");
+      this.translate.get(['ERROR', 'FILL_REQUIRED']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['FILL_REQUIRED']);
+      });
     }
   }
 
@@ -86,7 +96,9 @@ export class FundTransferPage {
         this.dissmissLoading();
 
         if (accounts.length < 2) {
-          this.goBackAlert("Warning", "Could not find any other accounts. Please try again after creating a new Transaction account.");
+          this.translate.get(['WARNING', 'CANNOT_FIND_ACC']).subscribe(text => {
+            this.goBackAlert(text['WARNING'], text['CANNOT_FIND_ACC']);
+          });
           return;
         }
 
@@ -101,7 +113,9 @@ export class FundTransferPage {
         if (this.isLoadingPresent) {
           this.dissmissLoading();
         }
-        this.presentAlert('Authentication Failed', 'Retrieving blockchain accounts failed.');
+        this.translate.get(['AUTHENTICATION_FAILED', 'RETRIEVE_ACC_FAILED']).subscribe(text => {
+          this.presentAlert(text['AUTHENTICATION_FAILED'], text['RETRIEVE_ACC_FAILED']);
+        });
         this.logger.error("Failure to retrieve blockchain accounts" + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();
       });

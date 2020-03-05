@@ -3,6 +3,7 @@ import { IonicPage, NavController, ToastController, LoadingController, Toast, Al
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Keypair } from 'stellar-sdk';
 import { AES, enc } from "crypto-js";
+import { TranslateService } from '@ngx-translate/core';
 
 // Network.usePublicNetwork();
 // var server = new Server(stellarNet);
@@ -59,7 +60,8 @@ export class AddAccountPage {
     private logger: Logger,
     private dataService: DataServiceProvider,
     private mappingService: MappingServiceProvider,
-    private navParams: NavParams
+    private navParams: NavParams,
+    private translate: TranslateService
   ) {
 
     this.form = new FormGroup({
@@ -78,7 +80,9 @@ export class AddAccountPage {
     let confirmPassword = this.form.get('confirmPassword').value;
 
     if (password != confirmPassword) {
-      this.presentAlert("Error", "New password and confirm password do not match.");
+      this.translate.get(['ERROR', 'PASSWORD_DONOT_MATCH']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['PASSWORD_DONOT_MATCH']);
+      });
       return;
     }
 
@@ -110,21 +114,31 @@ export class AddAccountPage {
             this.dataService.addTransactionAccount(account).then((res) => {
               this.dissmissLoading();
               if (res.status === 200) {
-                this.presentToast('Transaction account added successfully!');
+                this.translate.get(['TRANSACTION_ACCOUNT_ADDED']).subscribe(text => {
+                  this.presentToast(text['TRANSACTION_ACCOUNT_ADDED']);
+                });
                 this.navCtrl.setRoot(AccountInfoPage, { account: mainAccount, navigation: this.navigation });
               } else {
-                this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+                this.translate.get(['ERROR', 'FAILED_ADD_TRANSACTION']).subscribe(text => {
+                  this.presentAlert(text['ERROR'], text['FAILED_ADD_TRANSACTION']);
+                });
               }
             }, (err) => {
               this.dissmissLoading();
               if (err.status == 403) {
-                this.presentAlert('Authentication Failed', 'Your account is blocked. Please contact an admin.');
+                this.translate.get(['AUTHENTICATION_FAILED', 'ACC_BLOCKED']).subscribe(text => {
+                  this.presentAlert(text['AUTHENTICATION_FAILED'], text['ACC_BLOCKED']);
+                });
               } else {
-                this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+                this.translate.get(['ERROR', 'FAILED_ADD_TRANSACTION']).subscribe(text => {
+                  this.presentAlert(text['ERROR'], text['FAILED_ADD_TRANSACTION']);
+                });
               }
             }).catch((error) => {
               this.dissmissLoading();
-              this.presentAlert('Error', 'Failed to add the transaction account. Please try again or contact an admin.');
+              this.translate.get(['ERROR', 'FAILED_ADD_TRANSACTION']).subscribe(text => {
+                this.presentAlert(text['ERROR'], text['FAILED_ADD_TRANSACTION']);
+              });
               this.logger.error("Failed to add transaction account: " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
           }).catch((err) => {
@@ -133,16 +147,22 @@ export class AddAccountPage {
           });
         } else {
           this.dissmissLoading();
-          this.presentAlert("Error", "Account name already exists. Please pick a different name for the account.");
+          this.translate.get(['ERROR', 'ACC_NAME_EXISTS']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['ACC_NAME_EXISTS']);
+          });
         }
       }).catch((error) => {
         if (this.isLoadingPresent) {
           this.dissmissLoading();
-          this.presentToast('Error occured. Could not validate account name.');
+          this.translate.get(['NOT_VALIDATE_ACC_NAME']).subscribe(text => {
+            this.presentToast(text['NOT_VALIDATE_ACC_NAME']);
+          });
         }
       });
     } else {
-      this.presentToast('There is no internet connection to complete this task. Please try again.');
+      this.translate.get(['NO_CONNECTION']).subscribe(text => {
+        this.presentToast(text['NO_CONNECTION']);
+      });
     }
   }
 

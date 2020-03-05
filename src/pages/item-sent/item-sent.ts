@@ -8,7 +8,7 @@ import { Properties } from '../../shared/properties';
 import { AES, enc } from "crypto-js";
 import { Logger } from 'ionic-logger-new';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
-
+import { TranslateService } from '@ngx-translate/core';
 
 @IonicPage()
 @Component({
@@ -38,7 +38,8 @@ export class ItemSentPage {
     private storage: StorageServiceProvider,
     private properties: Properties,
     private logger: Logger,
-    private dataService: DataServiceProvider
+    private dataService: DataServiceProvider,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() { }
@@ -120,13 +121,15 @@ export class ItemSentPage {
               sentOriginal: minTime
             }
             cocObj.receiver = accountNames.find(o => cocObj.receiver == o.pk).accountName;
-            this.cocSent.push(cocObj);            
+            this.cocSent.push(cocObj);
           });
           this.cocSent.sort((a, b) => (a.sentOriginal < b.sentOriginal) ? 1 : -1);
           this.dissmissLoading();
         }).catch((err) => {
           this.dissmissLoading();
-          this.presentAlert("Error", "Failed to fetch the account details for sent items. Please try again.");
+          this.translate.get(['ERROR', 'FAILED_TO_FETCH_ACCOUNT_SENT']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_ACCOUNT_SENT']);
+          });
           this.logger.error("Could not get the account names: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
       } else {
@@ -135,7 +138,9 @@ export class ItemSentPage {
     }).catch((err) => {
       this.dissmissLoading();
       if (err.status != 400) {
-        this.presentAlert("Error", "Failed to fetch the sent items. Please try again.");
+        this.translate.get(['ERROR', 'FAILED_TO_FETCH_SENT']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_SENT']);
+        });
       }
       this.logger.error("Could not load CoCs: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
     });
@@ -250,8 +255,8 @@ export class ItemSentPage {
 
   //         });
   //       } else {
-  //         if (this.isLoadingPresent) { 
-  //           this.dissmissLoading(); 
+  //         if (this.isLoadingPresent) {
+  //           this.dissmissLoading();
   //         }
   //       }
   //     }, (err) => {

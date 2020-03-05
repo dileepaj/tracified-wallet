@@ -8,6 +8,7 @@ import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { SettingsPage } from '../../pages/settings/settings';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { LoginPage } from '../../pages/login/login';
+import { TranslateService } from '@ngx-translate/core';
 
 @IonicPage()
 @Component({
@@ -39,7 +40,8 @@ export class SettingFormPage {
     private dataService: DataServiceProvider,
     private toastCtrl: ToastController,
     private connectivityService: ConnectivityServiceProvider,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private translate: TranslateService
   ) {
     this.formType = this.navParams.get("type");
     this.prepareForm();
@@ -88,21 +90,29 @@ export class SettingFormPage {
       this.dataService.changeUserDetails('profile', user).then((res) => {
         if (res.status === 200) {
           this.dissmissLoading();
-          this.presentToast("Name successfully changed.");
+          this.translate.get(['NAME_CHANGED_SUCCESS']).subscribe(text => {
+            this.presentToast(text['NAME_CHANGED_SUCCESS']);
+          });
           this.logger.info("Display name successfully changed.", this.properties.skipConsoleLogs, this.properties.writeToFile);
           this.navCtrl.setRoot(SettingsPage);
         } else {
           this.dissmissLoading();
-          this.presentAlert("Error", "Failed to change the account name. Please try again later.");
+          this.translate.get(['ERROR', 'FAILED_TO_CHANGE_ACC_NAME']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['FAILED_TO_CHANGE_ACC_NAME']);
+          });
           this.logger.error("Display name change failed: " + JSON.stringify(res), this.properties.skipConsoleLogs, this.properties.writeToFile);
         }
       }).catch((err) => {
         this.dissmissLoading();
-        this.presentAlert("Error", "Cannot change the account name at the moment.");
+        this.translate.get(['ERROR', 'CANNOT_CHANGE_ACC_NAME']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['CANNOT_CHANGE_ACC_NAME']);
+        });
         this.logger.error("Display name change failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       });
     } else {
-      this.presentAlert("Error", "There is no internet connection at the moment. Please check your device connectivity settings first.");
+      this.translate.get(['ERROR', 'NO_INTERNET']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['NO_INTERNET']);
+      });
     }
   }
 
@@ -115,7 +125,9 @@ export class SettingFormPage {
         let nPassword = this.accountPassword.get('nPassword').value;
 
         if (cPassword !== nPassword) {
-          this.presentAlert("Error", "New password and confirm password do not match.");
+          this.translate.get(['ERROR', 'PASSWORD_DONOT_MATCH']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['PASSWORD_DONOT_MATCH']);
+          });
           this.dissmissLoading();
           return;
         }
@@ -128,42 +140,55 @@ export class SettingFormPage {
         this.dataService.changeUserDetails('password', password).then((res) => {
           if (res.status === 200) {
             this.dissmissLoading();
-            this.presentToast("Password successfully changed.");
+            this.translate.get(['PASSWORD_CHANGED']).subscribe(text => {
+              this.presentToast(text['PASSWORD_CHANGED']);
+            });
             this.logger.info("Password successfully changed.", this.properties.skipConsoleLogs, this.properties.writeToFile);
             this.dataService.clearLocalData();
             this.navCtrl.setRoot(LoginPage);
           } else {
             this.dissmissLoading();
-            this.presentAlert("Error", "Failed to change the account password. Please try again later.");
+            this.translate.get(['ERROR', 'FAILED_TO_CHANGE_PASSWORD']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['FAILED_TO_CHANGE_PASSWORD']);
+            });
             this.logger.error("Account password change failed: " + JSON.stringify(res), this.properties.skipConsoleLogs, this.properties.writeToFile);
           }
         }).catch((err) => {
           if (err.status == 403) {
             this.dissmissLoading();
-            this.presentAlert("Error", err.error);
+            this.translate.get(['ERROR']).subscribe(text => {
+              this.presentAlert(text['ERROR'], err.error);
+            });
             this.logger.error("Account password change failed: " + err.error, this.properties.skipConsoleLogs, this.properties.writeToFile);
           } else {
             this.dissmissLoading();
-            this.presentAlert("Error", "Cannot change the account password at the moment.");
+            this.translate.get(['ERROR', 'CANNOT_CHANGE_PASSWORD']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['CANNOT_CHANGE_PASSWORD']);
+            });
             this.logger.error("Account password change failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
           }
         });
       }).catch(() => { });
     } else {
-      this.presentAlert("Error", "There is no internet connection at the moment. Please check your device connectivity settings first.");
+      this.translate.get(['ERROR', 'NO_INTERNET']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['NO_INTERNET']);
+      });
     }
   }
 
   changeTransactionPassword() {
     if (this.connectivityService.onDevice) {
-      this.alertWaitResponse("Warning", "Once you change the transaction password you will be automatically logged out from the application. Do you want to continue?").then(() => {
+      this.translate.get(['WARNING', 'CHANGE_PASSWORD_LOGGED_OUT']).subscribe(text => {
+        this.alertWaitResponse(text['WARNING'], text['CHANGE_PASSWORD_LOGGED_OUT']).then(() => {
         this.presentLoading();
         let oPassword = this.transactionPassword.get('oPassword').value;
         let cPassword = this.transactionPassword.get('cPassword').value;
         let nPassword = this.transactionPassword.get('nPassword').value;
 
         if (cPassword !== nPassword) {
-          this.presentAlert("Error", "New password and confirm password do not match.");
+          this.translate.get(['ERROR', 'PASSWORD_DONOT_MATCH']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['PASSWORD_DONOT_MATCH']);
+          });
           this.dissmissLoading();
           return;
         }
@@ -179,13 +204,17 @@ export class SettingFormPage {
         this.dataService.changeTransactionAccPassword(transactionModel).then((res) => {
           if (res.status == 200) {
             this.dissmissLoading();
-            this.presentAlert("Successful", "Transaction password successfully changed.");
+            this.translate.get(['SUCCESSFUL', 'TRANS_SUCCESS_CHANGE']).subscribe(text => {
+              this.presentAlert(text['SUCCESSFUL'], text['TRANS_SUCCESS_CHANGE']);
+            });
             this.logger.info("Transaction password changed.", this.properties.skipConsoleLogs, this.properties.writeToFile);
             this.dataService.clearLocalData();
             this.navCtrl.setRoot(LoginPage);
           } else {
             this.dissmissLoading();
-            this.presentAlert("Error", "Cannot change the transaction password at the moment.");
+            this.translate.get(['ERROR', 'CANNOT_CHANGE_TRAS_PASSWORD']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['CANNOT_CHANGE_TRAS_PASSWORD']);
+            });
             this.logger.info("Account password change failed.", this.properties.skipConsoleLogs, this.properties.writeToFile);
           }
         }).catch((err) => {
@@ -195,17 +224,24 @@ export class SettingFormPage {
             this.logger.error("Account password change failed: " + err.error, this.properties.skipConsoleLogs, this.properties.writeToFile);
           } else if (err.status == 11) {
             this.dissmissLoading();
-            this.presentAlert("Error", err.error);
+            this.translate.get(['ERROR']).subscribe(text => {
+              this.presentAlert(text['ERROR'], err.error);
+            });
             this.logger.error("Account password change failed: " + err.error, this.properties.skipConsoleLogs, this.properties.writeToFile);
           } else {
             this.dissmissLoading();
-            this.presentAlert("Error", "Cannot change the transaction password at the moment.");
+            this.translate.get(['ERROR', 'CANNOT_CHANGE_TRAS_PASSWORD']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['CANNOT_CHANGE_TRAS_PASSWORD']);
+            });
             this.logger.error("Account password change failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
           }
         });
       }).catch(() => { });
+    });
     } else {
-      this.presentAlert("Error", "There is no internet connection at the moment. Please check your device connectivity settings first.");
+      this.translate.get(['ERROR', 'NO_INTERNET']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['NO_INTERNET']);
+      });
     }
   }
 
