@@ -159,7 +159,7 @@ export class ItemReceivedPage {
     let count = this.pendingCoCCount(coc.sentOriginal, this.cocReceived);
     if(count > 0){
       this.translate.get(['ERROR', 'ACC_REJECT_PENDING_COC', 'PENDING_COC']).subscribe(text => {
-        this.presentAlert("Error", text['ACC_REJECT_PENDING_COC'] + count + text['PENDING_COC']);
+        this.presentAlert("Error", text['ACC_REJECT_PENDING_COC '] + count + text[' PENDING_COC']);
       });
       return;
     }
@@ -177,11 +177,11 @@ export class ItemReceivedPage {
           this.dissmissLoading();
           if (status == 'accept') {
             this.translate.get(['SUCCESS', 'SUCCESS_ACCEPTED', 'UPDATED_RESULTS_TRANSFER']).subscribe(text => {
-              this.presentAlert(text['SUCCESS'], text['SUCCESS_ACCEPTED']  + coc.assetCode + ". " + text['UPDATED_RESULTS_TRANSFER']);
+              this.presentAlert(text['SUCCESS'], text['SUCCESS_ACCEPTED ']  + coc.assetCode + ". " + text['UPDATED_RESULTS_TRANSFER']);
             });
           } else if (status == 'reject') {
             this.translate.get(['SUCCESS', 'SUCCESS_REJECTED', 'ASSET_NOT_CHANGE']).subscribe(text => {
-              this.presentAlert(text['SUCCESS'], text['SUCCESS_REJECTED']  + coc.assetCode + ". " + text['ASSET_NOT_CHANGE']);
+              this.presentAlert(text['SUCCESS'], text['SUCCESS_REJECTED ']  + coc.assetCode + ". " + text['ASSET_NOT_CHANGE']);
             });
           }
         }).catch((err) => {

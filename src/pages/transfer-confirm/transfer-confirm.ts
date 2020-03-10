@@ -68,7 +68,7 @@ export class TransferConfirmPage {
               this.logger.info("[FUND_TRANSFER][RECEIVER] " + this.receiverPK, this.properties.skipConsoleLogs, this.properties.writeToFile);
               this.logger.info("[FUND_TRANSFER][AMOUNT] " + this.transferAmount, this.properties.skipConsoleLogs, this.properties.writeToFile);
               this.translate.get(['SUCCESS', 'SUCCESSFULLY_TRANSFERED', 'VIEW_ACC_INFO']).subscribe(text => {
-                this.presentAlert(text['SUCCESS'], text['SUCCESSFULLY_TRANSFERED'] + this.transferAmount + text['VIEW_ACC_INFO']);
+                this.presentAlert(text['SUCCESS'], text['SUCCESSFULLY_TRANSFERED '] + this.transferAmount + text[' VIEW_ACC_INFO']);
               });
               this.navCtrl.setRoot(FundTransferPage);
             }).catch((err) => {

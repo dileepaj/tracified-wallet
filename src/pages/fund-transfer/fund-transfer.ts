@@ -57,7 +57,7 @@ export class FundTransferPage {
         if (effectiveBalance < this.transferAmount) {
           this.dissmissLoading();
           this.translate.get(['ERROR', 'FALIED_TO_COPY_KEY']).subscribe(text => {
-            this.presentAlert(text['ERROR'], text['BALANCE_IS'] + effectiveBalance + text['TRY_AGAIN_VALID_AMOUNT']);
+            this.presentAlert(text['ERROR'], text['BALANCE_IS '] + effectiveBalance + text[' TRY_AGAIN_VALID_AMOUNT']);
           });
         } else if (this.transferAmount < 2) {
           this.dissmissLoading();
