@@ -6,6 +6,7 @@ import { Properties } from '../../shared/properties';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
+import { TranslateService } from '@ngx-translate/core';
 
 @IonicPage()
 @Component({
@@ -27,7 +28,8 @@ export class AccountDetailsPage {
     private mappingService: MappingServiceProvider,
     private properties: Properties,
     private dataService: DataServiceProvider,
-    private blockchainService: BlockchainServiceProvider
+    private blockchainService: BlockchainServiceProvider,
+    private translate: TranslateService,
   ) {
     this.account = this.navParams.get("account");
     this.defaultAccountCheck();
@@ -47,11 +49,15 @@ export class AccountDetailsPage {
           this.privateKey = secretKey.toString();
         } else {
           console.log("Password incorrect.");
-          this.presentAlert("Error", "Incorrect password. Please try again");
+          this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+          });
         }
       }).catch((err) => {
         console.log("Error: ", err);
-        this.presentAlert("Error", "Incorrect password. Please try again");
+        this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+        });
       });
     });
   }

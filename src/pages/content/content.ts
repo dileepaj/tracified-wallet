@@ -3,6 +3,7 @@ import { IonicPage, NavController, AlertController, LoadingController } from 'io
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { CodePushServiceProvider } from '../../providers/code-push-service/code-push-service';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { TranslateService } from '@ngx-translate/core';
 
 @IonicPage()
 @Component({
@@ -21,12 +22,15 @@ export class ContentPage {
     private codepushService: CodePushServiceProvider,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    private splashScreen: SplashScreen
+    private splashScreen: SplashScreen,
+    private translate: TranslateService
   ) { }
 
   ionViewDidEnter() {
     if (this.connectivityService.onDevice) {
-      this.presentLoading("Checking for updates...");
+      this.translate.get(['CHECK_UPDATES']).subscribe(text => {
+        this.presentLoading(text['CHECK_UPDATES']);
+      });
       this.codepushService.checkForUpdate().then((remotePackage) => {
         this.dismissLoading();
         this.updateAvailable = true;
@@ -44,17 +48,25 @@ export class ContentPage {
         this.splashScreen.show();
         this.updateAvailable = false;
         this.dismissLoading();
-        this.presentAlert("Updated Successfully", "Application updated successfully. Please restart the application to apply the changes.")
-      }).catch((err) => {
+        this.translate.get(['UPDATED_SUCCESS', 'APP_UPDATED_RESTART']).subscribe(text => {
+          this.presentAlert(text['UPDATED_SUCCESS'], text['APP_UPDATED_RESTART']);
+        });
+        }).catch((err) => {
         this.dismissLoading();
         if (err.error == "UPDATE_ERROR") {
-          this.presentAlert("Error", "Could not update the application due to an error. Please try again later.");
+          this.translate.get(['ERROR', 'APP_UPDATED_RESTART']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['APP_UPDATED_RESTART']);
+          });
         } else if (err.error == "PACKAGE_ERROR") {
-          this.presentAlert("Error", "There is something wrong with the new update. Please try again later.");
+          this.translate.get(['ERROR', 'WRONG_UPDATE']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['WRONG_UPDATE']);
+          });
         }
       });
     } else {
-      this.presentAlert("Error", "There is no internet connection at the moment. Please check your connectivity settings in the device.");
+      this.translate.get(['ERROR', 'NO_INTERNET']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['NO_INTERNET']);
+      });
     }
   }
 

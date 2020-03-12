@@ -15,6 +15,7 @@ import { Properties } from "../../shared/properties";
 import { DataServiceProvider } from "../../providers/data-service/data-service";
 import { Logger } from "ionic-logger-new";
 import { BlockchainServiceProvider } from "../../providers/blockchain-service/blockchain-service";
+import { TranslateService } from '@ngx-translate/core';
 
 @IonicPage()
 @Component({
@@ -55,7 +56,8 @@ export class ItemReceivedPage {
     private properties: Properties,
     private dataService: DataServiceProvider,
     private logger: Logger,
-    private blockchainService: BlockchainServiceProvider
+    private blockchainService: BlockchainServiceProvider,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() { }
@@ -130,11 +132,13 @@ export class ItemReceivedPage {
             this.cocReceived.push(cocObj);
           });
           this.cocReceived.sort((a, b) => (a.sentOriginal < b.sentOriginal) ? 1 : -1);
-          
+
           this.dissmissLoading();
         }).catch((err) => {
           this.dissmissLoading();
-          this.presentAlert("Error", "Failed to fetch the account details for received items. Please try again.");
+          this.translate.get(['ERROR', 'FAILED_TO_FETCH_ACCOUNT']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_ACCOUNT']);
+          });
           this.logger.error("Could not get the account names: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
       } else {
@@ -143,7 +147,9 @@ export class ItemReceivedPage {
     }).catch((err) => {
       this.dissmissLoading();
       if (err.status != 400) {
-        this.presentAlert("Error", "Failed to fetch the received items. Please try again.");
+        this.translate.get(['ERROR', 'FAILED_TO_FETCH_RECEIVED']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_RECEIVED']);
+        });
       }
       this.logger.error("Could not load CoCs: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
     });
@@ -152,7 +158,9 @@ export class ItemReceivedPage {
   updateCoC(coc, status) {
     let count = this.pendingCoCCount(coc.sentOriginal, this.cocReceived);
     if(count > 0){
-      this.presentAlert("Error", "Please accept or reject pending CoC transactions before. There are currently " + count + " pending CoC transactions.");
+      this.translate.get(['ERROR', 'ACC_REJECT_PENDING_COC', 'PENDING_COC']).subscribe(text => {
+        this.presentAlert("Error", text['ACC_REJECT_PENDING_COC '] + count + text[' PENDING_COC']);
+      });
       return;
     }
     this.passwordPromptResponseWait().then((password) => {
@@ -168,23 +176,33 @@ export class ItemReceivedPage {
         this.dataService.updateCoC(coc.cocOriginal).then((res) => {
           this.dissmissLoading();
           if (status == 'accept') {
-            this.presentAlert("Success", "Successfully accepted " + coc.assetCode + ". You can see the updated results in Transfer page.");
+            this.translate.get(['SUCCESS', 'SUCCESS_ACCEPTED', 'UPDATED_RESULTS_TRANSFER']).subscribe(text => {
+              this.presentAlert(text['SUCCESS'], text['SUCCESS_ACCEPTED ']  + coc.assetCode + ". " + text['UPDATED_RESULTS_TRANSFER']);
+            });
           } else if (status == 'reject') {
-            this.presentAlert("Success", "Successfully rejected " + coc.assetCode + ". Your asset amout will not be changed.");
+            this.translate.get(['SUCCESS', 'SUCCESS_REJECTED', 'ASSET_NOT_CHANGE']).subscribe(text => {
+              this.presentAlert(text['SUCCESS'], text['SUCCESS_REJECTED ']  + coc.assetCode + ". " + text['ASSET_NOT_CHANGE']);
+            });
           }
         }).catch((err) => {
           coc.cocOriginal.Status = 'pending';
           this.dissmissLoading();
-          this.presentAlert("Error", "Could not proceed with the action. Please try again.");
+          this.translate.get(['ERROR', 'COULD_NOT_PROCEED']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['COULD_NOT_PROCEED']);
+          });
           this.logger.error("Failed to update the CoC: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
       }).catch((err) => {
         this.dissmissLoading();
-        this.presentAlert("Error", "Invalid password. Please try again.");
+        this.translate.get(['ERROR', 'INVALID_PASSWORD']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['INVALID_PASSWORD']);
+        });
         this.logger.error("Validating password failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       });
     }).catch((err) => {
-      this.presentAlert("Error", "Invalid password. Please try again.");
+      this.translate.get(['ERROR', 'INVALID_PASSWORD']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['INVALID_PASSWORD']);
+      });
       this.logger.error("Invalid password: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
     });
   }

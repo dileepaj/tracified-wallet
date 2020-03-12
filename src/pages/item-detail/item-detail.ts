@@ -11,6 +11,7 @@ import { MappingServiceProvider } from '../../providers/mapping-service/mapping-
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { TransferPage } from '../../pages/transfer/transfer';
 import { Logger } from 'ionic-logger-new';
+import { TranslateService } from '@ngx-translate/core';
 
 @IonicPage()
 
@@ -61,7 +62,8 @@ export class ItemDetailPage {
     private blockchainService: BlockchainServiceProvider,
     private mappingService: MappingServiceProvider,
     private dataService: DataServiceProvider,
-    private logger: Logger
+    private logger: Logger,
+    private translate: TranslateService
   ) {
     this.mainAccount = this.properties.defaultAccount;
     this.item = navParams.get('item');
@@ -76,23 +78,33 @@ export class ItemDetailPage {
   transferAsset() {
     let status = this.checkIfFormEmpty();
     if (!status) {
-      this.presentAlert("Error", "Make sure to fill out all the fields before submitting the form.");
+      this.translate.get(['ERROR', 'FILL_ALL_FIELDS']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['FILL_ALL_FIELDS']);
+      });
       return;
     }
 
     if (Number(this.COCForm.qty) < 1) {
-      this.presentAlert("Error", "Invalid asset quantity. Please try with a valid amount.");
+      this.translate.get(['ERROR', 'INVALID_ASSET']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['INVALID_ASSET']);
+      });
       return;
     } else if (Number(this.item.balance) < Number(this.COCForm.qty)) {
-      this.presentAlert("Error", "Not enough assests to transfer. Please try with a valid amount.");
+      this.translate.get(['ERROR', 'NOT_ENOUGH_ASSETS']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['NOT_ENOUGH_ASSETS']);
+      });
       return;
     }
 
     if (this.itemSearching) {
-      this.presentAlert("Error", "Identifier data is not available. Please try again after the blue notification bar dissappears from top.");
+      this.translate.get(['ERROR', 'IDENTIFIER_DATA_NOT_AVAILABLE']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['IDENTIFIER_DATA_NOT_AVAILABLE']);
+      });
       return;
     } else if (!this.idAvailable) {
-      this.presentAlert("Error", "Identifier provided does not belong to any item. Please enter a valid identifier.");
+      this.translate.get(['ERROR', 'IDENTIFIER_DATA_NOT_AVAILABLE']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['IDENTIFIER_DATA_NOT_AVAILABLE']);
+      });
       return;
     }
 
@@ -121,37 +133,51 @@ export class ItemDetailPage {
                 }
                 this.dataService.sendCoC(coc).then((res) => {
                   this.dissmissLoading();
-                  this.presentAlert("Success", "Assets successfully transferred. You can view the transaction status in Sent page.");
+                  this.translate.get(['ERROR', 'ASSET_TRANSFER_SUCCESS']).subscribe(text => {
+                    this.presentAlert(text['ERROR'], text['ASSET_TRANSFER_SUCCESS']);
+                  });
                   this.navCtrl.setRoot(TransferPage);
                   this.logger.info("Item transferred successfully: " + this.item.asset_code, this.properties.skipConsoleLogs, this.properties.writeToFile);
                 }).catch((err) => {
                   this.dissmissLoading();
-                  this.presentAlert("Error", "Failed to send the transaction. Please try again.");
+                  this.translate.get(['ERROR', 'FAILED_TO_SEND_TRANSACTION']).subscribe(text => {
+                    this.presentAlert(text['ERROR'], text['FAILED_TO_SEND_TRANSACTION']);
+                  });
                   this.logger.error("Sending CoC to gateway failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                 });
               }).catch((err) => {
                 this.dissmissLoading();
-                this.presentAlert("Error", "Failed to build the transaction. Please try again.");
+                this.translate.get(['ERROR', 'FAILED_TO_BUILD_TRANSACTION']).subscribe(text => {
+                  this.presentAlert(text['ERROR'], text['FAILED_TO_BUILD_TRANSACTION']);
+                });
                 this.logger.error("Accept and Reject xdr build failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
               });
             }).catch((err) => {
               this.dissmissLoading();
-              this.presentAlert("Error", "Failed to verify the asset issuer. Please try again.");
+              this.translate.get(['ERROR', 'FAILED_TO_VERIFY_ASSET']).subscribe(text => {
+                this.presentAlert(text['ERROR'], text['FAILED_TO_VERIFY_ASSET']);
+              });
               this.logger.error("Failed to get the asset issuer: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
           }).catch((err) => {
             this.dissmissLoading();
-            this.presentAlert("Error", "Failed to verify transaction. Please try again.");
+            this.translate.get(['ERROR', 'FAILED_TO_VERIFY_TRANSC']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['FAILED_TO_VERIFY_TRANSC']);
+            });
             this.logger.error("Verify CoC failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
           });
         }).catch((err) => {
           this.dissmissLoading();
-          this.presentAlert("Error", "Failed to prepare the transaction. Please try again.");
+          this.translate.get(['ERROR', 'FAILED_TO_PREPARE_TRANSACTION']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['FAILED_TO_PREPARE_TRANSACTION']);
+          });
           this.logger.error("Preparing sub account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
       }).catch((err) => {
         this.dissmissLoading();
-        this.presentAlert("Error", "Invalid transaction password. Please try again.");
+        this.translate.get(['ERROR', 'INVALID_TRANSACTION_PASSWORD']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['INVALID_TRANSACTION_PASSWORD']);
+        });
         this.logger.error("Password validation failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       });
     });

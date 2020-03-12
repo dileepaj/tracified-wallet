@@ -41,7 +41,7 @@
             <h4 class="secondary-font">Item</h4>
           </ion-col>
           <ion-col col-3 class="padding-bottom-cancel">
-            <h4 class="secondary-font text-right-align-horizontally">Quantity</h4>
+            <h4 class="secondary-font text-right-align-horizontally">{{ 'QUANTITY' | translate }}</h4>
           </ion-col>
           <ion-col col-9 class="padding-top-cancel">
             <h1 class="primary-font first-capital">{{item.assetCode}}</h1>
@@ -52,10 +52,10 @@
         </ion-row>
         <ion-row>
           <ion-col col-6 class="padding-bottom-cancel">
-            <h4 class="secondary-font">Identifier</h4>
+            <h4 class="secondary-font">{{ 'IDENTIFIER' | translate }}</h4>
           </ion-col>
           <ion-col col-6 class="padding-bottom-cancel">
-            <h4 class="secondary-font text-right-align-horizontally">Sender</h4>
+            <h4 class="secondary-font text-right-align-horizontally">{{ 'SENDER' | translate }}</h4>
           </ion-col>
           <ion-col col-6 class="padding-top-cancel">
             <h4 class="primary-font">{{item.cocOriginal.Identifier}}</h4>
@@ -66,10 +66,10 @@
         </ion-row>
         <ion-row>
           <ion-col col-7 class="padding-bottom-cancel">
-            <h4 class="secondary-font">Valid till</h4>
+            <h4 class="secondary-font">{{ 'VALID_TILL' | translate }}</h4>
           </ion-col>
           <ion-col col-5 class="padding-bottom-cancel">
-            <h4 class="secondary-font text-right-align-horizontally">Status</h4>
+            <h4 class="secondary-font text-right-align-horizontally">{{ 'STATUS' | translate}}</h4>
           </ion-col>
           <ion-col col-7 class="padding-top-cancel">
             <h4 class="primary-font">{{item.validTill}}</h4>
@@ -81,10 +81,10 @@
         <ion-row class="block" *ngIf="item.cocOriginal.Status == 'pending'">
           <div class="right-float">
             <button class="btn-red-outline" (click)="updateCoC(item, 'reject')" ion-button>
-              REJECT
+               {{'REJECT' | translate}}
             </button>
             <button class="btn-green" (click)="updateCoC(item, 'accept')" ion-button>
-              ACCEPT
+               {{'ACCEPT' | translate}}
             </button>
           </div>
         </ion-row>

@@ -9,6 +9,7 @@ import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { TabsPage } from '../../pages/tabs/tabs';
 import { Clipboard } from '@ionic-native/clipboard/index';
 import { Logger } from 'ionic-logger-new';
+import { TranslateService } from '@ngx-translate/core';
 
 @IonicPage()
 @Component({
@@ -28,7 +29,8 @@ export class AccountInfoPage {
     private clipboard: Clipboard,
     private alertCtrl: AlertController,
     public toastCtrl: ToastController,
-    private logger: Logger
+    private logger: Logger,
+    private translate: TranslateService
   ) {
     this.account = this.navParams.get("account");
     this.navigation = this.navParams.get("navigation");
@@ -37,16 +39,24 @@ export class AccountInfoPage {
   copyToClipboard(option) {
     if (option == 1) {
       this.clipboard.copy(this.account.publicKey).then(() => {
-        this.presentToast("Public key copied to clipboard.");
+        this.translate.get(['PUBLIC_KEY_COPIED']).subscribe(text => {
+          this.presentToast(text['PUBLIC_KEY_COPIED']);
+        });
       }).catch((err) => {
-        this.presentAlert("Error", "Failed to copy the key. Manually copy or write it down somewhere safe.");
+        this.translate.get(['ERROR', 'FALIED_TO_COPY_KEY']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['FALIED_TO_COPY_KEY']);
+        });
         this.logger.error("Copying to clipboard failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       });
     } else {
       this.clipboard.copy(this.account.privateKey).then(() => {
-        this.presentToast("Private key copied to clipboard.");
+        this.translate.get(['PRIVATE_KEY_COPIED']).subscribe(text => {
+          this.presentToast(text['PRIVATE_KEY_COPIED']);
+        });
       }).catch((err) => {
-        this.presentAlert("Error", "Failed to copy the key. Manually copy or write it down somewhere safe.");
+        this.translate.get(['ERROR', 'FALIED_TO_COPY_KEY']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['FALIED_TO_COPY_KEY']);
+        });
         this.logger.error("Copying to clipboard failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       });
     }

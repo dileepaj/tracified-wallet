@@ -47,7 +47,7 @@
         </ion-row>
         <ion-row class="block">
           <div class="right-float">
-            <button ion-button [disabled]="item.balance < 1" class="btn-green" (click)="openItem(item)">Transfer</button>
+            <button ion-button [disabled]="item.balance < 1" class="btn-green" (click)="openItem(item)">{{ 'TRANSFER' |  translate }}</button>
           </div>
           <div class="clear-float"></div>
         </ion-row>
