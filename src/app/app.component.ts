@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { Config, Nav, Platform, AlertController, LoadingController } from 'ionic-angular';
+import { Config, Nav, Platform, AlertController, LoadingController, App } from 'ionic-angular';
 import { Device } from '@ionic-native/device/ngx';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
@@ -189,6 +189,23 @@ export class MyApp {
 
   underDevelopment() {
     this.presentAlert("Settings", "This feature is under development. You cannot view settings at the moment.")
+  }
+
+
+  launchApp(){
+    var sApp = (window as any).startApp.set({
+      "package": "com.package.name"
+    });
+
+    sApp.check(function (values) {
+        sApp.start();
+    }, function (error) {
+      alert("App not installed. Please install and try again.");
+    });
+
+    (window as any).startApp.set({
+      "application":"com.tracified.app.officer"
+    }).start();
   }
 
   logOut() {
