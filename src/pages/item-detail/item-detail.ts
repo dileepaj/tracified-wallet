@@ -133,7 +133,7 @@ export class ItemDetailPage {
                 }
                 this.dataService.sendCoC(coc).then((res) => {
                   this.dissmissLoading();
-                  this.translate.get(['ERROR', 'ASSET_TRANSFER_SUCCESS']).subscribe(text => {
+                  this.translate.get(['SUCCESS', 'ASSET_TRANSFER_SUCCESS']).subscribe(text => {
                     this.presentAlert(text['ERROR'], text['ASSET_TRANSFER_SUCCESS']);
                   });
                   this.navCtrl.setRoot(TransferPage);
