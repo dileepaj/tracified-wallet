@@ -7,6 +7,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx'
 // import { Device } from 'ionic-native';
 import { DeviceDetectorModule, DeviceDetectorService } from 'ngx-device-detector';
 
@@ -29,6 +30,7 @@ import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
 import { Device } from '@ionic-native/device/ngx';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
 import { LoginPageModule } from '../pages/login/login.module';
+import { HelpPage } from '../pages/help-support/help'
 import { MappingServiceProvider } from '../providers/mapping-service/mapping-service';
 import { ApiServiceProvider } from '../providers/api-service/api-service';
 import { IonicLoggerModule, Logger } from 'ionic-logger-new';
@@ -56,7 +58,7 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
   declarations: [
-    MyApp
+    MyApp,HelpPage
   ],
   imports: [
     BrowserModule,
@@ -99,7 +101,7 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp
+    MyApp,HelpPage
   ],
   providers: [
     ApiServiceProvider,
@@ -123,7 +125,8 @@ export function createTranslateLoader(http: HttpClient) {
     BlockchainServiceProvider,
     Clipboard,
     CodePushServiceProvider,
-    CodePush
+    CodePush,
+    InAppBrowser,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
