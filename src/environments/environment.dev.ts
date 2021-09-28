@@ -1,10 +1,10 @@
 export const ENV: any = {
-  mode: 'Staging',
-  API_TRACIFIED_V1: 'https://staging.api.tracified.com/api/v1',
-  API_TRACIFIED: 'https://staging.api.tracified.com/api/v2',
-  GATEWAY: 'https://tracified-gateway-staging.herokuapp.com',
-  API_ADMIN: 'https://staging.admin.api.tracified.com',
-  APPCENTER_DEPLOYMENT_KEY: 'hzVMQ0zGn2fVTOMpj5EnsIcV35dxZKxY9FfzP',
-  BLOCKCHAIN_NETWORK: 'https://horizon-testnet.stellar.org',
-  NETWORK_TYPE: 'test'
+  mode: 'Production',
+  API_TRACIFIED_V1: 'https://api.tracified.com/api/v1',
+  API_TRACIFIED: 'https://api.tracified.com/api/v2',
+  GATEWAY: 'https://tracified-gateway.herokuapp.com',
+  API_ADMIN: 'https://admin.api.tracified.com',
+  APPCENTER_DEPLOYMENT_KEY: 'BcfHYi-Gexwau0ZS3Q0RmtoJqsTx2_Bln3Qkc',
+  BLOCKCHAIN_NETWORK: 'https://horizon.stellar.org',
+  NETWORK_TYPE: 'live'
 };

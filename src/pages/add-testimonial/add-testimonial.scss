@@ -1,0 +1,68 @@
+page-add-testimonial {
+
+@media all and (orientation: portrait) {
+        ion-row {
+          align-items: center;
+        }
+
+        .fitem{
+            padding-left: 0px;
+        }
+
+        .orgNamecss{
+            padding-left: 3px;
+            font-size:medium;
+            border: 1px solid darkgray;
+            border-radius: 3px;
+            background-color: lightgray;
+        }
+        
+        .button-wrapper{
+            margin-top: 12px;
+        }
+
+        .required{
+            color: darkgray;
+        }
+        .required:after {
+            content:" *";
+            color: red;
+          }
+        .note {
+          padding-top: 5%;
+          width: auto;
+          margin: auto;
+          font-size: 0.9em;
+        }
+        .desc {
+          color: dimgrey;
+          font-size: 1.5rem;
+          padding-top: 5%;
+          padding-left: 5%;
+        }
+    
+        ion-list {
+          margin: 0;
+        }
+        .view {
+          background-size: cover;
+          background-repeat: no-repeat;
+        }
+       
+        .item-input-has-focus .label-md[floating],
+        .input-has-focus .label-md[floating] {
+          color: #00c853 !important;
+        }
+        // .item-md.item-input .item-inner {
+        //   border-bottom-color:#00c853 !important;
+        // }
+        .item.md {
+          padding: 0 0 0 0 !important;
+        }
+        .item-input-has-focus .label-md[floating],
+        .input-has-focus .label-md[floating] {
+          color: #00c853 !important;
+        }
+        
+      }
+}

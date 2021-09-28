@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, ModalController, ToastController, LoadingController, Toast } from 'ionic-angular';
 import { AddAccountPage } from '../add-account/add-account';
+import { AddOrganizationPage } from '../add-organization/add-organization';
+import { AddTestimonialPage } from '../add-testimonial/add-testimonial';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { AccountDetailsPage } from '../../pages/account-details/account-details';
@@ -38,6 +40,14 @@ export class BcAccountPage {
   goToAddAccount() {
     this.navCtrl.push(AddAccountPage);
 
+  }
+
+  goToAddOrganization(){
+    this.navCtrl.push(AddOrganizationPage);
+  }
+
+  goToAddTestimonial(){
+    this.navCtrl.push(AddTestimonialPage);
   }
 
   doRefresh(refresher) {

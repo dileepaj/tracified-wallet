@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Add Organization</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid class="padding-width content-start">
+    <form [formGroup]="form">
+      <ion-row class="full-width line-spacing">
+        <ion-row class="full-width line-spacing">
+          <h3>{{'PUBLIC_KEY' | translate}}</h3>
+        </ion-row>
+        <ion-row class="full-width line-spacing" text-wrap>
+          <ion-col size="8" class="pubkey">
+          <ion-label class="ion-text-wrap secondary-font">aaaacbfhbvnvbnbvnbvndfgghffgdfgdfg</ion-label>
+          </ion-col>
+          <ion-col>
+            <ion-icon class="copy-icon" name="copy-outline"></ion-icon>
+          </ion-col>
+        </ion-row>
+        <ion-item no-lines class="full-width line-spacing fitem">
+          <ion-label>Organization Name</ion-label>
+          <ion-input formControlName="orgName" type="text" name="orgName" disabled></ion-input>
+        </ion-item>
+        <ion-row class="full-width line-spacing fitem">
+          <button ion-button color="light">
+           <ion-icon slot="icon-only" name="image-outline"></ion-icon>
+          </button>
+        </ion-row>
+        <ion-item class="full-width line-spacing fitem">
+          <ion-label class="required" floating>Email Address</ion-label>
+          <ion-input formControlName="orgEmail" type="text" name="orgEmail" keyNext></ion-input>
+        </ion-item>
+        <ion-item class="full-width line-spacing fitem">
+          <ion-label class="required" floating>Phone Number</ion-label>
+          <ion-input formControlName="orgPNo" type="text" name="orgPNo" keyNext></ion-input>
+        </ion-item>
+        <ion-item class="full-width line-spacing fitem">
+          <ion-label floating>Phone Number (Secondary)</ion-label>
+          <ion-input formControlName="orgPNo2" type="text" name="orgPNo2" keyNext></ion-input>
+        </ion-item>
+      </ion-row>
+      <ion-row class="full-width line-spacing">
+        <div class="button-wrapper">
+          <button class="save-button" ion-button
+            color="secondary">Save</button>
+        </div>
+      </ion-row>
+    </form>
+
+  </ion-grid>
+</ion-content>
+

@@ -39,6 +39,8 @@ import { BlockchainServiceProvider } from '../providers/blockchain-service/block
 import { AccountDetailsPageModule } from '../pages/account-details/account-details.module';
 import { AccountInfoPageModule } from '../pages/account-info/account-info.module';
 import { BcAccountPageModule } from '../pages/bc-account/bc-account.module';
+import { AddTestimonialPageModule } from '../pages/add-testimonial/add-testimonial.module';
+import { AddOrganizationPageModule } from '../pages/add-organization/add-organization.module';
 import { FundTransferPageModule } from '../pages/fund-transfer/fund-transfer.module';
 import { SettingsPageModule } from '../pages/settings/settings.module';
 import { ContentPageModule } from '../pages/content/content.module';
@@ -71,6 +73,8 @@ export function createTranslateLoader(http: HttpClient) {
     TabsPageModule,
     DeviceDetectorModule.forRoot(),
     AddAccountPageModule,
+    AddTestimonialPageModule,
+    AddOrganizationPageModule ,
     ItemSentPageModule,
     LoginPageModule,
     BcAccountPageModule,
