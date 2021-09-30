@@ -157,6 +157,7 @@ export class ItemReceivedPage {
 
   updateCoC(coc, status) {
     let count = this.pendingCoCCount(coc.sentOriginal, this.cocReceived);
+    console.log(count)
     if(count > 0){
       this.translate.get(['ERROR', 'ACC_REJECT_PENDING_COC', 'PENDING_COC']).subscribe(text => {
         this.presentAlert("Error", text['ACC_REJECT_PENDING_COC '] + count + text[' PENDING_COC']);
