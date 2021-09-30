@@ -51,7 +51,7 @@ export class BcAccountPage {
       this.dataService.getBlockchainAccounts().then((accounts) => {
         this.dissmissLoading();
           this.userAcc = accounts;
-          resolve();
+          resolve(accounts);
       }).catch((error) => {
         if (this.isLoadingPresent) {
           this.dissmissLoading();

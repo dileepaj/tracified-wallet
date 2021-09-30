@@ -8,7 +8,10 @@
     "start": "ionic-app-scripts serve",
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
-    "lint": "ionic-app-scripts lint"
+    "lint": "ionic-app-scripts lint",
+    "start:qa": "ionic-app-scripts build --qa --target cordova --platform browser",
+    "start:staging": "CUS_ENV=staging ionic-app-scripts build --target cordova --platform browser",
+    "start:prod": "CUS_ENV=prod ionic-app-scripts build --target cordova --platform browser"
   },
   "dependencies": {
     "@angular/animations": "5.2.11",
