@@ -34,6 +34,10 @@
         <ion-icon class="primary-font" name="information-circle" item-start></ion-icon>
         <h5 class="line-spacing icon-alignment primary-font">{{'ABOUT' | translate}}</h5>
       </button>
+      <button text-wrap ion-item menuClose (click)="openPage('help')">
+        <ion-icon class="primary-font" name="help-circle" item-start></ion-icon>
+        <h5 class="line-spacing icon-alignment primary-font">{{'Help' | translate}}</h5>
+      </button>
       <button text-wrap ion-item menuClose (click)="openPage('logout')">
         <ion-icon class="primary-font" name="power" item-start></ion-icon>
         <h5 class="line-spacing icon-alignment primary-font">{{'LOGOUT' | translate}}</h5>
