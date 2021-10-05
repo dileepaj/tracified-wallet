@@ -556,6 +556,8 @@ export class BlockchainServiceProvider {
           for (let i = 0; i < balances.length; i++) {
             if (balances[i].asset_type == "credit_alphanum12" && balances[i].asset_code == asset_code) {
               resolve(balances[i].asset_issuer);
+            } else if (balances[i].asset_type == "credit_alphanum4" && balances[i].asset_code == asset_code) {
+              resolve(balances[i].asset_issuer);
             }
           }
           reject();
