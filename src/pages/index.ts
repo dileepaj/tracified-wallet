@@ -14,6 +14,6 @@ export const FirstRunPage = LoginPage;
 export const MainPage = TabsPage;
 
 // The initial root pages for our tabs (remove if not using tabs)
-export const Tab1Root = ItemReceivedPage;
+export const Tab1Root = TransferPage;
 export const Tab2Root = ItemSentPage;
-export const Tab3Root = TransferPage;
+export const Tab3Root = ItemReceivedPage;

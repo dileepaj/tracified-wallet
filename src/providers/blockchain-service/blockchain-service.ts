@@ -64,7 +64,7 @@ export class BlockchainServiceProvider {
         return server.submitTransaction(transaction);
       }).then((transactionResult) => {
         this.logger.info("Invalidation successful: " + JSON.stringify(transactionResult), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        resolve();
+        resolve(transactionResult);
       }).catch((err) => {
         this.logger.error("Invalidating sub account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();

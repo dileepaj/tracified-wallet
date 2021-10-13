@@ -16,6 +16,7 @@ export const identifierStatus: string = backend + '/identifiers/status';
 // Admin GET
 
 export const blockchainAccs: string = admin + '/api/bc/user'; // GET
+export const blockchainAccsByTenant: string = admin + '/api/bc/users/accounts'; // GET
 
 // Admin POST
 
