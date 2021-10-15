@@ -8,7 +8,10 @@
     "start": "ionic-app-scripts serve",
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
-    "lint": "ionic-app-scripts lint"
+    "lint": "ionic-app-scripts lint",
+    "start:qa": "ionic-app-scripts build --qa --target cordova --platform browser",
+    "start:staging": "CUS_ENV=staging ionic-app-scripts build --target cordova --platform browser",
+    "start:prod": "CUS_ENV=prod ionic-app-scripts build --target cordova --platform browser"
   },
   "dependencies": {
     "@angular/animations": "5.2.11",
@@ -26,6 +29,7 @@
     "@ionic-native/core": "~4.15.0",
     "@ionic-native/device": "^5.2.0",
     "@ionic-native/file": "^4.20.0",
+    "@ionic-native/in-app-browser": "^5.36.0",
     "@ionic-native/network": "^4.18.0",
     "@ionic-native/splash-screen": "~4.15.0",
     "@ionic-native/status-bar": "~4.15.0",
@@ -55,7 +59,7 @@
     "hsimp-purescript": "^0.1.1",
     "ionic-angular": "3.9.2",
     "ionic-logger-new": "^0.4.9",
-    "ionic-selectable": "^3.2.0",
+    "ionic-selectable": "^3.5.0",
     "ionicons": "3.0.0",
     "jsonwebtoken": "^8.4.0",
     "localforage": "^1.7.3",
@@ -69,6 +73,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "^3.2.4",
+    "cordova-plugin-inappbrowser": "^5.0.0",
     "typescript": "~2.6.2"
   },
   "description": "An Ionic project",
@@ -86,7 +91,8 @@
       "cordova-plugin-file": {},
       "cordova-plugin-file-transfer": {},
       "cordova-plugin-code-push": {},
-      "cordova-plugin-zip": {}
+      "cordova-plugin-zip": {},
+      "cordova-plugin-inappbrowser": {}
     },
     "platforms": [
       "browser",

@@ -175,7 +175,6 @@ export class SelectSearchable implements ControlValueAccessor, IonicFormInput, O
 
     setValue(value: any) {
         this.value = value;
-        console.log(value)
         // Get an item from the list for value.
         // We need this in case value contains only id, which is not sufficient for template rendering.
         if (this.value && !this.isNullOrWhiteSpace(this.value[this.itemValueField])) {

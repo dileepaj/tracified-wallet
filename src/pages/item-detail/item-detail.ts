@@ -12,6 +12,7 @@ import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { TransferPage } from '../../pages/transfer/transfer';
 import { Logger } from 'ionic-logger-new';
 import { TranslateService } from '@ngx-translate/core';
+import { BcAccountPage } from '../../pages/bc-account/bc-account';
 
 @IonicPage()
 
@@ -20,8 +21,6 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: 'item-detail.html'
 })
 export class ItemDetailPage {
-  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
-  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
 
   selectedItem2: any;
   itemRequired: any;
@@ -30,7 +29,7 @@ export class ItemDetailPage {
   currentItems: any;
   loading;
   isLoadingPresent: boolean;
-  selectedReceiver: any;
+  selectedReceiver: any = "";
   COCForm: { selectedItem: string, identifier: string, qty: string, receiver: string, vaidity: string } = {
     selectedItem: '',
     identifier: '',
@@ -39,15 +38,14 @@ export class ItemDetailPage {
     vaidity: ''
   };
 
-  private idAvailable: boolean;
-  private idEmpty: boolean;
-  private itemSearching: boolean;
-
-  private selectedItem;
-
+  public bcAccounts: any;
+  public idAvailable: boolean;
+  public idEmpty: boolean;
+  public itemSearching: boolean;
+  public selectedItem;
   private secretKey;
-
   mainAccount: any;
+
   constructor(
     private navCtrl: NavController,
     private toastCtrl: ToastController,
@@ -70,7 +68,36 @@ export class ItemDetailPage {
     this.currentItems = navParams.get('currentItems') || this.currentItems.defaultItem;
   }
 
+  getPublickeys() {
+    if (this.connectivity.onDevice) {
+      this.presentLoading();
+      this.apiService.getPublicAccountsByTenant().then((res) => {
+        this.dissmissLoading();
+        if (res.status === 200) {
+          const data = res.body.accounts;
+          this.bcAccounts = data.filter(item => item.publicKey !== this.mainAccount.pk)
+        } else if (res.status === 204) {
+          this.presentToast('There are no accounts available!.');
+        }
+      }).catch((error) => {
+        this.dissmissLoading();
+      });
+    } else {
+      this.presentToast('There is no internet at the moment.');
+    }
+  }
+
+  onSelectReceiver(event: any) {
+    this.COCForm.receiver = event.value['publicKey']
+  }
+
   ionViewDidLoad() {
+    if (this.mainAccount) {
+      this.getPublickeys();
+    } else {
+      this.presentToast('There is no Default account selected at the moment. Please select an account to proceed!');
+      this.navCtrl.setRoot(BcAccountPage)
+    }
     this.COCForm.selectedItem = this.item.asset_code;
     this.selectedItem = this.item.asset_code;
   }

@@ -64,7 +64,7 @@ export class BlockchainServiceProvider {
         return server.submitTransaction(transaction);
       }).then((transactionResult) => {
         this.logger.info("Invalidation successful: " + JSON.stringify(transactionResult), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        resolve();
+        resolve(transactionResult);
       }).catch((err) => {
         this.logger.error("Invalidating sub account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         reject();
@@ -555,6 +555,8 @@ export class BlockchainServiceProvider {
         if (balances.length > 0) {
           for (let i = 0; i < balances.length; i++) {
             if (balances[i].asset_type == "credit_alphanum12" && balances[i].asset_code == asset_code) {
+              resolve(balances[i].asset_issuer);
+            } else if (balances[i].asset_type == "credit_alphanum4" && balances[i].asset_code == asset_code) {
               resolve(balances[i].asset_issuer);
             }
           }

@@ -10,6 +10,7 @@ import { Properties } from '../shared/properties';
 import { Events } from 'ionic-angular';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { TabsPage } from '../pages/tabs/tabs';
+import { HelpPage } from '../pages/help-support/help';
 import { LoginPage } from '../pages/login/login';
 import { StorageServiceProvider } from '../providers/storage-service/storage-service';
 import { Logger } from 'ionic-logger-new';
@@ -42,6 +43,7 @@ export class MyApp {
     { icon: 'custom-blockchain', title: 'Accounts', component: 'BcAccountPage', action: null },
     { icon: 'custom-fundTransfer', title: 'Fund Transfer', component: 'FundTransferPage', action: null },
     { icon: 'custom-settings', title: 'Settings', component: 'SettingsPage', action: null },
+    { icon: 'custom-help', title: 'Help', component: 'HelpPage', action: null },
     { icon: 'custom-about', title: 'About', component: 'ContentPage', action: null },
     { icon: 'custom-logout', title: 'Logout', component: 'LoginPage', action: this.logOut.bind(this) }
   ]
@@ -179,6 +181,9 @@ export class MyApp {
         break;
       case "logout":
         this.logOut();
+        break;
+      case "help":
+        this.nav.setRoot(HelpPage);
         break;
     }
   }

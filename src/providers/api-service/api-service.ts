@@ -21,7 +21,8 @@ import {
   cocReceived,
   updateCoC,
   cocSent,
-  identifierStatus
+  identifierStatus,
+  blockchainAccsByTenant
 } from '../../shared/config';
 
 @Injectable()
@@ -362,6 +363,19 @@ export class ApiServiceProvider {
     let url = getMainPublicKey + '?accountName=' + body;
 
     return this.getN(url, header);
+  }
+  
+  getPublicAccountsByTenant(): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+        'Authorization': 'Bearer ' + this.properties.token
+      })
+    }
+
+    return this.getN(blockchainAccsByTenant, header);
   }
 
   getAccountNames(accountKeys): Promise<any> {
