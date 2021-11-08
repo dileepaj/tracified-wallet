@@ -1,5 +1,5 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
+import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Camera } from '@ionic-native/camera';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -35,7 +35,7 @@ import { MappingServiceProvider } from '../providers/mapping-service/mapping-ser
 import { ApiServiceProvider } from '../providers/api-service/api-service';
 import { IonicLoggerModule, Logger } from 'ionic-logger-new';
 import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
-import {File} from '@ionic-native/file';
+import { File } from '@ionic-native/file';
 import { DataServiceProvider } from '../providers/data-service/data-service';
 import { BlockchainServiceProvider } from '../providers/blockchain-service/blockchain-service';
 import { AccountDetailsPageModule } from '../pages/account-details/account-details.module';
@@ -50,7 +50,18 @@ import { SettingFormPageModule } from '../pages/setting-form/setting-form.module
 import { TransferPageModule } from '../pages/transfer/transfer.module';
 import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
 import { CodePush } from '@ionic-native/code-push';
-import { FundTransferPage } from 'pages/fund-transfer/fund-transfer';
+import { AccountRegisterPageModule } from '../pages/account-register/account-register.module';
+import { AccountServiceProvider } from '../providers/account-service/account-service';
+import { OrganizationsPageModule } from '../pages/organizations/organizations.module';
+import { OrganizationRequestsPageModule } from '../pages/organizations/organization-requests/organization-requests.module';
+import { OrganizationRegisteredPageModule } from '../pages/organizations/organization-registered/organization-registered.module';
+import { OrganizationComponent } from '../components/organization/organization';
+import { AddOrganizationTestimonialPageModule } from '../pages/add-organization-testimonial/add-organization-testimonial.module';
+import { TestimonialsReceievedPageModule } from '../pages/testimonials/testimonials-receieved/testimonials-receieved.module';
+import { TestimonialsSentPageModule } from '../pages/testimonials/testimonials-sent/testimonials-sent.module';
+import { TestimonialsPageModule } from '../pages/testimonials/testimonials.module';
+import { TestimonialServiceProvider } from '../providers/testimonial-service/testimonial-service';
+import { TestimonialComponent } from '../components/testimonial/testimonial';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -58,7 +69,7 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
   declarations: [
-    MyApp,HelpPage
+    MyApp, HelpPage
   ],
   imports: [
     BrowserModule,
@@ -82,6 +93,14 @@ export function createTranslateLoader(http: HttpClient) {
     TransferPageModule,
     FundTransferPageModule,
     TransferConfirmPageModule,
+    AccountRegisterPageModule,
+    AddOrganizationTestimonialPageModule,
+    OrganizationsPageModule,
+    OrganizationRegisteredPageModule,
+    OrganizationRequestsPageModule,
+    TestimonialsPageModule,
+    TestimonialsSentPageModule,
+    TestimonialsReceievedPageModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -96,12 +115,12 @@ export function createTranslateLoader(http: HttpClient) {
       logRetentionDays: 1,
       debug: true,
       printDebugMessages: true,
-      logToFle:true
+      logToFle: true
     })
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp,HelpPage
+    MyApp, HelpPage, OrganizationComponent, TestimonialComponent
   ],
   providers: [
     ApiServiceProvider,
@@ -127,6 +146,8 @@ export function createTranslateLoader(http: HttpClient) {
     CodePushServiceProvider,
     CodePush,
     InAppBrowser,
+    AccountServiceProvider,
+    TestimonialServiceProvider,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

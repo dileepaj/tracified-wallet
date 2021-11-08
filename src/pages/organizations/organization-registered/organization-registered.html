@@ -1,0 +1,12 @@
+<ion-header>
+   <ion-navbar>
+      <button ion-button menuToggle>
+         <ion-icon name="menu"></ion-icon>
+      </button>
+      <ion-title>Registerd Organizations</ion-title>
+   </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+   <organization *ngFor="let org of approvedOrganziations" [organization]="org" [addTestimonialPage]="addTestimonial" [isRequest]="false"></organization>
+</ion-content>

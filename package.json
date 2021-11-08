@@ -23,7 +23,7 @@
     "@angular/http": "5.2.11",
     "@angular/platform-browser": "5.2.11",
     "@angular/platform-browser-dynamic": "5.2.11",
-    "@ionic-native/camera": "4.3.3",
+    "@ionic-native/camera": "^4.3.3",
     "@ionic-native/clipboard": "^4.20.0",
     "@ionic-native/code-push": "^4.20.0",
     "@ionic-native/core": "~4.15.0",
@@ -73,6 +73,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "^3.2.4",
+    "cordova-plugin-camera": "^4.1.0",
     "cordova-plugin-inappbrowser": "^5.0.0",
     "typescript": "~2.6.2"
   },
@@ -92,7 +93,10 @@
       "cordova-plugin-file-transfer": {},
       "cordova-plugin-code-push": {},
       "cordova-plugin-zip": {},
-      "cordova-plugin-inappbrowser": {}
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-camera": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      }
     },
     "platforms": [
       "browser",

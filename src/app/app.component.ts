@@ -22,7 +22,9 @@ import { FundTransferPage } from '../pages/fund-transfer/fund-transfer';
 import { SettingsPage } from '../pages/settings/settings';
 import { ContentPage } from '../pages/content/content';
 import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
-import { CodePush, ILocalPackage, IRemotePackage } from '@ionic-native/code-push';
+import { IRemotePackage } from '@ionic-native/code-push';
+import { OrganizationsPage } from '../pages/organizations/organizations';
+import { TestimonialsPage } from '../pages/testimonials/testimonials';
 
 @Component({
   templateUrl: 'app.html'
@@ -170,6 +172,12 @@ export class MyApp {
       case "accounts":
         this.nav.setRoot(BcAccountPage);
         break;
+      case "organizations":
+        this.nav.setRoot(OrganizationsPage);
+        break;
+      case "testimonials":
+        this.nav.setRoot(TestimonialsPage);
+        break;
       case "fundTransfer":
         this.nav.setRoot(FundTransferPage);
         break;
@@ -273,7 +281,7 @@ export class MyApp {
           {
             text: agreeBtn,
             handler: data => {
-              resolve();
+              resolve(data);
             }
           }
         ],

@@ -22,7 +22,10 @@ import {
   updateCoC,
   cocSent,
   identifierStatus,
-  blockchainAccsByTenant
+  blockchainAccsByTenant,
+  allOrganization,
+  testimonialReceived,
+  testimonialSent
 } from '../../shared/config';
 
 @Injectable()
@@ -411,6 +414,40 @@ export class ApiServiceProvider {
     }
 
     return this.getN(cocSent + accountKey, header);
+  }
+
+  //Testimonials 
+  queryAllOrganizations(): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    return this.getN(allOrganization, header);
+  }
+
+  getTestimonialsSent(senderPK: string) {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    return this.getN(testimonialSent + senderPK, header);
+  }
+
+  getTestimonialsRecieved(receiverPK: string) {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    return this.getN(testimonialReceived + receiverPK, header);
   }
 
 }

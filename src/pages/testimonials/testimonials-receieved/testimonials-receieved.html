@@ -1,0 +1,12 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+       <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Testimonials Receieved</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <testimonial *ngFor="let testimonial of testimonialsReceived" [testimonial]="testimonial" [isRequest]="testimonial.Status == 'pending'"></testimonial>
+</ion-content>

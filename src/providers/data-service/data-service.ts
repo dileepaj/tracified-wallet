@@ -109,4 +109,18 @@ export class DataServiceProvider {
   setLanguage(language) {
     this.storage.setLanguage(language);
   }
+
+  // Testimonials
+  getApprovedOrganizations(): Promise<any> {
+    return this.apiService.queryAllOrganizations();
+  }
+
+  getTestimonialsSent(senderPK: string): Promise<any> {
+    return this.apiService.getTestimonialsSent(senderPK);
+  }
+
+  getTestimonialsReceived(receiverPK: string): Promise<any> {
+    return this.apiService.getTestimonialsRecieved(receiverPK);
+  }
+  
 }

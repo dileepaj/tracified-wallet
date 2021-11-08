@@ -243,7 +243,7 @@ export class BlockchainServiceProvider {
     });
   }
 
-  validateTransactionPassword(password, encSecret, pubKey): Promise<any> {
+  validateTransactionPassword(password: any, encSecret: any, pubKey: any): Promise<any> {
     return new Promise((resolve, reject) => {
       this.mappingService.decryptSecret(encSecret, password).then((decKey: string) => {
         let keyPair = Keypair.fromSecret(decKey);
@@ -351,7 +351,7 @@ export class BlockchainServiceProvider {
                     reject();
                   });
                 }).catch((err) => {
-                  this.logger.error("Failed to transfer funds for the new account: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                  this.logger.error("Failed to transfer funds for the sub account to complete Transaction: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
                   reject();
                 });
               } else {
@@ -586,4 +586,108 @@ export class BlockchainServiceProvider {
       });
     });
   }
+
+  subAccountsStatus(subAccounts: any) {
+    return this.apiService.getSubAccountsStatus(subAccounts);
+  }
+
+  preparesubAccount(mainAccSk: string, receiverPk?: string, operationType?: string) {
+    return new Promise((resolve, reject) => {
+      let subPublicKeys = [];
+      this.properties.defaultAccount.subAccounts.forEach((account: any) => {
+        subPublicKeys.push(account.pk);
+      });
+      const subAccounts = {
+        "User": this.properties.defaultAccount.accountName,
+        "SubAccounts": subPublicKeys
+      };
+      this.subAccountsStatus(subAccounts).then((res) => {
+        let avaialbeAccounts = [];
+        let matchingAccount: any;
+        let statuses = res.body;
+        if (statuses) {
+          statuses.forEach((status: any) => {
+            if (status.available) {
+              avaialbeAccounts.push(status);
+            } else if (status.receiver == receiverPk) {
+              matchingAccount = status;
+            }
+          });
+          if (matchingAccount) {
+            // let subAcc = {
+            //   publicKey: matchingAccount.subAccount,
+            //   available: false,
+            //   sequenceNo: matchingAccount.sequenceNo
+            // };
+            // resolve(subAcc);
+            reject("pendingTransacExist"); // if source account is in use by same receiver raise error
+          } else if (avaialbeAccounts.length > 0) {
+            this.checkIfAccountInvalidated(avaialbeAccounts[0].subAccount).then((status) => {
+              if (status) {
+                let subAcc = {
+                  publicKey: avaialbeAccounts[0].subAccount,
+                  available: true,
+                  sequenceNo: avaialbeAccounts[0].sequenceNo
+                };
+                this.logger.info("Found Invalidated Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                resolve(subAcc);
+              } else {
+                this.logger.info("Invalidate Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                let subPair = this.getSubAccountPair(avaialbeAccounts[0].subAccount, this.properties.defaultAccount);
+                this.invalidateSubAccountKey(subPair, this.properties.defaultAccount).then(() => {
+                  let subAcc = {
+                    publicKey: avaialbeAccounts[0].subAccount,
+                    available: true,
+                    sequenceNo: avaialbeAccounts[0].sequenceNo
+                  };
+                  resolve(subAcc);
+                }).catch((err) => {
+                  this.logger.info("Sub Account Invalidation failed!: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                  reject(err);
+                });
+              }
+            }).catch((err) => {
+              reject(err);
+            });
+          } else {
+            this.logger.info("Creating New Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+            this.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
+              this.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
+                let subAcc = {
+                  publicKey: subKeyPair.publicKey(),
+                  available: false,
+                  sequenceNo: accountInfo.sequence
+                };
+                resolve(subAcc);
+              }).catch((err) => {
+                reject(err);
+              });
+            }).catch((err) => {
+              reject(err);
+            });
+          }
+        } else {
+          this.logger.info("Creating New Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+          this.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
+            this.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
+              let subAcc = {
+                publicKey: subKeyPair.publicKey(),
+                available: false,
+                sequenceNo: accountInfo.sequence
+              };
+              resolve(subAcc);
+            }).catch((err) => {
+              reject(err);
+            });
+          }).catch((err) => {
+            reject(err);
+          });
+        }
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  }
 }
+
+

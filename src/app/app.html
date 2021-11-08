@@ -19,8 +19,16 @@
         <h5 class="line-spacing icon-alignment primary-font">{{'LIST_MASTER_TITLE'|translate}}</h5>
       </button>
       <button text-wrap ion-item menuClose (click)="openPage('accounts')">
-        <ion-icon class="primary-font" name="contacts" item-start></ion-icon>
+        <ion-icon class="primary-font" name="md-contact" item-start></ion-icon>
         <h5 class="line-spacing icon-alignment primary-font">{{'ACCOUNTS' | translate}}</h5>
+      </button>
+      <button text-wrap ion-item menuClose (click)="openPage('organizations')">
+        <ion-icon class="primary-font" name="contacts" item-start></ion-icon>
+        <h5 class="line-spacing icon-alignment primary-font">{{'ORGANIZATIONS' | translate}}</h5>
+      </button>
+      <button text-wrap ion-item menuClose (click)="openPage('testimonials')">
+        <ion-icon class="primary-font" name="md-chatbubbles" item-start></ion-icon>
+        <h5 class="line-spacing icon-alignment primary-font">{{'TESTIMONIALS' | translate}}</h5>
       </button>
       <button text-wrap ion-item menuClose (click)="openPage('fundTransfer')">
         <ion-icon class="primary-font" name="cash" item-start></ion-icon>

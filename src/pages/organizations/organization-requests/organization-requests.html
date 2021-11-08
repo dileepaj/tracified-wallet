@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Organization Requests</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content *ngIf="!isOperationsAllowed">
+  <ion-row>
+    <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+  </ion-row>
+  <ion-row>
+    <div class="full-width text-center line-spacing-small">
+      <h1 class="primary-font">No Permission!</h1>
+    </div>
+  </ion-row>
+  <ion-row text-wrap>
+    <div class="full-width text-center">
+      <h3 class="secondary-font">You do not have sufficient permissions to access this feature!</h3>
+    </div>
+  </ion-row>
+</ion-content>
+
+<ion-content *ngIf="isOperationsAllowed" padding>
+  <organization *ngFor="let org of pendingApprovals" [organization]="org" [isRequest]="true"></organization>
+</ion-content>

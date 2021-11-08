@@ -5,22 +5,17 @@ const admin = ENV.API_ADMIN;
 const blockchainNetwork = ENV.BLOCKCHAIN_NETWORK;
 const blockchainType = ENV.NETWORK_TYPE;
 const backend = ENV.API_TRACIFIED;
-const backendv1 = ENV.API_TRACIFIED_V1;
 
 
 // Backend GET
-
 export const identifierStatus: string = backend + '/identifiers/status';
 
 
 // Admin GET
-
 export const blockchainAccs: string = admin + '/api/bc/user'; // GET
 export const blockchainAccsByTenant: string = admin + '/api/bc/users/accounts'; // GET
 
 // Admin POST
-
-
 export const detailChange: string = admin + '/api/changedetails';
 export const passwordChange: string = admin + '/api/changepassword';
 export const changeDisplayImage: string = admin + '/api/user/profilepicture';
@@ -38,21 +33,24 @@ export const verifyEmail: string = admin + '/sign/forgetpassword'; // POST
 export const resetPassword: string = admin + '/sign/forgetpassword'; // POST
 
 // Gateway GET
-
 export const previosTxnId: string = gateway + '/transaction/lastTxn/'; // GET
 export const cocReceived: string = gateway + '/getcocbyreceiver/';
 export const cocSent: string = gateway + '/getcocbysender/';
+export const allOrganization: string = gateway + '/organization';
+export const testimonialAPI: string = gateway + '/testimonial';
+export const testimonialReceived: string = gateway + '/testimonial/receiver/';
+export const testimonialSent: string = gateway + '/testimonial/sender/';
 
 // Gateway POST
-
 export const subAccountsStatus: string = gateway + '/transaction/coc/subAccountStatus'
 export const sendCoC: string = gateway + '/insertcoccollection';
 export const updateCoC: string = gateway + '/insertcoccollection';
 
 // Blockchain access point
-
 export const blockchainNet: string = blockchainNetwork;
 export const blockchainNetType: string = blockchainType;
 
 export const currency: string = 'Lumens';
 export const mainAccountBalance: number = 1;
+export const tracSuperAcc: string = "GCXMIUX4LK5PSVWVGTWLNWAPHKGE3O7RUISAG5DJEPOKXEIUNTASXZUU";
+

@@ -7,6 +7,7 @@ import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { TranslateService } from '@ngx-translate/core';
+import { AccountRegisterPage } from '../../pages/account-register/account-register';
 
 @IonicPage()
 @Component({
@@ -15,11 +16,11 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class AccountDetailsPage {
 
-  private account;
-  private privateKey: string;
-  private keyDecrypted: boolean = false;
-  private notDefaultAccount: boolean = true;
-  private accountFunds: string = 'Calculating...';
+  public account: any;
+  public privateKey: string;
+  public keyDecrypted: boolean = false;
+  public defaultAccount: boolean = true;
+  public accountFunds: string = 'Calculating...';
 
   constructor(
     public navCtrl: NavController,
@@ -113,11 +114,7 @@ export class AccountDetailsPage {
   }
 
   defaultAccountCheck() {
-    if (this.account.pk != this.properties.defaultAccount.pk) {
-      this.notDefaultAccount = true;
-    } else {
-      this.notDefaultAccount = false;
-    }
+    this.defaultAccount = this.account.pk == this.properties.defaultAccount.pk;
   }
 
   makeDefaultAccount() {
@@ -142,6 +139,10 @@ export class AccountDetailsPage {
     });
 
     alert.present();
+  }
+
+  goToRegister(organizationKey: string) {
+    this.navCtrl.push(AccountRegisterPage, { organizationKey });
   }
 
   presentAlert(title: string, message: string) {

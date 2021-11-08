@@ -241,5 +241,9 @@
   "INVALID_TRANSACTION_PASS": "Invalid transaction password. Please try again.",
   "SUCCESS": "Success",
   "SUCCESSFULLY_TRANSFERED": "Successfully transferred ",
-  "VIEW_ACC_INFO": " lumens. View account information to see the updated amount."
+  "VIEW_ACC_INFO": " lumens. View account information to see the updated amount.",
+  
+  "REGISTER": "Register",
+  "ORGANIZATIONS": "Organizations",
+  "TESTIMONIALS": "Testimonials"
 }

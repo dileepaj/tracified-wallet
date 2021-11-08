@@ -34,8 +34,6 @@ import { AccountInfoPage } from '../../pages/account-info/account-info';
   templateUrl: 'add-account.html',
 })
 export class AddAccountPage {
-  key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
-  adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
 
   PasswordStrength = null;
   isLoadingPresent: boolean;
@@ -44,10 +42,10 @@ export class AddAccountPage {
   passwordIcon: string = 'eye-off';
   confirmPasswordType: string = 'password';
   confirmPasswordIcon: string = 'eye-off';
-  private toastInstance: Toast;
-  loading;
+  loading: any;
   form: FormGroup;
-  private navigation;
+  private navigation: any;
+  private toastInstance: Toast;
 
   constructor(
     public navCtrl: NavController,

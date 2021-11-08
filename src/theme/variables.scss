@@ -15,6 +15,26 @@ $font-path: "../assets/fonts";
 $text-color:        #000;
 $background-color:  #fff;
 $secondary: #48BC4D;
+
+// Card
+$card-ios-border-radius: 8px;	
+$card-md-border-radius:	8px;
+$card-wp-border-radius: 8px;
+$card-ios-box-shadow: 0 10px 20px -2px rgba(0, 0, 0, 0.2);
+$card-md-box-shadow: 0 10px 20px -2px rgba(0, 0, 0, 0.2);	
+$card-wp-box-shadow: 0 10px 20px -2px rgba(0, 0, 0, 0.2);
+
+// Button
+$button-ios-border-radius: 8px;	
+$button-ios-outline-border-radius: 8px;
+$button-md-border-radius: 8px;	
+$button-wp-border-radius: 8px;
+
+// Badge
+$badge-ios-border-radius:	8px;	
+$badge-md-border-radius: 8px;	
+$badge-wp-border-radius: 8px;
+
 // Named Color Variables
 // --------------------------------------------------
 // Named colors makes it easy to reuse colors on various components.
@@ -27,11 +47,16 @@ $colors: (
   primary:    #28a745,
   secondary:  #48BC4D,
   danger:     #f53d3d,
+  warning:     #ffde24,
   light:      #f4f4f4,
   dark:       #222
 );
 
-
+.btn-link {
+  text-align: center;
+  color: #28a745;
+  font-size: 16px;
+}
 // App iOS Variables
 // --------------------------------------------------
 // iOS only Sass variables can go here

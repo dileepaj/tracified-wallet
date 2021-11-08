@@ -38,6 +38,8 @@ export class ItemDetailPage {
     vaidity: ''
   };
 
+  public currentTime = new Date().toISOString();
+
   public bcAccounts: any;
   public idAvailable: boolean;
   public idEmpty: boolean;
@@ -139,8 +141,7 @@ export class ItemDetailPage {
       this.presentLoading();
       this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk).then((decKey) => {
         this.secretKey = decKey;
-        this.preparesubAccount(this.secretKey).then((subAcc: any) => {
-          console.log("Returned Sub Account: ", subAcc);
+        this.blockchainService.preparesubAccount(this.secretKey, this.COCForm.receiver).then((subAcc: any) => {
           let subPair = this.blockchainService.getSubAccountPair(subAcc.publicKey, this.properties.defaultAccount);
           this.blockchainService.verifyCoC(this.secretKey, this.COCForm.identifier, this.COCForm.receiver, this.COCForm.selectedItem, this.COCForm.qty, this.COCForm.vaidity).then((transactionHash) => {
             this.blockchainService.getAssetIssuer(this.properties.defaultAccount.pk, this.COCForm.selectedItem).then((issuer) => {
@@ -161,7 +162,7 @@ export class ItemDetailPage {
                 this.dataService.sendCoC(coc).then((res) => {
                   this.dissmissLoading();
                   this.translate.get(['SUCCESS', 'ASSET_TRANSFER_SUCCESS']).subscribe(text => {
-                    this.presentAlert(text['ERROR'], text['ASSET_TRANSFER_SUCCESS']);
+                    this.presentAlert(text['SUCCESS'], text['ASSET_TRANSFER_SUCCESS']);
                   });
                   this.navCtrl.setRoot(TransferPage);
                   this.logger.info("Item transferred successfully: " + this.item.asset_code, this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -195,9 +196,13 @@ export class ItemDetailPage {
           });
         }).catch((err) => {
           this.dissmissLoading();
-          this.translate.get(['ERROR', 'FAILED_TO_PREPARE_TRANSACTION']).subscribe(text => {
-            this.presentAlert(text['ERROR'], text['FAILED_TO_PREPARE_TRANSACTION']);
-          });
+          if (err == "pendingTransacExist") {
+            this.presentAlert("Transaction Failed!", "There is a apending trasaction from you to the same receiver! Can not change custody until the receiver accepts the pending CoC request!");
+          } else {
+            this.translate.get(['ERROR', 'FAILED_TO_PREPARE_TRANSACTION']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['FAILED_TO_PREPARE_TRANSACTION']);
+            });
+          }
           this.logger.error("Preparing sub account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
       }).catch((err) => {
@@ -250,101 +255,6 @@ export class ItemDetailPage {
     } else {
       return false;
     }
-  }
-
-  preparesubAccount(mainAccSk) {
-    return new Promise((resolve, reject) => {
-      let subPublicKeys = [];
-      this.properties.defaultAccount.subAccounts.forEach((account) => {
-        subPublicKeys.push(account.pk);
-      });
-      const subAccounts = {
-        "User": this.properties.defaultAccount.accountName,
-        "SubAccounts": subPublicKeys
-      };
-      this.dataService.subAccountsStatus(subAccounts).then((res) => {
-        console.log("All Sub Accounts: ", res);
-        let avaialbeAccounts = [];
-        let matchingAccount;
-        let statuses = res.body;
-        if (statuses) {
-          statuses.forEach((status) => {
-            if (status.available) {
-              avaialbeAccounts.push(status);
-            } else if (status.receiver == this.COCForm.receiver) {
-              matchingAccount = status;
-            }
-          });
-          if (matchingAccount) {
-            let subAcc = {
-              publicKey: matchingAccount.subAccount,
-              available: false,
-              sequenceNo: matchingAccount.sequenceNo
-            };
-            resolve(subAcc);
-          } else if (avaialbeAccounts.length > 0) {
-            this.blockchainService.checkIfAccountInvalidated(avaialbeAccounts[0].subAccount).then((status) => {
-              if (status) {
-                let subAcc = {
-                  publicKey: avaialbeAccounts[0].subAccount,
-                  available: true,
-                  sequenceNo: avaialbeAccounts[0].sequenceNo
-                };
-                resolve(subAcc);
-              } else {
-                let subPair = this.blockchainService.getSubAccountPair(avaialbeAccounts[0].subAccount, this.properties.defaultAccount);
-                this.blockchainService.invalidateSubAccountKey(subPair, this.properties.defaultAccount).then(() => {
-                  let subAcc = {
-                    publicKey: avaialbeAccounts[0].subAccount,
-                    available: true,
-                    sequenceNo: avaialbeAccounts[0].sequenceNo
-                  };
-                  resolve(subAcc);
-                }).catch((err) => {
-                  reject(err);
-                });
-              }
-            }).catch((err) => {
-              reject(err);
-            });
-          } else {
-            console.log("New Account");
-            this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
-              this.blockchainService.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
-                let subAcc = {
-                  publicKey: subKeyPair.publicKey(),
-                  available: false,
-                  sequenceNo: accountInfo.sequence
-                };
-                resolve(subAcc);
-              }).catch((err) => {
-                reject(err);
-              });
-            }).catch((err) => {
-              reject(err);
-            });
-          }
-        } else {
-          console.log("New Account");
-          this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
-            this.blockchainService.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
-              let subAcc = {
-                publicKey: subKeyPair.publicKey(),
-                available: false,
-                sequenceNo: accountInfo.sequence
-              };
-              resolve(subAcc);
-            }).catch((err) => {
-              reject(err);
-            });
-          }).catch((err) => {
-            reject(err);
-          });
-        }
-      }).catch((err) => {
-        reject(err);
-      });
-    });
   }
 
   identifierLostFocus() {

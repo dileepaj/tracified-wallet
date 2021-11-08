@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Add Testimonial</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <form [formGroup]="testimonialForm">
+    <ion-row class="formbox">
+      <ion-item>
+        <ion-label class="login-lables" floating>Organization</ion-label>
+        <ion-input formControlName="recieverOrg" type="text" name="recieverOrg" disabled keyNext></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="login-lables" floating>Title</ion-label>
+        <ion-input formControlName="testimonialTitle" type="text" name="testimonialTitle" keyNext></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="login-lables" floating>Description</ion-label>
+        <ion-textarea formControlName="testimonialDescription" type="text" name="testimonialDescription" keyNext></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label class="login-lables">Image</ion-label>
+      </ion-item>
+      <div padding-top>
+        <button ion-button (click)="uploadImage()">
+          <ion-icon name="md-photos"></ion-icon>
+        </button>
+      </div>
+    </ion-row>
+    <ion-row padding-vertical>
+      <div class="button-wrapper">
+        <button block ion-button class="login-button" [disabled]="!testimonialForm.valid">Register</button>
+      </div>
+    </ion-row>
+  </form>
+</ion-content>

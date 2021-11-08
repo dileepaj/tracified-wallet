@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Register Account</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <form [formGroup]="formRegister">
+    <ion-row class="formbox">
+      <div class="logo-container">
+        <img src="../../assets/img/bg_img.png" class="logo-avatar" (click)="uploadImage()" />
+        <p class="btn-link" (click)="uploadImage()">Click to upload logo</p>
+      </div>
+      <ion-item>
+        <ion-label class="login-lables" floating>Organization Key</ion-label>
+        <ion-input formControlName="orgPublicKey" type="text" name="orgPublicKey" disabled keyNext></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="login-lables">Name</ion-label>
+        <ion-input formControlName="orgName" type="text" name="orgName" keyNext></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="login-lables" floating>Description</ion-label>
+        <ion-textarea formControlName="orgDescription" type="text" name="orgDescription" keyNext></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-label class="login-lables" floating>Email *</ion-label>
+        <ion-input formControlName="orgEmail" type="text" name="orgEmail" keyNext></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="login-lables" floating>Phone *</ion-label>
+        <ion-input formControlName="orgPrimaryMobile" type="text" name="orgPrimaryMobile" keyNext></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label class="login-lables" floating>Secondary Phone (Optional)</ion-label>
+        <ion-input formControlName="orgSecondMobile" type="text" name="orgSecondMobile" keyNext></ion-input>
+      </ion-item>
+    </ion-row>
+    <ion-row padding-vertical>
+      <div class="button-wrapper">
+        <button block ion-button class="login-button" [disabled]="!formRegister.valid">Register</button>
+      </div>
+    </ion-row>
+  </form>
+</ion-content>
