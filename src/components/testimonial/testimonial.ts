@@ -7,6 +7,7 @@ import { Testimonial } from '../../shared/models/testimonial';
   templateUrl: 'testimonial.html'
 })
 export class TestimonialComponent {
+  @Input() updateCallback: (testimonial: Testimonial, status: string) => void;
   @Input() testimonial: Testimonial;
   @Input() isRequest: boolean;
 

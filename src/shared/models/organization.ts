@@ -12,6 +12,7 @@ export class Organization {
     public TxnHash: string;
     public Author: string;
     public SubAccount: string;
+    public SequenceNo: string;
     public Status: string;
     public ApprovedBy: string;
     public ApprovedOn: string;

@@ -2,7 +2,7 @@
   <ion-card-header>
      <ion-item>
         <ion-avatar item-start>
-           <img src="../../assets/img/bg_img.png">
+           <img [src]="testimonial.Testimonial.Image">
         </ion-avatar>
         <h2>
            {{testimonial.Testimonial.Name}}&nbsp;
@@ -13,9 +13,9 @@
   </ion-card-header>
 
   <ion-card-content>
-     <ion-badge *ngIf="testimonial.Status == 'Pending'" color="warning">PENDING</ion-badge>
-     <ion-badge *ngIf="testimonial.Status == 'Rejected'" color="danger">REJECTED</ion-badge>
-     <ion-badge *ngIf="testimonial.Status == 'Approved'" color="success">APPROVED</ion-badge>
+     <ion-badge *ngIf="testimonial.Status == 'pending'" color="warning">PENDING</ion-badge>
+     <ion-badge *ngIf="testimonial.Status == 'rejected'" color="danger">REJECTED</ion-badge>
+     <ion-badge *ngIf="testimonial.Status == 'approved'" color="success">APPROVED</ion-badge>
      
      <p margin-vertical>
         {{testimonial.Testimonial.Description}}
@@ -23,12 +23,12 @@
 
      <ion-row *ngIf="isRequest">
         <ion-col padding-right col-6>
-           <button ion-button color="danger" icon-start outline block>
+           <button (click)="updateCallback(testimonial, 'rejected')" ion-button color="danger" icon-start outline block>
               <ion-icon name="md-close-circle"></ion-icon>
            </button>
         </ion-col>
         <ion-col col-6>
-           <button ion-button color="primary" icon-start outline block>
+           <button (click)="updateCallback(testimonial, 'accepted')" ion-button color="primary" icon-start outline block>
               <ion-icon name="ios-checkmark-circle"></ion-icon>
            </button>
         </ion-col>

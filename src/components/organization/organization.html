@@ -2,7 +2,7 @@
    <ion-card-header>
       <ion-item>
          <ion-avatar item-start>
-            <img src="../../assets/img/bg_img.png">
+            <img [src]="organization.Logo">
          </ion-avatar>
          <h2>
             {{organization.Name}}&nbsp;
@@ -13,27 +13,27 @@
    </ion-card-header>
 
    <ion-card-content>
-      <ion-badge *ngIf="organization.Status == 'Pending'" color="warning">PENDING</ion-badge>
-      <ion-badge *ngIf="organization.Status == 'Rejected'" color="danger">REJECTED</ion-badge>
-      <ion-badge *ngIf="organization.Status == 'Approved'" color="success">APPROVED</ion-badge>
+      <ion-badge *ngIf="organization.Status == 'pending'" color="warning">PENDING</ion-badge>
+      <ion-badge *ngIf="organization.Status == 'rejected'" color="danger">REJECTED</ion-badge>
+      <ion-badge *ngIf="organization.Status == 'approved'" color="success">APPROVED</ion-badge>
       
       <p margin-vertical>
          {{organization.Description}}
       </p>
       
-      <button ion-button block icon-start *ngIf="!isRequest" (click)="showAddTestimonialPage()">
+      <button ion-button block icon-start *ngIf="!isRequest" (click)="showAddTestimonialPage(organization.Author)">
          <ion-icon name="md-add-circle"></ion-icon>
          Testimonial
       </button>
 
       <ion-row *ngIf="isRequest">
          <ion-col padding-right col-6>
-            <button ion-button color="danger" icon-start outline block>
+            <button (click)="updateOrganization(organization, 'rejected')" ion-button color="danger" icon-start outline block>
                <ion-icon name="md-close-circle"></ion-icon>
             </button>
          </ion-col>
          <ion-col col-6>
-            <button ion-button color="primary" icon-start outline block>
+            <button (click)="updateOrganization(organization, 'accepted')" ion-button color="primary" icon-start outline block>
                <ion-icon name="ios-checkmark-circle"></ion-icon>
             </button>
          </ion-col>

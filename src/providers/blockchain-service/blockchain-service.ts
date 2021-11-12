@@ -450,8 +450,8 @@ export class BlockchainServiceProvider {
     var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
     var transaction = new TransactionBuilder(account, opts);
-    transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', source: sourceKeypair.publicKey()}));
-    transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, source: sourceKeypair.publicKey()}));
+    transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', source: sourceKeypair.publicKey() }));
+    transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, source: sourceKeypair.publicKey() }));
     transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }));
     transaction.addOperation(Operation.payment({
       destination: receiver,
@@ -533,7 +533,7 @@ export class BlockchainServiceProvider {
     return b64;
   }
 
-  signXdr(xdr, decKey) {
+  signXdr(xdr: any, decKey: string) {
     console.log("XDR: ", xdr);
     let keyPair = Keypair.fromSecret(decKey);
     if (blockchainNetType === 'live') {
@@ -588,7 +588,7 @@ export class BlockchainServiceProvider {
   }
 
   subAccountsStatus(subAccounts: any) {
-    return this.apiService.getSubAccountsStatus(subAccounts);
+    return this.apiService.getSubAccountStatus(subAccounts);
   }
 
   preparesubAccount(mainAccSk: string, receiverPk?: string, operationType?: string) {

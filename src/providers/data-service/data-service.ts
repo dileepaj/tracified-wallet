@@ -9,6 +9,8 @@ import { BlockchainServiceProvider } from '../../providers/blockchain-service/bl
 // Shared Services
 import { Properties } from '../../shared/properties';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
+import { Organization } from '../../shared/models/organization';
+import { Testimonial } from '../../shared/models/testimonial';
 
 @Injectable()
 export class DataServiceProvider {
@@ -110,17 +112,42 @@ export class DataServiceProvider {
     this.storage.setLanguage(language);
   }
 
-  // Testimonials
+  // Organization Registraion
+  registerOrganization(payload: Organization): Promise<any> {
+    return this.apiService.registerOrganization(payload);
+  }
+  
+  updateOrganization(payload: Organization): Promise<any> {
+    return this.apiService.updateOrganization(payload);
+  }
+
+  getOrganization(publicKey: string): Promise<any> {
+    return this.apiService.getOrganization(publicKey);
+  }
+
   getApprovedOrganizations(): Promise<any> {
     return this.apiService.queryAllOrganizations();
   }
+  
+  getOrganizationsRequests(): Promise<any> {
+    return this.apiService.queryOrganizationsRequests();
+  }
 
+  // Testimonials
   getTestimonialsSent(senderPK: string): Promise<any> {
     return this.apiService.getTestimonialsSent(senderPK);
   }
 
   getTestimonialsReceived(receiverPK: string): Promise<any> {
     return this.apiService.getTestimonialsRecieved(receiverPK);
+  }
+
+  sendTestimonial(payload: Testimonial): Promise<any> {
+    return this.apiService.sendTestimonial(payload);
+  }
+
+  updateTestimonial(payload: Testimonial): Promise<any> {
+    return this.apiService.updateTestimonial(payload);
   }
   
 }

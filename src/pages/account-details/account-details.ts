@@ -8,6 +8,7 @@ import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { TranslateService } from '@ngx-translate/core';
 import { AccountRegisterPage } from '../../pages/account-register/account-register';
+import { Organization } from 'shared/models/organization';
 
 @IonicPage()
 @Component({
@@ -33,12 +34,23 @@ export class AccountDetailsPage {
     private translate: TranslateService,
   ) {
     this.account = this.navParams.get("account");
+    this.checkIfRegistered(this.account.pk)
     this.defaultAccountCheck();
     this.blockchainService.accountBalance(this.account.pk).then((balance) => {
       this.accountFunds = balance.toString();
     }).catch((err) => {
       this.accountFunds = '0 ';
     });
+  }
+
+  checkIfRegistered(publicKey: string) {
+    this.dataService.getOrganization(publicKey).then(res => {
+      const data: Organization = res.body;
+      this.account.status = data.Status
+    }).catch((err) => {
+      this.account.status = "none"
+      console.log(err);
+    })
   }
 
   decryptSecretKey() {

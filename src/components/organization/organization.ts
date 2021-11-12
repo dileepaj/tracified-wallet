@@ -8,6 +8,7 @@ import { Organization } from '../../shared/models/organization';
 })
 export class OrganizationComponent {
   @Input() addTestimonialPage: (receiverPK: string) => void;
+  @Input() updateCallback: (organization: Organization, status: string) => void;
   @Input() organization: Organization;
   @Input() isRequest: boolean;
 
@@ -20,6 +21,10 @@ export class OrganizationComponent {
 
   showAddTestimonialPage(receiverPK: string) {
     this.addTestimonialPage(receiverPK);
+  }
+
+  updateOrganization(organization: Organization, status: string) {
+    this.updateCallback(organization, status)
   }
 
   presentActionSheet() {

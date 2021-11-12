@@ -6,7 +6,12 @@ import { Properties } from '../../shared/properties';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { File } from '@ionic-native/file';
-
+import { AccountServiceProvider } from '../../providers/account-service/account-service';
+import { tracSuperAcc } from '../../shared/config';
+import { Organization } from '../../shared/models/organization';
+import { DataServiceProvider } from '../../providers/data-service/data-service';
+import { Logger } from 'ionic-logger-new';
+import { BcAccountPage } from '../../pages/bc-account/bc-account';
 
 @IonicPage()
 @Component({
@@ -30,20 +35,23 @@ export class AccountRegisterPage {
       private loadingCtrl: LoadingController,
       private toastCtrl: ToastController,
       private blockchainService: BlockchainServiceProvider,
+      private dataService: DataServiceProvider,
+      private accountService: AccountServiceProvider,
       private actionSheetCtrl: ActionSheetController,
       private properties: Properties,
       private camera: Camera,
+      private logger: Logger,
       private file: File,
       public translate: TranslateService
    ) {
       this.orgKey = this.navParams.get('organizationKey');
       this.formRegister = new FormGroup({
-         orgPublicKey: new FormControl(this.orgKey, Validators.compose([Validators.minLength(4), Validators.required])),
-         orgName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
-         orgDescription: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
-         orgEmail: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
-         orgPrimaryMobile: new FormControl('', Validators.compose([Validators.minLength(10), Validators.required])),
-         orgSecondMobile: new FormControl('', Validators.compose([Validators.minLength(10)])),
+         orgPublicKey: new FormControl(this.orgKey, Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
+         orgName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
+         orgDescription: new FormControl('', Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
+         orgEmail: new FormControl('', Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
+         orgPrimaryMobile: new FormControl('', Validators.compose([Validators.minLength(10), Validators.maxLength(64), Validators.required])),
+         orgSecondMobile: new FormControl('', Validators.compose([Validators.minLength(10), Validators.maxLength(64)])),
       });
    }
 
@@ -158,19 +166,100 @@ export class AccountRegisterPage {
       );
    }
 
+   /**
+    * Send request Register blockchain
+    * account to register
+    */
    registerOrganization() {
-      if (this.formRegister.valid) {
+      this.orgLogo = "https://tracified-report-images.s3.ap-south-1.amazonaws.com/qr.png"
+      if (this.formRegister.valid && this.orgLogo && this.orgLogo !== "") {
          this.presentLoading()
          this.passwordPrompt().then((password) => {
-
             this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk)
                .then((secKey) => {
                   this.defaultAccSK = secKey;
 
-                  this.blockchainService.preparesubAccount(this.defaultAccSK).then((res) => {
-
+                  this.blockchainService.preparesubAccount(this.defaultAccSK).then((subAccount: any) => {
+                     const subAccountPair = this.blockchainService.getSubAccountPair(subAccount.publicKey, this.properties.defaultAccount);
+                     const xdrPayload = {
+                        Name: this.formRegister.get("orgName").value,
+                        Description: this.formRegister.get("orgDescription").value,
+                        Email: this.formRegister.get("orgEmail").value,
+                        Phone: this.formRegister.get("orgPrimaryMobile").value,
+                        PhoneSecondary: this.formRegister.get("orgSecondMobile").value,
+                     }
+                     this.accountService.buildProofHash(xdrPayload, this.defaultAccSK, tracSuperAcc).then((proofHash: any) => {
+                        let hashResponse = proofHash;
+                        console.log(hashResponse)
+                        Promise.all([
+                           this.accountService.buildAcceptXDR(xdrPayload, hashResponse, subAccount, this.defaultAccSK, tracSuperAcc), // tracSuperAcc - Adding Tracified Super Acc as Signer
+                           this.accountService.buildRejectXDR(hashResponse, subAccount, this.defaultAccSK, tracSuperAcc), // tracSuperAcc - Adding Tracified Super Acc as Signer
+                        ]).then((xdrs: any) => {
+                           console.log(xdrs)
+                           const organizationPayload: Organization = {
+                              Name: this.formRegister.get("orgName").value,
+                              Description: this.formRegister.get("orgDescription").value,
+                              Logo: this.orgLogo,
+                              Email: this.formRegister.get("orgEmail").value,
+                              Phone: this.formRegister.get("orgPrimaryMobile").value,
+                              PhoneSecondary: this.formRegister.get("orgSecondMobile").value,
+                              AcceptTxn: "",
+                              AcceptXDR: xdrs[0].b64,
+                              RejectTxn: "",
+                              RejectXDR: xdrs[1].b64,
+                              TxnHash: "",
+                              Author: this.properties.defaultAccount.pk,
+                              SubAccount: subAccountPair.publicKey(),
+                              SequenceNo: "",
+                              Status: "pending",
+                              ApprovedBy: tracSuperAcc, //Currently the receiver will Tracified
+                              ApprovedOn: "",
+                           }
+                           this.dataService.registerOrganization(organizationPayload).then((res) => {
+                              this.dissmissLoading();
+                              this.translate.get(['SUCCESS', 'REGISTRATION_REQUEST_SUCCESS']).subscribe(text => {
+                                 this.presentAlert(text['SUCCESS'], text['REGISTRATION_REQUEST_SUCCESS']);
+                              });
+                              this.logger.info("Organization registered successfully!: ", this.properties.skipConsoleLogs, this.properties.writeToFile);
+                              this.navCtrl.setRoot(BcAccountPage);
+                           }).catch((registerError: any) => {
+                              this.dissmissLoading();
+                              this.translate.get(['ERROR', 'REGISTRATION_REQUEST_FAILED']).subscribe(text => {
+                                 this.presentAlert(text['ERROR'], text['REGISTRATION_REQUEST_FAILED']);
+                              });
+                              this.logger.error("Organization registeration failed: " + JSON.stringify(registerError), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                           })
+                        }).catch((buildError: any) => {
+                           this.dissmissLoading();
+                           this.translate.get(['ERROR', 'FAILED_TO_BUILD_TRANSACTION']).subscribe(text => {
+                              this.presentAlert(text['ERROR'], text['FAILED_TO_BUILD_TRANSACTION']);
+                           });
+                           this.logger.error("XDR builders failed: " + JSON.stringify(buildError), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                        })
+                     }).catch((proofError: any) => {
+                        this.dissmissLoading();
+                        this.translate.get(['ERROR', 'FAILED_TO_VERIFY_TRANSC']).subscribe(text => {
+                           this.presentAlert(text['ERROR'], text['FAILED_TO_VERIFY_TRANSC']);
+                        });
+                        this.logger.error("Verify Registration failed: " + JSON.stringify(proofError), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                     })
+                  }).catch((subAccError: any) => {
+                     this.dissmissLoading();
+                     this.translate.get(['ERROR', 'FAILED_TO_PREPARE_TRANSACTION', 'PENDING_TRANSACTION_ERROR']).subscribe(text => {
+                        if (subAccError == "pendingTransacExist") {
+                           this.presentAlert(text['ERROR'], text['PENDING_TRANSACTION_ERROR']);
+                        } else {
+                           this.presentAlert(text['ERROR'], text['FAILED_TO_PREPARE_TRANSACTION']);
+                        }
+                     });
+                     this.logger.error("Preparing sub account failed: " + JSON.stringify(subAccError), this.properties.skipConsoleLogs, this.properties.writeToFile);
                   })
-
+               }).catch((passwordError: any) => {
+                  this.dissmissLoading();
+                  this.translate.get(['ERROR', 'INVALID_TRANSACTION_PASSWORD']).subscribe(text => {
+                    this.presentAlert(text['ERROR'], text['INVALID_TRANSACTION_PASSWORD']);
+                  });
+                  this.logger.error("Password validation failed: " + JSON.stringify(passwordError), this.properties.skipConsoleLogs, this.properties.writeToFile);
                })
          })
       }

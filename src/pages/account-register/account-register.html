@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content padding>
-  <form [formGroup]="formRegister">
+  <form [formGroup]="formRegister" (submit)="registerOrganization()">
     <ion-row class="formbox">
       <div class="logo-container">
         <img src="../../assets/img/bg_img.png" class="logo-avatar" (click)="uploadImage()" />
@@ -16,7 +16,7 @@
         <ion-input formControlName="orgPublicKey" type="text" name="orgPublicKey" disabled keyNext></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label class="login-lables">Name</ion-label>
+        <ion-label class="login-lables" floating>Name</ion-label>
         <ion-input formControlName="orgName" type="text" name="orgName" keyNext></ion-input>
       </ion-item>
       <ion-item>
@@ -38,7 +38,7 @@
     </ion-row>
     <ion-row padding-vertical>
       <div class="button-wrapper">
-        <button block ion-button class="login-button" [disabled]="!formRegister.valid">Register</button>
+        <button type="submit" block ion-button class="login-button" [disabled]="!formRegister.valid">Register</button>
       </div>
     </ion-row>
   </form>

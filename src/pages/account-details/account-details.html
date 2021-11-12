@@ -19,6 +19,13 @@
       <ion-row class="full-width line-spacing">
         <div class="full-width text-center">
           <h3 class="secondary-font">{{'LUMENS' | translate}}</h3>
+
+          <div padding-vertical>
+            <ion-badge *ngIf="account.status == 'pending'" color="warning">PENDING</ion-badge>
+            <ion-badge *ngIf="account.status == 'rejected'" color="danger">REJECTED</ion-badge>
+            <ion-badge *ngIf="account.status == 'approved'" color="success">REGISTERED</ion-badge>
+          </div>
+
         </div>
       </ion-row>
     </ion-row>
@@ -46,23 +53,33 @@
         <h3 class="primary-font word-wrap">{{ privateKey }}</h3>
       </ion-row>
       <ion-row class="full-width" *ngIf="!keyDecrypted">
-        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="decryptSecretKey()">{{'VIEW_KEY' | translate}}</button>
+        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button
+          (click)="decryptSecretKey()">{{'VIEW_KEY' | translate}}</button>
       </ion-row>
       <ion-row class="full-width" *ngIf="keyDecrypted">
-        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="encryptSecretKey()">{{'HIDE_KEY' | translate}}</button>
+        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button
+          (click)="encryptSecretKey()">{{'HIDE_KEY' | translate}}</button>
       </ion-row>
     </ion-row>
     <ion-row class="full-width line-spacing mt-2" *ngIf="defaultAccount">
-      <h4 class="primary-font">{{'ACC_MSG' | translate}}</h4>
+      <div class="info-banner">
+        <h4 class="primary-font">{{'ACC_MSG' | translate}}</h4>
+      </div>
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-1" *ngIf="account.status == 'approved'">
+      <div class="success-banner">
+        <h4 class="primary-font">{{'ACC_REGISTERED' | translate}}</h4>
+      </div>
     </ion-row>
     <ion-row class="full-width line-spacing mt-2" *ngIf="!defaultAccount">
       <div class="button-wrapper">
-          <button block ion-button class="btn-green" (click)="makeDefaultAccount()">{{'MAKE_DEFAULT' | translate}}</button>
+        <button block ion-button class="btn-green" (click)="makeDefaultAccount()">{{'MAKE_DEFAULT' |
+          translate}}</button>
       </div>
     </ion-row>
-    <ion-row class="full-width line-spacing">
+    <ion-row *ngIf="account.status == 'none' && defaultAccount" class="full-width line-spacing">
       <div class="button-wrapper">
-          <button block ion-button class="btn-txt-only" (click)="goToRegister(account.pk)">Register</button>
+        <button block ion-button class="btn-txt-only" (click)="goToRegister(account.pk)">Register</button>
       </div>
     </ion-row>
   </ion-grid>

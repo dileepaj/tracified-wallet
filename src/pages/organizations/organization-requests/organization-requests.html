@@ -7,7 +7,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content *ngIf="!isOperationsAllowed">
+<ion-content *ngIf="!isOperationsAllowed" padding>
   <ion-row>
     <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
   </ion-row>
@@ -24,5 +24,5 @@
 </ion-content>
 
 <ion-content *ngIf="isOperationsAllowed" padding>
-  <organization *ngFor="let org of pendingApprovals" [organization]="org" [isRequest]="true"></organization>
+  <organization *ngFor="let org of pendingApprovals" [organization]="org" [isRequest]="true" [updateCallback]="updateRegisterRequest"></organization>
 </ion-content>

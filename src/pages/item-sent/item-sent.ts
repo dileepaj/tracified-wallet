@@ -70,7 +70,7 @@ export class ItemSentPage {
     this.cocSent = [];
     this.dataService.getAllSentCoCs(this.mainAccount.pk).then((res) => {
       let cocs = res.body;
-      if (cocs.length > 0) {
+      if (cocs && cocs.length > 0) {
         let senderPks = new Array();
         for (let i = 0; i < cocs.length; i++) {
           senderPks.push(cocs[i].Receiver);

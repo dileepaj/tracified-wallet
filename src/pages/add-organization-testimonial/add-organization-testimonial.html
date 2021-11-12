@@ -6,7 +6,7 @@
 
 
 <ion-content padding>
-  <form [formGroup]="testimonialForm">
+  <form [formGroup]="testimonialForm" (submit)="sendTestimonial()">
     <ion-row class="formbox">
       <ion-item>
         <ion-label class="login-lables" floating>Organization</ion-label>
@@ -31,7 +31,7 @@
     </ion-row>
     <ion-row padding-vertical>
       <div class="button-wrapper">
-        <button block ion-button class="login-button" [disabled]="!testimonialForm.valid">Register</button>
+        <button type="submit" block ion-button class="login-button" [disabled]="!testimonialForm.valid">Register</button>
       </div>
     </ion-row>
   </form>

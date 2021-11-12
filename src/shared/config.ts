@@ -36,12 +36,15 @@ export const resetPassword: string = admin + '/sign/forgetpassword'; // POST
 export const previosTxnId: string = gateway + '/transaction/lastTxn/'; // GET
 export const cocReceived: string = gateway + '/getcocbyreceiver/';
 export const cocSent: string = gateway + '/getcocbysender/';
+export const organizationRequests: string = gateway + '/notapproved/organization';
+export const approvedOrganization: string = gateway + '/approved/organization';
 export const allOrganization: string = gateway + '/organization';
 export const testimonialAPI: string = gateway + '/testimonial';
-export const testimonialReceived: string = gateway + '/testimonial/receiver/';
+export const testimonialReceived: string = gateway + '/testimonial/reciever/';
 export const testimonialSent: string = gateway + '/testimonial/sender/';
 
 // Gateway POST
+export const subAccountStatus: string = gateway + '/transaction/subAccountStatus'
 export const subAccountsStatus: string = gateway + '/transaction/coc/subAccountStatus'
 export const sendCoC: string = gateway + '/insertcoccollection';
 export const updateCoC: string = gateway + '/insertcoccollection';

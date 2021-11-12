@@ -15,6 +15,7 @@ export class OrganizationRegisteredPage {
   public approvedOrganziations: any;
   public loadingModal: any;
   public isLoading: boolean;
+  public isEmpty: boolean;
 
   constructor(
     private navCtrl: NavController,
@@ -26,15 +27,24 @@ export class OrganizationRegisteredPage {
   ) { }
 
   ionViewDidLoad() {
-    this.getRegisteredOrganizations()
+    this.getRegisteredOrganizations();
   }
 
   getRegisteredOrganizations() {
     this.presentLoading()
     this.dataService.getApprovedOrganizations().then(res => {
-      this.approvedOrganziations = res.body;
+      let dataRes = res.body ? res.body : [];
+      let index = dataRes.findIndex((elem: any) => elem.Author == this.properties.defaultAccount.pk)
+
+      if (index > -1) dataRes.splice(index, 1)
+      this.approvedOrganziations = dataRes;
+
+      (this.approvedOrganziations.length == 0) ? this.isEmpty = true : this.isEmpty = false 
+      
       this.dissmissLoading();
     }).catch(err => {
+      this.isEmpty = false;
+      this.approvedOrganziations = [];
       this.logger.error("Failed to load the account: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       this.dissmissLoading();
       this.presentToast("Could not fetch Oganizations! Please contact your admin")

@@ -33,26 +33,31 @@ export class AccountServiceProvider {
             if (receiver !== "") {
                transaction.addOperation(Operation.manageData({ name: 'Receiver', value: receiver }));
             }
-            Object.keys(payload).forEach((key: any) => {
-               transaction.addOperation(Operation.manageData({ name: key, value: payload[key], source: sourceKeypair.publicKey() }))
-            })
             
+            Object.keys(payload).forEach((key: any) => {
+               try {
+                  if (payload[key]) transaction.addOperation(Operation.manageData({ name: key, value: payload[key] }))
+               } catch (error) {
+                  this.logger.error("Failed to add Operation - buildProofHash(): " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
+               }
+            })
+
             const txn = transaction.build();
             txn.sign(sourceKeypair);
 
             return server.submitTransaction(txn);
 
          }).then((transactionResult) => {
-            this.logger.info("Verified Registration successfully", this.properties.skipConsoleLogs, this.properties.writeToFile);
+            this.logger.info("Proof built successfully buildProofHash()", this.properties.skipConsoleLogs, this.properties.writeToFile);
             resolve(transactionResult.hash);
          }).catch((err) => {
-            this.logger.error("Failed to verify Registration: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+            this.logger.error("Failed to Build Proof buildProofHash(): " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
             reject(err);
          });
       });
    }
 
-   buildAcceptXDR(organization: Organization, proofHash: any, subAccount: any, signerSK: string, receiver?: any) {
+   buildAcceptXDR(organization: any, proofHash: any, subAccount: any, signerSK: string, receiver?: any) {
       return new Promise((resolve, reject) => {
          if (blockchainNetType === 'live') {
             Network.usePublicNetwork();
@@ -63,10 +68,10 @@ export class AccountServiceProvider {
 
          if (subAccount.sequenceNo == "") {
             server.loadAccount(subAccount.publicKey).then((account) => {
-               let txn = this.acceptTxnBuilder(organization, account, signerSK, proofHash, "");
+               let txn = this.acceptTxnBuilder(organization, account, signerSK, proofHash, receiver);
                resolve(txn);
             }).catch((err) => {
-               this.logger.error("Failed to load the account: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+               this.logger.error("Failed to load the account - buildAcceptXDR(): " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                reject(err);
             });
          } else {
@@ -89,10 +94,10 @@ export class AccountServiceProvider {
 
          if (subAccount.sequenceNo == "") {
             server.loadAccount(subAccount.publicKey).then((account) => {
-               let txn = this.rejectTxnBuilder(account, signerSK, proofHash, "");
+               let txn = this.rejectTxnBuilder(account, signerSK, proofHash, receiver);
                resolve(txn);
             }).catch((err) => {
-               this.logger.error("Failed to load the account: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+               this.logger.error("Failed to load the account - buildRejectXDR(): " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                reject(err);
             });
          } else {
@@ -115,7 +120,11 @@ export class AccountServiceProvider {
       }
       
       Object.keys(payload).forEach((key: any) => {
-         transaction.addOperation(Operation.manageData({ name: key, value: payload[key], source: sourceKeypair.publicKey() }))
+         try {
+            transaction.addOperation(Operation.manageData({ name: key, value: payload[key], source: sourceKeypair.publicKey() }))
+         } catch (error) {
+            this.logger.error("Failed to Add Operation - acceptTxnBuilder(): " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
+         }
       })
 
       const txn = transaction.build();
@@ -135,11 +144,16 @@ export class AccountServiceProvider {
       const sourceKeypair = Keypair.fromSecret(signerSK);
 
       let transaction = new TransactionBuilder(account)
-      transaction.addOperation(Operation.manageData({ name: 'Status', value: 'rejected' }))
-      if (receiver !== "") {
-         transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }));
-      } else {
-         transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }));
+      
+      try {
+         transaction.addOperation(Operation.manageData({ name: 'Status', value: 'rejected' }))
+         if (receiver !== "") {
+            transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }));
+         } else {
+            transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }));
+         }
+      } catch (error) {
+         this.logger.error("Failed to Add Operation - rejectTxnBuilder(): " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
       }
 
       const txn = transaction.build();

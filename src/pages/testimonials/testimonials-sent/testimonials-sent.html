@@ -7,6 +7,22 @@
   </ion-navbar>
 </ion-header>
 
+<ion-content *ngIf="isEmpty">
+  <ion-row>
+    <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+  </ion-row>
+  <ion-row>
+    <div class="full-width text-center line-spacing-small">
+      <h1 class="primary-font">Empty!</h1>
+    </div>
+  </ion-row>
+  <ion-row text-wrap>
+    <div class="full-width text-center">
+      <h3 class="secondary-font">No Testimonials sent at the moment</h3>
+    </div>
+  </ion-row>
+</ion-content>
 
-<ion-content padding>
+<ion-content *ngIf="!isEmpty" padding>
+  <testimonial *ngFor="let testimonial of testimonialsSent" [testimonial]="testimonial" [isRequest]="false"></testimonial>
 </ion-content>

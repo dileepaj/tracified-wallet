@@ -7,6 +7,22 @@
    </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content *ngIf="isEmpty" padding>
+   <ion-row>
+     <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+   </ion-row>
+   <ion-row>
+     <div class="full-width text-center line-spacing-small">
+       <h1 class="primary-font">Empty!</h1>
+     </div>
+   </ion-row>
+   <ion-row text-wrap>
+     <div class="full-width text-center">
+       <h3 class="secondary-font">No registered organizations at the moment</h3>
+     </div>
+   </ion-row>
+ </ion-content>
+
+<ion-content  *ngIf="!isEmpty" padding>
    <organization *ngFor="let org of approvedOrganziations" [organization]="org" [addTestimonialPage]="addTestimonial" [isRequest]="false"></organization>
 </ion-content>

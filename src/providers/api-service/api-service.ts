@@ -1,6 +1,5 @@
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
 
 import { Logger } from 'ionic-logger-new';
 import { Properties } from '../../shared/properties';
@@ -25,8 +24,14 @@ import {
   blockchainAccsByTenant,
   allOrganization,
   testimonialReceived,
-  testimonialSent
+  testimonialSent,
+  subAccountStatus,
+  approvedOrganization,
+  organizationRequests,
+  testimonialAPI
 } from '../../shared/config';
+import { Organization } from '../../shared/models/organization';
+import { Testimonial } from '../../shared/models/testimonial';
 
 @Injectable()
 export class ApiServiceProvider {
@@ -239,6 +244,18 @@ export class ApiServiceProvider {
     return this.postN(subAccountsStatus, payload, headers);
   }
 
+  getSubAccountStatus(payload): Promise<any> {
+    let headers = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'Content-Type': 'Application/json',
+      })
+    }
+
+    return this.postN(subAccountStatus, payload, headers);
+  }
+
   getBCAccountsN(): Promise<any> {
     let headers = {
       observe: 'response',
@@ -416,7 +433,28 @@ export class ApiServiceProvider {
     return this.getN(cocSent + accountKey, header);
   }
 
-  //Testimonials 
+  //Organization Registration 
+  registerOrganization(payload: Organization): Promise<any> {
+    let headers = { 'Content-Type': 'application/json' };
+    return this.postN(allOrganization, payload, headers);
+  }
+
+  updateOrganization(payload: Organization): Promise<any> {
+    let headers = { 'Content-Type': 'application/json' };
+    return this.putN(allOrganization, payload, headers);
+  }
+
+  getOrganization(publicKey: string): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    return this.getN(allOrganization + "/" + publicKey, header);
+  }
+
   queryAllOrganizations(): Promise<any> {
     let header = {
       observe: 'response',
@@ -425,9 +463,21 @@ export class ApiServiceProvider {
       })
     }
 
-    return this.getN(allOrganization, header);
+    return this.getN(approvedOrganization, header);
+  }
+  
+  queryOrganizationsRequests(): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    return this.getN(organizationRequests, header);
   }
 
+  // Testimonials
   getTestimonialsSent(senderPK: string) {
     let header = {
       observe: 'response',
@@ -448,6 +498,16 @@ export class ApiServiceProvider {
     }
 
     return this.getN(testimonialReceived + receiverPK, header);
+  }
+  
+  sendTestimonial(payload: Testimonial): Promise<any> {
+    let headers = { 'Content-Type': 'application/json' };
+    return this.postN(testimonialAPI, payload, headers);
+  }
+
+  updateTestimonial(payload: Testimonial): Promise<any> {
+    let headers = { 'Content-Type': 'application/json' };
+    return this.putN(testimonialAPI, payload, headers);
   }
 
 }

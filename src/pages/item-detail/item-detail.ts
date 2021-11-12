@@ -196,14 +196,14 @@ export class ItemDetailPage {
           });
         }).catch((err) => {
           this.dissmissLoading();
-          if (err == "pendingTransacExist") {
-            this.presentAlert("Transaction Failed!", "There is a apending trasaction from you to the same receiver! Can not change custody until the receiver accepts the pending CoC request!");
-          } else {
-            this.translate.get(['ERROR', 'FAILED_TO_PREPARE_TRANSACTION']).subscribe(text => {
-              this.presentAlert(text['ERROR'], text['FAILED_TO_PREPARE_TRANSACTION']);
-            });
-          }
-          this.logger.error("Preparing sub account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+          this.translate.get(['ERROR', 'FAILED_TO_PREPARE_TRANSACTION', 'PENDING_TRANSACTION_ERROR']).subscribe(text => {
+             if (err == "pendingTransacExist") {
+                this.presentAlert(text['ERROR'], text['PENDING_TRANSACTION_ERROR']);
+             } else {
+                this.presentAlert(text['ERROR'], text['FAILED_TO_PREPARE_TRANSACTION']);
+             }
+          });
+          this.logger.error("Preparing sub account failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
       }).catch((err) => {
         this.dissmissLoading();
