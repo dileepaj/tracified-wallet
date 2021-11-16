@@ -46,7 +46,7 @@ export class AccountDetailsPage {
   checkIfRegistered(publicKey: string) {
     this.dataService.getOrganization(publicKey).then(res => {
       const data: Organization = res.body;
-      this.account.status = data.Status
+      this.account.status = (data && data.Status) ? data.Status : "none"
     }).catch((err) => {
       this.account.status = "none"
       console.log(err);

@@ -8,6 +8,11 @@
 </ion-header>
 
 <ion-content *ngIf="isEmpty">
+   <ion-refresher (ionRefresh)="doRefresh($event)">
+     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+       refreshingText="Loading..">
+     </ion-refresher-content>
+   </ion-refresher>
    <ion-row>
      <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
    </ion-row>
@@ -25,6 +30,11 @@
  
 
 <ion-content *ngIf="!isEmpty" padding>
+   <ion-refresher (ionRefresh)="doRefresh($event)">
+     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+       refreshingText="Loading..">
+     </ion-refresher-content>
+   </ion-refresher>
    <testimonial *ngFor="let testimonial of testimonialsReceived" [testimonial]="testimonial"
       [isRequest]="testimonial.Status == 'pending'" [updateCallback]="updateTestimonial"></testimonial>
 </ion-content>

@@ -27,26 +27,31 @@ export class TestimonialsSentPage {
     private properties: Properties
   ) {
     this.mainAccount = this.properties.defaultAccount
-    this.getRecievedTestimonials(this.properties.defaultAccount.pk)
+    this.getSentTestimonials(this.properties.defaultAccount.pk)
   }
 
   ionViewDidLoad() {
   }
 
-  getRecievedTestimonials(senderKey: string) {
+  getSentTestimonials(senderKey: string) {
     this.presentLoading()
     this.dataService.getTestimonialsSent(senderKey).then(res => {
       this.testimonialsSent = res.body ? res.body : [];
       this.dissmissLoading();
-      
-      (this.testimonialsSent.length == 0) ? this.isEmpty = true : this.isEmpty = false 
-      
+
+      (this.testimonialsSent.length == 0) ? this.isEmpty = true : this.isEmpty = false
+
     }).catch(err => {
       this.isEmpty = false;
       this.logger.error("Failed to fetch Testimonials: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       this.dissmissLoading();
       this.presentToast("Could not fetch Testimonials! Please contact your admin")
     })
+  }
+
+  doRefresh = (refresher: any) => {
+    this.getSentTestimonials(this.properties.defaultAccount.pk);
+    refresher.complete();
   }
 
   presentLoading() {

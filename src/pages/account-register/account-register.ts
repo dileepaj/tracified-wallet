@@ -171,7 +171,6 @@ export class AccountRegisterPage {
     * account to register
     */
    registerOrganization() {
-      this.orgLogo = "https://tracified-report-images.s3.ap-south-1.amazonaws.com/qr.png"
       if (this.formRegister.valid && this.orgLogo && this.orgLogo !== "") {
          this.presentLoading()
          this.passwordPrompt().then((password) => {
@@ -190,7 +189,6 @@ export class AccountRegisterPage {
                      }
                      this.accountService.buildProofHash(xdrPayload, this.defaultAccSK, tracSuperAcc).then((proofHash: any) => {
                         let hashResponse = proofHash;
-                        console.log(hashResponse)
                         Promise.all([
                            this.accountService.buildAcceptXDR(xdrPayload, hashResponse, subAccount, this.defaultAccSK, tracSuperAcc), // tracSuperAcc - Adding Tracified Super Acc as Signer
                            this.accountService.buildRejectXDR(hashResponse, subAccount, this.defaultAccSK, tracSuperAcc), // tracSuperAcc - Adding Tracified Super Acc as Signer

@@ -614,12 +614,6 @@ export class BlockchainServiceProvider {
             }
           });
           if (matchingAccount) {
-            // let subAcc = {
-            //   publicKey: matchingAccount.subAccount,
-            //   available: false,
-            //   sequenceNo: matchingAccount.sequenceNo
-            // };
-            // resolve(subAcc);
             reject("pendingTransacExist"); // if source account is in use by same receiver raise error
           } else if (avaialbeAccounts.length > 0) {
             this.checkIfAccountInvalidated(avaialbeAccounts[0].subAccount).then((status) => {

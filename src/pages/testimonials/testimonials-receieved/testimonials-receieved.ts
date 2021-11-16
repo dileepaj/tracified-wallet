@@ -138,6 +138,11 @@ export class TestimonialsReceievedPage {
       });
    }
 
+   doRefresh = (refresher: any) => {
+      this.getRecievedTestimonials(this.properties.defaultAccount.pk);
+      refresher.complete();
+   }
+
    presentAlert(title: string, message: string) {
       let alert = this.alertCtrl.create();
       alert.setTitle(title);

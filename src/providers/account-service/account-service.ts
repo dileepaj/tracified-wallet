@@ -76,7 +76,7 @@ export class AccountServiceProvider {
             });
          } else {
             let account = new Account(subAccount.publicKey, subAccount.sequenceNo);
-            let txn = this.acceptTxnBuilder(organization, account, signerSK, proofHash, "");
+            let txn = this.acceptTxnBuilder(organization, account, signerSK, proofHash, receiver);
             resolve(txn);
          }
       });
@@ -102,16 +102,25 @@ export class AccountServiceProvider {
             });
          } else {
             let account = new Account(subAccount.publicKey, subAccount.sequenceNo);
-            let txn = this.rejectTxnBuilder(account, signerSK, proofHash, "");
+            let txn = this.rejectTxnBuilder(account, signerSK, proofHash, receiver);
             resolve(txn);
          }
       });
    }
 
    acceptTxnBuilder(payload: any, transactionAccount: Account, signerSK: string, proofHash: any, receiver?: string) {
-      var sourceKeypair = Keypair.fromSecret(signerSK);
+      const sourceKeypair = Keypair.fromSecret(signerSK);
 
-      var transaction = new TransactionBuilder(transactionAccount);
+      let minTime = Math.round(new Date().getTime() / 1000.0);
+      let maxTime = new Date(+new Date + 12096e5).getTime() / 1000.0;
+      let opts = { 
+         timebounds: { 
+            minTime: minTime, 
+            maxTime: maxTime 
+         } 
+      };
+
+      let transaction = new TransactionBuilder(transactionAccount, opts);
       // transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', source: sourceKeypair.publicKey() }));
       if (receiver && receiver !== "") {
          transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }));
@@ -143,8 +152,16 @@ export class AccountServiceProvider {
    rejectTxnBuilder(account: any, signerSK: string, proofHash: string, receiver?: string) {
       const sourceKeypair = Keypair.fromSecret(signerSK);
 
-      let transaction = new TransactionBuilder(account)
-      
+      let minTime = Math.round(new Date().getTime() / 1000.0);
+      let maxTime = new Date(+new Date + 12096e5).getTime() / 1000.0;
+      let opts = { 
+         timebounds: { 
+            minTime: minTime, 
+            maxTime: maxTime 
+         } 
+      };
+
+      let transaction = new TransactionBuilder(account, opts);
       try {
          transaction.addOperation(Operation.manageData({ name: 'Status', value: 'rejected' }))
          if (receiver !== "") {

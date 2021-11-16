@@ -8,10 +8,9 @@ import { Logger } from 'ionic-logger-new';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { AccountServiceProvider } from '../../providers/account-service/account-service';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
-import { tracSuperAcc } from '../../shared/config';
 import { Testimonial } from '../../shared/models/testimonial';
 import { Properties } from '../../shared/properties';
-import { OrganizationsPage } from '../../pages/organizations/organizations';
+import { TestimonialsPage } from '../../pages/testimonials/testimonials';
 
 
 @IonicPage()
@@ -61,7 +60,6 @@ export class AddOrganizationTestimonialPage {
      * registered Organization
      */
    sendTestimonial() {
-      this.testimonialPicture = "https://tracified-report-images.s3.ap-south-1.amazonaws.com/qr.png"
       if (this.testimonialForm.valid && this.testimonialPicture && this.testimonialPicture !== "") {
          this.presentLoading()
          this.passwordPrompt().then((password) => {
@@ -107,7 +105,7 @@ export class AddOrganizationTestimonialPage {
                                  this.presentAlert(text['SUCCESS'], text['TESTIMONIAL_REQUEST_SUCCESS']);
                               });
                               this.logger.info("Testimonial sent successfully!: ", this.properties.skipConsoleLogs, this.properties.writeToFile);
-                              this.navCtrl.setRoot(OrganizationsPage);
+                              this.navCtrl.setRoot(TestimonialsPage);
                            }).catch((registerError: any) => {
                               this.dissmissLoading();
                               this.translate.get(['ERROR', 'TESTIMONIAL_REQUEST_FAILED']).subscribe(text => {

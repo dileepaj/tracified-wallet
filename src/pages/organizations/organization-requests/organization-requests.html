@@ -8,6 +8,12 @@
 </ion-header>
 
 <ion-content *ngIf="!isOperationsAllowed" padding>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+      refreshingText="Loading..">
+    </ion-refresher-content>
+  </ion-refresher>
+
   <ion-row>
     <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
   </ion-row>
@@ -24,5 +30,10 @@
 </ion-content>
 
 <ion-content *ngIf="isOperationsAllowed" padding>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+      refreshingText="Loading..">
+    </ion-refresher-content>
+  </ion-refresher>
   <organization *ngFor="let org of pendingApprovals" [organization]="org" [isRequest]="true" [updateCallback]="updateRegisterRequest"></organization>
 </ion-content>

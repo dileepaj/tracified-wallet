@@ -51,6 +51,11 @@ export class OrganizationRegisteredPage {
     })
   }
 
+  doRefresh = (refresher: any) => {
+    this.getRegisteredOrganizations();
+    refresher.complete();
+ }
+
   addTestimonial(receiverPK: string) {
     this.navCtrl.push(AddOrganizationTestimonialPage, { receiver: receiverPK })
   }

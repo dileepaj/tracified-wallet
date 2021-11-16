@@ -73,7 +73,6 @@ export class OrganizationRequestsPage {
    updateRegisterRequest = (organization: Organization, status: string) => {
       this.passwordPromptResponseWait().then((password) => {
          this.presentLoading();
-         console.log(this.mainBCAccount)
          this.blockchainService.validateTransactionPassword(password, this.mainBCAccount.sk, tracSuperAcc).then((decryptedKey) => { // Passing Super Acc PK as only Super Acc is allowed to do transaction
             console.log(decryptedKey)
             if (status == 'accepted') {
@@ -148,6 +147,11 @@ export class OrganizationRequestsPage {
          });
          passwordPrompt.present();
       });
+   }
+
+   doRefresh = (refresher: any) => {
+      this.getPendingOrganizations();
+      refresher.complete();
    }
 
    presentAlert(title: string, message: string) {
