@@ -68,6 +68,7 @@ export class AccountServiceProvider {
 
          if (subAccount.sequenceNo == "") {
             server.loadAccount(subAccount.publicKey).then((account) => {
+               this.logger.info("Successfully loaded the account - buildAcceptXDR()", this.properties.skipConsoleLogs, this.properties.writeToFile);
                let txn = this.acceptTxnBuilder(organization, account, signerSK, proofHash, receiver);
                resolve(txn);
             }).catch((err) => {
@@ -94,6 +95,7 @@ export class AccountServiceProvider {
 
          if (subAccount.sequenceNo == "") {
             server.loadAccount(subAccount.publicKey).then((account) => {
+               this.logger.info("Successfully loaded the account - buildRejectXDR()", this.properties.skipConsoleLogs, this.properties.writeToFile);
                let txn = this.rejectTxnBuilder(account, signerSK, proofHash, receiver);
                resolve(txn);
             }).catch((err) => {
@@ -112,7 +114,7 @@ export class AccountServiceProvider {
       const sourceKeypair = Keypair.fromSecret(signerSK);
 
       let minTime = Math.round(new Date().getTime() / 1000.0);
-      let maxTime = new Date(+new Date + 12096e5).getTime() / 1000.0;
+      let maxTime = Math.round(new Date(+new Date + 12096e5).getTime() / 1000.0);
       let opts = { 
          timebounds: { 
             minTime: minTime, 
@@ -153,7 +155,7 @@ export class AccountServiceProvider {
       const sourceKeypair = Keypair.fromSecret(signerSK);
 
       let minTime = Math.round(new Date().getTime() / 1000.0);
-      let maxTime = new Date(+new Date + 12096e5).getTime() / 1000.0;
+      let maxTime = Math.round(new Date(+new Date + 12096e5).getTime() / 1000.0); // Adding two weeks as expiration
       let opts = { 
          timebounds: { 
             minTime: minTime, 

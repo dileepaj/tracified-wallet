@@ -8,7 +8,7 @@
   <form [formGroup]="formRegister" (submit)="registerOrganization()">
     <ion-row class="formbox">
       <div class="logo-container">
-        <img src="../../assets/img/bg_img.png" class="logo-avatar" (click)="uploadImage()" />
+        <img [src]="orgLogo && orgLogo !== '' ? orgLogo : '../../assets/img/bg_img.png'" class="logo-avatar" (click)="uploadImage()" />
         <p class="btn-link" (click)="uploadImage()">Click to upload logo</p>
       </div>
       <ion-item>

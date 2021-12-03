@@ -11,11 +11,14 @@ export class OrganizationComponent {
   @Input() updateCallback: (organization: Organization, status: string) => void;
   @Input() organization: Organization;
   @Input() isRequest: boolean;
+  @Input() isRegistered: boolean;
 
   text: string;
 
-  constructor(public actionSheetCtrl: ActionSheetController,
-    public navCtrl: NavController) {
+  constructor (
+    public actionSheetCtrl: ActionSheetController,
+    public navCtrl: NavController
+  ) {
     this.text = 'Hello World';
   }
 

@@ -21,7 +21,7 @@
          {{organization.Description}}
       </p>
       
-      <button ion-button block icon-start *ngIf="!isRequest" (click)="showAddTestimonialPage(organization.Author)">
+      <button ion-button block icon-start *ngIf="!isRequest && isRegistered" (click)="showAddTestimonialPage(organization.Author)">
          <ion-icon name="md-add-circle"></ion-icon>
          Testimonial
       </button>
