@@ -37,6 +37,7 @@ export class TestimonialsSentPage {
     this.presentLoading()
     this.dataService.getTestimonialsSent(senderKey).then(res => {
       this.testimonialsSent = res.body ? res.body : [];
+      this.testimonialsSent.reverse();
       this.dissmissLoading();
 
       (this.testimonialsSent.length == 0) ? this.isEmpty = true : this.isEmpty = false

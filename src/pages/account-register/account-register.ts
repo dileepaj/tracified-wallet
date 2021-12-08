@@ -156,7 +156,6 @@ export class AccountRegisterPage {
                .then((base64) => {
                   tempPhoto = base64;
                   this.orgLogo = tempPhoto;
-                  console.log(base64)
                })
                .catch((e) => console.log("err", e));
          },

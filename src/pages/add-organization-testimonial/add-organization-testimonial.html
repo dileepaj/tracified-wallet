@@ -18,7 +18,8 @@
       </ion-item>
       <ion-item>
         <ion-label class="login-lables" floating>Description</ion-label>
-        <ion-textarea formControlName="testimonialDescription" type="text" name="testimonialDescription" keyNext></ion-textarea>
+        <ion-textarea formControlName="testimonialDescription" type="text" name="testimonialDescription" keyNext>
+        </ion-textarea>
       </ion-item>
       <ion-item>
         <ion-label class="login-lables">Image</ion-label>
@@ -28,10 +29,16 @@
           <ion-icon name="md-photos"></ion-icon>
         </button>
       </div>
+      <ion-item>
+        <div *ngIf="testimonialPicture && testimonialPicture !== ''" padding-top>
+          <img class="card-image" [src]="testimonialPicture" />
+        </div>
+      </ion-item>
     </ion-row>
     <ion-row padding-vertical>
       <div class="button-wrapper">
-        <button type="submit" block ion-button class="login-button" [disabled]="!testimonialForm.valid">Register</button>
+        <button type="submit" block ion-button class="login-button"
+          [disabled]="!testimonialForm.valid">Register</button>
       </div>
     </ion-row>
   </form>

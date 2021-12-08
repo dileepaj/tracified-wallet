@@ -73,30 +73,30 @@ export class MyApp {
     platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
-      this.codepushService.notifyApplicationReady().then(() => {
-        this.codepushService.checkForUpdate().then((remotePackage: IRemotePackage) => {
-          if (remotePackage.isMandatory) {
-            this.presentUpdating();
-            this.codepushService.doUpdate(remotePackage).then(() => {
-              this.splashScreen.show();
-              this.dismissLoading();
-            }).catch(() => {
-              this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
-              this.dismissLoading();
-            });
-          } else {
-            this.waitResponseAlert("Updates Avaialable", "There is a pending application update. Would you like to install it right now?", "Yes", "No").then(() => {
-              this.codepushService.doUpdate(remotePackage).then(() => {
-                this.splashScreen.show();
-                this.dismissLoading();
-              }).catch(() => {
-                this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
-                this.dismissLoading();
-              });
-            });
-          }
-        });
-      });
+      // this.codepushService.notifyApplicationReady().then(() => {
+      //   this.codepushService.checkForUpdate().then((remotePackage: IRemotePackage) => {
+      //     if (remotePackage.isMandatory) {
+      //       this.presentUpdating();
+      //       this.codepushService.doUpdate(remotePackage).then(() => {
+      //         this.splashScreen.show();
+      //         this.dismissLoading();
+      //       }).catch(() => {
+      //         this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
+      //         this.dismissLoading();
+      //       });
+      //     } else {
+      //       this.waitResponseAlert("Updates Avaialable", "There is a pending application update. Would you like to install it right now?", "Yes", "No").then(() => {
+      //         this.codepushService.doUpdate(remotePackage).then(() => {
+      //           this.splashScreen.show();
+      //           this.dismissLoading();
+      //         }).catch(() => {
+      //           this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
+      //           this.dismissLoading();
+      //         });
+      //       });
+      //     }
+      //   });
+      // });
       this.properties.skipConsoleLogs = false;
       this.properties.writeToFile = true;
       this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));

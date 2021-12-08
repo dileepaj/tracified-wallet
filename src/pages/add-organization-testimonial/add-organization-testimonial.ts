@@ -280,9 +280,12 @@ export class AddOrganizationTestimonialPage {
 
             }
 
+            console.log(filePath)
+
             this.file
                .readAsDataURL(filePath, fileName)
                .then((base64) => {
+                  console.log(base64)
                   tempPhoto = base64;
                   this.testimonialPicture = tempPhoto;
                   console.log(base64)

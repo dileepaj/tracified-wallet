@@ -42,6 +42,7 @@ export class TestimonialsReceievedPage {
       this.presentLoading()
       this.dataService.getTestimonialsReceived(receiverKey).then(res => {
          this.testimonialsReceived = res.body ? res.body : [];
+         this.testimonialsReceived.reverse();
          
          (this.testimonialsReceived.length == 0) ? this.isEmpty = true : this.isEmpty = false 
       
