@@ -18,9 +18,13 @@
 
       <img class="card-image" [src]="testimonial.Testimonial.Image" />
 
-      <p text-right>
-         {{testimonial.Testimonial.Name}}
-      </p>
+      <ion-row>
+         <ion-col col-12 padding-right>
+            <button ion-button outline block (click)="viewTestimonial()">
+               View
+            </button>
+         </ion-col>
+      </ion-row>
 
       <ion-row *ngIf="isRequest">
          <ion-col padding-right col-6>

@@ -1,0 +1,49 @@
+<ion-header>
+   <ion-toolbar>
+      <ion-title>
+         Testimonial
+      </ion-title>
+      <ion-buttons start>
+         <button ion-button (click)="disMissView()">
+            <ion-icon name="md-close" color="light"></ion-icon>
+         </button>
+      </ion-buttons>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true" slot="fixed">
+   <div class="card">
+      <div class="card-body" padding>
+         <div class="org-meta" text-center padding>
+            <h2 class="primary-font">{{testimonial.Testimonial.Title}}</h2>
+            <h3 class="primary-font">"{{testimonial.Testimonial.Description}}"</h3>
+            <div padding-top>
+               <img class="card-image" [src]="testimonial.Testimonial.Image" />
+            </div>
+         </div>
+
+         <ion-list padding-vertical>
+            <ion-list-header>
+               Testimonial {{viewType == 'sent' ? "To" : "From"}} - {{senderOrReceiver.Name}}
+            </ion-list-header>
+            <a ion-item [href]="'mailto:' + senderOrReceiver.Email">
+               <ion-icon name="md-at" color="primary" item-start></ion-icon>
+               {{senderOrReceiver.Email}}
+               <ion-icon name="ios-arrow-forward" color="primary" item-end></ion-icon>
+            </a>
+            <ion-item (click)="callPhoneOrMobile(senderOrReceiver.Phone)">
+               <ion-icon name="ios-call" color="primary" item-start></ion-icon>
+               {{senderOrReceiver.Phone}}
+               <ion-icon name="ios-arrow-forward" color="primary" item-end></ion-icon>
+            </ion-item>
+            <ion-item (click)="callPhoneOrMobile(senderOrReceiver.PhoneSecondary)">
+               <ion-icon name="md-phone-portrait" color="primary" item-start></ion-icon>
+               {{senderOrReceiver.PhoneSecondary && senderOrReceiver.PhoneSecondary !== "" ?
+               senderOrReceiver.PhoneSecondary :
+               "N/A"}}
+               <ion-icon name="ios-arrow-forward" color="primary" item-end></ion-icon>
+            </ion-item>
+         </ion-list>
+      </div>
+   </div>
+</ion-content>

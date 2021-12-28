@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { File } from '@ionic-native/file';
 import { TranslateService } from '@ngx-translate/core';
-import { ActionSheetController, AlertController, IonicPage, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
+import { ActionSheetController, AlertController, IonicPage, LoadingController, NavController, NavParams, ToastController, ViewController } from 'ionic-angular';
 import { Logger } from 'ionic-logger-new';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { AccountServiceProvider } from '../../providers/account-service/account-service';
@@ -11,6 +11,7 @@ import { BlockchainServiceProvider } from '../../providers/blockchain-service/bl
 import { Testimonial } from '../../shared/models/testimonial';
 import { Properties } from '../../shared/properties';
 import { TestimonialsPage } from '../../pages/testimonials/testimonials';
+import { Organization } from 'shared/models/organization';
 
 
 @IonicPage()
@@ -19,13 +20,16 @@ import { TestimonialsPage } from '../../pages/testimonials/testimonials';
    templateUrl: 'add-organization-testimonial.html',
 })
 export class AddOrganizationTestimonialPage {
-   
+
    public testimonialForm: FormGroup;
    public testimonialPicture: string;
    public defaultAccSK: string;
-   
+
    public loadingModal: any;
    public isLoading: boolean;
+
+   public testimonialReceiver: Organization;
+   public testimonialSender: Organization;
 
    constructor(
       public navCtrl: NavController,
@@ -36,6 +40,7 @@ export class AddOrganizationTestimonialPage {
       private logger: Logger,
       private dataService: DataServiceProvider,
       private alertCtrl: AlertController,
+      private viewCtrl: ViewController,
       private blockchainService: BlockchainServiceProvider,
       private accountService: AccountServiceProvider,
       private file: File,
@@ -43,16 +48,27 @@ export class AddOrganizationTestimonialPage {
       private properties: Properties,
       public navParams: NavParams
    ) {
+      this.testimonialReceiver = this.navParams.get("receiver");
+
       this.testimonialForm = new FormGroup({
-         recieverOrg: new FormControl(this.navParams.get("receiver"), Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
+         recieverOrg: new FormControl(this.testimonialReceiver['Author'], Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
          testimonialTitle: new FormControl('', Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
          testimonialDescription: new FormControl('', Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
       });
    }
 
    ionViewDidLoad() {
-      console.log(this.properties)
-      console.log('ionViewDidLoad AddOrganizationTestimonialPage');
+      this.fetchTestimonialSender(this.properties.defaultAccount.pk);
+   }
+
+   fetchTestimonialSender(publicKey: string) {
+      this.presentLoading();
+      this.dataService.getOrganization(publicKey).then(res => {
+         this.testimonialSender = res.body;
+         this.dissmissLoading();
+      }).catch((err) => {
+         console.log(err);
+      })
    }
 
    /**
@@ -70,7 +86,7 @@ export class AddOrganizationTestimonialPage {
                   this.blockchainService.preparesubAccount(this.defaultAccSK).then((subAccount: any) => {
                      const subAccountPair = this.blockchainService.getSubAccountPair(subAccount.publicKey, this.properties.defaultAccount);
                      const xdrPayload = {
-                        Name: this.properties.company,
+                        Name: this.testimonialSender.Name,
                         Title: this.testimonialForm.get("testimonialTitle").value,
                         Description: this.testimonialForm.get("testimonialDescription").value,
                      }
@@ -93,7 +109,7 @@ export class AddOrganizationTestimonialPage {
                               SequenceNo: "",
                               Status: "pending",
                               Testimonial: {
-                                 Name: this.properties.company,
+                                 Name: this.testimonialSender.Name,
                                  Title: this.testimonialForm.get("testimonialTitle").value,
                                  Description: this.testimonialForm.get("testimonialDescription").value,
                                  Image: this.testimonialPicture
@@ -105,7 +121,7 @@ export class AddOrganizationTestimonialPage {
                                  this.presentAlert(text['SUCCESS'], text['TESTIMONIAL_REQUEST_SUCCESS']);
                               });
                               this.logger.info("Testimonial sent successfully!: ", this.properties.skipConsoleLogs, this.properties.writeToFile);
-                              this.navCtrl.setRoot(TestimonialsPage);
+                              this.viewCtrl.dismiss();
                            }).catch((registerError: any) => {
                               this.dissmissLoading();
                               this.translate.get(['ERROR', 'TESTIMONIAL_REQUEST_FAILED']).subscribe(text => {

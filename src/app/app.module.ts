@@ -2,6 +2,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Camera } from '@ionic-native/camera';
+import { CallNumber } from '@ionic-native/call-number';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -62,6 +63,8 @@ import { TestimonialsSentPageModule } from '../pages/testimonials/testimonials-s
 import { TestimonialsPageModule } from '../pages/testimonials/testimonials.module';
 import { TestimonialServiceProvider } from '../providers/testimonial-service/testimonial-service';
 import { TestimonialComponent } from '../components/testimonial/testimonial';
+import { ViewOrganizationComponent } from '../components/view-organization/view-organization';
+import { ViewTestimonialComponent } from '../components/view-testimonial/view-testimonial';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -120,7 +123,7 @@ export function createTranslateLoader(http: HttpClient) {
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    MyApp, HelpPage, OrganizationComponent, TestimonialComponent
+    MyApp, HelpPage, OrganizationComponent, TestimonialComponent, ViewOrganizationComponent, ViewTestimonialComponent
   ],
   providers: [
     ApiServiceProvider,
@@ -148,6 +151,7 @@ export function createTranslateLoader(http: HttpClient) {
     InAppBrowser,
     AccountServiceProvider,
     TestimonialServiceProvider,
+    CallNumber
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

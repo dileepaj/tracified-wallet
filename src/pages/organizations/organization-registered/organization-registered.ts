@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { ActionSheetController, IonicPage, LoadingController, NavController, NavParams, ToastController } from 'ionic-angular';
+import { IonicPage, LoadingController, ModalController, NavController, NavParams, ToastController } from 'ionic-angular';
 import { DataServiceProvider } from '../../../providers/data-service/data-service';
 import { AddOrganizationTestimonialPage } from '../../add-organization-testimonial/add-organization-testimonial';
 import { Properties } from '../../../shared/properties';
 import { Logger } from 'ionic-logger-new';
-import { Organization } from 'shared/models/organization';
+import { Organization } from '../../../shared/models/organization';
 
 @IonicPage()
 @Component({
@@ -71,8 +71,8 @@ export class OrganizationRegisteredPage {
     refresher.complete();
  }
 
-  addTestimonial(receiverPK: string) {
-    this.navCtrl.push(AddOrganizationTestimonialPage, { receiver: receiverPK })
+  addTestimonial(receiver: any) {
+    this.navCtrl.push(AddOrganizationTestimonialPage, { receiver: receiver })
   }
 
   presentLoading() {

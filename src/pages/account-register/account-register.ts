@@ -171,8 +171,8 @@ export class AccountRegisterPage {
     */
    registerOrganization() {
       if (this.formRegister.valid && this.orgLogo && this.orgLogo !== "") {
-         this.presentLoading()
          this.passwordPrompt().then((password) => {
+            this.presentLoading()
             this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk)
                .then((secKey) => {
                   this.defaultAccSK = secKey;
@@ -192,7 +192,6 @@ export class AccountRegisterPage {
                            this.accountService.buildAcceptXDR(xdrPayload, hashResponse, subAccount, this.defaultAccSK, tracSuperAcc), // tracSuperAcc - Adding Tracified Super Acc as Signer
                            this.accountService.buildRejectXDR(hashResponse, subAccount, this.defaultAccSK, tracSuperAcc), // tracSuperAcc - Adding Tracified Super Acc as Signer
                         ]).then((xdrs: any) => {
-                           console.log(xdrs)
                            const organizationPayload: Organization = {
                               Name: this.formRegister.get("orgName").value,
                               Description: this.formRegister.get("orgDescription").value,

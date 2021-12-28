@@ -6,7 +6,8 @@
          </ion-avatar>
          <h2>
             {{organization.Name}}&nbsp;
-            <ion-icon *ngIf="organization.Status == 'Approved'" color="primary" item-end name="checkmark-circle"></ion-icon>
+            <ion-icon *ngIf="organization.Status == 'approved'" color="primary" item-end name="checkmark-circle">
+            </ion-icon>
          </h2>
          <ion-icon item-end name="ios-more" (click)="presentActionSheet()"></ion-icon>
       </ion-item>
@@ -15,29 +16,42 @@
    <ion-card-content>
       <ion-badge *ngIf="organization.Status == 'pending'" color="warning">PENDING</ion-badge>
       <ion-badge *ngIf="organization.Status == 'rejected'" color="danger">REJECTED</ion-badge>
-      <ion-badge *ngIf="organization.Status == 'approved'" color="success">APPROVED</ion-badge>
-      
+
       <p margin-vertical>
          {{organization.Description}}
       </p>
-      
-      <button ion-button block icon-start *ngIf="!isRequest && isRegistered" (click)="showAddTestimonialPage(organization.Author)">
-         <ion-icon name="md-add-circle"></ion-icon>
-         Testimonial
-      </button>
 
-      <ion-row *ngIf="isRequest">
-         <ion-col padding-right col-6>
-            <button (click)="updateOrganization(organization, 'rejected')" ion-button color="danger" icon-start outline block>
-               <ion-icon name="md-close-circle"></ion-icon>
-            </button>
-         </ion-col>
-         <ion-col col-6>
-            <button (click)="updateOrganization(organization, 'accepted')" ion-button color="primary" icon-start outline block>
-               <ion-icon name="ios-checkmark-circle"></ion-icon>
-            </button>
-         </ion-col>
-      </ion-row>
+      <ion-grid>
+         <ion-row>
+            <ion-col>
+               <button ion-button outline block (click)="viewOrganization()">
+                  View
+               </button>
+            </ion-col>
+            <ion-col col-6 *ngIf="!isRequest" padding-left>
+               <button ion-button outline block icon-start [disabled]="!isRegistered"
+                  (click)="showAddTestimonialPage(organization)">
+                  <ion-icon name="md-add-circle"></ion-icon>
+                  Testimonial
+               </button>
+            </ion-col>
+         </ion-row>
+
+         <ion-row *ngIf="isRequest">
+            <ion-col padding-right col-6>
+               <button (click)="updateOrganization(organization, 'rejected')" ion-button color="danger" icon-start outline
+                  block>
+                  <ion-icon name="md-close-circle"></ion-icon>
+               </button>
+            </ion-col>
+            <ion-col col-6>
+               <button (click)="updateOrganization(organization, 'accepted')" ion-button color="primary" icon-start outline
+                  block>
+                  <ion-icon name="ios-checkmark-circle"></ion-icon>
+               </button>
+            </ion-col>
+         </ion-row>
+      </ion-grid>
 
    </ion-card-content>
 </ion-card>

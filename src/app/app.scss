@@ -52,7 +52,6 @@ button {
   font-size: 1.4rem;
   height: 3.6rem;
   letter-spacing: 0.1rem;
-  
 }
 
 /* END BASE CSS */
@@ -354,7 +353,7 @@ ion-row {
 }
 
 .btn-text-only.activated {
-  background-color: transparent; 
+  background-color: transparent;
 }
 
 /* END COLORS */
@@ -383,6 +382,13 @@ ion-row {
   width: 90%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.empty-icon {
+  max-width: 50%;
+  border: 0;
+  margin: auto;
+  display: block;
 }
 
 .info-banner {

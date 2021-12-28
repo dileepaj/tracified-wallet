@@ -1,0 +1,70 @@
+<ion-header>
+   <ion-toolbar>
+      <ion-title>
+         {{organization.Name}}
+      </ion-title>
+      <ion-buttons start>
+         <button ion-button (click)="disMissView()">
+            <ion-icon name="md-close" color="light"></ion-icon>
+         </button>
+      </ion-buttons>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true" slot="fixed">
+   <div class="card">
+      <div class="header">
+         <div class="avatar-logo">
+            <img [src]="organization.Logo" alt="">
+         </div>
+      </div>
+      <div class="card-body" padding>
+         <div class="org-meta" text-center padding>
+            <h2 class="primary-font">{{organization.Name}}</h2>
+            <h3 class="primary-font">{{organization.Description}}</h3>
+         </div>
+         <div class="info-banner">
+            <h4 class="primary-font">{{organization.Author}}</h4>
+         </div>
+
+         <ion-list padding-vertical>
+            <ion-list-header>
+               Basic Info
+            </ion-list-header>
+            <a ion-item [href]="'mailto:' + organization.Email">
+               <ion-icon name="md-at" color="primary" item-start></ion-icon>
+               {{organization.Email}}
+               <ion-icon name="ios-arrow-forward" color="primary" item-end></ion-icon>
+            </a>
+            <ion-item (click)="callPhoneOrMobile(organization.Phone)">
+               <ion-icon name="ios-call" color="primary" item-start></ion-icon>
+               {{organization.Phone}}
+               <ion-icon name="ios-arrow-forward" color="primary" item-end></ion-icon>
+            </ion-item>
+            <ion-item (click)="callPhoneOrMobile(organization.PhoneSecondary)">
+               <ion-icon name="md-phone-portrait" color="primary" item-start></ion-icon>
+               {{organization.PhoneSecondary && organization.PhoneSecondary !== "" ? organization.PhoneSecondary :
+               "N/A"}}
+               <ion-icon name="ios-arrow-forward" color="primary" item-end></ion-icon>
+            </ion-item>
+         </ion-list>
+
+         <ion-list padding-vertical>
+            <ion-list-header>
+               Testimonials
+            </ion-list-header>
+            <ion-item *ngIf="testimonialsReceived && testimonialsReceived.length == 0 && !isLoading">
+               <img class="empty-icon" src="../../assets/imgs/emptystatus-04.png" />
+               <h3 class="secondary-font" text-center>{{organization.Name}} hasn't received any testimonials yet!</h3>
+            </ion-item>
+            <ion-item *ngFor="let testimonial of testimonialsReceived">
+               <ion-thumbnail item-start>
+                  <img [src]="testimonial.Testimonial.Image">
+               </ion-thumbnail>
+               <h2>{{testimonial.Testimonial.Title}}</h2>
+               <div>{{testimonial.Testimonial.Description}}</div>
+            </ion-item>
+         </ion-list>
+      </div>
+   </div>
+</ion-content>

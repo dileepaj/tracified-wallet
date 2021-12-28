@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { ActionSheetController, NavController } from 'ionic-angular';
+import { ViewTestimonialComponent } from '../../components/view-testimonial/view-testimonial';
+import { ActionSheetController, ModalController, NavController } from 'ionic-angular';
 import { Testimonial } from '../../shared/models/testimonial';
+import { Properties } from '../../shared/properties';
 
 @Component({
   selector: 'testimonial',
@@ -15,8 +17,18 @@ export class TestimonialComponent {
 
   constructor(
     public actionSheetCtrl: ActionSheetController,
+    public modalCtrl: ModalController,
+    public properties: Properties,
     public navCtrl: NavController
   ) { }
+
+  viewTestimonial() {
+    const viewModal = this.modalCtrl.create(ViewTestimonialComponent, {
+      testimonial: this.testimonial,
+      viewType: this.testimonial.Sender == this.properties.defaultAccount.pk ? "sent" : "received"
+    });
+    viewModal.present();
+  }
 
   presentActionSheet() {
     const actionSheet = this.actionSheetCtrl.create({

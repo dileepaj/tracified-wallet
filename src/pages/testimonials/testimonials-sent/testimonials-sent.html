@@ -7,14 +7,14 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content *ngIf="isEmpty">
+<ion-content *ngIf="isEmpty" class="full-height white-background">
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
       refreshingText="Loading..">
     </ion-refresher-content>
   </ion-refresher>
   <ion-row>
-    <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+    <img class="empty-icon" src="../../assets/imgs/emptystatus-04.png" />
   </ion-row>
   <ion-row>
     <div class="full-width text-center line-spacing-small">
