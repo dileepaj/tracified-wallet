@@ -58,6 +58,7 @@ export class OrganizationRegisteredPage {
   checkIfRegistered(publicKey: string) {
     this.dataService.getOrganization(publicKey).then(res => {
       const data: Organization = res.body;
+      console.log(data)
       this.isRegistered = data && data.Status == 'approved'
     }).catch((err) => {
       this.isRegistered = false

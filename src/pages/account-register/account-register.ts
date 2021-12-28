@@ -62,7 +62,7 @@ export class AccountRegisterPage {
          .get(["imageSourceHeader", "camera", "album", "cancel"])
          .subscribe((text) => {
             let actionSheet = this.actionSheetCtrl.create({
-               title: text["imageSourceHeader"],
+               title: text["ITEM_CREATE_CHOOSE_IMAGE"],
                buttons: [
                   {
                      text: text["camera"],

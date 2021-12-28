@@ -53,7 +53,7 @@ export class OrganizationRequestsPage {
          this.presentLoading()
          this.dataService.getOrganizationsRequests().then(res => {
             const data = res.body ? res.body : []
-            this.pendingApprovals = data;
+            this.pendingApprovals = data.reverse();
             (this.pendingApprovals.length == 0) ? this.isEmpty = true : this.isEmpty = false 
             this.dissmissLoading();
          }).catch(err => {
