@@ -74,13 +74,13 @@ export class TestimonialsReceievedPage {
             }
             this.dataService.updateTestimonial(testimonial).then((res) => {
                this.dissmissLoading();
-               if (status == 'accept') {
-                  this.translate.get(['SUCCESS', 'SUCCESS_ACCEPTED', 'UPDATED_RESULTS_TRANSFER']).subscribe(text => {
-                     this.presentAlert(text['SUCCESS'], text['SUCCESS_ACCEPTED '] + testimonial.Testimonial.Title + ". " + text['UPDATED_RESULTS_TRANSFER']);
+               if (status == 'accepted') {
+                  this.translate.get(['SUCCESS', 'SUCCESS_APPROVED', 'UPDATED_RESULTS_TRANSFER']).subscribe(text => {
+                     this.presentAlert(text['SUCCESS'], text['SUCCESS_APPROVED'] + " " + testimonial.Testimonial.Title);
                   });
-               } else if (status == 'reject') {
+               } else if (status == 'rejected') {
                   this.translate.get(['SUCCESS', 'SUCCESS_REJECTED']).subscribe(text => {
-                     this.presentAlert(text['SUCCESS'], text['SUCCESS_REJECTED '] + testimonial.Testimonial.Title);
+                     this.presentAlert(text['SUCCESS'], text['SUCCESS_REJECTED'] + " " + testimonial.Testimonial.Title);
                   });
                }
             }).catch((err) => {

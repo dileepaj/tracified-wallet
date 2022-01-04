@@ -28,7 +28,7 @@ export class OrganizationRegisteredPage {
     private properties: Properties
   ) { }
 
-  ionViewDidLoad() {
+  ionViewWillEnter() {
     this.getRegisteredOrganizations();
   }
 
