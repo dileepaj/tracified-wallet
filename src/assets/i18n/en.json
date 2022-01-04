@@ -251,5 +251,6 @@
   "REGISTRATION_REQUEST_FAILED": "Organization registration request failed!",
   "TESTIMONIAL_REQUEST_SUCCESS": "Testimonial Sent Successfully!",
   "TESTIMONIAL_REQUEST_FAILED": "Testimonial failed to send",
-  "ACC_REGISTERED": "This account is officially registered and recognzed by Tracified and the community. You may now use this account send Testimonials"
+  "ACC_REGISTERED": "This account is officially registered and recognzed by Tracified and the community. You may now use this account send Testimonials",
+  "UPDATED_RESULTS_ORGANIZATION": "You can see the organization in Registered Organizations page."
 }

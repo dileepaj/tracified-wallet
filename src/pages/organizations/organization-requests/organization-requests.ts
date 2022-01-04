@@ -8,7 +8,7 @@ import { Organization } from '../../../shared/models/organization';
 import { DataServiceProvider } from '../../../providers/data-service/data-service';
 import { tracSuperAcc } from '../../../shared/config';
 import { Properties } from '../../../shared/properties';
-
+import { NavController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -25,6 +25,7 @@ export class OrganizationRequestsPage {
    public loadingModal: any;
    public isLoading: boolean;
    public isEmpty: boolean;
+   
 
    constructor(
       private dataService: DataServiceProvider,
@@ -34,7 +35,8 @@ export class OrganizationRequestsPage {
       private alertCtrl: AlertController,
       private blockchainService: BlockchainServiceProvider,
       private properties: Properties,
-      public translate: TranslateService
+      public translate: TranslateService,
+      public navCtrl: NavController
    ) {
       this.mainBCAccount = this.properties.defaultAccount;
       this.superAcc = tracSuperAcc;
@@ -84,13 +86,14 @@ export class OrganizationRequestsPage {
             }
             this.dataService.updateOrganization(organization).then((res) => {
                this.dissmissLoading();
-               if (status == 'accept') {
-                  this.translate.get(['SUCCESS', 'SUCCESS_ACCEPTED', 'UPDATED_RESULTS_TRANSFER']).subscribe(text => {
-                     this.presentAlert(text['SUCCESS'], text['SUCCESS_ACCEPTED '] + organization.Name + ". " + text['UPDATED_RESULTS_TRANSFER']);
+               if (status == 'accepted') {
+                  this.translate.get(['SUCCESS', 'SUCCESS_ACCEPTED', 'UPDATED_RESULTS_ORGANIZATION']).subscribe(text => {
+                     this.presentAlert(text['SUCCESS'], text['SUCCESS_ACCEPTED'] + " " + organization.Name + ". " + text['UPDATED_RESULTS_ORGANIZATION']);
                   });
-               } else if (status == 'reject') {
-                  this.translate.get(['SUCCESS', 'SUCCESS_REJECTED', 'ASSET_NOT_CHANGE']).subscribe(text => {
-                     this.presentAlert(text['SUCCESS'], text['SUCCESS_REJECTED '] + organization.Name + ". " + text['ASSET_NOT_CHANGE']);
+                  this.navCtrl.setRoot(this.navCtrl.getActive().component);
+               } else if (status == 'rejected') {
+                  this.translate.get(['SUCCESS', 'SUCCESS_REJECTED']).subscribe(text => {
+                     this.presentAlert(text['SUCCESS'], text['SUCCESS_REJECTED'] + " " + organization.Name + ". ");
                   });
                }
             }).catch((err) => {
