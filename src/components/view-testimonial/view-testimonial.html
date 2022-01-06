@@ -21,10 +21,10 @@
                <img class="card-image" [src]="testimonial.Testimonial.Image" />
             </div>
          </div>
-
+         <div *ngIf="isDataAvailable">
          <ion-list padding-vertical>
             <ion-list-header>
-               Testimonial {{viewType == 'sent' ? "To" : "From"}} - {{senderOrReceiver.Name}}
+               Testimonial {{viewType == 'sent' ? "To" : "From"}}  {{senderOrReceiver.Name}}
             </ion-list-header>
             <a ion-item [href]="'mailto:' + senderOrReceiver.Email">
                <ion-icon name="md-at" color="primary" item-start></ion-icon>
@@ -44,6 +44,7 @@
                <ion-icon name="ios-arrow-forward" color="primary" item-end></ion-icon>
             </ion-item>
          </ion-list>
+         </div>
       </div>
    </div>
 </ion-content>

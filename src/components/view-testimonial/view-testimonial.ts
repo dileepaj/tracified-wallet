@@ -19,6 +19,7 @@ export class ViewTestimonialComponent {
    public senderOrReceiver: Organization;
    public senderOrReceiverKey: string;
    public viewType: string;
+   public isDataAvailable: boolean;
 
    constructor(
       public navParams: NavParams,
@@ -34,7 +35,7 @@ export class ViewTestimonialComponent {
       this.senderOrReceiverKey = this.navParams.get("viewType") == 'sent' ? this.testimonial.Reciever : this.testimonial.Sender;
    }
 
-   ionViewDidLoad() {
+   ionViewCanEnter() {
       this.fetchAuthor();
    }
 
@@ -43,6 +44,7 @@ export class ViewTestimonialComponent {
       this.dataService.getOrganization(this.senderOrReceiverKey).then(res => {
          const data: Organization = res.body;
          this.senderOrReceiver = data;
+         this.isDataAvailable = true;
          this.dissmissLoading();
       }).catch((err) => {
          console.log(err);
