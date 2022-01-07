@@ -25,7 +25,8 @@ import { CodePushServiceProvider } from '../providers/code-push-service/code-pus
 import { IRemotePackage } from '@ionic-native/code-push';
 import { OrganizationsPage } from '../pages/organizations/organizations';
 import { TestimonialsPage } from '../pages/testimonials/testimonials';
-
+import { App} from 'ionic-angular';
+import { ToastController } from 'ionic-angular';
 @Component({
   templateUrl: 'app.html'
 })
@@ -37,6 +38,9 @@ export class MyApp {
   user: any;
   deviceInfo = null;
   private loading;
+  private lastBack ;
+  private allowClose;
+  
 
   @ViewChild(Nav) nav: Nav;
 
@@ -68,7 +72,9 @@ export class MyApp {
     private dataService: DataServiceProvider,
     private blockchainService: BlockchainServiceProvider,
     private codepushService: CodePushServiceProvider,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private app: App,
+    private toastCtrl : ToastController,
   ) {
     platform.ready().then(() => {
       this.statusBar.styleLightContent();
@@ -101,6 +107,34 @@ export class MyApp {
       this.properties.writeToFile = true;
       this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
     });
+    
+    platform.registerBackButtonAction(() => {
+      const overlay = this.app._appRoot._overlayPortal.getActive();
+      const nav = this.app.getActiveNav();
+      const closeDelay = 2000;
+      const spamDelay = 500;
+    
+      if(overlay && overlay.dismiss) {
+        overlay.dismiss();
+      } else if(nav.canGoBack()){
+        nav.pop();
+      } else if(Date.now() - this.lastBack > spamDelay && !this.allowClose) {
+        this.allowClose = true;
+        let toast = this.toastCtrl.create({
+          message: "Press again to exit from the application",
+          duration: closeDelay,
+          dismissOnPageChange: true
+        });
+        toast.onDidDismiss(() => {
+          this.allowClose = false;
+        });
+        toast.present();
+      } else if(Date.now() - this.lastBack < closeDelay && this.allowClose) {
+        platform.exitApp();
+      }
+      this.lastBack = Date.now();
+    });
+
 
     this.initTranslate();
     this.activePage = this.pages[0];
