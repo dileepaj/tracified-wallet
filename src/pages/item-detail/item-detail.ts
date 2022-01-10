@@ -30,12 +30,15 @@ export class ItemDetailPage {
   loading;
   isLoadingPresent: boolean;
   selectedReceiver: any = "";
-  COCForm: { selectedItem: string, identifier: string, qty: string, receiver: string, vaidity: string } = {
+  date = new Date();
+  myDate: String = new Date(this.date.getTime() - 
+                 this.date.getTimezoneOffset()*60000).toISOString();
+  COCForm: { selectedItem: string, identifier: string, qty: string, receiver: string, vaidity: String } = {
     selectedItem: '',
     identifier: '',
     qty: '',
     receiver: '',
-    vaidity: ''
+    vaidity: this.myDate
   };
 
   public bcAccounts: any;

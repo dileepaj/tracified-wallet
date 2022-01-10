@@ -442,8 +442,8 @@ export class BlockchainServiceProvider {
     const senderPublickKey = this.properties.defaultAccount.pk;
 
     var minTime = Math.round(new Date().getTime() / 1000.0);
-
-    var maxTime = new Date(validity).getTime() / 1000.0;
+    var date = new Date()
+    var maxTime = Math.round(((new Date(validity).getTime()) + (date.getTimezoneOffset() * 60000))/ 1000.0);
     var sourceKeypair = Keypair.fromSecret(signerSK);
 
     var asset = new Asset(item, issuer);
@@ -512,7 +512,8 @@ export class BlockchainServiceProvider {
     let b64;
 
     var minTime = Math.round(new Date().getTime() / 1000.0);
-    var maxTime = new Date(validity).getTime() / 1000.0;
+    var date = new Date()
+    var maxTime = Math.round(((new Date(validity).getTime()) + (date.getTimezoneOffset() )* 60000)/ 1000.0);
     var sourceKeypair = Keypair.fromSecret(signerSK);
     var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
 
