@@ -57,6 +57,10 @@ export class AccountRegisterPage {
 
    ionViewDidLoad() { }
 
+   ionViewCanLeave() {
+      return !this.isLoadingPresent;
+    }
+
    uploadImage() {
       this.translate
          .get(["imageSourceHeader", "camera", "album", "cancel"])

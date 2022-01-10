@@ -61,6 +61,11 @@ export class AddOrganizationTestimonialPage {
       this.fetchTestimonialSender(this.properties.defaultAccount.pk);
    }
 
+   ionViewCanLeave() {
+      return !this.isLoading;
+    }
+
+    
    fetchTestimonialSender(publicKey: string) {
       this.presentLoading();
       this.dataService.getOrganization(publicKey).then(res => {
