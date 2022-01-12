@@ -253,5 +253,8 @@
   "TESTIMONIAL_REQUEST_FAILED": "Testimonial failed to send",
   "ACC_REGISTERED": "This account is officially registered and recognzed by Tracified and the community. You may now use this account send Testimonials",
   "UPDATED_RESULTS_ORGANIZATION": "You can see the organization in Registered Organizations page.",
-  "SUCCESS_APPROVED": "Successfully approved"
+  "SUCCESS_APPROVED": "Successfully approved",
+  "BC_BAD_SEQ" : "Trasaction has sequence number conflict.",
+  "BC_TOO_LATE" : "Transaction expired.",
+  "BC_COULD_NOT_PROCEED": "Could not proceed with the action."
 }

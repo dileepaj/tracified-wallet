@@ -187,11 +187,18 @@ export class ItemReceivedPage {
             });
           }
         }).catch((err) => {
+          console.log(err.error.error_code)
           coc.cocOriginal.Status = 'pending';
           this.dissmissLoading();
-          this.translate.get(['ERROR', 'COULD_NOT_PROCEED']).subscribe(text => {
-            this.presentAlert(text['ERROR'], text['COULD_NOT_PROCEED']);
-          });
+          if (err.error.error_code == "tx_bad_seq"){
+            this.translate.get(['ERROR', 'BC_BAD_SEQ', 'BC_COULD_NOT_PROCEED']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['BC_BAD_SEQ'] + text['BC_COULD_NOT_PROCEED'] + "Please contact admin");
+            });
+          }else if (err.error.error_code == "tx_too_late"){
+            this.translate.get(['ERROR', 'BC_TOO_LATE', 'BC_COULD_NOT_PROCEED']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['BC_TOO_LATE'] + text['BC_COULD_NOT_PROCEED']);
+            });
+          }
           this.logger.error("Failed to update the CoC: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
       }).catch((err) => {
