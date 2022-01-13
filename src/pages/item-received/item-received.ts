@@ -198,6 +198,10 @@ export class ItemReceivedPage {
             this.translate.get(['ERROR', 'BC_TOO_LATE', 'BC_COULD_NOT_PROCEED']).subscribe(text => {
               this.presentAlert(text['ERROR'], text['BC_TOO_LATE'] + text['BC_COULD_NOT_PROCEED']);
             });
+          }else{
+            this.translate.get(['ERROR','COULD_NOT_PROCEED']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['COULD_NOT_PROCEED']);
+            });
           }
           this.logger.error("Failed to update the CoC: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
         });
