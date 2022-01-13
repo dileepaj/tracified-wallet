@@ -551,6 +551,9 @@ export class BlockchainServiceProvider {
   }
 
   changeTrustByUs(account, asset_code, asset_issuer,signerSK){
+   let TDPtxnhash="dsadsadsadsa"
+   let TDPID="sadasdsad"
+   let NFTBlockChain="Stellar"
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);
       if (blockchainNetType === 'live') {
@@ -575,6 +578,7 @@ export class BlockchainServiceProvider {
    // console.log("-------------checking----",resolveObjTrust)
       }).then((transactionResult) => {
         this.logger.info("Trust successful");
+        this.apiService.sendTrustLineXDR(transactionResult,senderPublickKey,asset_code,TDPtxnhash,TDPID,NFTBlockChain)
         resolve(transactionResult)
       }).catch((err) => {
         this.logger.error("Failed Trust " + JSON.stringify(err));
