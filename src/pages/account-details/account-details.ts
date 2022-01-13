@@ -21,6 +21,8 @@ export class AccountDetailsPage {
   private notDefaultAccount: boolean = true;
   private accountFunds: string = 'Calculating...';
 
+
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -39,7 +41,9 @@ export class AccountDetailsPage {
       this.accountFunds = '0 ';
     });
   }
-
+  ngOnInit() { 
+    this.decryptSecretKey();
+  }
   decryptSecretKey() {
     this.transactionPasswordPopUp().then((password) => {
       this.mappingService.decryptSecret(this.account.sk, password).then((secretKey) => {
@@ -71,6 +75,8 @@ export class AccountDetailsPage {
     this.keyDecrypted = false;
     this.privateKey = "";
   }
+
+ 
 
   transactionPasswordPopUp(): Promise<string> {
     let resolveFunction: (password: string) => void;
@@ -142,6 +148,16 @@ export class AccountDetailsPage {
     });
 
     alert.present();
+  }
+
+  maketrustLine(){
+    if(!!this.privateKey){
+      console.log(`callinyMINT------------------`)
+      this.blockchainService.changeTrustByUs(this.account,"NFT111111111","GATEBZMJ5WI4GGW4YHHZC77IQQERD7ZZZ5NAJHGOQGFMZWD56YYO5NR7",this.privateKey);
+      console.log(`end------------------`)
+    }else{
+      console.log(`nokye---------------s`)
+    }
   }
 
   presentAlert(title: string, message: string) {

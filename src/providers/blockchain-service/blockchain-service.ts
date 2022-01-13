@@ -408,6 +408,7 @@ export class BlockchainServiceProvider {
   }
 
   acceptTransactionXdr(identifier, receiver, qty, item, validity, proofHash, subAccount, issuer, signerSK) {
+    console.log("-1111111111111111111111111111111111111")
     return new Promise((resolve, reject) => {
       if (blockchainNetType === 'live') {
         Network.usePublicNetwork();
@@ -434,7 +435,7 @@ export class BlockchainServiceProvider {
   }
 
   acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount) {
-
+    console.log("-2222222222222222222222222222222")
     let XDR;
     let b64;
     let seqNum;
@@ -479,7 +480,7 @@ export class BlockchainServiceProvider {
   }
 
   rejectTransactionXdr(receiver, validity, proofHash, subAccount, signerSK) {
-
+    console.log("-333333333333333333333333333333333333333")
     return new Promise((resolve, reject) => {
 
       if (blockchainNetType === 'live') {
@@ -547,6 +548,39 @@ export class BlockchainServiceProvider {
     let signedTrans = transaction.toEnvelope().toXDR().toString("base64");
 
     return signedTrans;
+  }
+
+  changeTrustByUs(account, asset_code, asset_issuer,signerSK){
+    return new Promise((resolve, reject) => {
+      let sourceKeypair = Keypair.fromSecret(signerSK);
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      const senderPublickKey = this.properties.defaultAccount.pk;//distributor
+      var asset = new Asset(asset_code, asset_issuer);
+      let server = new Server(blockchainNet);
+      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
+        var transaction = new TransactionBuilder(account)
+        .addOperation(Operation.changeTrust({asset:asset,limit:"1",source:senderPublickKey}))
+        .build();
+        transaction.sign(sourceKeypair);
+        let XDR = transaction.toEnvelope();
+        let b64 = XDR.toXDR('base64');
+        const resolveObjTrust = {
+            b64: b64
+    }
+    return resolveObjTrust
+   // console.log("-------------checking----",resolveObjTrust)
+      }).then((transactionResult) => {
+        this.logger.info("Trust successful");
+        resolve(transactionResult)
+      }).catch((err) => {
+        this.logger.error("Failed Trust " + JSON.stringify(err));
+        reject();
+      });
+    });
   }
 
   getAssetIssuer(accountPubKey, asset_code): Promise<any> {
