@@ -27,8 +27,8 @@ import {
 
 @Injectable()
 export class ApiServiceProvider {
-  url: string = 'https://tracified-gateway.herokuapp.com';
-  LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
+  url: string = 'http://localhost:9080';
+  LocalAdminURL: string = 'https://qa.admin.api.tracified.com';
   reqOpts: any;
 
 
@@ -127,7 +127,38 @@ export class ApiServiceProvider {
     });
   }
 
+  sendTrustLineXDR(body,senderPublickKey,asset_code,TDPtxnhash,TDPID,NFTBlockChain): Promise<any> {
 
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+        })
+      }
+     
+      let NFTModel={
+        SenderPublickKey:senderPublickKey,
+        Asset_code:asset_code,
+        TDPtxnhash:TDPtxnhash,
+        TDPID:TDPID,
+        NFTBlockChain:NFTBlockChain,
+        XDR:body.b64
+      }
+      console.log(`postModel`,NFTModel)
+      this.http.post(this.url + '/nft/trustlinexdr',NFTModel, this.reqOpts)
+        .subscribe(response => {
+          // console.log(response);
+
+          resolve(response);
+        },
+          error => {
+            console.log(error);
+            reject(error);
+          });
+    });
+  }
 
   verifyEmail(body: any, reqOpts?: any): Promise<any> {
     let confirm = { 'confirmUser': body };
@@ -414,3 +445,4 @@ export class ApiServiceProvider {
   }
 
 }
+
