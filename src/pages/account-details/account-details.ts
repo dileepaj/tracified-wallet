@@ -7,7 +7,7 @@ import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { TranslateService } from '@ngx-translate/core';
-
+import { ApiServiceProvider } from '../../providers/api-service/api-service';
 @IonicPage()
 @Component({
   selector: 'page-account-details',
@@ -32,6 +32,7 @@ export class AccountDetailsPage {
     private dataService: DataServiceProvider,
     private blockchainService: BlockchainServiceProvider,
     private translate: TranslateService,
+    private apiService:ApiServiceProvider
   ) {
     this.account = this.navParams.get("account");
     this.defaultAccountCheck();
@@ -151,10 +152,25 @@ export class AccountDetailsPage {
   }
 
   maketrustLine(){
+    let TDPtxnhash="2874f8d0fcfb35c0d4133edd7e1c0c3be4aaed4dfd0ec531b1d4ec7a6cfea5c9"
+    let TDPID="61e11d4257577da95de92786"
+    let Identifier="832903168"
+    let ProductName="carrot"
+    let NFTBlockChain="Stellar"
+    let assetCode="NFTt15"
+    let distributorPK=this.properties.defaultAccount.pk
     if(!!this.privateKey){
       console.log(`callinyMINT------------------`)
-      this.blockchainService.changeTrustByUs(this.account,"NFT111111111","GATEBZMJ5WI4GGW4YHHZC77IQQERD7ZZZ5NAJHGOQGFMZWD56YYO5NR7",this.privateKey);
-      console.log(`end------------------`)
+      this.blockchainService.changeTrustByUs(assetCode,"GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3",this.privateKey).then((transactionResult:any)=>{
+        console.log(`result`, transactionResult)
+        if(transactionResult.successful){
+        this.apiService.sendTrustLineXDR(transactionResult.successful,distributorPK,assetCode,TDPtxnhash,TDPID,NFTBlockChain,transactionResult.created_at,Identifier,ProductName).then(nft=>{
+        console.log(`NFT created`,nft)
+        }).catch(err=>console.log(`err`, err))
+        }
+      }).catch(err=>{
+        console.log("can not create trustline (NFT)")
+        console.log(`err`, err)})  
     }else{
       console.log(`nokye---------------s`)
     }

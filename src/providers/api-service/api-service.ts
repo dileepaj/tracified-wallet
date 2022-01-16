@@ -127,7 +127,7 @@ export class ApiServiceProvider {
     });
   }
 
-  sendTrustLineXDR(body,senderPublickKey,asset_code,TDPtxnhash,TDPID,NFTBlockChain): Promise<any> {
+  sendTrustLineXDR(transactionResultSuccessful,distributorPublickKey,asset_code,TDPtxnhash,TDPID,NFTBlockChain,created_at,Identifier,ProductName): Promise<any> {
 
     return new Promise((resolve, reject) => {
       this.reqOpts = {
@@ -139,12 +139,15 @@ export class ApiServiceProvider {
       }
      
       let NFTModel={
-        SenderPublickKey:senderPublickKey,
+        DistributorPublickKey:distributorPublickKey,
         Asset_code:asset_code,
         TDPtxnhash:TDPtxnhash,
+        Identifier:Identifier,
         TDPID:TDPID,
         NFTBlockChain:NFTBlockChain,
-        XDR:body.b64
+        Successfull:transactionResultSuccessful,
+        TrustLineCreatedAt:created_at,
+        ProductName:ProductName
       }
       console.log(`postModel`,NFTModel)
       this.http.post(this.url + '/nft/trustlinexdr',NFTModel, this.reqOpts)
