@@ -618,13 +618,27 @@ export class BlockchainServiceProvider {
           } else if (avaialbeAccounts.length > 0) {
             this.checkIfAccountInvalidated(avaialbeAccounts[0].subAccount).then((status) => {
               if (status) {
-                let subAcc = {
-                  publicKey: avaialbeAccounts[0].subAccount,
-                  available: true,
-                  sequenceNo: avaialbeAccounts[0].sequenceNo
-                };
-                this.logger.info("Found Invalidated Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
-                resolve(subAcc);
+                if(avaialbeAccounts[0].expiration){
+                  this.blockchainAccountInfo(avaialbeAccounts[0].subAccount).then((accountInfo: AccountResponse) => {
+                    let subAcc = {
+                      publicKey: avaialbeAccounts[0].subAccount,
+                      available: true,
+                      sequenceNo: accountInfo.sequence
+                    };
+                    this.logger.info("Found Invalidated Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                    resolve(subAcc);
+                  }).catch((err) => {
+                    reject(err);
+                  });
+                }else{
+                  let subAcc = {
+                    publicKey: avaialbeAccounts[0].subAccount,
+                    available: true,
+                    sequenceNo: avaialbeAccounts[0].sequenceNo
+                  };
+                  this.logger.info("Found Invalidated Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                  resolve(subAcc);
+                }
               } else {
                 this.logger.info("Invalidate Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
                 let subPair = this.getSubAccountPair(avaialbeAccounts[0].subAccount, this.properties.defaultAccount);
