@@ -18,66 +18,62 @@
   <ion-card text-wrap >
     <ion-item>
       <ion-row>
-        <ion-col col-3 left text-left>
+        <ion-col col-2 left text-left>
           <h5 class="label">{{ 'PoductName'}}:</h5>
         </ion-col>
-        <ion-col col-9 left text-left>
-          <h5>{{ProductName}}</h5>
+        <ion-col col-10 left text-left>
+          <h4>{{ProductName}}</h4>
         </ion-col>
       </ion-row>
     </ion-item>
     <ion-item>
       <ion-row>
-        <ion-col col-3 left text-left>
+        <ion-col col-2 left text-left>
           <p class="label">{{ 'TDPTXNHash'}}:</p>
         </ion-col>
-        <ion-col col-9 left text-left>
+        <ion-col col-10 left text-left>
           <p>{{TDPtxnhash}}</p>
         </ion-col>
       </ion-row>
     </ion-item>
     <ion-item>
       <ion-row>
-        <ion-col col-3 left text-left>
+        <ion-col col-2 left text-left>
           <p class="label">{{ 'Identifer'}}:</p>
         </ion-col>
-        <ion-col col-9 left text-left>
+        <ion-col col-10 left text-left>
           <p>{{Identifier}}</p>
         </ion-col>
       </ion-row>
     </ion-item>
     <ion-item>
       <ion-row>
-        <ion-col col-3 left text-left>
+        <ion-col col-2 left text-left>
           <p class="label">{{ 'TdpId'}}:</p>
         </ion-col>
-        <ion-col col-9 left text-left>
+        <ion-col col-10 left text-left>
           <p>{{TDPID}}</p>
         </ion-col>
       </ion-row>
     </ion-item>
     <ion-item>
       <ion-row>
-        <ion-col col-3 left text-left>
+        <ion-col col-2 left text-left>
           <p class="label">{{ 'Type'}}:</p>
         </ion-col>
-        <ion-col col-9 left text-left>
+        <ion-col col-10 left text-left>
           <p>{{"TDP"}}</p>
         </ion-col>
       </ion-row>
     </ion-item>
-   
         <ion-item>
           <ion-label class="login-lables" floating>{{'NFTName'}}</ion-label>
           <ion-input color="secondary" type="text" text-left id="input" [(ngModel)]="nftName"></ion-input>
         </ion-item>
-
-  <ion-item>
+    <ion-item>
         <button class="btn-green" (click)="createNFT()">
           Create NFT by Tracified
        </button>
-
-  
     </ion-item>
   </ion-card>
 </ion-content>

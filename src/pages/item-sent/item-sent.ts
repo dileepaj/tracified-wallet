@@ -85,8 +85,8 @@ export class ItemSentPage {
           let accountNames = res.body.pk;
           cocs.forEach((coc) => {
             const transaction = new Transaction(coc.AcceptXdr);
-            let minTime = new Date(transaction.timeBounds.minTime * 1000);
-            let maxTime = new Date(transaction.timeBounds.maxTime * 1000);
+            let minTime = new Date();
+            let maxTime = new Date();
 
             let assetName;
             let amount;

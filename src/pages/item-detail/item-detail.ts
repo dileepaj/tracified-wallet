@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController, LoadingController, ToastController } from 'ionic-angular';
 import { Items } from '../../providers/items/items';
-import { Keypair, AccountResponse } from 'stellar-sdk';
+import { Keypair } from 'stellar-sdk';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
@@ -313,7 +313,7 @@ export class ItemDetailPage {
           } else {
             console.log("New Account");
             this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
-              this.blockchainService.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
+              this.blockchainService.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: any) => {
                 let subAcc = {
                   publicKey: subKeyPair.publicKey(),
                   available: false,
@@ -330,7 +330,7 @@ export class ItemDetailPage {
         } else {
           console.log("New Account");
           this.blockchainService.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
-            this.blockchainService.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
+            this.blockchainService.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: any) => {
               let subAcc = {
                 publicKey: subKeyPair.publicKey(),
                 available: false,

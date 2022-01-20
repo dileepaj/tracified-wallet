@@ -177,4 +177,9 @@ export class CreateNftPage {
  createNFT(){
   this.decryptSecretKey()    
   }
+
+
+
+
+
 }

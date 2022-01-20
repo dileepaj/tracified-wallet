@@ -49,6 +49,15 @@
           <div class="right-float">
             <button ion-button [disabled]="item.balance < 1" class="btn-green" (click)="openItem(item)">{{ 'TRANSFER' |  translate }}</button>
           </div>
+          <div class="right-float">
+            <button ion-button [disabled]="item.balance < 1" class="btn-green" (click)="sellNft()">{{ 'Sell' |  translate }}</button>
+          </div>
+          <div class="right-float">
+            <button ion-button [disabled]="item.balance < 1" class="btn-green" (click)="buyNft()">{{ 'trust2' |  translate }}</button>
+          </div>
+          <div class="right-float">
+            <button ion-button [disabled]="item.balance < 1" class="btn-green" (click)="aaa()">{{ 'Buy' |  translate }}</button>
+          </div>
           <div class="clear-float"></div>
         </ion-row>
       </ion-row>

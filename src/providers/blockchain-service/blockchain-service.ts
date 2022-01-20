@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction } from 'stellar-sdk';
+import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset, Transaction } from 'stellar-sdk';
 
 import { Properties } from '../../shared/properties';
 import { blockchainNet } from '../../shared/config';
@@ -9,6 +9,7 @@ import { Logger } from 'ionic-logger-new';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+
 
 @Injectable()
 export class BlockchainServiceProvider {
@@ -150,7 +151,7 @@ export class BlockchainServiceProvider {
 
   accountBalance(publicKey) {
     return new Promise((resolve, reject) => {
-      this.blockchainAccountInfo(publicKey).then((account: AccountResponse) => {
+      this.blockchainAccountInfo(publicKey).then((account: any) => {
         let balances = account.balances;
         for (let i = 0; i < balances.length; i++) {
           if (balances[i].asset_type == "native") {
@@ -168,7 +169,7 @@ export class BlockchainServiceProvider {
   accountAssetsCount(publicKey) {
     return new Promise((resolve, reject) => {
       let assetCount = 0;
-      this.blockchainAccountInfo(publicKey).then((account: AccountResponse) => {
+      this.blockchainAccountInfo(publicKey).then((account: any) => {
         let balances = account.balances;
         for (let i = 0; i < balances.length; i++) {
           if (balances[i].asset_type == "credit_alphanum12") {
@@ -187,7 +188,7 @@ export class BlockchainServiceProvider {
     return new Promise((resolve, reject) => {
       let assetCount = 0;
       let nativeBalance = "0";
-      this.blockchainAccountInfo(publicKey).then((account: AccountResponse) => {
+      this.blockchainAccountInfo(publicKey).then((account: any) => {
         let balances = account.balances;
         for (let i = 0; i < balances.length; i++) {
           if (balances[i].asset_type == "native") {
@@ -288,7 +289,7 @@ export class BlockchainServiceProvider {
 
   getAccountBalanceAssets(mainAccount) {
     return new Promise((resolve, reject) => {
-      this.blockchainAccountInfo(mainAccount.pk).then((accountInfo: AccountResponse) => {
+      this.blockchainAccountInfo(mainAccount.pk).then((accountInfo: any) => {
         let balances = accountInfo.balances;
         let balance = "0";
         let assetCount = 0;
@@ -446,7 +447,7 @@ export class BlockchainServiceProvider {
     var sourceKeypair = Keypair.fromSecret(signerSK);
 
     var asset = new Asset(item, issuer);
-    var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+    var opts = {fee:100, timebounds: { minTime: minTime, maxTime: maxTime } };
 
     var transaction = new TransactionBuilder(account, opts);
     transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', source: sourceKeypair.publicKey()}));
@@ -513,7 +514,7 @@ export class BlockchainServiceProvider {
     var date = new Date()
     var maxTime = Math.round(((new Date(validity).getTime()) + (date.getTimezoneOffset() )* 60000)/ 1000.0);
     var sourceKeypair = Keypair.fromSecret(signerSK);
-    var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+    var opts = {fee:100, timebounds: { minTime: minTime, maxTime: maxTime } };
 
     var transaction = new TransactionBuilder(account, opts).addOperation(Operation.manageData({
       name: 'Status', value: 'rejected', source: receiver
@@ -548,6 +549,8 @@ export class BlockchainServiceProvider {
   }
 
   changeTrustByUs(asset_code, asset_issuer,signerSK){
+    console.log('first--',asset_code, asset_issuer,signerSK);
+    
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);
       if (blockchainNetType === 'live') {
@@ -557,26 +560,28 @@ export class BlockchainServiceProvider {
       }
       const senderPublickKey = this.properties.defaultAccount.pk;//distributor
       var asset = new Asset(asset_code, asset_issuer);
+      var opts = {fee:100};
       let server = new Server(blockchainNet);
       server.loadAccount(sourceKeypair.publicKey()).then((account) => {
-        var transaction = new TransactionBuilder(account)
+        var transaction = new TransactionBuilder(account,opts)
         .addOperation(Operation.changeTrust({asset:asset,limit:"1",source:senderPublickKey}))
+        .setTimeout(60000)
         .build();
         transaction.sign(sourceKeypair);
         return server.submitTransaction(transaction);
       }).then((transactionResult) => {
-        this.logger.info("Trust successful",transactionResult);
+        //this.logger.info("Trust successful",transactionResult);
         resolve(transactionResult)
       }).catch((err) => {
         this.logger.error("Failed Trust " + JSON.stringify(err));
-        reject();
+        reject(err);
       });
     });
   }
 
   getAssetIssuer(accountPubKey, asset_code): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.blockchainAccountInfo(accountPubKey).then((account: AccountResponse) => {
+      this.blockchainAccountInfo(accountPubKey).then((account: any) => {
         let balances: any = account.balances;
         if (balances.length > 0) {
           for (let i = 0; i < balances.length; i++) {
@@ -612,4 +617,134 @@ export class BlockchainServiceProvider {
       });
     });
   }
+  
+  ////////////////sending nft from distributor to third party
+  ///////////////distributor puts a managesellOffer
+
+  sellNft(asset_code,asset_issuer,signerSK){
+    //signerSk=current NFT owner (distibutor )
+    //asset_issuer===>publicKey= current NFT owner (distibutor )
+    console.log(`selingg`, asset_code,asset_issuer,signerSK)
+    return new Promise((resolve, reject) => {
+      let sourceKeypair = Keypair.fromSecret(signerSK);//because the distributor has the authority to sell
+      console.log(`sourceKeypair`, sourceKeypair)
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      var asset = new Asset(asset_code, asset_issuer);
+      var sellingAsset=Asset.native();
+      var opts = {fee:100};
+      let server = new Server(blockchainNet);
+      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
+        var transaction = new TransactionBuilder(account,opts)
+        .addOperation(Operation.manageSellOffer({
+          selling:asset,
+          buying:sellingAsset,
+          amount:'1',
+          price:'50', 
+          offerId:'0',
+        }))
+        .setTimeout(60000)
+        .build();
+        transaction.sign(sourceKeypair);
+       return server.submitTransaction(transaction);
+   // console.log("-------------checking----",resolveObjTrust)
+      }).then((transactionResult) => {
+        //this.logger.info("Put up for sale successful",transactionResult);
+        resolve(transactionResult)
+      }).catch((err) => {
+        this.logger.error("Couldn't put up for sale " + JSON.stringify(err));
+        reject();
+      });
+    });
+  }
+
+  ///////////create trustline by third party to distributor and issuer
+  //////////here we are assuming that this wallet can also act as a buyer, so this wallet has to build a trustline with the gateway and a distributor===>(cuurent_owner)
+  trustlineByBuyer(asset_code, asset_issuer,signerSK){
+    console.log(`calling tustline by buyer -----`,asset_code, asset_issuer,signerSK)
+    let TDPtxnhash="dsadsadsadsa"
+   let TDPID="sadasdsad"
+   let NFTBlockChain="Stellar"
+   //distributor ====>>>>cuurent NFT owner
+    return new Promise((resolve, reject) => {
+      let sourceKeypair = Keypair.fromSecret(signerSK);//buyers secret key
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      const senderPublickKey= "GCKWUZXTOQ3RWHRPUZDVD53B5VBUIO24PPC4FOEKIRAGU7KC2VLQ3DGY";
+      //const senderPublickKey = this.properties.defaultAccount.pk;//buyers public key()
+      var asset = new Asset(asset_code, asset_issuer);//for buyer --> gateway
+      //var buyAsset = new Asset(asset_code, distributor);//for buyer --> distributor
+      var opts = {fee:100};
+      let server = new Server(blockchainNet);
+      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
+        var transaction = new TransactionBuilder(account,opts)
+        .addOperation(Operation.changeTrust({asset:asset,limit:"1",source:senderPublickKey}))//trustline from buyer to issuer
+        .setTimeout(60000)
+        .build();
+        transaction.sign(sourceKeypair);
+        return server.submitTransaction(transaction);
+   // console.log("-------------checking----",resolveObjTrust)
+      }).then((transactionResult) => {
+      //  this.logger.info("Trusts successful",transactionResult);
+        resolve(transactionResult)
+      }).catch((err) => {
+        this.logger.error("Failed Trusts " + JSON.stringify(err));
+        reject();
+      });
+    });
+  }
+
+  /////////////manageBuyOffer to transfer nft to third party
+  buyNft(asset_code, signerSK,asset_issuer){
+    console.log(`buy`,asset_code, signerSK,asset_issuer)
+////asset_issuer=======gateway
+    return new Promise((resolve, reject) => {
+      let sourceKeypair = Keypair.fromSecret(signerSK);//buyers secret key
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      // const senderPublickKey = this.properties.defaultAccount.pk;//buyers public key
+      var buyAsset = new Asset(asset_code, asset_issuer)
+      var sellingAsset=Asset.native();
+      var opts = {fee:100};
+      let server = new Server(blockchainNet);
+      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
+        var transaction = new TransactionBuilder(account,opts)
+        .addOperation(Operation.manageBuyOffer({
+          buying:buyAsset,
+          selling:sellingAsset,
+          buyAmount:'1',
+          price:'50', 
+          offerId:'0',}))
+        .setTimeout(60000)
+        .build();
+
+
+        transaction.sign(sourceKeypair);
+        console.log("ssssssssssssssssss",sourceKeypair)
+        return server.submitTransaction(transaction);
+   // console.log("-------------checking----",resolveObjTrust)
+      }).then((transactionResult) => {
+      //  this.logger.info("Buying of NFT was successful",transactionResult);
+        resolve(transactionResult)
+      }).catch((err) => {
+        console.log(`err1`, err)
+        reject(err);
+      });
+    });
+  }
+///////////////////////////End of NFT Related//////////////////////////////////////////////////////
+
+
+ callback = function (resp) {
+  console.log(resp);
+};
 }
