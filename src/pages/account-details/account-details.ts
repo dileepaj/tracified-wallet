@@ -164,7 +164,7 @@ export class AccountDetailsPage {
       this.blockchainService.changeTrustByUs(assetCode,"GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3",this.privateKey).then((transactionResult:any)=>{
         console.log(`result`, transactionResult)
         if(transactionResult.successful){
-        this.apiService.sendTrustLineXDR(transactionResult.successful,distributorPK,assetCode,TDPtxnhash,TDPID,NFTBlockChain,transactionResult.created_at,Identifier,ProductName).then(nft=>{
+        this.apiService.MinNFTStellar(transactionResult.successful,distributorPK,assetCode,TDPtxnhash,TDPID,NFTBlockChain,transactionResult.created_at,Identifier,ProductName).then(nft=>{
         console.log(`NFT created`,nft)
         }).catch(err=>console.log(`err`, err))
         }

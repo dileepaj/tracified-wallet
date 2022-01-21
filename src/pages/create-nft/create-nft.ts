@@ -58,7 +58,10 @@ export class CreateNftPage {
     // let Identifier="832903168"
     // let ProductName="carrot"
     // let NFTBlockChain="Stellar"
-    // let assetCode="NFTt15"
+    // let assetCode="NFTt15
+
+    //Getting new issuer account
+    this.apiService.getNewIssuerPublicKey()
 
     console.log(`testPrivateKey=====--------------`, privateKey)
     let distributorPK=this.properties.defaultAccount.pk
