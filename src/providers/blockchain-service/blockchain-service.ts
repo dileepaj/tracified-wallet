@@ -701,7 +701,7 @@ export class BlockchainServiceProvider {
   }
 
   /////////////manageBuyOffer to transfer nft to third party
-  buyNft(asset_code, signerSK,asset_issuer){
+  buyNft(asset_code, signerSK,asset_issuer, main_issuer,priceNft){
     console.log(`buy`,asset_code, signerSK,asset_issuer)
 ////asset_issuer=======gateway
     return new Promise((resolve, reject) => {
@@ -715,6 +715,8 @@ export class BlockchainServiceProvider {
       var buyAsset = new Asset(asset_code, asset_issuer)
       var sellingAsset=Asset.native();
       var opts = {fee:100};
+      var percentage = priceNft*(20/100);
+      var royalty = percentage.toString();
       let server = new Server(blockchainNet);
       server.loadAccount(sourceKeypair.publicKey()).then((account) => {
         var transaction = new TransactionBuilder(account,opts)
@@ -722,8 +724,12 @@ export class BlockchainServiceProvider {
           buying:buyAsset,
           selling:sellingAsset,
           buyAmount:'1',
-          price:'50', 
+          price:priceNft, 
           offerId:'0',}))
+        .addOperation(Operation.payment({
+          destination:main_issuer,
+          asset:sellingAsset,
+          amount:royalty,}))
         .setTimeout(600000)
         .build();
 

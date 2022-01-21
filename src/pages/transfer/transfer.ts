@@ -127,12 +127,12 @@ this.bc.sellNft("kiri","GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3
 }
 buyNft(){
   console.log(`calling tustline  -----`)
-  this.bc.trustlineByBuyer("kiri","GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3","SCW3PPPHYXXVQBBMLG5LBSQ376PRQV7NJ4RLRVJOTM7IPUCAJBKHLQBT").then((a)=>console.log(`a`, a)).catch(err=>{console.log(`err`, err)})
+  this.bc.trustlineByBuyer("kiri","GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3","SCW3PPPHYXXVQBBMLG5LBSQ376PRQV7NJ4RLRVJOTM7IPUCAJBKHLQBT","").then((a)=>console.log(`a`, a)).catch(err=>{console.log(`err`, err)})
 }
 
 aaa(){
   console.log(`calling by buyer -----`)
-  this.bc.buyNft("kiri","SCW3PPPHYXXVQBBMLG5LBSQ376PRQV7NJ4RLRVJOTM7IPUCAJBKHLQBT","GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3").then((a)=>console.log(`a`, a)).catch(err=>{console.log(`err`, err)})
+  this.bc.buyNft("kiri","SCW3PPPHYXXVQBBMLG5LBSQ376PRQV7NJ4RLRVJOTM7IPUCAJBKHLQBT","GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3","mainpk","nftprice").then((a)=>console.log(`a`, a)).catch(err=>{console.log(`err`, err)})
 }
 
 }

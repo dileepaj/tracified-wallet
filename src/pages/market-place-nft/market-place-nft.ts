@@ -82,7 +82,7 @@ export class MarketPlaceNftPage {
   }
 
   aaa(item){
-  this.bc.buyNft(item.NftAssetName,this.mainAccount.skp,item.OriginPK)
+  this.bc.buyNft(item.NftAssetName,this.mainAccount.skp,item.OriginPK,"","")
   .then((a)=>console.log(`a`, a))
   .catch(err=>{console.log(`err`, err)})
   this.apiService.UpdateSellingStatusNFT(this.mainAccount.pk,item.CurrentOwnerNFTPK,item.NFTTXNhash,"FORSELL")
