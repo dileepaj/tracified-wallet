@@ -61,29 +61,25 @@ export class CreateNftPage {
     // let assetCode="NFTt15
 
     //Getting new issuer account
-    this.apiService.getNewIssuerPublicKey()
-
-    console.log(`testPrivateKey=====--------------`, privateKey)
-    let distributorPK=this.properties.defaultAccount.pk
-    if(!!privateKey&&!!this.nftName){
-      console.log(`callinyMINT------------------`)
-      this.blockchainService.changeTrustByUs(this.nftName,"GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3",this.privateKey).then((transactionResult:any)=>{
-        console.log(`result`, transactionResult)
-        if(transactionResult.successful){
-        this.apiService.MinNFTStellar(transactionResult.successful,distributorPK,this.nftName,this.TDPtxnhash,this.TDPID,this.NFTBlockChain,transactionResult.created_at,this.Identifier,this.ProductName).then(nft=>{
-        console.log(`NFT created`,nft)
-        }).catch(err=>console.log(`err`, err))
-        }
-      }).catch(err=>{
-        console.log("can not create trustline (NFT)")
-        console.log(`err`, err)})  
-    }else{
-      console.log(`nokye---------------s`)
-    }
+    this.apiService.getNewIssuerPublicKey().then(issuerPublcKey=>{
+      let distributorPK=this.properties.defaultAccount.pk
+      if(!!privateKey&&!!this.nftName){
+        this.blockchainService.changeTrustByUs(this.nftName,issuerPublcKey.NFTIssuerPK,this.privateKey).then((transactionResult:any)=>{
+          if(transactionResult.successful){
+          this.apiService.MinNFTStellar(transactionResult.successful,issuerPublcKey.NFTIssuerPK,distributorPK,this.nftName,this.TDPtxnhash,this.TDPID,this.NFTBlockChain,transactionResult.created_at,this.Identifier,this.ProductName)
+          .then(nft=>{
+            console.log('nft', nft);
+          }).catch(err=>console.log(`err`, err))
+          }
+        }).catch(err=>{
+          console.log(`err`, err)})  
+      }else{
+        console.log(`no privateKey`)
+      }
+    }).catch(err=>console.log(err))
   }
 
   decryptSecretKey() {
-    console.log(`account`, this.account)
     this.transactionPasswordPopUp().then((password) => {
       this.mappingService.decryptSecret(this.account.sk, password).then((secretKey) => {
         let pair = Keypair.fromSecret(secretKey.toString());
@@ -92,13 +88,11 @@ export class CreateNftPage {
           this.privateKey = secretKey.toString();
           this.mintNFT(this.privateKey)
         } else {
-          console.log("Password incorrect.");
           this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
           });
         }
       }).catch((err) => {
-        console.log("Error: ", err);
         this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
           this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
         });
@@ -178,7 +172,6 @@ export class CreateNftPage {
   }
 
  createNFT(){
-   this.apiService.retriveSellNFTStellar().then(result=>console.log('result' ,result)).catch(err=>console.log('err', err))
   this.decryptSecretKey()    
   }
 

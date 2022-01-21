@@ -135,6 +135,7 @@ export class ApiServiceProvider {
 
   MinNFTStellar(
     transactionResultSuccessful,
+    issuerPublicKey,
     distributorPublickKey,
     asset_code,
     TDPtxnhash,
@@ -155,6 +156,7 @@ export class ApiServiceProvider {
 
       let NFTModel = {
         DistributorPublickKey: distributorPublickKey,
+        IssuerPublicKey:issuerPublicKey,
         Asset_code: asset_code,
         TDPtxnhash: TDPtxnhash,
         Identifier: Identifier,
@@ -255,11 +257,9 @@ export class ApiServiceProvider {
 
       this.http.get(this.url + "/nft/createNFTIssuerAccount").subscribe(
         (response) => {
-          console.log("Public-----------", response);
           resolve(response);
         },
         (error) => {
-          console.log(error);
           reject(error);
         }
       );

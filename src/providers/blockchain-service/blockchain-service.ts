@@ -548,9 +548,7 @@ export class BlockchainServiceProvider {
     return signedTrans;
   }
 
-  changeTrustByUs(asset_code, asset_issuer,signerSK){
-    console.log('first--',asset_code, asset_issuer,signerSK);
-    
+  changeTrustByUs(asset_code, asset_issuer,signerSK){  
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);
       if (blockchainNetType === 'live') {
@@ -573,7 +571,6 @@ export class BlockchainServiceProvider {
         //this.logger.info("Trust successful",transactionResult);
         resolve(transactionResult)
       }).catch((err) => {
-        this.logger.error("Failed Trust " + JSON.stringify(err));
         reject(err);
       });
     });
