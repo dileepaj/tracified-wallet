@@ -127,7 +127,7 @@ export class ApiServiceProvider {
     });
   }
 
-  sendTrustLineXDR(transactionResultSuccessful,distributorPublickKey,asset_code,TDPtxnhash,TDPID,NFTBlockChain,created_at,Identifier,ProductName): Promise<any> {
+  MinNFTStellar(transactionResultSuccessful,distributorPublickKey,asset_code,TDPtxnhash,TDPID,NFTBlockChain,created_at,Identifier,ProductName): Promise<any> {
 
     return new Promise((resolve, reject) => {
       this.reqOpts = {
@@ -150,10 +150,55 @@ export class ApiServiceProvider {
         ProductName:ProductName
       }
       console.log(`postModel`,NFTModel)
-      this.http.post(this.url + '/nft/trustlinexdr',NFTModel, this.reqOpts)
+      this.http.post(this.url + '/nft/mintStellar',NFTModel, this.reqOpts)
         .subscribe(response => {
           // console.log(response);
 
+          resolve(response);
+        },
+          error => {
+            console.log(error);
+            reject(error);
+          });
+    });
+  }
+
+  UpdateSellingStatusNFT(currentPK,previousPK,nftHash,sellingStats): Promise<any> {
+
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+        })
+      }
+
+      this.http.put(this.url + `/nft/updateStellarMarketplace?currentPK=${currentPK}&previousPK=${previousPK}&txnHash=${nftHash}&sellingStatus=${sellingStats}`, this.reqOpts)
+        .subscribe(response => {
+          // console.log(response);
+          resolve(response);
+        },
+          error => {
+            console.log(error);
+            reject(error);
+          });
+    });
+  }
+
+  retriveSellNFTStellar(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: 'response',
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'Content-Type': 'Application/json',
+        })
+      }
+
+      this.http.get(this.url + '/nft/stellarMarketPlace?page=1&perPage=10&NoPage=3', this.reqOpts)
+        .subscribe(response => {
+          console.log("sellingItem-----------",response);
           resolve(response);
         },
           error => {

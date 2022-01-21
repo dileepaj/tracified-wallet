@@ -1,0 +1,41 @@
+<!--
+  Generated template for the MarketPlaceNftPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>marketPlaceNFT</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-card  *ngFor="let item of currentSellingNFTs">
+    <ion-card-content>
+      <ion-card-title>
+        NFT: {{item.NftAssetName}}
+    </ion-card-title>
+    <p>Current Owner: {{item.CurrentOwnerNFTPK}}</p>
+    <p>Product Name: {{item.ProductName}}</p>
+    <p>TDPTxnHash:{{item.TDPTxnHash}}</p>
+    <p>NftContent:{{item.NftContent}}</p>
+    <p>NFTTXNhash:{{item.NFTTXNhash}}</p>    
+        <ion-row>
+          <button class="btn-green"  (click)="sellNFT(item)">
+           SellNFT
+         </button>
+         <button  class="btn-green" (click)="buyNFT(item)">
+          CreateTrust
+       </button>
+       <button  class="btn-green" (click)="aaa(item)">
+        Buy
+     </button>
+        </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

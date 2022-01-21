@@ -24,6 +24,7 @@ import { ContentPage } from '../pages/content/content';
 import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
 import { CodePush, ILocalPackage, IRemotePackage } from '@ionic-native/code-push';
 import { CreateNftPage } from '../pages/create-nft/create-nft';
+import { MarketPlaceNftPage } from '../pages/market-place-nft/market-place-nft';
 
 @Component({
   templateUrl: 'app.html'
@@ -41,7 +42,8 @@ export class MyApp {
 
   pages: any[] = [
     { icon: 'custom-itemIcon', title: 'Items', component: 'TabsPage', action: null },
-    { icon: 'custom-nft', title: 'NFT', component: 'CreateNftPage', action: null },
+    { icon: 'custom-nft', title: 'NFTCreate', component: 'CreateNftPage', action: null },
+    { icon: 'custom-nftMarketplace', title: 'NFT Market Place', component: 'MarketPlaceNftPage', action: null },
     { icon: 'custom-blockchain', title: 'Accounts', component: 'BcAccountPage', action: null },
     { icon: 'custom-fundTransfer', title: 'Fund Transfer', component: 'FundTransferPage', action: null },
     { icon: 'custom-settings', title: 'Settings', component: 'SettingsPage', action: null },
@@ -172,6 +174,9 @@ export class MyApp {
       case "nft":
         this.nav.setRoot(CreateNftPage);
         break;
+        case "nftMarketplace":
+          this.nav.setRoot(MarketPlaceNftPage);
+          break;
       case "accounts":
         this.nav.setRoot(BcAccountPage);
         break;

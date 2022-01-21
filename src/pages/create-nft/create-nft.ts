@@ -51,7 +51,7 @@ export class CreateNftPage {
   ionViewDidEnter() {
     this.account = this.properties.defaultAccount;
   }
-  maketrustLine(privateKey){
+  mintNFT(privateKey){
     //let privateKey="SBX7R5IQV4SXQ7CFV7OEEQ6NHU3SBEXCODW4476FQJC7RUFARK2JSSNY"
     // let TDPtxnhash="2874f8d0fcfb35c0d4133edd7e1c0c3be4aaed4dfd0ec531b1d4ec7a6cfea5c9"
     // let TDPID="61e11d4257577da95de92786"
@@ -67,7 +67,7 @@ export class CreateNftPage {
       this.blockchainService.changeTrustByUs(this.nftName,"GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3",this.privateKey).then((transactionResult:any)=>{
         console.log(`result`, transactionResult)
         if(transactionResult.successful){
-        this.apiService.sendTrustLineXDR(transactionResult.successful,distributorPK,this.nftName,this.TDPtxnhash,this.TDPID,this.NFTBlockChain,transactionResult.created_at,this.Identifier,this.ProductName).then(nft=>{
+        this.apiService.MinNFTStellar(transactionResult.successful,distributorPK,this.nftName,this.TDPtxnhash,this.TDPID,this.NFTBlockChain,transactionResult.created_at,this.Identifier,this.ProductName).then(nft=>{
         console.log(`NFT created`,nft)
         }).catch(err=>console.log(`err`, err))
         }
@@ -87,7 +87,7 @@ export class CreateNftPage {
         if (pair.publicKey() === this.account.pk) {
           this.keyDecrypted = true;
           this.privateKey = secretKey.toString();
-          this.maketrustLine(this.privateKey)
+          this.mintNFT(this.privateKey)
         } else {
           console.log("Password incorrect.");
           this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
@@ -175,11 +175,8 @@ export class CreateNftPage {
   }
 
  createNFT(){
+   this.apiService.retriveSellNFTStellar().then(result=>console.log('result' ,result)).catch(err=>console.log('err', err))
   this.decryptSecretKey()    
   }
-
-
-
-
 
 }

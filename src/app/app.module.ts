@@ -52,6 +52,7 @@ import { CodePushServiceProvider } from '../providers/code-push-service/code-pus
 import { CodePush } from '@ionic-native/code-push';
 import { FundTransferPage } from 'pages/fund-transfer/fund-transfer';
 import { CreateNftPageModule } from '../pages/create-nft/create-nft.module';
+import { MarketPlaceNftPageModule } from '../pages/market-place-nft/market-place-nft.module';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -99,7 +100,8 @@ export function createTranslateLoader(http: HttpClient) {
       printDebugMessages: true,
       logToFle:true
     }),
-    CreateNftPageModule
+    CreateNftPageModule,
+    MarketPlaceNftPageModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [

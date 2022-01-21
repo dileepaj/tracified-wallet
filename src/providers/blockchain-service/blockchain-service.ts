@@ -663,7 +663,7 @@ export class BlockchainServiceProvider {
 
   ///////////create trustline by third party to distributor and issuer
   //////////here we are assuming that this wallet can also act as a buyer, so this wallet has to build a trustline with the gateway and a distributor===>(cuurent_owner)
-  trustlineByBuyer(asset_code, asset_issuer,signerSK){
+  trustlineByBuyer(asset_code, asset_issuer,signerSK,buyerpk){
     console.log(`calling tustline by buyer -----`,asset_code, asset_issuer,signerSK)
     let TDPtxnhash="dsadsadsadsa"
    let TDPID="sadasdsad"
@@ -676,7 +676,7 @@ export class BlockchainServiceProvider {
       } else {
         Network.useTestNetwork();
       }
-      const senderPublickKey= "GCKWUZXTOQ3RWHRPUZDVD53B5VBUIO24PPC4FOEKIRAGU7KC2VLQ3DGY";
+      const senderPublickKey= buyerpk;
       //const senderPublickKey = this.properties.defaultAccount.pk;//buyers public key()
       var asset = new Asset(asset_code, asset_issuer);//for buyer --> gateway
       //var buyAsset = new Asset(asset_code, distributor);//for buyer --> distributor
@@ -724,7 +724,7 @@ export class BlockchainServiceProvider {
           buyAmount:'1',
           price:'50', 
           offerId:'0',}))
-        .setTimeout(60000)
+        .setTimeout(600000)
         .build();
 
 
