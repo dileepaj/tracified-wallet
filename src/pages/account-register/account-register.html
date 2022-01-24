@@ -38,7 +38,7 @@
     </ion-row>
     <ion-row padding-vertical>
       <div class="button-wrapper">
-        <button type="submit" block ion-button class="login-button" [disabled]="!formRegister.valid && (!orgLogo || orgLogo == '')">Register</button>
+        <button type="submit" block ion-button class="login-button" [disabled]="!formRegister.valid || !orgLogo">Register</button>
       </div>
     </ion-row>
   </form>

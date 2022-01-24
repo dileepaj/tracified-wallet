@@ -44,7 +44,7 @@
 
     <ion-row padding-vertical>
       <div class="button-wrapper">
-        <button type="submit" block ion-button class="login-button" [disabled]="!testimonialForm.valid">Send
+        <button type="submit" block ion-button class="login-button" [disabled]="!testimonialForm.valid || !testimonialPicture">Send
           Testimonial</button>
       </div>
     </ion-row>
