@@ -15,6 +15,27 @@
 
 
 <ion-content padding>
+  <h3>MY NFT</h3>
+  <ion-card  *ngFor="let item of ownNFTs">
+    <ion-card-content>
+      <ion-card-title>
+        NFT: {{item.NftAssetName}}
+    </ion-card-title>
+    <p>Current Owner: {{item.CurrentOwnerNFTPK}}</p>
+    <p>Product Name: {{item.ProductName}}</p>
+    <p>TDPTxnHash:{{item.TDPTxnHash}}</p>
+    <p>NftContent:{{item.NftContent}}</p>
+    <p>NFTTXNhash:{{item.NFTTXNhash}}</p>    
+        <ion-row>
+          <button class="btn-green" *ngIf="item.SellingStatus=='NOTFORSALE'" (click)="sellNFT(item)">
+           SellNFT
+         </button>
+         <p *ngIf="item.SellingStatus=='FORSALE'">NFT ONSALE</p>    
+        </ion-row>
+    </ion-card-content>
+  </ion-card>
+
+  <h3>NFT Market Place</h3>
   <ion-card  *ngFor="let item of currentSellingNFTs">
     <ion-card-content>
       <ion-card-title>
@@ -38,4 +59,6 @@
         </ion-row>
     </ion-card-content>
   </ion-card>
+
+
 </ion-content>

@@ -18,6 +18,7 @@ import { BlockchainServiceProvider } from '../../providers/blockchain-service/bl
 })
 export class MarketPlaceNftPage {
   currentSellingNFTs = [];
+  ownNFTs=[];
   loading;
   Item: any;
   isLoadingPresent: boolean;
@@ -43,21 +44,37 @@ export class MarketPlaceNftPage {
     this.presentLoading();
     this.mainAccount = this.properties.defaultAccount;
     this.getSellingNFT();
+    this.getOwnNFT();
   }
 
   doRefresh(refresher) {
     this.presentLoading();
     this.getSellingNFT();
+    this.getOwnNFT();
     refresher.complete();
   }
 
   getSellingNFT() {
-    let assets = [];
-    this.apiService.retriveSellNFTStellar().then(a=>{
+    let assetsMarketPlace = [];
+   
+    this.apiService.retriveNFT("FORSALE","withoutKey").then(a=>{
       a.body.forEach(element => {
-        assets.push(element);
+        assetsMarketPlace.push(element);
       });
-      this.currentSellingNFTs = assets;
+      this.currentSellingNFTs = assetsMarketPlace;
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
+      console.log('a', a.body)
+    }).catch(err=>console.log("aaaaaaaaaaerr",err))
+  }
+  getOwnNFT(){
+    let assetOwn=[];
+    this.apiService.retriveNFT("NOTFORSALE",this.mainAccount.pk).then(a=>{
+      a.body.forEach(element => {
+        assetOwn.push(element);
+      });
+      this.ownNFTs = assetOwn;
       if (this.isLoadingPresent) {
         this.dissmissLoading();
       }
@@ -68,24 +85,29 @@ export class MarketPlaceNftPage {
   sellNFT(item:any){
   console.log(`calling selnft`)
   console.log('   this.mainAccount', this.mainAccount);
-  this.bc.sellNft(item.NftAssetName,item.OriginPK,this.mainAccount.skp)
-  .then((a)=>console.log(`a`, a))
+  this.bc.sellNft(item.NftAssetName,item.CurrentOwnerNFTPK,this.mainAccount.skp)
+  .then((ab)=>{
+    console.log('ab', ab);
+    this.apiService.UpdateSellingStatusNFT(item.CurrentOwnerNFTPK,item.PreviousOwnerNFTPK,item.NFTTXNhash,"FORSALE").catch(err2=>console.log('err2', err2))
+  }).then(a=>console.log('a', a)).catch(err=>console.log('err', err))
   .catch(err=>{console.log(`err`, err)})
-  this.apiService.UpdateSellingStatusNFT(item.CurrentOwnerNFTPK,item.PreviousOwnerNFTPK,item.NFTTXNhash,"FORSELL")
   }
 
   buyNFT(item:any){
-  console.log(`calling tustline  -----`)
-  this.bc.trustlineByBuyer(item.NftAssetName,item.OriginPK,this.mainAccount.skp,this.mainAccount.pk)
+  console.log(`calling tustline  -----`,item,this.mainAccount)
+  this.bc.trustlineByBuyer(item.NftAssetName,item.InitialIssuerPK,this.mainAccount.skp,this.mainAccount.pk)
   .then((a)=>console.log(`a`, a))
   .catch(err=>{console.log(`err`, err)})
   }
 
   aaa(item){
-  this.bc.buyNft(item.NftAssetName,this.mainAccount.skp,item.OriginPK,"","")
-  .then((a)=>console.log(`a`, a))
+  this.bc.buyNft(item.NftAssetName,this.mainAccount.skp,item.InitialIssuerPK,"GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3","50")
+  .then((a)=>{
+    console.log('aaaaaresult', a);
+    this.apiService.UpdateSellingStatusNFT(this.mainAccount.pk,item.CurrentOwnerNFTPK,item.NFTTXNhash,"NOTFORSALE")
+  })
   .catch(err=>{console.log(`err`, err)})
-  this.apiService.UpdateSellingStatusNFT(this.mainAccount.pk,item.CurrentOwnerNFTPK,item.NFTTXNhash,"FORSELL")
+  
   }
 
   presentLoading() {

@@ -653,7 +653,7 @@ export class BlockchainServiceProvider {
         resolve(transactionResult)
       }).catch((err) => {
         this.logger.error("Couldn't put up for sale " + JSON.stringify(err));
-        reject();
+        reject(err);
       });
     });
   }
@@ -661,7 +661,7 @@ export class BlockchainServiceProvider {
   ///////////create trustline by third party to distributor and issuer
   //////////here we are assuming that this wallet can also act as a buyer, so this wallet has to build a trustline with the gateway and a distributor===>(cuurent_owner)
   trustlineByBuyer(asset_code, asset_issuer,signerSK,buyerpk){
-    console.log(`calling tustline by buyer -----`,asset_code, asset_issuer,signerSK)
+    console.log(`calling tustline by buyer -----`,asset_code, asset_issuer,signerSK,buyerpk)
     let TDPtxnhash="dsadsadsadsa"
    let TDPID="sadasdsad"
    let NFTBlockChain="Stellar"
@@ -692,7 +692,7 @@ export class BlockchainServiceProvider {
         resolve(transactionResult)
       }).catch((err) => {
         this.logger.error("Failed Trusts " + JSON.stringify(err));
-        reject();
+        reject(err);
       });
     });
   }
@@ -712,25 +712,17 @@ export class BlockchainServiceProvider {
       var buyAsset = new Asset(asset_code, asset_issuer)
       var sellingAsset=Asset.native();
       var opts = {fee:100};
-      var percentage = priceNft*(20/100);
-      var royalty = percentage.toString();
       let server = new Server(blockchainNet);
       server.loadAccount(sourceKeypair.publicKey()).then((account) => {
         var transaction = new TransactionBuilder(account,opts)
         .addOperation(Operation.manageBuyOffer({
-          buying:buyAsset,
           selling:sellingAsset,
+          buying:buyAsset,
           buyAmount:'1',
-          price:priceNft, 
+          price:'50', 
           offerId:'0',}))
-        .addOperation(Operation.payment({
-          destination:main_issuer,
-          asset:sellingAsset,
-          amount:royalty,}))
-        .setTimeout(600000)
+          .setTimeout(10000)
         .build();
-
-
         transaction.sign(sourceKeypair);
         console.log("ssssssssssssssssss",sourceKeypair)
         return server.submitTransaction(transaction);

@@ -197,7 +197,10 @@ export class ApiServiceProvider {
           "Content-Type": "Application/json",
         }),
       };
-
+console.log('firstaaaaaa',    currentPK,
+previousPK,
+nftHash,
+sellingStats);
       this.http
         .put(
           this.url +
@@ -217,7 +220,7 @@ export class ApiServiceProvider {
     });
   }
 
-  retriveSellNFTStellar(): Promise<any> {
+  retriveNFT(sellingStatus, distributorPK): Promise<any> {
     return new Promise((resolve, reject) => {
       this.reqOpts = {
         observe: "response",
@@ -229,7 +232,7 @@ export class ApiServiceProvider {
 
       this.http
         .get(
-          this.url + "/nft/stellarMarketPlace?page=1&perPage=10&NoPage=3",
+          this.url + `/nft/retriveNFTByStatusAndPK?sellingstatus=${sellingStatus}&distributorPK=${distributorPK}`,
           this.reqOpts
         )
         .subscribe(
