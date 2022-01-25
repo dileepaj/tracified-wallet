@@ -3,12 +3,14 @@ import { AlertController, IonicPage, LoadingController, NavController, NavParams
 import { Properties } from '../../shared/properties';
 import { ApiServiceProvider } from '../../providers';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
-
+import { Logger } from 'ionic-logger-new';
+import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
+import { Keypair } from 'stellar-sdk';
+import { TranslateService } from '@ngx-translate/core';
 /**
- * Generated class for the MarketPlaceNftPage page.
+ * NFT market place fuction implent in here 
+ * BUy NFT and Sell NFT ,show NFT in marketplace 
  *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
  */
 
 @IonicPage()
@@ -18,22 +20,33 @@ import { BlockchainServiceProvider } from '../../providers/blockchain-service/bl
 })
 export class MarketPlaceNftPage {
   currentSellingNFTs = [];
-  ownNFTs=[];
+  ownNFTs = [];
   loading;
   Item: any;
   isLoadingPresent: boolean;
-  receivers = [];
-  itemPresent: boolean;
-  searchTerm: any;
   mainAccount: any;
-
+  nftAmmount:number=0;
+  nftPrice:number=0;
+  private keyDecrypted: boolean = false;
+  private privateKey: string;
+  private accountFunds: string = 'Calculating...';
   constructor(public navCtrl: NavController,
-    public navParams: NavParams, 
-    public apiService: ApiServiceProvider, 
+    public navParams: NavParams,
+    public apiService: ApiServiceProvider,
     private loadingCtrl: LoadingController,
     private properties: Properties,
     private alertCtrl: AlertController,
-    private bc: BlockchainServiceProvider) {
+    private logger: Logger,
+    private bc: BlockchainServiceProvider,
+    private mappingService: MappingServiceProvider,
+    private blockchainService: BlockchainServiceProvider,
+    private translate: TranslateService,) {
+      this.mainAccount = this.properties.defaultAccount;
+      this.blockchainService.accountBalance(this.mainAccount.pk).then((balance) => {
+        this.accountFunds = balance.toString();
+      }).catch((err) => {
+        this.accountFunds = '0 ';
+      });
   }
 
   ionViewDidLoad() {
@@ -41,23 +54,28 @@ export class MarketPlaceNftPage {
   }
 
   ionViewDidEnter() {
-    this.presentLoading();
+    this.presentLoading("Please wait");
     this.mainAccount = this.properties.defaultAccount;
     this.getSellingNFT();
     this.getOwnNFT();
   }
 
   doRefresh(refresher) {
-    this.presentLoading();
+    this.presentLoading("Please wait");
     this.getSellingNFT();
     this.getOwnNFT();
     refresher.complete();
   }
-
+  /**
+   * 
+   * @assetsMarketPlace  @type array store the retrieve selling NFT from gateway DB
+   * @function getSellingNFT get selling NFT fillter by "withoutKey" to show market place
+   * "withoutKey" parameter means it does not fillte bu publick key
+   * @
+   */
   getSellingNFT() {
     let assetsMarketPlace = [];
-   
-    this.apiService.retriveNFT("FORSALE","withoutKey").then(a=>{
+    this.apiService.retriveNFT("FORSALE&NOTFORSELL", "withoutKey").then(a => {
       a.body.forEach(element => {
         assetsMarketPlace.push(element);
       });
@@ -65,12 +83,16 @@ export class MarketPlaceNftPage {
       if (this.isLoadingPresent) {
         this.dissmissLoading();
       }
-      console.log('a', a.body)
-    }).catch(err=>console.log("aaaaaaaaaaerr",err))
+    }).catch(error => this.logger.error("Couldn't retrive NFT from databse" + JSON.stringify(error)))
   }
-  getOwnNFT(){
-    let assetOwn=[];
-    this.apiService.retriveNFT("NOTFORSALE",this.mainAccount.pk).then(a=>{
+  /**
+   * @function getOwnNFT retrive the current wallet app user NFT fillter by NFTFORE
+   * @param assetOwn @type array store the wallet user own NFT(assest) from gateway DB
+   * 
+   */
+  getOwnNFT() {
+    let assetOwn = [];
+    this.apiService.retriveNFT("NOTFORSALE", this.mainAccount.pk).then(a => {
       a.body.forEach(element => {
         assetOwn.push(element);
       });
@@ -78,45 +100,157 @@ export class MarketPlaceNftPage {
       if (this.isLoadingPresent) {
         this.dissmissLoading();
       }
-      console.log('a', a.body)
-    }).catch(err=>console.log("aaaaaaaaaaerr",err))
+    }).catch(error => this.logger.error("Couldn't retrive NFT from databse" + JSON.stringify(error)))
+  }
+  /**
+   * @function clickSellNFT First take user password for sign the trasaction after call the sellNFT function and after finishing it update the NFT selling status in marketplace collection
+   * @param item its should be a NFT object
+   */
+  clickSellNFT(item: any) {
+    this.presentLoading("Please wait");
+    if(this.nftAmmount>0&&this.nftPrice>0){
+      this.transactionPasswordPopUp(this.mainAccount.accountName,this.accountFunds,"0.5002","0.5","0.0002").then((password) => {
+        this.mappingService.decryptSecret(this.mainAccount.sk, password).then((secretKey) => {
+          let pair = Keypair.fromSecret(secretKey.toString());
+          if (pair.publicKey() === this.mainAccount.pk) {
+            if (this.isLoadingPresent) {
+              this.dissmissLoading();
+            }
+            this.keyDecrypted = true;
+            this.privateKey = secretKey.toString();
+            this.bc.sellNft(item.NftAssetName, item.InitialIssuerPK, this.privateKey,this.nftAmmount.toString(),this.nftPrice.toString())
+            .then((transaction) => {
+              this.presentAlert('Congratulation', `NFT ${item.NftAssetName} ONSALE`);
+              this.apiService.UpdateSellingStatusNFT(item.CurrentOwnerNFTPK, item.PreviousOwnerNFTPK, item.NFTTXNhash, "FORSALE")
+                .then(DBupdatestatus => {})
+                .catch(error =>this.logger.error("Database UpdateSellingStatusNFT function does not work" + JSON.stringify(error)))
+            }).catch(error =>{
+              this.logger.error("Issue in sellNFT function" + JSON.stringify(error))
+              this.presentAlert('ERROR', `Can not sell NFT ${item.NftAssetName}`);
+            })
+          } else {
+            this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+            });
+          }
+        }).catch((err) => {
+          this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+          });
+        });
+      });
+    }else{
+      this.translate.get(['ERROR', 'Copies and Price fileds error, Please check the Copies and Price fild correctly']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['Copies and Price fileds error, Please check the Copies and Price fild correctly']);
+      }); 
+    }
+  }
+  /**
+   * @function clickBuyNFT First take user password for sign the trasaction (when user click buy button this function will call)
+   * This function call 3 function one after another @trustlineByBuyer @buyNft and finally update the NFT selling status in marketplace collection
+   * @param item its should be a NFT object
+   */
+   clickBuyNFT(item: any) {
+    this.presentLoading("Please wait");
+    if(this.nftAmmount>0&&this.nftPrice>0){
+    this.transactionPasswordPopUp(this.mainAccount.accountName,this.accountFunds,"0.5002","0.5","0.0002").then((password) => {
+      this.mappingService.decryptSecret(this.mainAccount.sk, password).then((secretKey) => {
+        let pair = Keypair.fromSecret(secretKey.toString());
+        if (pair.publicKey() === this.mainAccount.pk) {
+          this.keyDecrypted = true;
+          this.privateKey = secretKey.toString();
+          this.bc.trustlineByBuyer(item.NftAssetName, item.InitialIssuerPK, this.privateKey, this.mainAccount.pk)
+          .then((trustlineCreated) =>{
+            this.bc.buyNft(item.NftAssetName, this.mainAccount.skp, item.InitialIssuerPK, "GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3", "50")
+            .then(a => {
+              this.presentAlert(item.NftAssetName, `NFT ${item.NftAssetName} BOUGHT`);
+              this.apiService.UpdateSellingStatusNFT(this.mainAccount.pk, item.CurrentOwnerNFTPK, item.NFTTXNhash, "NOTFORSALE")
+              .then(DBupdated=>{})
+              .catch(error =>this.logger.error("Database UpdateSellingStatusNFT function does not work" + JSON.stringify(error)))
+            })
+            .catch(error => { 
+              this.presentAlert('ERROR', `Can not sell NFT ${item.NftAssetName}`);
+            })
+          })
+          .catch(error => { 
+            this.presentAlert('ERROR', `Can not sell NFT ${item.NftAssetName}`);
+          })
+        } else {
+          this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+          });
+        }
+      }).catch((err) => {
+        this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+        });
+      });
+    });
+  }else{
+    this.translate.get(['ERROR', 'Copies and Price fileds error, Please check the Copies and Price fild correctly']).subscribe(text => {
+      this.presentAlert(text['ERROR'], text['Copies and Price fileds error, Please check the Copies and Price fild correctly']);
+    }); 
+  }
   }
 
-  sellNFT(item:any){
-  console.log(`calling selnft`)
-  console.log('   this.mainAccount', this.mainAccount);
-  this.bc.sellNft(item.NftAssetName,item.InitialIssuerPK,this.mainAccount.skp)
-  .then((ab)=>{
-    console.log('ab', item);
-    this.apiService.UpdateSellingStatusNFT(item.CurrentOwnerNFTPK,item.PreviousOwnerNFTPK,item.NFTTXNhash,"FORSALE").catch(err2=>console.log('err2', err2))
-  }).then(a=>console.log('a', a)).catch(err=>console.log('err', err))
-  .catch(err=>{console.log(`err`, err)})
+  transactionPasswordPopUp(accountName,curretBalance,mintingCost,changeTrustCost,managedataCost): Promise<string> {
+    let resolveFunction: (password: string) => void;
+    let promise = new Promise<string>(resolve => {
+      resolveFunction = resolve;
+    });
+    let popup = this.alertCtrl.create({
+      title: "Sign Trasaction",
+      subTitle:`<p>Account ${accountName}</p> <p>Balance ${curretBalance}</p>`,
+      message:`<p>Operations</p><ul><li>Change Trust:${changeTrustCost}</li><li> Manage offer:${managedataCost}</li></ul><p>Total Cost:${mintingCost}</p>`,
+      inputs: [
+        {
+          name: "password",
+          placeholder: "Password",
+          type: "password"
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: data => {}
+        },
+        {
+          text: 'OK',
+          handler: data => {
+            if (data.password) {
+              resolveFunction(data.password);
+            }
+          }
+        }
+      ],
+      cssClass:'popup-alert'
+    });
+    popup.present();
+    return promise;
   }
 
-  buyNFT(item:any){
-  console.log(`calling tustline  -----`,item,this.mainAccount)
-  this.bc.trustlineByBuyer(item.NftAssetName,item.InitialIssuerPK,this.mainAccount.skp,this.mainAccount.pk)
-  .then((a)=>console.log(`a`, a))
-  .catch(err=>{console.log(`err`, err)})
+
+  presentAlert(title: string, message: string) {
+    let alert = this.alertCtrl.create({
+      title: title,
+      message: message,
+      buttons: [
+        {
+          text: 'OK',
+          handler: data => {}
+        }
+      ]
+    });
+    alert.present();
   }
 
-  aaa(item){
-  this.bc.buyNft(item.NftAssetName,this.mainAccount.skp,item.InitialIssuerPK,"GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3","50")
-  .then((a)=>{
-    console.log('aaaaaresult', a);
-    this.apiService.UpdateSellingStatusNFT(this.mainAccount.pk,item.CurrentOwnerNFTPK,item.NFTTXNhash,"NOTFORSALE")
-  })
-  .catch(err=>{console.log(`err`, err)})
-  
-  }
-
-  presentLoading() {
+  presentLoading(string:string) {
     this.isLoadingPresent = true;
     this.loading = this.loadingCtrl.create({
       dismissOnPageChange: false,
-      content: 'Please Wait'
+      content: string
     });
-
     this.loading.present();
   }
 

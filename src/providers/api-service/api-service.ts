@@ -45,15 +45,12 @@ export class ApiServiceProvider {
         params: new HttpParams(),
       };
     }
-
-    // Support easy query params for GET requests
     if (params) {
       reqOpts.params = new HttpParams();
       for (let k in params) {
         reqOpts.params = reqOpts.params.set(k, params[k]);
       }
     }
-
     return this.http.get(this.url + "/" + endpoint, reqOpts);
   }
 
@@ -74,7 +71,6 @@ export class ApiServiceProvider {
         Authorization: "Bearer " + this.properties.token,
       }),
     };
-
     return this.http.post(getMainPublicKeys, body, this.reqOpts);
   }
 
@@ -92,12 +88,9 @@ export class ApiServiceProvider {
         .put(this.LocalAdminURL + "/api/bc/user/subAccount", body, this.reqOpts)
         .subscribe(
           (response) => {
-            // console.log(response);
-
             resolve(response);
           },
           (error) => {
-            console.log(error);
             reject(error);
           }
         );
@@ -133,7 +126,20 @@ export class ApiServiceProvider {
     });
   }
 
-  MinNFTStellar(
+  /**
+   * @function mintNFTStellar this function call after creating trust line and put request to gateway to mint NFT with this patamter
+   * @param transactionResultSuccessful @type Boolean, trustline creation status with NFT issuer account
+   * @param issuerPublicKey  NFT initial issuer publickey(generated account) 
+   * @param distributorPublickKey NFT fiest NFT owner account(trustline requested wallet-app user)
+   * @param asset_code NFT name (asset name)
+   * @param TDPtxnhash NFT created to this TDP trasaction hash  
+   * @param TDPID NFT created to this TDP id
+   * @param NFTBlockChain NFT issued block chain
+   * @param created_at trustline reated time stamp
+   * @param Identifier TDP identifer
+   * @param ProductName TDP product name
+   */
+  minNFTStellar(
     transactionResultSuccessful,
     issuerPublicKey,
     distributorPublickKey,
@@ -153,7 +159,6 @@ export class ApiServiceProvider {
           "Content-Type": "Application/json",
         }),
       };
-
       let NFTModel = {
         DistributorPublickKey: distributorPublickKey,
         IssuerPublicKey:issuerPublicKey,
@@ -166,13 +171,10 @@ export class ApiServiceProvider {
         TrustLineCreatedAt: created_at,
         ProductName: ProductName,
       };
-      console.log(`postModel`, NFTModel);
       this.http
         .post(this.url + "/nft/mintStellar", NFTModel, this.reqOpts)
         .subscribe(
           (response) => {
-            // console.log(response);
-
             resolve(response);
           },
           (error) => {
@@ -183,9 +185,16 @@ export class ApiServiceProvider {
     });
   }
 
+/**
+ * @function UpdateSellingStatusNFT this function update the marketplaceNFT collection in a gateway with givent parameter vis gateway request
+ * @param currentOwnerPK NFT current owner publick Key
+ * @param previousOwnerPK NFT previoue owner publick Key
+ * @param nftHash NFT trasaction hash
+ * @param sellingStats NFT selling status 
+ */
   UpdateSellingStatusNFT(
-    currentPK,
-    previousPK,
+    currentOwnerPK,
+    previousOwnerPK,
     nftHash,
     sellingStats
   ): Promise<any> {
@@ -197,14 +206,10 @@ export class ApiServiceProvider {
           "Content-Type": "Application/json",
         }),
       };
-console.log('firstaaaaaa',    currentPK,
-previousPK,
-nftHash,
-sellingStats);
       this.http
         .put(
           this.url +
-            `/nft/updateStellarMarketplace?currentPK=${currentPK}&previousPK=${previousPK}&txnHash=${nftHash}&sellingStatus=${sellingStats}`,
+            `/nft/updateStellarMarketplace?currentPK=${currentOwnerPK}&previousPK=${previousOwnerPK}&txnHash=${nftHash}&sellingStatus=${sellingStats}`,
           this.reqOpts
         )
         .subscribe(
@@ -219,7 +224,13 @@ sellingStats);
         );
     });
   }
-
+ 
+/**
+ * @function retriveNFT retive the NFT filterby this twop paramer
+ * @param sellingStatus selling status should be NOTFORSALE or FORSALE (use to identify the NFT onsale or not)
+ * @param distributorPK this should publickey
+ * @returns all nfts fillter by the @sellingStatus and @description
+ */
   retriveNFT(sellingStatus, distributorPK): Promise<any> {
     return new Promise((resolve, reject) => {
       this.reqOpts = {
@@ -229,7 +240,6 @@ sellingStats);
           "Content-Type": "Application/json",
         }),
       };
-
       this.http
         .get(
           this.url + `/nft/retriveNFTByStatusAndPK?sellingstatus=${sellingStatus}&distributorPK=${distributorPK}`,
@@ -237,17 +247,19 @@ sellingStats);
         )
         .subscribe(
           (response) => {
-            console.log("sellingItem-----------", response);
             resolve(response);
           },
           (error) => {
-            console.log(error);
             reject(error);
           }
         );
     });
   }
 
+  /**
+   * @function  getNewIssuerPublicKey This function call gateway endpoint to generatenew account
+   * @returns generated account public key
+   */
   getNewIssuerPublicKey(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.reqOpts = {
@@ -257,7 +269,6 @@ sellingStats);
           "Content-Type": "Application/json",
         }),
       };
-
       this.http.get(this.url + "/nft/createNFTIssuerAccount").subscribe(
         (response) => {
           resolve(response);
@@ -280,11 +291,9 @@ sellingStats);
         )
         .subscribe(
           (response) => {
-            console.log(response);
             resolve(response);
           },
           (error) => {
-            console.log(error);
             reject(error);
           }
         );
@@ -316,8 +325,6 @@ sellingStats);
   put(endpoint: string, body: any, reqOpts?: any) {
     return this.http.put(this.url + "/" + endpoint, body, reqOpts);
   }
-
-  /* REFACTORED CODE BELOW */
 
   private getN(url, headers?): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -405,7 +412,6 @@ sellingStats);
         "Content-Type": "Application/json",
       }),
     };
-
     return this.postN(login, payload, headers);
   }
 
@@ -417,7 +423,6 @@ sellingStats);
         "Content-Type": "Application/json",
       }),
     };
-
     return this.postN(subAccountsStatus, payload, headers);
   }
 
@@ -430,7 +435,6 @@ sellingStats);
         Authorization: "Bearer " + this.properties.token,
       }),
     };
-
     return this.getN(blockchainAccs, headers);
   }
 
@@ -443,7 +447,6 @@ sellingStats);
         Authorization: "Bearer " + this.properties.token,
       }),
     };
-
     return this.postN(addMainAcc, payload, headers);
   }
 
@@ -456,7 +459,6 @@ sellingStats);
         Authorization: "Bearer " + this.properties.token,
       }),
     };
-
     return this.putN(updateSubAcc, payload, headers);
   }
 
@@ -469,7 +471,6 @@ sellingStats);
         Authorization: "Bearer " + this.properties.token,
       }),
     };
-
     return this.getN(validateMainAcc + "?accountName=" + payload, headers);
   }
 
@@ -482,7 +483,6 @@ sellingStats);
         Authorization: "Bearer " + this.properties.token,
       }),
     };
-
     return this.getN(identifierStatus + "/" + encodedIds, headers);
   }
 
@@ -520,7 +520,6 @@ sellingStats);
         Authorization: "Bearer " + this.properties.token,
       }),
     };
-
     return this.putN(url1, "", headers);
   }
 
@@ -543,9 +542,7 @@ sellingStats);
         Authorization: "Bearer " + this.properties.token,
       }),
     };
-
     let url = getMainPublicKey + "?accountName=" + body;
-
     return this.getN(url, header);
   }
 
@@ -558,7 +555,6 @@ sellingStats);
         Authorization: "Bearer " + this.properties.token,
       }),
     };
-
     return this.getN(blockchainAccsByTenant, header);
   }
 
@@ -571,7 +567,6 @@ sellingStats);
         Authorization: "Bearer " + this.properties.token,
       }),
     };
-
     return this.postN(getMainPublicKeys, accountKeys, header);
   }
 
@@ -582,7 +577,6 @@ sellingStats);
         "Content-Type": "application/json",
       }),
     };
-
     return this.getN(cocReceived + accountKey, header);
   }
 
@@ -593,7 +587,6 @@ sellingStats);
         "Content-Type": "application/json",
       }),
     };
-
     return this.getN(cocSent + accountKey, header);
   }
 }

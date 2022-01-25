@@ -21,8 +21,6 @@ export class AccountDetailsPage {
   private notDefaultAccount: boolean = true;
   private accountFunds: string = 'Calculating...';
 
-
-
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -42,9 +40,7 @@ export class AccountDetailsPage {
       this.accountFunds = '0 ';
     });
   }
-  ngOnInit() { 
-    this.decryptSecretKey();
-  }
+
   decryptSecretKey() {
     this.transactionPasswordPopUp().then((password) => {
       this.mappingService.decryptSecret(this.account.sk, password).then((secretKey) => {
@@ -76,8 +72,6 @@ export class AccountDetailsPage {
     this.keyDecrypted = false;
     this.privateKey = "";
   }
-
- 
 
   transactionPasswordPopUp(): Promise<string> {
     let resolveFunction: (password: string) => void;

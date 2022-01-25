@@ -548,34 +548,6 @@ export class BlockchainServiceProvider {
     return signedTrans;
   }
 
-  changeTrustByUs(asset_code, asset_issuer,signerSK){  
-    return new Promise((resolve, reject) => {
-      let sourceKeypair = Keypair.fromSecret(signerSK);
-      if (blockchainNetType === 'live') {
-        Network.usePublicNetwork();
-      } else {
-        Network.useTestNetwork();
-      }
-      const senderPublickKey = this.properties.defaultAccount.pk;//distributor
-      var asset = new Asset(asset_code, asset_issuer);
-      var opts = {fee:100};
-      let server = new Server(blockchainNet);
-      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
-        var transaction = new TransactionBuilder(account,opts)
-        .addOperation(Operation.changeTrust({asset:asset,limit:"1",source:senderPublickKey}))
-        .setTimeout(60000)
-        .build();
-        transaction.sign(sourceKeypair);
-        return server.submitTransaction(transaction);
-      }).then((transactionResult) => {
-        //this.logger.info("Trust successful",transactionResult);
-        resolve(transactionResult)
-      }).catch((err) => {
-        reject(err);
-      });
-    });
-  }
-
   getAssetIssuer(accountPubKey, asset_code): Promise<any> {
     return new Promise((resolve, reject) => {
       this.blockchainAccountInfo(accountPubKey).then((account: any) => {
@@ -614,17 +586,17 @@ export class BlockchainServiceProvider {
       });
     });
   }
-  
-  ////////////////sending nft from distributor to third party
-  ///////////////distributor puts a managesellOffer
 
-  sellNft(asset_code,asset_issuer,signerSK){
-    //signerSk=current NFT owner (distibutor )
-    //asset_issuer===>publicKey= current NFT owner (distibutor )
-    console.log(`selingg`, asset_code,asset_issuer,signerSK)
+  /**
+   * @function sellNFT this trigger the manageselloffer operation in stellar ,sending nft from distributor to third party
+   * @param asset_code NFT name
+   * @param asset_issuer initial asset issuer public key
+   * @param signerSK NFT cuurent owner secretkey
+   * @returns 
+   */
+  sellNft(asset_code:string,asset_issuer:string,signerSK:string,nftAmmount:string,nftPrice:string){
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);//because the distributor has the authority to sell
-      console.log(`sourceKeypair`, sourceKeypair)
       if (blockchainNetType === 'live') {
         Network.usePublicNetwork();
       } else {
@@ -642,17 +614,15 @@ export class BlockchainServiceProvider {
         .addOperation(Operation.manageSellOffer({
           selling:asset,
           buying:sellingAsset,
-          amount:'1',
-          price:'50', 
+          amount:nftAmmount,
+          price:nftPrice, 
           offerId:'0',
         }))
         .setTimeout(60000)
         .build();
         transaction.sign(sourceKeypair);
        return server.submitTransaction(transaction);
-   // console.log("-------------checking----",resolveObjTrust)
       }).then((transactionResult) => {
-        //this.logger.info("Put up for sale successful",transactionResult);
         resolve(transactionResult)
       }).catch((err) => {
         this.logger.error("Couldn't put up for sale " + JSON.stringify(err));
@@ -661,14 +631,51 @@ export class BlockchainServiceProvider {
     });
   }
 
-  ///////////create trustline by third party to distributor and issuer
-  //////////here we are assuming that this wallet can also act as a buyer, so this wallet has to build a trustline with the gateway and a distributor===>(cuurent_owner)
+  /**
+   * @function changeTrustByDistributor change trust for create NFT(asset)
+   * @param asset_code NFT name(asset name)
+   * @param asset_issuer generated NFT(asset) issuer 
+   * @param signerSK selling offer created signateure
+   * 
+   */
+  changeTrustByDistributor(asset_code, asset_issuer,signerSK){  
+    return new Promise((resolve, reject) => {
+      let sourceKeypair = Keypair.fromSecret(signerSK);
+      if (blockchainNetType === 'live') {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      const senderPublickKey = this.properties.defaultAccount.pk;//distributor
+      var asset = new Asset(asset_code, asset_issuer);
+      var opts = {fee:100};
+      let server = new Server(blockchainNet);
+      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
+        var transaction = new TransactionBuilder(account,opts)
+        .addOperation(Operation.changeTrust({asset:asset,limit:"1",source:senderPublickKey}))
+        .setTimeout(60000)
+        .build();
+        transaction.sign(sourceKeypair);
+        return server.submitTransaction(transaction);
+      }).then((transactionResult) => {
+        //this.logger.info("Trust successful",transactionResult);
+        resolve(transactionResult)
+      }).catch((err) => {
+        reject(err);
+      });
+    });
+  }
+  
+  /**
+   * @function ctrate create trustline by third party to distributor and issuer
+   * here we are assuming that this wallet can also act as a buyer, so this wallet has to build a trustline with the gateway and a distributor===>(cuurent_owner)
+   * @param asset_code NFT name
+   * @param asset_issuer initial asset issuer(minter)
+   * @param signerSK buyer signature
+   * @param buyerpk buyer public key
+   * 
+   */
   trustlineByBuyer(asset_code, asset_issuer,signerSK,buyerpk){
-    console.log(`calling tustline by buyer -----`,asset_code, asset_issuer,signerSK,buyerpk)
-    let TDPtxnhash="dsadsadsadsa"
-   let TDPID="sadasdsad"
-   let NFTBlockChain="Stellar"
-   //distributor ====>>>>cuurent NFT owner
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);//buyers secret key
       if (blockchainNetType === 'live') {
@@ -677,9 +684,7 @@ export class BlockchainServiceProvider {
         Network.useTestNetwork();
       }
       const senderPublickKey= buyerpk;
-      //const senderPublickKey = this.properties.defaultAccount.pk;//buyers public key()
       var asset = new Asset(asset_code, asset_issuer);//for buyer --> gateway
-      //var buyAsset = new Asset(asset_code, distributor);//for buyer --> distributor
       var opts = {fee:100};
       let server = new Server(blockchainNet);
       server.loadAccount(sourceKeypair.publicKey()).then((account) => {
@@ -689,9 +694,7 @@ export class BlockchainServiceProvider {
         .build();
         transaction.sign(sourceKeypair);
         return server.submitTransaction(transaction);
-   // console.log("-------------checking----",resolveObjTrust)
       }).then((transactionResult) => {
-      //  this.logger.info("Trusts successful",transactionResult);
         resolve(transactionResult)
       }).catch((err) => {
         this.logger.error("Failed Trusts " + JSON.stringify(err));
@@ -700,10 +703,16 @@ export class BlockchainServiceProvider {
     });
   }
 
-  /////////////manageBuyOffer to transfer nft to third party
+  /**
+   * @function  this function trigger manageBuyOffer to transfer nft to third party
+   * @param asset_code NFT name
+   * @param signerSK buyer secret key
+   * @param asset_issuer current NFT owner
+   * @param main_issuer initial asset issuer(minter)
+   * @param priceNft NFT selling price 
+   *
+   */
   buyNft(asset_code, signerSK,asset_issuer, main_issuer,priceNft){
-    console.log(`buy`,asset_code, signerSK,asset_issuer)
-////asset_issuer=======gateway
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);//buyers secret key
       if (blockchainNetType === 'live') {
@@ -711,7 +720,6 @@ export class BlockchainServiceProvider {
       } else {
         Network.useTestNetwork();
       }
-      // const senderPublickKey = this.properties.defaultAccount.pk;//buyers public key
       var buyAsset = new Asset(asset_code, asset_issuer)
       var sellingAsset=Asset.native();
       var opts = {fee:100,  timebounds: {
@@ -730,22 +738,16 @@ export class BlockchainServiceProvider {
           .setTimeout(80000)
         .build();
         transaction.sign(sourceKeypair);
-        console.log("ssssssssssssssssss",sourceKeypair)
         return server.submitTransaction(transaction);
-   // console.log("-------------checking----",resolveObjTrust)
       }).then((transactionResult) => {
-      //  this.logger.info("Buying of NFT was successful",transactionResult);
+        this.logger.info("Buying of NFT was successful");
         resolve(transactionResult)
       }).catch((err) => {
-        console.log(`err1`, err)
         reject(err);
       });
     });
   }
-///////////////////////////End of NFT Related//////////////////////////////////////////////////////
-
-
  callback = function (resp) {
-  console.log(resp);
+  this.logger.info("Response" + JSON.stringify(resp));
 };
 }

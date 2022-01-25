@@ -1,9 +1,3 @@
-<!--
-  Generated template for the MarketPlaceNftPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -12,53 +6,69 @@
     <ion-title>marketPlaceNFT</ion-title>
   </ion-navbar>
 </ion-header>
-
-
 <ion-content padding>
-  <h3>MY NFT</h3>
-  <ion-card  *ngFor="let item of ownNFTs">
+  <h1>MY NFT</h1>
+  <ion-card *ngFor="let item of ownNFTs" padding>
     <ion-card-content>
-      <ion-card-title>
-        NFT: {{item.NftAssetName}}
-    </ion-card-title>
-    <p>Current Owner: {{item.CurrentOwnerNFTPK}}</p>
-    <p>Product Name: {{item.ProductName}}</p>
-    <p>TDPTxnHash:{{item.TDPTxnHash}}</p>
-    <p>NftContent:{{item.NftContent}}</p>
-    <p>NFTTXNhash:{{item.NFTTXNhash}}</p>    
-        <ion-row>
-          <button class="btn-green" *ngIf="item.SellingStatus=='NOTFORSALE'" (click)="sellNFT(item)">
-           SellNFT
-         </button>
-         <p *ngIf="item.SellingStatus=='FORSALE'">NFT ONSALE</p>    
-        </ion-row>
+      <ion-row *ngIf="item.SellingStatus=='FORSALE'">
+        <ion-card-title> NFT: {{item.NftAssetName}} </ion-card-title>
+          <div class="item-content">
+            <p *ngIf="item.SellingStatus=='FORSALE'">NFT ONSALE</p>
+          </div>
+      </ion-row>
+      <p>Current Owner: {{item.CurrentOwnerNFTPK}}</p>
+      <p>Product Name: {{item.ProductName}}</p>
+      <p>TDPTxnHash:{{item.TDPTxnHash}}</p>
+      <p>NftContent:{{item.NftContent}}</p>
+      <p>NFTTXNhash:{{item.NFTTXNhash}}</p>
+      <ion-row padding>
+        <ion-col>
+          <ion-item padding>
+            <ion-label class="login-lables" floating>{{'NFT Copies'}}</ion-label>
+            <ion-input color="secondary" type="number" text-left id="input" [(ngModel)]="nftAmmount"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item padding>
+            <ion-label class="login-lables" floating>{{'NFT Price'}}</ion-label>
+            <ion-input color="secondary" type="number" text-left id="input" [(ngModel)]="nftPrice"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <button class="btn-green" *ngIf="item.SellingStatus=='NOTFORSALE'" (click)="clickSellNFT(item) " padding>
+          SellNFT
+        </button>
+      </ion-row>
     </ion-card-content>
   </ion-card>
-
-  <h3>NFT Market Place</h3>
-  <ion-card  *ngFor="let item of currentSellingNFTs">
-    <ion-card-content>
-      <ion-card-title>
-        NFT: {{item.NftAssetName}}
-    </ion-card-title>
-    <p>Current Owner: {{item.CurrentOwnerNFTPK}}</p>
-    <p>Product Name: {{item.ProductName}}</p>
-    <p>TDPTxnHash:{{item.TDPTxnHash}}</p>
-    <p>NftContent:{{item.NftContent}}</p>
-    <p>NFTTXNhash:{{item.NFTTXNhash}}</p>    
-        <ion-row>
-          <button class="btn-green"  (click)="sellNFT(item)">
-           SellNFT
-         </button>
-         <button  class="btn-green" (click)="buyNFT(item)">
-          CreateTrust
-       </button>
-       <button  class="btn-green" (click)="aaa(item)">
-        Buy
-     </button>
-        </ion-row>
+  <h1>NFT Market Place</h1>
+  <ion-card *ngFor="let item of currentSellingNFTs">
+    <ion-card-content padding>
+      <ion-card-title> NFT: {{item.NftAssetName}} </ion-card-title>
+      <p>Current Owner: {{item.CurrentOwnerNFTPK}}</p>
+      <p>Product Name: {{item.ProductName}}</p>
+      <p>TDPTxnHash:{{item.TDPTxnHash}}</p>
+      <p>NftContent:{{item.NftContent}}</p>
+      <p>NFTTXNhash:{{item.NFTTXNhash}}</p>
+      <ion-row padding>
+        <ion-col>
+          <ion-item padding>
+            <ion-label class="login-lables" floating>{{'NFT Copies'}}</ion-label>
+            <ion-input color="secondary" type="number" text-left id="input" [(ngModel)]="nftAmmount"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item padding>
+            <ion-label class="login-lables" floating>{{'NFT Price'}}</ion-label>
+            <ion-input color="secondary" type="number" text-left id="input" [(ngModel)]="nftPrice"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <button class="btn-green" (click)="clickSellNFT(item)" padding>SellNFT</button>
+        <button class="btn-green" (click)="clickBuyNFT(item)" padding>Buy</button>
+      </ion-row>
     </ion-card-content>
   </ion-card>
-
-
 </ion-content>
