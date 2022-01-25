@@ -85,9 +85,9 @@ export class MarketPlaceNftPage {
   sellNFT(item:any){
   console.log(`calling selnft`)
   console.log('   this.mainAccount', this.mainAccount);
-  this.bc.sellNft(item.NftAssetName,item.CurrentOwnerNFTPK,this.mainAccount.skp)
+  this.bc.sellNft(item.NftAssetName,item.InitialIssuerPK,this.mainAccount.skp)
   .then((ab)=>{
-    console.log('ab', ab);
+    console.log('ab', item);
     this.apiService.UpdateSellingStatusNFT(item.CurrentOwnerNFTPK,item.PreviousOwnerNFTPK,item.NFTTXNhash,"FORSALE").catch(err2=>console.log('err2', err2))
   }).then(a=>console.log('a', a)).catch(err=>console.log('err', err))
   .catch(err=>{console.log(`err`, err)})

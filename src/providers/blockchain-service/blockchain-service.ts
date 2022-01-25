@@ -632,7 +632,10 @@ export class BlockchainServiceProvider {
       }
       var asset = new Asset(asset_code, asset_issuer);
       var sellingAsset=Asset.native();
-      var opts = {fee:100};
+      var opts = {fee:100,  timebounds: {
+        minTime: 0,
+        maxTime: 0,
+      }};
       let server = new Server(blockchainNet);
       server.loadAccount(sourceKeypair.publicKey()).then((account) => {
         var transaction = new TransactionBuilder(account,opts)
@@ -711,7 +714,10 @@ export class BlockchainServiceProvider {
       // const senderPublickKey = this.properties.defaultAccount.pk;//buyers public key
       var buyAsset = new Asset(asset_code, asset_issuer)
       var sellingAsset=Asset.native();
-      var opts = {fee:100};
+      var opts = {fee:100,  timebounds: {
+        minTime: 0,
+        maxTime: 0,
+      }};
       let server = new Server(blockchainNet);
       server.loadAccount(sourceKeypair.publicKey()).then((account) => {
         var transaction = new TransactionBuilder(account,opts)
@@ -721,7 +727,7 @@ export class BlockchainServiceProvider {
           buyAmount:'1',
           price:'50', 
           offerId:'0',}))
-          .setTimeout(10000)
+          .setTimeout(80000)
         .build();
         transaction.sign(sourceKeypair);
         console.log("ssssssssssssssssss",sourceKeypair)
