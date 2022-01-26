@@ -94,17 +94,26 @@ export class CreateNftPage {
                 });
                 this.nftName="";
               }).catch(error => {
+                if (this.isLoadingPresent) {
+                  this.dissmissLoading();
+                }
                 this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
                 });
               })
           }
           else {
+            if (this.isLoadingPresent) {
+              this.dissmissLoading();
+            }
             this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
               this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
             });
           }
         }).catch(error => {
+          if (this.isLoadingPresent) {
+            this.dissmissLoading();
+          }
           this.logger.error("Failed to create trust line: " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
           this.translate.get(['ERROR', 'CREATE_NFT']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['CREATE_NFT']);
@@ -112,6 +121,9 @@ export class CreateNftPage {
         })
       }
     }).catch(error => {
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
       this.logger.error("NFT reciveing issue in gateway side : " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
       this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
         this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
@@ -120,7 +132,7 @@ export class CreateNftPage {
   }
 
   decryptSecretKey() {
-    this.transactionPasswordPopUp(this.account.accountName,this.accountFunds,"0.5002","0.5","0.0002").then((password) => {
+    this.transactionPasswordPopUp(this.account.accountName,this.accountFunds,"0.00001","0.5","0.00001").then((password) => {
       this.mappingService.decryptSecret(this.account.sk, password).then((secretKey) => {
         let pair = Keypair.fromSecret(secretKey.toString());
         if (pair.publicKey() === this.account.pk) {
@@ -158,15 +170,17 @@ export class CreateNftPage {
     this.navCtrl.setRoot(CreateNftPage);
   }
 
-  transactionPasswordPopUp(accountName,curretBalance,mintingCost,changeTrustCost,managedataCost): Promise<string> {
+  transactionPasswordPopUp(accountName,curretBalance,mintingCost,changeTrustCreationCost,CollateralFee): Promise<string> {
     let resolveFunction: (password: string) => void;
     let promise = new Promise<string>(resolve => {
       resolveFunction = resolve;
     });
     let popup = this.alertCtrl.create({
+      cssClass: 'custom-alert',
       title: "Sign Trasaction",
       subTitle:`<p>Account ${accountName}</p> <p>Balance ${curretBalance}</p>`,
-      message:`<p>Operations</p><ul><li>Change Trust:${changeTrustCost}</li><li> Manage Data:${managedataCost}</li></ul><p>Total Minting Cost:${mintingCost}</p>`,
+      message:`  <p>Operation cost from tracified<p><ul><li>Payment Operation : 0.00001<li><li>Manage Data Operation : 0.00001</li><li>Set Option : 0.00001</li></ul><p>Total Cost : 0.00003</p><br>
+      <p>Operations cost from your wallet</p><ul><li>Change Trust creation:${changeTrustCreationCost}</li><li>Collateral Fee:${CollateralFee}</li></ul><p>Total Minting Cost:${mintingCost}</p>`,
       inputs: [
         {
           name: "password",
@@ -189,7 +203,6 @@ export class CreateNftPage {
           }
         }
       ],
-      cssClass:'popup-alert'
     });
     popup.present();
     return promise;

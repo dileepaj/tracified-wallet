@@ -193,10 +193,44 @@ export class ApiServiceProvider {
  * @param sellingStats NFT selling status 
  */
   UpdateSellingStatusNFT(
-    currentOwnerPK,
-    previousOwnerPK,
-    nftHash,
-    sellingStats
+    nftHash:string,
+    sellingStats:string,
+    amount:string,
+    price:string
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+      console.log('first',  `/nft/updateStellarMarketplaceSell?sellingStatus=${sellingStats}&amount=${amount}&price=${price}&nfthash=${nftHash}`);
+      this.http
+        .put(
+          this.url +
+            `/nft/updateStellarMarketplaceSell?sellingStatus=${sellingStats}&amount=${amount}&price=${price}&nfthash=${nftHash}`,
+          this.reqOpts
+        )
+        .subscribe(
+          (response) => {
+            // console.log(response);
+            resolve(response);
+          },
+          (error) => {
+            console.log(error);
+            reject(error);
+          }
+        );
+    });
+  }
+
+  UpdateBuyingStatusNFT(
+    nftHash:string,
+    sellingStats:string,
+    NFTCuurentOwnerPK,
+    NFTPreviousPK,
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       this.reqOpts = {
@@ -209,7 +243,7 @@ export class ApiServiceProvider {
       this.http
         .put(
           this.url +
-            `/nft/updateStellarMarketplace?currentPK=${currentOwnerPK}&previousPK=${previousOwnerPK}&txnHash=${nftHash}&sellingStatus=${sellingStats}`,
+            `/nft/updateStellarMarketplaceBuy?sellingStatus=${sellingStats}&currentPK=${NFTCuurentOwnerPK}&previousPK=${NFTPreviousPK}&nfthash=${nftHash}`,
           this.reqOpts
         )
         .subscribe(

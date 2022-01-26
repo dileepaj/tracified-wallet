@@ -25,8 +25,7 @@ export class MarketPlaceNftPage {
   Item: any;
   isLoadingPresent: boolean;
   mainAccount: any;
-  nftAmmount:number=0;
-  nftPrice:number=0;
+  nftPrice:number;
   private keyDecrypted: boolean = false;
   private privateKey: string;
   private accountFunds: string = 'Calculating...';
@@ -83,7 +82,12 @@ export class MarketPlaceNftPage {
       if (this.isLoadingPresent) {
         this.dissmissLoading();
       }
-    }).catch(error => this.logger.error("Couldn't retrive NFT from databse" + JSON.stringify(error)))
+    }).catch(error => {
+      this.logger.error("Couldn't retrive NFT from databse" + JSON.stringify(error))
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
+  })
   }
   /**
    * @function getOwnNFT retrive the current wallet app user NFT fillter by NFTFORE
@@ -100,46 +104,71 @@ export class MarketPlaceNftPage {
       if (this.isLoadingPresent) {
         this.dissmissLoading();
       }
-    }).catch(error => this.logger.error("Couldn't retrive NFT from databse" + JSON.stringify(error)))
+    }).catch(error => {
+      this.logger.error("Couldn't retrive NFT from databse" + JSON.stringify(error))
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
+    })
   }
   /**
    * @function clickSellNFT First take user password for sign the trasaction after call the sellNFT function and after finishing it update the NFT selling status in marketplace collection
    * @param item its should be a NFT object
    */
   clickSellNFT(item: any) {
-    this.presentLoading("Please wait");
-    if(this.nftAmmount>0&&this.nftPrice>0){
-      this.transactionPasswordPopUp(this.mainAccount.accountName,this.accountFunds,"0.5002","0.5","0.0002").then((password) => {
+    if(this.nftPrice>0){
+      this.transactionPasswordPopUp(this.mainAccount.accountName,this.accountFunds,`<p>Cost from your wallet</p><ul><li>Manage Sell Offer : 0.00001</li></ul><p>Total Cost : 0.00001</p><p>Note : Collateral fees are not spendable</p>`).then((password) => {
         this.mappingService.decryptSecret(this.mainAccount.sk, password).then((secretKey) => {
           let pair = Keypair.fromSecret(secretKey.toString());
           if (pair.publicKey() === this.mainAccount.pk) {
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-            }
+            this.presentLoading("Please wait");
             this.keyDecrypted = true;
             this.privateKey = secretKey.toString();
-            this.bc.sellNft(item.NftAssetName, item.InitialIssuerPK, this.privateKey,this.nftAmmount.toString(),this.nftPrice.toString())
+            this.bc.sellNft(item.NftAssetName, item.InitialIssuerPK, this.privateKey,"1",this.nftPrice.toString())
             .then((transaction) => {
+              if (this.isLoadingPresent) {
+                this.dissmissLoading();
+              }
               this.presentAlert('Congratulation', `NFT ${item.NftAssetName} ONSALE`);
-              this.apiService.UpdateSellingStatusNFT(item.CurrentOwnerNFTPK, item.PreviousOwnerNFTPK, item.NFTTXNhash, "FORSALE")
-                .then(DBupdatestatus => {})
-                .catch(error =>this.logger.error("Database UpdateSellingStatusNFT function does not work" + JSON.stringify(error)))
+               this.apiService.UpdateSellingStatusNFT(item.NFTTXNhash,"FORSALE","1",this.nftPrice.toString())
+                .then(DBupdatestatus => {
+                  if (this.isLoadingPresent) {
+                    this.dissmissLoading();
+                  }
+                })
+                .catch(error =>{
+                  if (this.isLoadingPresent) {
+                    this.dissmissLoading();
+                  }
+                  this.logger.error("Database UpdateSellingStatusNFT function does not work" + JSON.stringify(error))})
             }).catch(error =>{
+              if (this.isLoadingPresent) {
+                this.dissmissLoading();
+              }
               this.logger.error("Issue in sellNFT function" + JSON.stringify(error))
               this.presentAlert('ERROR', `Can not sell NFT ${item.NftAssetName}`);
             })
-          } else {
+          }else{
+            if (this.isLoadingPresent) {
+              this.dissmissLoading();
+            }
             this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
               this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
             });
           }
         }).catch((err) => {
+          if (this.isLoadingPresent) {
+            this.dissmissLoading();
+          }
           this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
           });
         });
       });
     }else{
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
       this.translate.get(['ERROR', 'Copies and Price fileds error, Please check the Copies and Price fild correctly']).subscribe(text => {
         this.presentAlert(text['ERROR'], text['Copies and Price fileds error, Please check the Copies and Price fild correctly']);
       }); 
@@ -151,49 +180,85 @@ export class MarketPlaceNftPage {
    * @param item its should be a NFT object
    */
    clickBuyNFT(item: any) {
-    this.presentLoading("Please wait");
-    if(this.nftAmmount>0&&this.nftPrice>0){
-    this.transactionPasswordPopUp(this.mainAccount.accountName,this.accountFunds,"0.5002","0.5","0.0002").then((password) => {
+    this.transactionPasswordPopUp(this.mainAccount.accountName,this.accountFunds,`<p>Cost from your wallet</p><ul><li>Change Trust creation : 0.00001</li><li>Collateral Fee : 0.5</li><li>Manage Buy Offer : 0.00001</li><li>Manage Data x 3 : 0.00001x3</li></ul><p>Total Cost : 0.00005</p><p>Note:Collateral fees are not spendable</p>`)
+    .then((password) => {
       this.mappingService.decryptSecret(this.mainAccount.sk, password).then((secretKey) => {
+        this.presentLoading("Please wait");
         let pair = Keypair.fromSecret(secretKey.toString());
         if (pair.publicKey() === this.mainAccount.pk) {
           this.keyDecrypted = true;
           this.privateKey = secretKey.toString();
           this.bc.trustlineByBuyer(item.NftAssetName, item.InitialIssuerPK, this.privateKey, this.mainAccount.pk)
           .then((trustlineCreated) =>{
-            this.bc.buyNft(item.NftAssetName, this.mainAccount.skp, item.InitialIssuerPK, "GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3", "50")
+            if (this.isLoadingPresent) {
+              this.dissmissLoading();
+            } 
+            this.bc.buyNft(item.NftAssetName,this.mainAccount.skp,item.InitialIssuerPK,item.PreviousOwnerNFTPK, "GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3","1",item.Price)
             .then(a => {
-              this.presentAlert(item.NftAssetName, `NFT ${item.NftAssetName} BOUGHT`);
-              this.apiService.UpdateSellingStatusNFT(this.mainAccount.pk, item.CurrentOwnerNFTPK, item.NFTTXNhash, "NOTFORSALE")
-              .then(DBupdated=>{})
-              .catch(error =>this.logger.error("Database UpdateSellingStatusNFT function does not work" + JSON.stringify(error)))
+              if (this.isLoadingPresent) {
+                this.dissmissLoading();
+              } 
+              this.presentAlert(item.NftAssetName, `Congratulation, NFT ${item.NftAssetName} BOUGHT`);
+              this.apiService.UpdateBuyingStatusNFT(item.NFTTXNhash,"NOTFORSALE",this.mainAccount.pk, item.CurrentOwnerNFTPK)
+              .then(DBupdated=>{
+                if (this.isLoadingPresent) {
+                  this.dissmissLoading();
+                }
+              })
+              .catch(error =>{
+                if (this.isLoadingPresent) {
+                  this.dissmissLoading();
+                } 
+                this.logger.error("Database UpdateBuyingStatusNFT function does not work" + JSON.stringify(error))})
             })
-            .catch(error => { 
-              this.presentAlert('ERROR', `Can not sell NFT ${item.NftAssetName}`);
+            .catch(error => {
+              if (this.isLoadingPresent) {
+                this.dissmissLoading();
+              }
+              if (this.isLoadingPresent) {
+                this.dissmissLoading();
+              } 
+              this.presentAlert(item.NftAssetName, `Congratulation, NFT ${item.NftAssetName} BOUGHT`);
+              this.apiService.UpdateBuyingStatusNFT(item.NFTTXNhash,"NOTFORSALE",this.mainAccount.pk, item.CurrentOwnerNFTPK)
+              .then(DBupdated=>{
+                if (this.isLoadingPresent) {
+                  this.dissmissLoading();
+                }
+              })
+              .catch(error =>{
+                if (this.isLoadingPresent) {
+                  this.dissmissLoading();
+                } 
+                this.logger.error("Database UpdateBuyingStatusNFT function does not work" + JSON.stringify(error))})
+              this.presentAlert('ERROR', `Can not buy NFT1 ${item.NftAssetName}`);
             })
           })
-          .catch(error => { 
-            this.presentAlert('ERROR', `Can not sell NFT ${item.NftAssetName}`);
+          .catch(error => {
+            if (this.isLoadingPresent) {
+              this.dissmissLoading();
+            }
+            //this.presentAlert('ERROR', `Can not buy NFT ${item.NftAssetName}`);
           })
         } else {
+          if (this.isLoadingPresent) {
+            this.dissmissLoading();
+          }
           this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
           });
         }
       }).catch((err) => {
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+        }
         this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
           this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
         });
       });
     });
-  }else{
-    this.translate.get(['ERROR', 'Copies and Price fileds error, Please check the Copies and Price fild correctly']).subscribe(text => {
-      this.presentAlert(text['ERROR'], text['Copies and Price fileds error, Please check the Copies and Price fild correctly']);
-    }); 
-  }
   }
 
-  transactionPasswordPopUp(accountName,curretBalance,mintingCost,changeTrustCost,managedataCost): Promise<string> {
+  transactionPasswordPopUp(accountName,curretBalance,message): Promise<string> {
     let resolveFunction: (password: string) => void;
     let promise = new Promise<string>(resolve => {
       resolveFunction = resolve;
@@ -201,7 +266,7 @@ export class MarketPlaceNftPage {
     let popup = this.alertCtrl.create({
       title: "Sign Trasaction",
       subTitle:`<p>Account ${accountName}</p> <p>Balance ${curretBalance}</p>`,
-      message:`<p>Operations</p><ul><li>Change Trust:${changeTrustCost}</li><li> Manage offer:${managedataCost}</li></ul><p>Total Cost:${mintingCost}</p>`,
+      message:message,
       inputs: [
         {
           name: "password",
@@ -229,7 +294,6 @@ export class MarketPlaceNftPage {
     popup.present();
     return promise;
   }
-
 
   presentAlert(title: string, message: string) {
     let alert = this.alertCtrl.create({

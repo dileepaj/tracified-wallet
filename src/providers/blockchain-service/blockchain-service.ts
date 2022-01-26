@@ -595,6 +595,7 @@ export class BlockchainServiceProvider {
    * @returns 
    */
   sellNft(asset_code:string,asset_issuer:string,signerSK:string,nftAmmount:string,nftPrice:string){
+    console.log('first', asset_code,asset_issuer,signerSK,nftAmmount,nftPrice);
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);//because the distributor has the authority to sell
       if (blockchainNetType === 'live') {
@@ -712,7 +713,8 @@ export class BlockchainServiceProvider {
    * @param priceNft NFT selling price 
    *
    */
-  buyNft(asset_code, signerSK,asset_issuer, main_issuer,priceNft){
+  buyNft(asset_code, signerSK,asset_issuer,previousOwnerNFTPK:string,main_issuer,nftAmount:string,nftPrice:string){
+    console.log("sss",asset_code, signerSK,asset_issuer,previousOwnerNFTPK,main_issuer,nftAmount,nftPrice);
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);//buyers secret key
       if (blockchainNetType === 'live') {
@@ -732,9 +734,21 @@ export class BlockchainServiceProvider {
         .addOperation(Operation.manageBuyOffer({
           selling:sellingAsset,
           buying:buyAsset,
-          buyAmount:'1',
-          price:'50', 
+          buyAmount:nftAmount,
+          price:nftPrice, 
           offerId:'0',}))
+        .addOperation(Operation.manageData({
+          name: "Origin Issuer",
+          value: asset_issuer
+        }))
+        .addOperation(Operation.manageData({
+          name: "Current Owner",
+          value: sourceKeypair.publicKey()
+        }))
+        .addOperation(Operation.manageData({
+          name: "Previous Owner",
+          value: previousOwnerNFTPK
+        }))
           .setTimeout(80000)
         .build();
         transaction.sign(sourceKeypair);

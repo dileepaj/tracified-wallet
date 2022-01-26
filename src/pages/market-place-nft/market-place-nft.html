@@ -8,67 +8,122 @@
 </ion-header>
 <ion-content padding>
   <h1>MY NFT</h1>
-  <ion-card *ngFor="let item of ownNFTs" padding>
+  <ion-card *ngFor="let item of ownNFTs"  text-wrap style="border-radius: 15px;" padding>
     <ion-card-content>
-      <ion-row *ngIf="item.SellingStatus=='FORSALE'">
-        <ion-card-title> NFT: {{item.NftAssetName}} </ion-card-title>
-          <div class="item-content">
-            <p *ngIf="item.SellingStatus=='FORSALE'">NFT ONSALE</p>
-          </div>
+      <ion-row >
+        <ion-card-title> NFT : {{item.NftAssetName}}</ion-card-title>
+        <div *ngIf="item.SellingStatus=='FORSALE'" class="item-content">
+          <p class="onsale" *ngIf="item.SellingStatus=='FORSALE'">NFT ONSALE</p>
+        </div>
       </ion-row>
-      <p>Current Owner: {{item.CurrentOwnerNFTPK}}</p>
-      <p>Product Name: {{item.ProductName}}</p>
-      <p>TDPTxnHash:{{item.TDPTxnHash}}</p>
-      <p>NftContent:{{item.NftContent}}</p>
-      <p>NFTTXNhash:{{item.NFTTXNhash}}</p>
-      <ion-row padding>
-        <ion-col>
-          <ion-item padding>
-            <ion-label class="login-lables" floating>{{'NFT Copies'}}</ion-label>
-            <ion-input color="secondary" type="number" text-left id="input" [(ngModel)]="nftAmmount"></ion-input>
-          </ion-item>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'Current Owner : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.CurrentOwnerNFTPK}}</h3>
         </ion-col>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'Product Name : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.ProductName}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'TDP TxnHash : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.TDPTxnHash}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'NFTTXNhash : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.NFTTXNhash}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="item.SellingStatus=='NOTFORSALE'">
         <ion-col>
-          <ion-item padding>
-            <ion-label class="login-lables" floating>{{'NFT Price'}}</ion-label>
-            <ion-input color="secondary" type="number" text-left id="input" [(ngModel)]="nftPrice"></ion-input>
+          <ion-item>
+            <ion-label class="login-lables" floating>{{'NFT Price   XLM'}}</ion-label>
+            <ion-input color="secondary" type="number" text-left  [(ngModel)]="nftPrice"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row>
-        <button class="btn-green" *ngIf="item.SellingStatus=='NOTFORSALE'" (click)="clickSellNFT(item) " padding>
+        <button class="btn-green" *ngIf="item.SellingStatus=='NOTFORSALE'" (click)="clickSellNFT(item)" padding>
           SellNFT
         </button>
       </ion-row>
     </ion-card-content>
   </ion-card>
   <h1>NFT Market Place</h1>
-  <ion-card *ngFor="let item of currentSellingNFTs">
-    <ion-card-content padding>
-      <ion-card-title> NFT: {{item.NftAssetName}} </ion-card-title>
-      <p>Current Owner: {{item.CurrentOwnerNFTPK}}</p>
-      <p>Product Name: {{item.ProductName}}</p>
-      <p>TDPTxnHash:{{item.TDPTxnHash}}</p>
-      <p>NftContent:{{item.NftContent}}</p>
-      <p>NFTTXNhash:{{item.NFTTXNhash}}</p>
-      <ion-row padding>
+  <ion-card *ngFor="let item of currentSellingNFTs" text-wrap style="border-radius: 15px;" padding>
+    <ion-card-content  *ngIf="item.SellingStatus=='FORSALE'">
+      <ion-row >
+        <ion-card-title> NFT : {{item.NftAssetName}}</ion-card-title>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'Current Owner : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.CurrentOwnerNFTPK}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'Product Name : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.ProductName}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'TDP TxnHash : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.TDPTxnHash}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'NFTTXNhash : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.NFTTXNhash}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
         <ion-col>
-          <ion-item padding>
-            <ion-label class="login-lables" floating>{{'NFT Copies'}}</ion-label>
-            <ion-input color="secondary" type="number" text-left id="input" [(ngModel)]="nftAmmount"></ion-input>
-          </ion-item>
+          <ion-row class="full-width line-spacing">
+            <h4 class="secondary-font">{{'Quantity Available : '}}</h4>
+          </ion-row>
+          <ion-col class="full-width line-spacing">
+            <h3 class="primary-font">{{item.Amount}}</h3>
+          </ion-col>
         </ion-col>
         <ion-col>
-          <ion-item padding>
-            <ion-label class="login-lables" floating>{{'NFT Price'}}</ion-label>
-            <ion-input color="secondary" type="number" text-left id="input" [(ngModel)]="nftPrice"></ion-input>
-          </ion-item>
+          <ion-row class="full-width line-spacing">
+            <h4 class="secondary-font">{{'NFT Price : '}}</h4>
+          </ion-row>
+          <ion-col class="full-width line-spacing">
+            <h3 class="primary-font">{{item.Price}}XLM</h3>
+          </ion-col>
         </ion-col>
       </ion-row>
       <ion-row>
-        <button class="btn-green" (click)="clickSellNFT(item)" padding>SellNFT</button>
-        <button class="btn-green" (click)="clickBuyNFT(item)" padding>Buy</button>
+        <button [attr.disabled]="item.CurrentOwnerNFTPK==this.mainAccount.pk ? '' : null" class="btn-green" padding>Buy</button>
       </ion-row>
     </ion-card-content>
   </ion-card>
 </ion-content>
+
+item.CurrentOwnerNFTPK==this.mainAccount.pk

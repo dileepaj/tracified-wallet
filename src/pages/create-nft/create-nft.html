@@ -6,66 +6,59 @@
     <ion-title>Create NFT</ion-title>
   </ion-navbar>
 </ion-header>
+
 <ion-content padding>
-  <ion-card text-wrap style="border-radius: 25px; padding: 15px;">
-    <ion-item>
-      <ion-row>
-        <ion-col col-2 left text-left>
-          <h5 class="label">{{ 'PoductName111'}}:</h5>
-        </ion-col>
-        <ion-col col-10 left text-left>
-          <h4>{{ProductName}}</h4>
-        </ion-col>
+  <ion-card text-wrap style="border-radius: 15px;" padding>
+    <ion-row class="full-width line-spacing mt-1">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">{{'Producr Name'}}</h4>
       </ion-row>
-    </ion-item>
-    <ion-item>
-      <ion-row>
-        <ion-col col-2 left text-left>
-          <p class="label">{{ 'TDPTXNHash'}}:</p>
-        </ion-col>
-        <ion-col col-10 left text-left>
-          <p>{{TDPtxnhash}}</p>
-        </ion-col>
+      <ion-row class="full-width line-spacing">
+        <h3 class="primary-font">{{ProductName}}</h3>
       </ion-row>
-    </ion-item>
-    <ion-item>
-      <ion-row>
-        <ion-col col-2 left text-left>
-          <p class="label">{{ 'Identifer'}}:</p>
-        </ion-col>
-        <ion-col col-10 left text-left>
-          <p>{{Identifier}}</p>
-        </ion-col>
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-1">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">{{'TDP Hash'}}</h4>
       </ion-row>
-    </ion-item>
-    <ion-item>
-      <ion-row>
-        <ion-col col-2 left text-left>
-          <p class="label">{{ 'TdpId'}}:</p>
-        </ion-col>
-        <ion-col col-10 left text-left>
-          <p>{{TDPID}}</p>
-        </ion-col>
+      <ion-col class="full-width line-spacing">
+        <h3 class="primary-font">{{TDPtxnhash}}</h3>
+      </ion-col>
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-1">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">{{'Producr Name'}}</h4>
       </ion-row>
-    </ion-item>
-    <ion-item>
-      <ion-row>
-        <ion-col col-2 left text-left>
-          <p class="label">{{ 'Type'}}:</p>
-        </ion-col>
-        <ion-col col-10 left text-left>
-          <p>{{"TDP"}}</p>
-        </ion-col>
+      <ion-row class="full-width line-spacing">
+        <h3 class="primary-font">{{ProductName}}</h3>
       </ion-row>
-    </ion-item>
-        <ion-item>
-          <ion-label class="login-lables" floating>{{'NFTName'}}</ion-label>
-          <ion-input color="secondary" type="text" text-left id="input" [(ngModel)]="nftName"></ion-input>
-        </ion-item>
-    <ion-item class="ion-text-center">
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-1">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">{{'TDPID'}}</h4>
+      </ion-row>
+      <ion-row class="full-width line-spacing">
+        <h3 class="primary-font">{{TDPID}}</h3>
+      </ion-row>
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-1">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">{{'Identifier'}}</h4>
+      </ion-row>
+      <ion-row class="full-width line-spacing">
+        <h3 class="primary-font">{{Identifier}}</h3>
+      </ion-row>
+    </ion-row>
+    <ion-row  class="full-width line-spacing">
+      <ion-item>
+        <ion-label class="login-lables" floating>{{'NFT Name'}}</ion-label>
+        <ion-input color="secondary" type="text" text-left id="input" [(ngModel)]="nftName" autofocus="true"></ion-input>
+      </ion-item>
+    </ion-row>
+    <ion-row  class="full-width line-spacing">
         <button class="btn-green" (click)="createNFT()">
           Create NFT by Tracified
-       </button>
-    </ion-item>
+        </button>
+    </ion-row>
   </ion-card>
 </ion-content>
