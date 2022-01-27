@@ -230,7 +230,7 @@ export class MarketPlaceNftPage {
                   this.dissmissLoading();
                 } 
                 this.logger.error("Database UpdateBuyingStatusNFT function does not work" + JSON.stringify(error))})
-              this.presentAlert('ERROR', `Can not buy NFT1 ${item.NftAssetName}`);
+              //this.presentAlert('ERROR', `Can not buy NFT1 ${item.NftAssetName}`);
             })
           })
           .catch(error => {
@@ -255,7 +255,7 @@ export class MarketPlaceNftPage {
           this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
         });
       });
-    });
+    })
   }
 
   transactionPasswordPopUp(accountName,curretBalance,message): Promise<string> {

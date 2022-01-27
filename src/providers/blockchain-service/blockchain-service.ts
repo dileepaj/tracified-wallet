@@ -418,7 +418,6 @@ export class BlockchainServiceProvider {
       let server = new Server(blockchainNet);
 
       if (subAccount.sequenceNo == "") {
-        console.log("No Sequence found.");
         server.loadAccount(subAccount.publicKey).then((account) => {
           let txn = this.acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount);
           resolve(txn);
@@ -489,7 +488,6 @@ export class BlockchainServiceProvider {
       let server = new Server(blockchainNet);
 
       if (subAccount.sequenceNo == "") {
-        console.log("No Sequence found.");
         server.loadAccount(subAccount.publicKey).then((account) => {
           let txn = this.rejectTxnBuilder(account, validity, signerSK, proofHash, receiver, subAccount);
           resolve(txn);
@@ -534,7 +532,6 @@ export class BlockchainServiceProvider {
   }
 
   signXdr(xdr, decKey) {
-    console.log("XDR: ", xdr);
     let keyPair = Keypair.fromSecret(decKey);
     if (blockchainNetType === 'live') {
       Network.usePublicNetwork();
@@ -595,7 +592,6 @@ export class BlockchainServiceProvider {
    * @returns 
    */
   sellNft(asset_code:string,asset_issuer:string,signerSK:string,nftAmmount:string,nftPrice:string){
-    console.log('first', asset_code,asset_issuer,signerSK,nftAmmount,nftPrice);
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);//because the distributor has the authority to sell
       if (blockchainNetType === 'live') {
@@ -714,7 +710,6 @@ export class BlockchainServiceProvider {
    *
    */
   buyNft(asset_code, signerSK,asset_issuer,previousOwnerNFTPK:string,main_issuer,nftAmount:string,nftPrice:string){
-    console.log("sss",asset_code, signerSK,asset_issuer,previousOwnerNFTPK,main_issuer,nftAmount,nftPrice);
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);//buyers secret key
       if (blockchainNetType === 'live') {

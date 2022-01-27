@@ -120,10 +120,8 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <button [attr.disabled]="item.CurrentOwnerNFTPK==this.mainAccount.pk ? '' : null" class="btn-green" padding>Buy</button>
+        <button [attr.disabled]="item.currentownernftpk==this.mainAccount.pk ? '' : null" (click)="clickBuyNFT(item)" class="btn-green" padding>Buy</button>
       </ion-row>
     </ion-card-content>
   </ion-card>
 </ion-content>
-
-item.CurrentOwnerNFTPK==this.mainAccount.pk
