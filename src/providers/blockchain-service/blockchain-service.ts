@@ -1,19 +1,26 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset, Transaction } from 'stellar-sdk';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import {
+  Network,
+  Operation,
+  Keypair,
+  TransactionBuilder,
+  Server,
+  Account,
+  Asset,
+  Transaction,
+} from "stellar-sdk";
 
-import { Properties } from '../../shared/properties';
-import { blockchainNet } from '../../shared/config';
-import { blockchainNetType } from '../../shared/config';
-import { Logger } from 'ionic-logger-new';
-import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
-import { ApiServiceProvider } from '../../providers/api-service/api-service';
-import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
-
+import { Properties } from "../../shared/properties";
+import { blockchainNet } from "../../shared/config";
+import { blockchainNetType } from "../../shared/config";
+import { Logger } from "ionic-logger-new";
+import { MappingServiceProvider } from "../../providers/mapping-service/mapping-service";
+import { ApiServiceProvider } from "../../providers/api-service/api-service";
+import { StorageServiceProvider } from "../../providers/storage-service/storage-service";
 
 @Injectable()
 export class BlockchainServiceProvider {
-
   constructor(
     public http: HttpClient,
     private logger: Logger,
@@ -21,11 +28,11 @@ export class BlockchainServiceProvider {
     private mappingService: MappingServiceProvider,
     private apiService: ApiServiceProvider,
     private storageService: StorageServiceProvider
-  ) { }
+  ) {}
 
   removeFoAccount(accounts) {
     let otherAccounts = [];
-    accounts.forEach(account => {
+    accounts.forEach((account) => {
       if (!account.FO) {
         otherAccounts.push(account);
       }
@@ -38,74 +45,122 @@ export class BlockchainServiceProvider {
     }
   }
 
-
   invalidateSubAccountKey(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
-      if (blockchainNetType === 'live') {
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
       let server = new Server(blockchainNet);
-      server.loadAccount(subAccount.publicKey()).then((account) => {
-        var transaction = new TransactionBuilder(account).addOperation(Operation.setOptions({
-          signer: {
-            ed25519PublicKey: mainAccount.pk,
-            weight: 2
-          }
-        })).addOperation(Operation.setOptions({
-          masterWeight: 0,
-          lowThreshold: 2,
-          medThreshold: 2,
-          highThreshold: 2
-        })).build();
+      server
+        .loadAccount(subAccount.publicKey())
+        .then((account) => {
+          var transaction = new TransactionBuilder(account)
+            .addOperation(
+              Operation.setOptions({
+                signer: {
+                  ed25519PublicKey: mainAccount.pk,
+                  weight: 2,
+                },
+              })
+            )
+            .addOperation(
+              Operation.setOptions({
+                masterWeight: 0,
+                lowThreshold: 2,
+                medThreshold: 2,
+                highThreshold: 2,
+              })
+            )
+            .build();
 
-        transaction.sign(subAccount);
+          transaction.sign(subAccount);
 
-        return server.submitTransaction(transaction);
-      }).then((transactionResult) => {
-        this.logger.info("Invalidation successful: " + JSON.stringify(transactionResult), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        resolve(transactionResult);
-      }).catch((err) => {
-        this.logger.error("Invalidating sub account failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject();
-      });
+          return server.submitTransaction(transaction);
+        })
+        .then((transactionResult) => {
+          this.logger.info(
+            "Invalidation successful: " + JSON.stringify(transactionResult),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          resolve(transactionResult);
+        })
+        .catch((err) => {
+          this.logger.error(
+            "Invalidating sub account failed: " + err,
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject();
+        });
     });
   }
 
-  validateFundTransfer(sendingAcc, amount) {
+  validateFundTransfer(sendingAcc, amount) {}
 
-  }
-
-  transferFundsForNewAccounts(sendingAccSk, receivingAccPk, amount): Promise<any> {
+  transferFundsForNewAccounts(
+    sendingAccSk,
+    receivingAccPk,
+    amount
+  ): Promise<any> {
     return new Promise((resolve, reject) => {
       var sendingAccPair = Keypair.fromSecret(sendingAccSk);
       var sendingAccPk = sendingAccPair.publicKey();
 
-      if (blockchainNetType === 'live') {
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
       let server = new Server(blockchainNet);
 
-      return server.loadAccount(sendingAccPk).then((account) => {
-        var transaction = new TransactionBuilder(account)
-          .addOperation(Operation.createAccount({ destination: receivingAccPk, startingBalance: amount.toString() }))
-          .build();
-        transaction.sign(sendingAccPair);
+      return server
+        .loadAccount(sendingAccPk)
+        .then((account) => {
+          var transaction = new TransactionBuilder(account)
+            .addOperation(
+              Operation.createAccount({
+                destination: receivingAccPk,
+                startingBalance: amount.toString(),
+              })
+            )
+            .build();
+          transaction.sign(sendingAccPair);
 
-        return server.submitTransaction(transaction).then((status) => {
-          this.logger.info("Funds transferred successfully for the new account: " + amount + " coins. " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
-          resolve(status);
-        }).catch((err) => {
-          this.logger.error("Fund transfer transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-          reject(err);
+          return server
+            .submitTransaction(transaction)
+            .then((status) => {
+              this.logger.info(
+                "Funds transferred successfully for the new account: " +
+                  amount +
+                  " coins. " +
+                  JSON.stringify(status),
+                this.properties.skipConsoleLogs,
+                this.properties.writeToFile
+              );
+              resolve(status);
+            })
+            .catch((err) => {
+              this.logger.error(
+                "Fund transfer transaction submission failed: " +
+                  JSON.stringify(err),
+                this.properties.skipConsoleLogs,
+                this.properties.writeToFile
+              );
+              reject(err);
+            });
+        })
+        .catch((e) => {
+          this.logger.error(
+            "Failed to transfer funds for the new account: " +
+              JSON.stringify(e),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject(e);
         });
-      }).catch((e) => {
-        this.logger.error("Failed to transfer funds for the new account: " + JSON.stringify(e), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject(e);
-      });
     });
   }
 
@@ -114,30 +169,55 @@ export class BlockchainServiceProvider {
       var sendingAccPair = Keypair.fromSecret(sendingAccSk);
       var sendingAccPk = sendingAccPair.publicKey();
 
-      if (blockchainNetType === 'live') {
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
       let server = new Server(blockchainNet);
 
-      return server.loadAccount(sendingAccPk).then((account) => {
-        var transaction = new TransactionBuilder(account)
-          .addOperation(Operation.payment({ destination: receivingAccPk, asset: Asset.native(), amount: amount.toString() }))
-          .build();
-        transaction.sign(sendingAccPair);
+      return server
+        .loadAccount(sendingAccPk)
+        .then((account) => {
+          var transaction = new TransactionBuilder(account)
+            .addOperation(
+              Operation.payment({
+                destination: receivingAccPk,
+                asset: Asset.native(),
+                amount: amount.toString(),
+              })
+            )
+            .build();
+          transaction.sign(sendingAccPair);
 
-        return server.submitTransaction(transaction).then((status) => {
-          this.logger.info("Successfully transferred funds: " + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
-          resolve(status);
-        }).catch((err) => {
-          this.logger.error("Transfer fund transaction submission failed: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-          reject(err);
+          return server
+            .submitTransaction(transaction)
+            .then((status) => {
+              this.logger.info(
+                "Successfully transferred funds: " + JSON.stringify(status),
+                this.properties.skipConsoleLogs,
+                this.properties.writeToFile
+              );
+              resolve(status);
+            })
+            .catch((err) => {
+              this.logger.error(
+                "Transfer fund transaction submission failed: " +
+                  JSON.stringify(err),
+                this.properties.skipConsoleLogs,
+                this.properties.writeToFile
+              );
+              reject(err);
+            });
+        })
+        .catch((e) => {
+          this.logger.error(
+            "Failed to transfer funds for the account: " + JSON.stringify(e),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject(e);
         });
-      }).catch((e) => {
-        this.logger.error("Failed to transfer funds for the account: " + JSON.stringify(e), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject(e);
-      });
     });
   }
 
@@ -151,36 +231,48 @@ export class BlockchainServiceProvider {
 
   accountBalance(publicKey) {
     return new Promise((resolve, reject) => {
-      this.blockchainAccountInfo(publicKey).then((account: any) => {
-        let balances = account.balances;
-        for (let i = 0; i < balances.length; i++) {
-          if (balances[i].asset_type == "native") {
-            resolve(balances[i].balance);
+      this.blockchainAccountInfo(publicKey)
+        .then((account: any) => {
+          let balances = account.balances;
+          for (let i = 0; i < balances.length; i++) {
+            if (balances[i].asset_type == "native") {
+              resolve(balances[i].balance);
+            }
           }
-        }
-        resolve(0);
-      }).catch((err) => {
-        this.logger.error("Failed to check the account balance: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject(err);
-      });
+          resolve(0);
+        })
+        .catch((err) => {
+          this.logger.error(
+            "Failed to check the account balance: " + JSON.stringify(err),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject(err);
+        });
     });
   }
 
   accountAssetsCount(publicKey) {
     return new Promise((resolve, reject) => {
       let assetCount = 0;
-      this.blockchainAccountInfo(publicKey).then((account: any) => {
-        let balances = account.balances;
-        for (let i = 0; i < balances.length; i++) {
-          if (balances[i].asset_type == "credit_alphanum12") {
-            assetCount++;
+      this.blockchainAccountInfo(publicKey)
+        .then((account: any) => {
+          let balances = account.balances;
+          for (let i = 0; i < balances.length; i++) {
+            if (balances[i].asset_type == "credit_alphanum12") {
+              assetCount++;
+            }
           }
-        }
-        resolve(assetCount);
-      }).catch((err) => {
-        this.logger.error("Failed to get accounts asset count: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject(err);
-      });
+          resolve(assetCount);
+        })
+        .catch((err) => {
+          this.logger.error(
+            "Failed to get accounts asset count: " + JSON.stringify(err),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject(err);
+        });
     });
   }
 
@@ -188,129 +280,194 @@ export class BlockchainServiceProvider {
     return new Promise((resolve, reject) => {
       let assetCount = 0;
       let nativeBalance = "0";
-      this.blockchainAccountInfo(publicKey).then((account: any) => {
-        let balances = account.balances;
-        for (let i = 0; i < balances.length; i++) {
-          if (balances[i].asset_type == "native") {
-            nativeBalance = balances[i].balance;
-          } else if (balances[i].asset_type == "credit_alphanum12") {
-            assetCount++;
+      this.blockchainAccountInfo(publicKey)
+        .then((account: any) => {
+          let balances = account.balances;
+          for (let i = 0; i < balances.length; i++) {
+            if (balances[i].asset_type == "native") {
+              nativeBalance = balances[i].balance;
+            } else if (balances[i].asset_type == "credit_alphanum12") {
+              assetCount++;
+            }
           }
-        }
-        resolve({ balance: nativeBalance, assetCount: assetCount });
-      }).catch((err) => {
-        this.logger.error("Failed to get accounts asset count: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject(err);
-      });
+          resolve({ balance: nativeBalance, assetCount: assetCount });
+        })
+        .catch((err) => {
+          this.logger.error(
+            "Failed to get accounts asset count: " + JSON.stringify(err),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject(err);
+        });
     });
   }
 
   blockchainAccountInfo(publicKey) {
     return new Promise((resolve, reject) => {
-      if (blockchainNetType === 'live') {
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
       let server = new Server(blockchainNet);
-      server.loadAccount(publicKey).then((account) => {
-        resolve(account);
-      }).catch((err) => {
-        this.logger.error("Failed to get account info: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject(err);
-      });
+      server
+        .loadAccount(publicKey)
+        .then((account) => {
+          resolve(account);
+        })
+        .catch((err) => {
+          this.logger.error(
+            "Failed to get account info: " + JSON.stringify(err),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject(err);
+        });
     });
   }
 
   checkIfAccountInvalidated(publicKey): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (blockchainNetType === 'live') {
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
       let server = new Server(blockchainNet);
-      server.loadAccount(publicKey).then((account) => {
-        let signers = account.signers;
-        if (signers.length == 2) {
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      }).catch((e) => {
-        this.logger.error("Failed to check account invalidation status: " + JSON.stringify(e), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject(false);
-      });
+      server
+        .loadAccount(publicKey)
+        .then((account) => {
+          let signers = account.signers;
+          if (signers.length == 2) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        })
+        .catch((e) => {
+          this.logger.error(
+            "Failed to check account invalidation status: " + JSON.stringify(e),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject(false);
+        });
     });
   }
 
   validateTransactionPassword(password, encSecret, pubKey): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.mappingService.decryptSecret(encSecret, password).then((decKey: string) => {
-        let keyPair = Keypair.fromSecret(decKey);
-        if (keyPair.publicKey() == pubKey) {
-          resolve(decKey);
-        } else {
-          this.logger.error("Invalid transaction password. Keys dont match", this.properties.skipConsoleLogs, this.properties.writeToFile);
+      this.mappingService
+        .decryptSecret(encSecret, password)
+        .then((decKey: string) => {
+          let keyPair = Keypair.fromSecret(decKey);
+          if (keyPair.publicKey() == pubKey) {
+            resolve(decKey);
+          } else {
+            this.logger.error(
+              "Invalid transaction password. Keys dont match",
+              this.properties.skipConsoleLogs,
+              this.properties.writeToFile
+            );
+            reject();
+          }
+        })
+        .catch(() => {
+          this.logger.error(
+            "Invalid transaction password",
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
           reject();
-        }
-      }).catch(() => {
-        this.logger.error("Invalid transaction password", this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject();
-      });
+        });
     });
-
   }
 
   changeTransactionPassword(transactionModel): Promise<any> {
     return new Promise((resolve, reject) => {
-      return this.validateTransactionPassword(transactionModel.oldPassword, transactionModel.encSecretKey, transactionModel.publicKey).then((decKey) => {
-        this.mappingService.encyrptSecret(decKey, transactionModel.newPassword).then((newSk) => {
-          let params = {
-            accName: transactionModel.accountName,
-            sk: newSk
-          }
-          return this.apiService.changeTranasctionPassword(params).then((res) => {
-            resolve(res);
-          }).catch((err) => {
-            this.logger.error("Failed to change the transaction password: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-            reject(err)
-          });
-        }).catch(() => {
-          this.logger.error("Failed to encrypt new password", this.properties.skipConsoleLogs, this.properties.writeToFile);
-          reject({ status: 11, error: 'Cannot use this password. Please pick a different password.' });
+      return this.validateTransactionPassword(
+        transactionModel.oldPassword,
+        transactionModel.encSecretKey,
+        transactionModel.publicKey
+      )
+        .then((decKey) => {
+          this.mappingService
+            .encyrptSecret(decKey, transactionModel.newPassword)
+            .then((newSk) => {
+              let params = {
+                accName: transactionModel.accountName,
+                sk: newSk,
+              };
+              return this.apiService
+                .changeTranasctionPassword(params)
+                .then((res) => {
+                  resolve(res);
+                })
+                .catch((err) => {
+                  this.logger.error(
+                    "Failed to change the transaction password: " +
+                      JSON.stringify(err),
+                    this.properties.skipConsoleLogs,
+                    this.properties.writeToFile
+                  );
+                  reject(err);
+                });
+            })
+            .catch(() => {
+              this.logger.error(
+                "Failed to encrypt new password",
+                this.properties.skipConsoleLogs,
+                this.properties.writeToFile
+              );
+              reject({
+                status: 11,
+                error:
+                  "Cannot use this password. Please pick a different password.",
+              });
+            });
+        })
+        .catch(() => {
+          this.logger.error(
+            "Old transaction password is incorrect.",
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject({ status: 10, error: "Invalid Password" });
         });
-      }).catch(() => {
-        this.logger.error("Old transaction password is incorrect.", this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject({ status: 10, error: 'Invalid Password' });
-      });
     });
   }
 
   getAccountBalanceAssets(mainAccount) {
     return new Promise((resolve, reject) => {
-      this.blockchainAccountInfo(mainAccount.pk).then((accountInfo: any) => {
-        let balances = accountInfo.balances;
-        let balance = "0";
-        let assetCount = 0;
-        for (let i = 0; i < balances.length; i++) {
-          if (balances[i].asset_type == "native") {
-            balance = balances[i].balance;
-          } else if (balances[i].asset_type == "credit_alphanum12") {
-            assetCount++;
+      this.blockchainAccountInfo(mainAccount.pk)
+        .then((accountInfo: any) => {
+          let balances = accountInfo.balances;
+          let balance = "0";
+          let assetCount = 0;
+          for (let i = 0; i < balances.length; i++) {
+            if (balances[i].asset_type == "native") {
+              balance = balances[i].balance;
+            } else if (balances[i].asset_type == "credit_alphanum12") {
+              assetCount++;
+            }
           }
-        }
-        resolve({ balance: balance, assets: assetCount });
-      }).catch((err) => {
-        this.logger.error("Error getting account info: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject(err);
-      });
+          resolve({ balance: balance, assets: assetCount });
+        })
+        .catch((err) => {
+          this.logger.error(
+            "Error getting account info: " + JSON.stringify(err),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject(err);
+        });
     });
   }
 
   mainAccountSuffucientFunds(balance, assetCount): any {
-    let baseFee = (assetCount * 0.5) + 4 + 3 + 2;
-    if (baseFee < (balance - 0.5)) {
+    let baseFee = assetCount * 0.5 + 4 + 3 + 2;
+    if (baseFee < balance - 0.5) {
       return true;
     } else {
       return false;
@@ -323,94 +480,185 @@ export class BlockchainServiceProvider {
 
   createSubAccount(mainAccount, mainSk) {
     return new Promise((resolve, reject) => {
-      this.getAccountBalanceAssets(mainAccount).then((accountInfo: any) => {
-        if (accountInfo.balance > 0) {
-          let fundStatus = this.mainAccountSuffucientFunds(accountInfo.balance, accountInfo.assets);
-          if (fundStatus) {
-            let keyPair = this.createAddress();
-            const account = {
-              "account": {
-                "subAccount": {
-                  "pk": keyPair.publicKey(),
-                  "sk": keyPair.secret(),
-                  "skp": keyPair.secret(),
-                  "skInvalidated": false
+      this.getAccountBalanceAssets(mainAccount)
+        .then((accountInfo: any) => {
+          if (accountInfo.balance > 0) {
+            let fundStatus = this.mainAccountSuffucientFunds(
+              accountInfo.balance,
+              accountInfo.assets
+            );
+            if (fundStatus) {
+              let keyPair = this.createAddress();
+              const account = {
+                account: {
+                  subAccount: {
+                    pk: keyPair.publicKey(),
+                    sk: keyPair.secret(),
+                    skp: keyPair.secret(),
+                    skInvalidated: false,
+                  },
+                  pk: this.properties.defaultAccount.pk,
                 },
-                "pk": this.properties.defaultAccount.pk
-              }
-            }
-            this.apiService.addTransactionSubAccount(account).then((res) => {
-              if (res.status == 200) {
-                this.properties.defaultAccount.subAccounts.push({ "pk": keyPair.publicKey(), "sk": keyPair.secret(), "skp": keyPair.secret(), "skInvalidated": false });
-                this.storageService.setDefaultAccount(this.properties.defaultAccount);
-                this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), 10).then(() => {
-                  this.invalidateSubAccountKey(keyPair, mainAccount).then(() => {
-                    this.logger.info("Successfully invalidated the account", this.properties.skipConsoleLogs, this.properties.writeToFile);
-                    resolve(keyPair);
-                  }).catch((err) => {
-                    this.logger.error("Failed to invalidate the account: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+              };
+              this.apiService
+                .addTransactionSubAccount(account)
+                .then((res) => {
+                  if (res.status == 200) {
+                    this.properties.defaultAccount.subAccounts.push({
+                      pk: keyPair.publicKey(),
+                      sk: keyPair.secret(),
+                      skp: keyPair.secret(),
+                      skInvalidated: false,
+                    });
+                    this.storageService.setDefaultAccount(
+                      this.properties.defaultAccount
+                    );
+                    this.transferFundsForNewAccounts(
+                      mainSk,
+                      keyPair.publicKey(),
+                      10
+                    )
+                      .then(() => {
+                        this.invalidateSubAccountKey(keyPair, mainAccount)
+                          .then(() => {
+                            this.logger.info(
+                              "Successfully invalidated the account",
+                              this.properties.skipConsoleLogs,
+                              this.properties.writeToFile
+                            );
+                            resolve(keyPair);
+                          })
+                          .catch((err) => {
+                            this.logger.error(
+                              "Failed to invalidate the account: " +
+                                JSON.stringify(err),
+                              this.properties.skipConsoleLogs,
+                              this.properties.writeToFile
+                            );
+                            reject();
+                          });
+                      })
+                      .catch((err) => {
+                        this.logger.error(
+                          "Failed to transfer funds for the new account: " +
+                            JSON.stringify(err),
+                          this.properties.skipConsoleLogs,
+                          this.properties.writeToFile
+                        );
+                        reject();
+                      });
+                  } else {
+                    this.logger.error(
+                      "Failed to transfer funds for the new account: " +
+                        JSON.stringify(res),
+                      this.properties.skipConsoleLogs,
+                      this.properties.writeToFile
+                    );
                     reject();
-                  });
-                }).catch((err) => {
-                  this.logger.error("Failed to transfer funds for the new account: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                  }
+                })
+                .catch((err) => {
+                  this.logger.error(
+                    "Failed to add the sub account: " + JSON.stringify(err),
+                    this.properties.skipConsoleLogs,
+                    this.properties.writeToFile
+                  );
                   reject();
                 });
-              } else {
-                this.logger.error("Failed to transfer funds for the new account: " + JSON.stringify(res), this.properties.skipConsoleLogs, this.properties.writeToFile);
-                reject();
-              }
-            }).catch((err) => {
-              this.logger.error("Failed to add the sub account: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+            } else {
+              this.logger.error(
+                "Main account does not have sufficient funds.",
+                this.properties.skipConsoleLogs,
+                this.properties.writeToFile
+              );
               reject();
-            });
+            }
           } else {
-            this.logger.error("Main account does not have sufficient funds.", this.properties.skipConsoleLogs, this.properties.writeToFile);
+            this.logger.error(
+              "Main account balance is 0 lumens",
+              this.properties.skipConsoleLogs,
+              this.properties.writeToFile
+            );
             reject();
           }
-        } else {
-          this.logger.error("Main account balance is 0 lumens", this.properties.skipConsoleLogs, this.properties.writeToFile);
+        })
+        .catch((err) => {
+          this.logger.error(
+            "Failed to get the account balance: " + JSON.stringify(err),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
           reject();
-        }
-      }).catch((err) => {
-        this.logger.error("Failed to get the account balance: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject();
-      });
+        });
     });
   }
 
   verifyCoC(secretKey, identifier, receiverPk, item, qty, validityPeriod) {
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(secretKey);
-      if (blockchainNetType === 'live') {
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
       let server = new Server(blockchainNet);
-      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
-        var transaction = new TransactionBuilder(account)
-          .addOperation(Operation.manageData({ name: 'Transaction Type', value: '11', }))
-          .addOperation(Operation.manageData({ name: 'Identifier', value: identifier }))
-          .addOperation(Operation.manageData({ name: 'Receiver', value: receiverPk }))
-          .addOperation(Operation.manageData({ name: 'Asset', value: item }))
-          .addOperation(Operation.manageData({ name: 'Amount', value: qty }))
-          .addOperation(Operation.manageData({ name: 'MaxBound', value: JSON.stringify(validityPeriod), }))
-          .build();
-        transaction.sign(sourceKeypair);
-        return server.submitTransaction(transaction);
-      }).then((transactionResult) => {
-        this.logger.info("Verified CoC successfully", this.properties.skipConsoleLogs, this.properties.writeToFile);
-        resolve(transactionResult.hash);
-      }).catch((err) => {
-        this.logger.error("Failed to verify CoC: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject();
-      });
+      server
+        .loadAccount(sourceKeypair.publicKey())
+        .then((account) => {
+          var transaction = new TransactionBuilder(account)
+            .addOperation(
+              Operation.manageData({ name: "Transaction Type", value: "11" })
+            )
+            .addOperation(
+              Operation.manageData({ name: "Identifier", value: identifier })
+            )
+            .addOperation(
+              Operation.manageData({ name: "Receiver", value: receiverPk })
+            )
+            .addOperation(Operation.manageData({ name: "Asset", value: item }))
+            .addOperation(Operation.manageData({ name: "Amount", value: qty }))
+            .addOperation(
+              Operation.manageData({
+                name: "MaxBound",
+                value: JSON.stringify(validityPeriod),
+              })
+            )
+            .build();
+          transaction.sign(sourceKeypair);
+          return server.submitTransaction(transaction);
+        })
+        .then((transactionResult) => {
+          this.logger.info(
+            "Verified CoC successfully",
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          resolve(transactionResult.hash);
+        })
+        .catch((err) => {
+          this.logger.error(
+            "Failed to verify CoC: " + JSON.stringify(err),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
+          reject();
+        });
     });
   }
 
-  acceptTransactionXdr(identifier, receiver, qty, item, validity, proofHash, subAccount, issuer, signerSK) {
+  acceptTransactionXdr(
+    identifier,
+    receiver,
+    qty,
+    item,
+    validity,
+    proofHash,
+    subAccount,
+    issuer,
+    signerSK
+  ) {
     return new Promise((resolve, reject) => {
-      if (blockchainNetType === 'live') {
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
@@ -418,22 +666,62 @@ export class BlockchainServiceProvider {
       let server = new Server(blockchainNet);
 
       if (subAccount.sequenceNo == "") {
-        server.loadAccount(subAccount.publicKey).then((account) => {
-          let txn = this.acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount);
-          resolve(txn);
-        }).catch((err) => {
-          this.logger.error("Failed to load the account: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-          reject(err);
-        });
+        server
+          .loadAccount(subAccount.publicKey)
+          .then((account) => {
+            let txn = this.acceptTxnBuilder(
+              account,
+              validity,
+              signerSK,
+              item,
+              issuer,
+              identifier,
+              proofHash,
+              receiver,
+              qty,
+              subAccount
+            );
+            resolve(txn);
+          })
+          .catch((err) => {
+            this.logger.error(
+              "Failed to load the account: " + err,
+              this.properties.skipConsoleLogs,
+              this.properties.writeToFile
+            );
+            reject(err);
+          });
       } else {
         let account = new Account(subAccount.publicKey, subAccount.sequenceNo);
-        let txn = this.acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount);
+        let txn = this.acceptTxnBuilder(
+          account,
+          validity,
+          signerSK,
+          item,
+          issuer,
+          identifier,
+          proofHash,
+          receiver,
+          qty,
+          subAccount
+        );
         resolve(txn);
       }
     });
   }
 
-  acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount) {
+  acceptTxnBuilder(
+    account,
+    validity,
+    signerSK,
+    item,
+    issuer,
+    identifier,
+    proofHash,
+    receiver,
+    qty,
+    subAccount
+  ) {
     let XDR;
     let b64;
     let seqNum;
@@ -441,23 +729,45 @@ export class BlockchainServiceProvider {
     const senderPublickKey = this.properties.defaultAccount.pk;
 
     var minTime = Math.round(new Date().getTime() / 1000.0);
-    var date = new Date()
-    var maxTime = Math.round(((new Date(validity).getTime()) + (date.getTimezoneOffset() * 60000))/ 1000.0);
+    var date = new Date();
+    var maxTime = Math.round(
+      (new Date(validity).getTime() + date.getTimezoneOffset() * 60000) / 1000.0
+    );
     var sourceKeypair = Keypair.fromSecret(signerSK);
 
     var asset = new Asset(item, issuer);
-    var opts = {fee:100, timebounds: { minTime: minTime, maxTime: maxTime } };
+    var opts = { fee: 100, timebounds: { minTime: minTime, maxTime: maxTime } };
 
     var transaction = new TransactionBuilder(account, opts);
-    transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', source: sourceKeypair.publicKey()}));
-    transaction.addOperation(Operation.manageData({ name: 'Identifier', value: identifier, source: sourceKeypair.publicKey()}));
-    transaction.addOperation(Operation.manageData({ name: 'proofHash', value: proofHash, source: receiver }));
-    transaction.addOperation(Operation.payment({
-      destination: receiver,
-      asset: asset,
-      amount: qty,
-      source: senderPublickKey
-    }));
+    transaction.addOperation(
+      Operation.manageData({
+        name: "Transaction Type",
+        value: "10",
+        source: sourceKeypair.publicKey(),
+      })
+    );
+    transaction.addOperation(
+      Operation.manageData({
+        name: "Identifier",
+        value: identifier,
+        source: sourceKeypair.publicKey(),
+      })
+    );
+    transaction.addOperation(
+      Operation.manageData({
+        name: "proofHash",
+        value: proofHash,
+        source: receiver,
+      })
+    );
+    transaction.addOperation(
+      Operation.payment({
+        destination: receiver,
+        asset: asset,
+        amount: qty,
+        source: senderPublickKey,
+      })
+    );
 
     // if (!subAccount.available) {
     //   console.log("Bumping Sequence in Accept: ", subAccount.sequenceNo);
@@ -468,19 +778,18 @@ export class BlockchainServiceProvider {
     tx.sign(sourceKeypair);
     XDR = tx.toEnvelope();
     seqNum = tx.sequence;
-    b64 = XDR.toXDR('base64');
+    b64 = XDR.toXDR("base64");
     const resolveObj = {
       seqNum: seqNum,
-      b64: b64
-    }
+      b64: b64,
+    };
 
     return resolveObj;
   }
 
   rejectTransactionXdr(receiver, validity, proofHash, subAccount, signerSK) {
     return new Promise((resolve, reject) => {
-
-      if (blockchainNetType === 'live') {
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
@@ -488,35 +797,72 @@ export class BlockchainServiceProvider {
       let server = new Server(blockchainNet);
 
       if (subAccount.sequenceNo == "") {
-        server.loadAccount(subAccount.publicKey).then((account) => {
-          let txn = this.rejectTxnBuilder(account, validity, signerSK, proofHash, receiver, subAccount);
-          resolve(txn);
-        }).catch((err) => {
-          this.logger.error("Failed to load the account: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-          reject(err);
-        });
+        server
+          .loadAccount(subAccount.publicKey)
+          .then((account) => {
+            let txn = this.rejectTxnBuilder(
+              account,
+              validity,
+              signerSK,
+              proofHash,
+              receiver,
+              subAccount
+            );
+            resolve(txn);
+          })
+          .catch((err) => {
+            this.logger.error(
+              "Failed to load the account: " + err,
+              this.properties.skipConsoleLogs,
+              this.properties.writeToFile
+            );
+            reject(err);
+          });
       } else {
         let account = new Account(subAccount.publicKey, subAccount.sequenceNo);
-        let txn = this.rejectTxnBuilder(account, validity, signerSK, proofHash, receiver, subAccount);
+        let txn = this.rejectTxnBuilder(
+          account,
+          validity,
+          signerSK,
+          proofHash,
+          receiver,
+          subAccount
+        );
         resolve(txn);
       }
     });
   }
 
-  rejectTxnBuilder(account, validity, signerSK, proofHash, receiver, subAccount) {
-
+  rejectTxnBuilder(
+    account,
+    validity,
+    signerSK,
+    proofHash,
+    receiver,
+    subAccount
+  ) {
     let XDR;
     let b64;
 
     var minTime = Math.round(new Date().getTime() / 1000.0);
-    var date = new Date()
-    var maxTime = Math.round(((new Date(validity).getTime()) + (date.getTimezoneOffset() )* 60000)/ 1000.0);
+    var date = new Date();
+    var maxTime = Math.round(
+      (new Date(validity).getTime() + date.getTimezoneOffset() * 60000) / 1000.0
+    );
     var sourceKeypair = Keypair.fromSecret(signerSK);
-    var opts = {fee:100, timebounds: { minTime: minTime, maxTime: maxTime } };
+    var opts = { fee: 100, timebounds: { minTime: minTime, maxTime: maxTime } };
 
-    var transaction = new TransactionBuilder(account, opts).addOperation(Operation.manageData({
-      name: 'Status', value: 'rejected', source: receiver
-    })).addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }))
+    var transaction = new TransactionBuilder(account, opts)
+      .addOperation(
+        Operation.manageData({
+          name: "Status",
+          value: "rejected",
+          source: receiver,
+        })
+      )
+      .addOperation(
+        Operation.manageData({ name: "proofHash", value: proofHash })
+      );
 
     // if (!subAccount.available) {
     //   console.log("Bumping Sequence in Reject");
@@ -526,14 +872,14 @@ export class BlockchainServiceProvider {
     const tx = transaction.build();
     tx.sign(sourceKeypair);
     XDR = tx.toEnvelope();
-    b64 = XDR.toXDR('base64');
+    b64 = XDR.toXDR("base64");
 
     return b64;
   }
 
   signXdr(xdr, decKey) {
     let keyPair = Keypair.fromSecret(decKey);
-    if (blockchainNetType === 'live') {
+    if (blockchainNetType === "live") {
       Network.usePublicNetwork();
     } else {
       Network.useTestNetwork();
@@ -547,40 +893,65 @@ export class BlockchainServiceProvider {
 
   getAssetIssuer(accountPubKey, asset_code): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.blockchainAccountInfo(accountPubKey).then((account: any) => {
-        let balances: any = account.balances;
-        if (balances.length > 0) {
-          for (let i = 0; i < balances.length; i++) {
-            if (balances[i].asset_type == "credit_alphanum12" && balances[i].asset_code == asset_code) {
-              resolve(balances[i].asset_issuer);
-            } else if (balances[i].asset_type == "credit_alphanum4" && balances[i].asset_code == asset_code) {
-              resolve(balances[i].asset_issuer);
+      this.blockchainAccountInfo(accountPubKey)
+        .then((account: any) => {
+          let balances: any = account.balances;
+          if (balances.length > 0) {
+            for (let i = 0; i < balances.length; i++) {
+              if (
+                balances[i].asset_type == "credit_alphanum12" &&
+                balances[i].asset_code == asset_code
+              ) {
+                resolve(balances[i].asset_issuer);
+              } else if (
+                balances[i].asset_type == "credit_alphanum4" &&
+                balances[i].asset_code == asset_code
+              ) {
+                resolve(balances[i].asset_issuer);
+              }
             }
+            reject();
+          } else {
+            reject();
           }
+        })
+        .catch((err) => {
+          this.logger.error(
+            "Failed to get asset issuer: " + JSON.stringify(err),
+            this.properties.skipConsoleLogs,
+            this.properties.writeToFile
+          );
           reject();
-        } else {
-          reject();
-        }
-      }).catch((err) => {
-        this.logger.error("Failed to get asset issuer: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-        reject();
-      });
+        });
     });
   }
 
   checkAccountValidity(publicKey): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.blockchainAccountInfo(publicKey).then((res) => {
-        resolve(true);
-      }).catch((err) => {
-        if (err.response.status == 404 && err.response.title == "Resource Missing") {
-          this.logger.error("Invalid Public Key: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-          resolve(false);
-        } else {
-          this.logger.error("Failed to check account validity: " + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-          reject(err);
-        }
-      });
+      this.blockchainAccountInfo(publicKey)
+        .then((res) => {
+          resolve(true);
+        })
+        .catch((err) => {
+          if (
+            err.response.status == 404 &&
+            err.response.title == "Resource Missing"
+          ) {
+            this.logger.error(
+              "Invalid Public Key: " + JSON.stringify(err),
+              this.properties.skipConsoleLogs,
+              this.properties.writeToFile
+            );
+            resolve(false);
+          } else {
+            this.logger.error(
+              "Failed to check account validity: " + JSON.stringify(err),
+              this.properties.skipConsoleLogs,
+              this.properties.writeToFile
+            );
+            reject(err);
+          }
+        });
     });
   }
 
@@ -589,80 +960,105 @@ export class BlockchainServiceProvider {
    * @param asset_code NFT name
    * @param asset_issuer initial asset issuer public key
    * @param signerSK NFT cuurent owner secretkey
-   * @returns 
+   * @returns
    */
-  sellNft(asset_code:string,asset_issuer:string,signerSK:string,nftAmmount:string,nftPrice:string){
+  sellNft(
+    asset_code: string,
+    asset_issuer: string,
+    signerSK: string,
+    nftAmmount: string,
+    nftPrice: string
+  ) {
     return new Promise((resolve, reject) => {
-      let sourceKeypair = Keypair.fromSecret(signerSK);//because the distributor has the authority to sell
-      if (blockchainNetType === 'live') {
+      let sourceKeypair = Keypair.fromSecret(signerSK); //because the distributor has the authority to sell
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
       var asset = new Asset(asset_code, asset_issuer);
-      var sellingAsset=Asset.native();
-      var opts = {fee:100,  timebounds: {
-        minTime: 0,
-        maxTime: 0,
-      }};
+      var sellingAsset = Asset.native();
+      var opts = {
+        fee: 100,
+        timebounds: {
+          minTime: 0,
+          maxTime: 0,
+        },
+      };
       let server = new Server(blockchainNet);
-      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
-        var transaction = new TransactionBuilder(account,opts)
-        .addOperation(Operation.manageSellOffer({
-          selling:asset,
-          buying:sellingAsset,
-          amount:nftAmmount,
-          price:nftPrice, 
-          offerId:'0',
-        }))
-        .setTimeout(60000)
-        .build();
-        transaction.sign(sourceKeypair);
-       return server.submitTransaction(transaction);
-      }).then((transactionResult) => {
-        resolve(transactionResult)
-      }).catch((err) => {
-        this.logger.error("Couldn't put up for sale " + JSON.stringify(err));
-        reject(err);
-      });
+      server
+        .loadAccount(sourceKeypair.publicKey())
+        .then((account) => {
+          var transaction = new TransactionBuilder(account, opts)
+            .addOperation(
+              Operation.manageSellOffer({
+                selling: asset,
+                buying: sellingAsset,
+                amount: nftAmmount,
+                price: nftPrice,
+                offerId: "0",
+              })
+            )
+            .setTimeout(60000)
+            .build();
+          transaction.sign(sourceKeypair);
+          return server.submitTransaction(transaction);
+        })
+        .then((transactionResult) => {
+          resolve(transactionResult);
+        })
+        .catch((err) => {
+          this.logger.error("Couldn't put up for sale " + JSON.stringify(err));
+          reject(err);
+        });
     });
   }
 
   /**
    * @function changeTrustByDistributor change trust for create NFT(asset)
    * @param asset_code NFT name(asset name)
-   * @param asset_issuer generated NFT(asset) issuer 
+   * @param asset_issuer generated NFT(asset) issuer
    * @param signerSK selling offer created signateure
-   * 
+   *
    */
-  changeTrustByDistributor(asset_code, asset_issuer,signerSK){  
+  changeTrustByDistributor(asset_code, asset_issuer, signerSK) {
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK);
-      if (blockchainNetType === 'live') {
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
-      const senderPublickKey = this.properties.defaultAccount.pk;//distributor
+      const senderPublickKey = this.properties.defaultAccount.pk; //distributor
       var asset = new Asset(asset_code, asset_issuer);
-      var opts = {fee:100};
+      var opts = { fee: 100 };
       let server = new Server(blockchainNet);
-      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
-        var transaction = new TransactionBuilder(account,opts)
-        .addOperation(Operation.changeTrust({asset:asset,limit:"1",source:senderPublickKey}))
-        .setTimeout(60000)
-        .build();
-        transaction.sign(sourceKeypair);
-        return server.submitTransaction(transaction);
-      }).then((transactionResult) => {
-        //this.logger.info("Trust successful",transactionResult);
-        resolve(transactionResult)
-      }).catch((err) => {
-        reject(err);
-      });
+      server
+        .loadAccount(sourceKeypair.publicKey())
+        .then((account) => {
+          var transaction = new TransactionBuilder(account, opts)
+            .addOperation(
+              Operation.changeTrust({
+                asset: asset,
+                limit: "1",
+                source: senderPublickKey,
+              })
+            )
+            .setTimeout(60000)
+            .build();
+          transaction.sign(sourceKeypair);
+          return server.submitTransaction(transaction);
+        })
+        .then((transactionResult) => {
+          //this.logger.info("Trust successful",transactionResult);
+          resolve(transactionResult);
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
-  
+
   /**
    * @function ctrate create trustline by third party to distributor and issuer
    * here we are assuming that this wallet can also act as a buyer, so this wallet has to build a trustline with the gateway and a distributor===>(cuurent_owner)
@@ -670,33 +1066,43 @@ export class BlockchainServiceProvider {
    * @param asset_issuer initial asset issuer(minter)
    * @param signerSK buyer signature
    * @param buyerpk buyer public key
-   * 
+   *
    */
-  trustlineByBuyer(asset_code, asset_issuer,signerSK,buyerpk){
+  trustlineByBuyer(asset_code, asset_issuer, signerSK, buyerpk) {
     return new Promise((resolve, reject) => {
-      let sourceKeypair = Keypair.fromSecret(signerSK);//buyers secret key
-      if (blockchainNetType === 'live') {
+      let sourceKeypair = Keypair.fromSecret(signerSK); //buyers secret key
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
-      const senderPublickKey= buyerpk;
-      var asset = new Asset(asset_code, asset_issuer);//for buyer --> gateway
-      var opts = {fee:100};
+      const senderPublickKey = buyerpk;
+      var asset = new Asset(asset_code, asset_issuer); //for buyer --> gateway
+      var opts = { fee: 100 };
       let server = new Server(blockchainNet);
-      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
-        var transaction = new TransactionBuilder(account,opts)
-        .addOperation(Operation.changeTrust({asset:asset,limit:"1",source:senderPublickKey}))//trustline from buyer to issuer
-        .setTimeout(60000)
-        .build();
-        transaction.sign(sourceKeypair);
-        return server.submitTransaction(transaction);
-      }).then((transactionResult) => {
-        resolve(transactionResult)
-      }).catch((err) => {
-        this.logger.error("Failed Trusts " + JSON.stringify(err));
-        reject(err);
-      });
+      server
+        .loadAccount(sourceKeypair.publicKey())
+        .then((account) => {
+          var transaction = new TransactionBuilder(account, opts)
+            .addOperation(
+              Operation.changeTrust({
+                asset: asset,
+                limit: "1",
+                source: senderPublickKey,
+              })
+            ) //trustline from buyer to issuer
+            .setTimeout(60000)
+            .build();
+          transaction.sign(sourceKeypair);
+          return server.submitTransaction(transaction);
+        })
+        .then((transactionResult) => {
+          resolve(transactionResult);
+        })
+        .catch((err) => {
+          this.logger.error("Failed Trusts " + JSON.stringify(err));
+          reject(err);
+        });
     });
   }
 
@@ -706,57 +1112,92 @@ export class BlockchainServiceProvider {
    * @param signerSK buyer secret key
    * @param asset_issuer current NFT owner
    * @param main_issuer initial asset issuer(minter)
-   * @param priceNft NFT selling price 
+   * @param priceNft NFT selling price
    *
    */
-  buyNft(asset_code, signerSK,asset_issuer,previousOwnerNFTPK:string,main_issuer,nftAmount:string,nftPrice:string){
+  buyNft(
+    asset_code,
+    signerSK,
+    asset_issuer,
+    previousOwnerNFTPK: string,
+    main_issuer,
+    nftAmount: string,
+    nftPrice: string
+  ) {
     return new Promise((resolve, reject) => {
-      let sourceKeypair = Keypair.fromSecret(signerSK);//buyers secret key
-      if (blockchainNetType === 'live') {
+      let sourceKeypair = Keypair.fromSecret(signerSK); //buyers secret key
+      if (blockchainNetType === "live") {
         Network.usePublicNetwork();
       } else {
         Network.useTestNetwork();
       }
-      var buyAsset = new Asset(asset_code, asset_issuer)
-      var sellingAsset=Asset.native();
-      var opts = {fee:100,  timebounds: {
-        minTime: 0,
-        maxTime: 0,
-      }};
+      var buyAsset = new Asset(asset_code, asset_issuer);
+      var sellingAsset = Asset.native();
+      var price = parseInt(nftPrice)
+      var royalty = price * (20 / 100);
+      var royaltyToBePaid = royalty.toString()
+      var opts = {
+        fee: 100,
+        timebounds: {
+          minTime: 0,
+          maxTime: 0,
+        },
+      };
       let server = new Server(blockchainNet);
-      server.loadAccount(sourceKeypair.publicKey()).then((account) => {
-        var transaction = new TransactionBuilder(account,opts)
-        .addOperation(Operation.manageBuyOffer({
-          selling:sellingAsset,
-          buying:buyAsset,
-          buyAmount:nftAmount,
-          price:nftPrice, 
-          offerId:'0',}))
-        .addOperation(Operation.manageData({
-          name: "Origin Issuer",
-          value: asset_issuer
-        }))
-        .addOperation(Operation.manageData({
-          name: "Current Owner",
-          value: sourceKeypair.publicKey()
-        }))
-        .addOperation(Operation.manageData({
-          name: "Previous Owner",
-          value: previousOwnerNFTPK
-        }))
-          .setTimeout(80000)
-        .build();
-        transaction.sign(sourceKeypair);
-        return server.submitTransaction(transaction);
-      }).then((transactionResult) => {
-        this.logger.info("Buying of NFT was successful");
-        resolve(transactionResult)
-      }).catch((err) => {
-        reject(err);
-      });
+      server
+        .loadAccount(sourceKeypair.publicKey())
+        .then((account) => {
+          var transaction = new TransactionBuilder(account, opts)
+            .addOperation(
+              Operation.manageBuyOffer({
+                selling: sellingAsset,
+                buying: buyAsset,
+                buyAmount: nftAmount,
+                price: nftPrice,
+                offerId: "0",
+              })
+            )
+            .addOperation(
+              Operation.payment({
+                amount: royaltyToBePaid,
+                asset: Asset.native(),
+                destination:
+                  "GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3",
+              })
+            )
+            .addOperation(
+              Operation.manageData({
+                name: "Origin Issuer",
+                value: asset_issuer,
+              })
+            )
+            .addOperation(
+              Operation.manageData({
+                name: "Current Owner",
+                value: sourceKeypair.publicKey(),
+              })
+            )
+            .addOperation(
+              Operation.manageData({
+                name: "Previous Owner",
+                value: previousOwnerNFTPK,
+              })
+            )
+            .setTimeout(80000)
+            .build();
+          transaction.sign(sourceKeypair);
+          return server.submitTransaction(transaction);
+        })
+        .then((transactionResult) => {
+          this.logger.info("Buying of NFT was successful");
+          resolve(transactionResult);
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
- callback = function (resp) {
-  this.logger.info("Response" + JSON.stringify(resp));
-};
+  callback = function (resp) {
+    this.logger.info("Response" + JSON.stringify(resp));
+  };
 }
