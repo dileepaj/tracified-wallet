@@ -1032,6 +1032,10 @@ export class BlockchainServiceProvider {
       const senderPublickKey = this.properties.defaultAccount.pk; //distributor
       var asset = new Asset(asset_code, asset_issuer);
       var opts = { fee: 100 };
+      // let n = Math.floor(Math.random() * (10 - 0 + 1));
+      // let servicecharge = 1 * (n / 10);
+      // var service = servicecharge.toString();
+
       let server = new Server(blockchainNet);
       server
         .loadAccount(sourceKeypair.publicKey())
@@ -1041,6 +1045,14 @@ export class BlockchainServiceProvider {
               Operation.changeTrust({
                 asset: asset,
                 limit: "1",
+                source: senderPublickKey,
+              })
+            )
+            .addOperation(
+              Operation.payment({
+                destination:'GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3',
+                asset:Asset.native(),
+                amount: '5',
                 source: senderPublickKey,
               })
             )
@@ -1133,9 +1145,9 @@ export class BlockchainServiceProvider {
       }
       var buyAsset = new Asset(asset_code, asset_issuer);
       var sellingAsset = Asset.native();
-      var price = parseInt(nftPrice)
-      var royalty = price * (20 / 100);
-      var royaltyToBePaid = royalty.toString()
+      // var price = parseInt(nftPrice)
+      // var royalty = price * (20 / 100);
+      // var royaltyToBePaid = royalty.toString()
       var opts = {
         fee: 100,
         timebounds: {
@@ -1157,14 +1169,14 @@ export class BlockchainServiceProvider {
                 offerId: "0",
               })
             )
-            .addOperation(
-              Operation.payment({
-                amount: royaltyToBePaid,
-                asset: Asset.native(),
-                destination:
-                  "GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3",
-              })
-            )
+            // .addOperation(
+            //   Operation.payment({
+            //     amount: royaltyToBePaid,
+            //     asset: Asset.native(),
+            //     destination:
+            //       "GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3",
+            //   })
+            // )
             .addOperation(
               Operation.manageData({
                 name: "Origin Issuer",
