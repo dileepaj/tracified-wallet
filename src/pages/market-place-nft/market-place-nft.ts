@@ -65,6 +65,10 @@ export class MarketPlaceNftPage {
     this.getOwnNFT();
     refresher.complete();
   }
+//string convert to float
+  ParseFloat(price:string){
+    return parseFloat(price)
+  }
   /**
    * 
    * @assetsMarketPlace  @type array store the retrieve selling NFT from gateway DB

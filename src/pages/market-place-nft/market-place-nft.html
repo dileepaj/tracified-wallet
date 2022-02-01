@@ -51,7 +51,7 @@
       <ion-row *ngIf="item.SellingStatus=='NOTFORSALE'">
         <ion-col>
           <ion-item>
-            <ion-label class="login-lables" floating>{{'NFT Price   XLM'}}</ion-label>
+            <ion-label class="login-lables" floating>{{'NFT Price XLM (with added royalty of 20%)'}}</ion-label>
             <ion-input color="secondary" type="number" text-left  [(ngModel)]="nftPrice"></ion-input>
           </ion-item>
         </ion-col>
@@ -115,7 +115,15 @@
             <h4 class="secondary-font">{{'NFT Price : '}}</h4>
           </ion-row>
           <ion-col class="full-width line-spacing">
-            <h3 class="primary-font">{{item.Price}}XLM</h3>
+            <h3 class="primary-font">{{item.Price}}XLM +20% Royalty</h3>
+          </ion-col>
+        </ion-col>
+        <ion-col>
+          <ion-row class="full-width line-spacing">
+            <h4 class="secondary-font">{{'Total NFT Price : '}}</h4>
+          </ion-row>
+          <ion-col class="full-width line-spacing">
+            <h3 class="primary-font">{{ParseFloat(item.Price)+ParseFloat(item.Price*(0.2))}}XLM</h3>
           </ion-col>
         </ion-col>
       </ion-row>
