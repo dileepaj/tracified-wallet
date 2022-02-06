@@ -1048,14 +1048,7 @@ export class BlockchainServiceProvider {
                 source: senderPublickKey,
               })
             )
-            .addOperation(
-              Operation.payment({
-                destination:'GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3',
-                asset:Asset.native(),
-                amount: '5',
-                source: senderPublickKey,
-              })
-            )
+          
             .setTimeout(60000)
             .build();
           transaction.sign(sourceKeypair);
@@ -1070,6 +1063,49 @@ export class BlockchainServiceProvider {
         });
     });
   }
+
+  //// set authority on trustline//////////////////////
+  // changeAuthOnTrust(asset_code, asset_issuer, signerSK) {
+  //   return new Promise((resolve, reject) => {
+  //     let sourceKeypair = Keypair.fromSecret(signerSK);//MainTracifiedAccountSK
+  //     if (blockchainNetType === "live") {
+  //       Network.usePublicNetwork();
+  //     } else {
+  //       Network.useTestNetwork();
+  //     }
+  //     const senderPublickKey = asset_issuer; //distributor
+  //     var asset = new Asset(asset_code, asset_issuer);
+  //     var opts = { fee: 100 };
+  //     // let n = Math.floor(Math.random() * (10 - 0 + 1));
+  //     // let servicecharge = 1 * (n / 10);
+  //     // var service = servicecharge.toString();
+
+  //     let server = new Server(blockchainNet);
+  //     server
+  //       .loadAccount(sourceKeypair.publicKey())
+  //       .then((account) => {
+  //         var transaction = new TransactionBuilder(account, opts)
+  //           .addOperation(
+  //             Operation.setTrustlineflag({
+                
+  //             })
+  //           )
+          
+  //           .setTimeout(60000)
+  //           .build();
+  //         transaction.sign(sourceKeypair);
+  //         return server.submitTransaction(transaction);
+  //       })
+  //       .then((transactionResult) => {
+  //         //this.logger.info("Trust successful",transactionResult);
+  //         resolve(transactionResult);
+  //       })
+  //       .catch((err) => {
+  //         reject(err);
+  //       });
+  //   });
+  // }
+
 
   /**
    * @function ctrate create trustline by third party to distributor and issuer
@@ -1103,6 +1139,14 @@ export class BlockchainServiceProvider {
                 source: senderPublickKey,
               })
             ) //trustline from buyer to issuer
+            .addOperation(
+              Operation.payment({
+                destination:'GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3',
+                asset:Asset.native(),
+                amount: '5',
+                source: senderPublickKey,
+              })
+            )
             .setTimeout(60000)
             .build();
           transaction.sign(sourceKeypair);
