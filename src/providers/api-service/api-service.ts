@@ -314,6 +314,37 @@ export class ApiServiceProvider {
     });
   }
 
+  /**
+   * @function  getNewIssuerPublicKey This function call gateway endpoint to generatenew account
+   * @returns generated account public key
+   */
+   authTrustLine(currentPK,trustor,nftName,payamentTxn:any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+
+      let dataModel = {
+        CurrentPK	: currentPK,
+        Trustor: trustor,
+        NFTName:nftName,
+        PayamentTxn:payamentTxn.hash
+      };
+      this.http.post(this.url + "/nft/SetAuthTrust",dataModel,this.reqOpts).subscribe(
+        (response) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
   verifyEmail(body: any, reqOpts?: any): Promise<any> {
     let confirm = { confirmUser: body };
     return new Promise((resolve, reject) => {

@@ -184,6 +184,7 @@ export class MarketPlaceNftPage {
    * @param item its should be a NFT object
    */
    clickBuyNFT(item: any) {
+     console.log("aaaaaaaaaaaaaaaaaaaa",item)
     this.transactionPasswordPopUp(this.mainAccount.accountName,this.accountFunds,`<p>Cost from your wallet</p><ul><li>Change Trust creation : 0.00001</li><li>Collateral Fee : 0.5</li><li>Manage Buy Offer : 0.00001</li><li>Manage Data x 3 : 0.00001x3</li></ul><p>Total Cost : 0.00005</p><p>Note:Collateral fees are not spendable</p>`)
     .then((password) => {
       this.mappingService.decryptSecret(this.mainAccount.sk, password).then((secretKey) => {
@@ -192,12 +193,14 @@ export class MarketPlaceNftPage {
         if (pair.publicKey() === this.mainAccount.pk) {
           this.keyDecrypted = true;
           this.privateKey = secretKey.toString();
-          this.bc.trustlineByBuyer(item.NftAssetName, item.InitialIssuerPK, this.privateKey, this.mainAccount.pk)
-          .then((trustlineCreated) =>{
+          this.bc.trustlineByBuyer(item.NftAssetName, item.InitialIssuerPK, this.privateKey, this.mainAccount.pk,item.Price.toString())
+          .then(trustlineCreated=>{
+            console.log('trustlineByBuyer', trustlineCreated)
             if (this.isLoadingPresent) {
               this.dissmissLoading();
             } 
-            this.bc.buyNft(item.NftAssetName,this.mainAccount.skp,item.InitialIssuerPK,item.PreviousOwnerNFTPK, "GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3","1",item.Price)
+           this.apiService.authTrustLine(item.InitialIssuerPK,item.InitialDistributorPK,item.NftAssetName,trustlineCreated).then(response=>{
+            this.bc.buyNft(item.NftAssetName,this.mainAccount.skp,item.InitialIssuerPK,item.PreviousOwnerNFTPK,item.Price)
             .then(a => {
               if (this.isLoadingPresent) {
                 this.dissmissLoading();
@@ -217,28 +220,15 @@ export class MarketPlaceNftPage {
             })
             .catch(error => {
               if (this.isLoadingPresent) {
+                console.log('error1', error)
                 this.dissmissLoading();
               }
-              if (this.isLoadingPresent) {
-                this.dissmissLoading();
-              } 
-              this.presentAlert(item.NftAssetName, `Congratulation, NFT ${item.NftAssetName} BOUGHT`);
-              this.apiService.UpdateBuyingStatusNFT(item.NFTTXNhash,"NOTFORSALE",this.mainAccount.pk, item.CurrentOwnerNFTPK)
-              .then(DBupdated=>{
-                if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-                }
-              })
-              .catch(error =>{
-                if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-                } 
-                this.logger.error("Database UpdateBuyingStatusNFT function does not work" + JSON.stringify(error))})
-              //this.presentAlert('ERROR', `Can not buy NFT1 ${item.NftAssetName}`);
             })
+           })
           })
           .catch(error => {
             if (this.isLoadingPresent) {
+              console.log('error2', error)
               this.dissmissLoading();
             }
             //this.presentAlert('ERROR', `Can not buy NFT ${item.NftAssetName}`);

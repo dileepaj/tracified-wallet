@@ -9,6 +9,7 @@ import {
   Account,
   Asset,
   Transaction,
+  Memo
 } from "stellar-sdk";
 
 import { Properties } from "../../shared/properties";
@@ -1002,6 +1003,8 @@ export class BlockchainServiceProvider {
             .setTimeout(60000)
             .build();
           transaction.sign(sourceKeypair);
+          let signedTrans = transaction.toEnvelope().toXDR().toString("base64");
+          console.log('signedTrans--------------', signedTrans);
           return server.submitTransaction(transaction);
         })
         .then((transactionResult) => {
@@ -1116,7 +1119,11 @@ export class BlockchainServiceProvider {
    * @param buyerpk buyer public key
    *
    */
-  trustlineByBuyer(asset_code, asset_issuer, signerSK, buyerpk) {
+  trustlineByBuyer(asset_code:string, asset_issuer:string, signerSK:string, buyerpk:string,nftPrice:string) {
+
+    let royalty=(parseFloat(nftPrice)*(0.02)).toFixed(6).toString();
+
+
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(signerSK); //buyers secret key
       if (blockchainNetType === "live") {
@@ -1126,12 +1133,11 @@ export class BlockchainServiceProvider {
       }
       const senderPublickKey = buyerpk;
       var asset = new Asset(asset_code, asset_issuer); //for buyer --> gateway
-      var opts = { fee: 100 };
       let server = new Server(blockchainNet);
       server
         .loadAccount(sourceKeypair.publicKey())
         .then((account) => {
-          var transaction = new TransactionBuilder(account, opts)
+          var transaction = new TransactionBuilder(account, { fee: 100})
             .addOperation(
               Operation.changeTrust({
                 asset: asset,
@@ -1139,11 +1145,12 @@ export class BlockchainServiceProvider {
                 source: senderPublickKey,
               })
             ) //trustline from buyer to issuer
+            .addMemo(Memo.hash(transaction.hash))
             .addOperation(
               Operation.payment({
                 destination:'GC6SZI57VRGFULGMBEJGNMPRMDWEJYNL647CIT7P2G2QKNLUHTTOVFO3',
                 asset:Asset.native(),
-                amount: '5',
+                amount: royalty,
                 source: senderPublickKey,
               })
             )
@@ -1172,12 +1179,10 @@ export class BlockchainServiceProvider {
    *
    */
   buyNft(
-    asset_code,
-    signerSK,
-    asset_issuer,
+    asset_code:string,
+    signerSK:string,
+    asset_issuer:string,
     previousOwnerNFTPK: string,
-    main_issuer,
-    nftAmount: string,
     nftPrice: string
   ) {
     return new Promise((resolve, reject) => {
@@ -1208,7 +1213,7 @@ export class BlockchainServiceProvider {
               Operation.manageBuyOffer({
                 selling: sellingAsset,
                 buying: buyAsset,
-                buyAmount: nftAmount,
+                buyAmount: '1',
                 price: nftPrice,
                 offerId: "0",
               })
