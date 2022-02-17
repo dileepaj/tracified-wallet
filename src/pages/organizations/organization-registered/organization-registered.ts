@@ -13,11 +13,15 @@ import { Organization } from '../../../shared/models/organization';
 })
 export class OrganizationRegisteredPage {
 
-  public approvedOrganziations: any;
+  public approvedOrganziations = [];
   public loadingModal: any;
   public isLoading: boolean;
   public isRegistered: boolean;
   public isEmpty: boolean;
+  public page:number;
+  public perPage:number = 8;
+  public tempApprovedOrganziations = [];
+
 
   constructor(
     private navCtrl: NavController,
@@ -29,8 +33,50 @@ export class OrganizationRegisteredPage {
   ) { }
 
   ionViewWillEnter() {
-    this.getRegisteredOrganizations();
+    this.approvedOrganziations = [];
+    this.page = 1;
+    this.presentLoading()
+    this.getRegisteredOrganizationsPaginated(true,"");
+    this.dissmissLoading();
+
   }
+
+  getRegisteredOrganizationsPaginated(isFirstLoad, event){
+     
+      this.tempApprovedOrganziations = [];
+      this.dataService.getApprovedOrganizationsPaginated(this.page,this.perPage).then(res => {
+        let dataRes = res.body ? res.body : [];
+        let index = dataRes.findIndex((elem: any) => elem.Author == this.properties.defaultAccount.pk)
+  
+        if (index > -1) dataRes.splice(index, 1)
+        this.tempApprovedOrganziations = dataRes;
+        (this.tempApprovedOrganziations.length !== 0)? this.tempApprovedOrganziations.reverse(): this.tempApprovedOrganziations = [];
+
+        if(this.tempApprovedOrganziations.length !== 0){
+          this.approvedOrganziations = this.approvedOrganziations.concat(this.tempApprovedOrganziations);
+        }
+
+        (this.approvedOrganziations.length == 0) ? this.isEmpty = true: this.isEmpty = false;
+        this.checkIfRegistered(this.properties.defaultAccount.pk) 
+        if(!isFirstLoad){
+          event.complete();
+        }
+   
+      }).catch(err => {
+      this.isEmpty = false;
+      this.approvedOrganziations = [];
+      this.logger.error("Failed to load the account: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+      this.dissmissLoading();
+      this.presentToast("Could not fetch Oganizations! Please contact your admin")
+    })
+        
+  }
+
+  doInfinite(event) {
+    this.page++
+    this.getRegisteredOrganizationsPaginated(false, event);
+  }
+
 
   getRegisteredOrganizations() {
     this.presentLoading()
@@ -68,7 +114,11 @@ export class OrganizationRegisteredPage {
   }
 
   doRefresh = (refresher: any) => {
-    this.getRegisteredOrganizations();
+    this.approvedOrganziations = [];
+    this.page = 1;
+    this.presentLoading()
+    this.getRegisteredOrganizationsPaginated(true,"");
+    this.dissmissLoading();
     refresher.complete();
  }
 

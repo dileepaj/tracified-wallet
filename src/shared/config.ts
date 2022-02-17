@@ -42,7 +42,7 @@ export const allOrganization: string = gateway + '/organization';
 export const testimonialAPI: string = gateway + '/testimonial';
 export const testimonialReceived: string = gateway + '/testimonial/reciever/';
 export const testimonialSent: string = gateway + '/testimonial/sender/';
-
+export const approvedOrganziationsPaginated: string = gateway + '/approved/organizationPaginated';
 // Gateway POST
 export const subAccountStatus: string = gateway + '/transaction/subAccountStatus'
 export const subAccountsStatus: string = gateway + '/transaction/coc/subAccountStatus'

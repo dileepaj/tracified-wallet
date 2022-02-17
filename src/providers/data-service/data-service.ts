@@ -150,4 +150,7 @@ export class DataServiceProvider {
     return this.apiService.updateTestimonial(payload);
   }
   
+  getApprovedOrganizationsPaginated(page: number,perPage: number): Promise<any> {
+    return this.apiService.queryAllOrganizationsPaginated(page,perPage);
+  }
 }

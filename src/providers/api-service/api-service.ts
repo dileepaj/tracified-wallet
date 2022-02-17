@@ -28,7 +28,8 @@ import {
   subAccountStatus,
   approvedOrganization,
   organizationRequests,
-  testimonialAPI
+  testimonialAPI,
+  approvedOrganziationsPaginated
 } from '../../shared/config';
 import { Organization } from '../../shared/models/organization';
 import { Testimonial } from '../../shared/models/testimonial';
@@ -510,4 +511,14 @@ export class ApiServiceProvider {
     return this.putN(testimonialAPI, payload, headers);
   }
 
+  queryAllOrganizationsPaginated(page: number, perPage: number): Promise<any> {
+    let header = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }
+
+    return this.getN(approvedOrganziationsPaginated + '?page=' + page + '&perPage=' + perPage, header);
+  }
 }
