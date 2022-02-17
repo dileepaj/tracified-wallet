@@ -24,7 +24,7 @@
          <div *ngIf="isDataAvailable">
          <ion-list padding-vertical>
             <ion-list-header>
-               Testimonial {{viewType == 'sent' ? "To" : "From"}}  {{senderOrReceiver.Name}}
+               Testimonial {{viewType == 'sent' ? "sent to" : "received from"}}  {{senderOrReceiver.Name}}
             </ion-list-header>
             <a ion-item [href]="'mailto:' + senderOrReceiver.Email">
                <ion-icon name="md-at" color="primary" item-start></ion-icon>

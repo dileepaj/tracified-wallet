@@ -209,10 +209,10 @@ export class AddOrganizationTestimonialPage {
 
    uploadImage() {
       this.translate
-         .get(["imageSourceHeader", "camera", "album", "cancel"])
+         .get(["Image upload", "camera", "album", "cancel"])
          .subscribe((text) => {
             let actionSheet = this.actionSheetCtrl.create({
-               title: text["imageSourceHeader"],
+               title: text["Image upload"],
                buttons: [
                   {
                      text: text["camera"],
