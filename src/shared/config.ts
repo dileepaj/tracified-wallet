@@ -35,7 +35,7 @@ export const validateMainAcc: string = admin + '/api/bc/user/mainAccount/validat
 export const login: string = admin + '/sign/login'; // POST
 export const subAccStatus: string = admin + '/transaction/coc/subAccountStatus'; // POST
 export const verifyEmail: string = admin + '/sign/forgetpassword'; // POST 
-export const resetPassword: string = admin + '/sign/forgetpassword'; // POST
+export const resetPassword: string = admin + '/sign/resetforgetpassword'; // POST
 
 // Gateway GET
 
