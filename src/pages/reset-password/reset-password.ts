@@ -190,7 +190,7 @@ export class ResetPasswordPage {
     this.toastInstance = this.toastCtrl.create({
       message: message,
       duration: 3000,
-      position: 'middle'
+      position: 'bottom'
     });
     this.toastInstance.onDidDismiss(() => {
       this.toastInstance = null;

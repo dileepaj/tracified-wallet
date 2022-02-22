@@ -22,7 +22,9 @@ import {
   updateCoC,
   cocSent,
   identifierStatus,
-  blockchainAccsByTenant
+  blockchainAccsByTenant,
+  resetPassword,
+  verifyEmail
 } from '../../shared/config';
 
 @Injectable()
@@ -132,7 +134,7 @@ export class ApiServiceProvider {
   verifyEmail(body: any, reqOpts?: any): Promise<any> {
     let confirm = { 'confirmUser': body };
     return new Promise((resolve, reject) => {
-      this.http.post(this.LocalAdminURL + '/' + 'sign/forgetpassword', confirm, reqOpts)
+      this.http.post(verifyEmail, confirm, reqOpts)
         .subscribe(response => {
           console.log(response);
           resolve(response);
@@ -147,7 +149,7 @@ export class ApiServiceProvider {
   resetPassword(body: any, reqOpts?: any): Promise<any> {
     let confirm = { 'confirmUser': body };
     return new Promise((resolve, reject) => {
-      this.http.post(this.LocalAdminURL + '/' + 'sign/forgetpassword', confirm, reqOpts)
+      this.http.post(resetPassword, confirm, reqOpts)
         .subscribe(response => {
           console.log(response);
           resolve(response);
