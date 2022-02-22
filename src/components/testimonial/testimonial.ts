@@ -3,6 +3,7 @@ import { ViewTestimonialComponent } from '../../components/view-testimonial/view
 import { ActionSheetController, ModalController, NavController } from 'ionic-angular';
 import { Testimonial } from '../../shared/models/testimonial';
 import { Properties } from '../../shared/properties';
+import { Transaction } from 'stellar-base';
 
 @Component({
   selector: 'testimonial',
@@ -14,13 +15,25 @@ export class TestimonialComponent {
   @Input() isRequest: boolean;
 
   text: string;
-
+  expiredTime: string;
   constructor(
     public actionSheetCtrl: ActionSheetController,
     public modalCtrl: ModalController,
     public properties: Properties,
     public navCtrl: NavController
   ) { }
+
+  ngOnInit() {
+    this.fetchExpirationTime()
+  }
+
+
+  fetchExpirationTime(){
+    const transaction = new Transaction(this.testimonial.AcceptXDR);
+    let maxTime = new Date(transaction.timeBounds.maxTime * 1000);
+    this.expiredTime = maxTime.toLocaleString()
+  }
+
 
   viewTestimonial() {
     const viewModal = this.modalCtrl.create(ViewTestimonialComponent, {

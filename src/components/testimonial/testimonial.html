@@ -15,7 +15,9 @@
       <p margin-vertical>
          {{testimonial.Testimonial.Description}}
       </p>
-
+      <ion-row *ngIf="testimonial.Status == 'pending'">
+         Valid till : {{expiredTime}}
+      </ion-row>
       <img class="card-image" [src]="testimonial.Testimonial.Image" />
 
       <ion-row>

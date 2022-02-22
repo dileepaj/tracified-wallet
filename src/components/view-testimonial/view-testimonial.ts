@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CallNumber } from '@ionic-native/call-number';
 import { LoadingController, NavParams, ToastController, ViewController } from 'ionic-angular';
+import { Transaction } from 'stellar-base';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { Organization } from '../../shared/models/organization';
 import { Testimonial } from '../../shared/models/testimonial';
@@ -20,7 +21,7 @@ export class ViewTestimonialComponent {
    public senderOrReceiverKey: string;
    public viewType: string;
    public isDataAvailable: boolean;
-
+   public sentTime:string;
    constructor(
       public navParams: NavParams,
       private loadingCtrl: LoadingController,
@@ -37,8 +38,15 @@ export class ViewTestimonialComponent {
 
    ionViewCanEnter() {
       this.fetchAuthor();
+      this.fetchSentTime();
    }
 
+   fetchSentTime(){
+      const transaction = new Transaction(this.testimonial.AcceptXDR);
+      let minTime = new Date(transaction.timeBounds.minTime * 1000);
+      this.sentTime = minTime.toLocaleString()
+    }
+    
    fetchAuthor() {
       this.presentLoading();
       this.dataService.getOrganization(this.senderOrReceiverKey).then(res => {
