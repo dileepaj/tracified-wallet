@@ -246,7 +246,7 @@
   "REGISTER": "Register",
   "ORGANIZATIONS": "Organizations",
   "TESTIMONIALS": "Testimonials",
-  "PENDING_TRANSACTION_ERROR": "There is a a pending trasaction from you to the same receiver! Can not change custody until the receiver accepts the pending CoC request!",
+  "PENDING_TRANSACTION_ERROR": "There's a pending trasaction to the same receiver.Can not change custody until it is accepted or rejected!",
   "REGISTRATION_REQUEST_SUCCESS": "Organization registration requested successfully!",
   "REGISTRATION_REQUEST_FAILED": "Organization registration request failed!",
   "TESTIMONIAL_REQUEST_SUCCESS": "Testimonial sent successfully!",
