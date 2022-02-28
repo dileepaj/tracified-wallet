@@ -49,9 +49,9 @@ export class AccountRegisterPage {
          orgPublicKey: new FormControl(this.orgKey, Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
          orgName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
          orgDescription: new FormControl('', Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
-         orgEmail: new FormControl('', Validators.compose([Validators.minLength(4), Validators.maxLength(64), Validators.required])),
-         orgPrimaryMobile: new FormControl('', Validators.compose([Validators.minLength(10), Validators.maxLength(64), Validators.required])),
-         orgSecondMobile: new FormControl('', Validators.compose([Validators.minLength(10), Validators.maxLength(64)])),
+         orgEmail: new FormControl('', Validators.compose([Validators.minLength(4), Validators.maxLength(64),Validators.pattern('^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)(\.[A-Za-z]{2,})$') ,Validators.required])),
+         orgPrimaryMobile: new FormControl('', Validators.compose([Validators.minLength(10), Validators.maxLength(15), Validators.required])),
+         orgSecondMobile: new FormControl('', Validators.compose([Validators.minLength(10), Validators.maxLength(15)])),
       });
    }
 

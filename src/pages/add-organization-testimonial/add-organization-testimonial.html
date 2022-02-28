@@ -16,11 +16,35 @@
         <ion-label class="login-lables" floating>Title <span color="danger">*</span></ion-label>
         <ion-input formControlName="testimonialTitle" type="text" name="testimonialTitle" keyNext></ion-input>
       </ion-item>
+      <div *ngIf="!testimonialForm.get('testimonialTitle').valid && testimonialForm.get('testimonialTitle').touched">
+        <p class="error-text" *ngIf="testimonialForm.get('testimonialTitle').errors['required']">
+          Title is required
+        </p>
+        <p class="error-text" *ngIf="testimonialForm.get('testimonialTitle').errors['maxlength']">
+          Title should be less than 64 characters
+        </p>
+        <p class="error-text" *ngIf="testimonialForm.get('testimonialTitle').errors['minlength']">
+          Title should be more than 4 characters
+        </p>
+      </div>
       <ion-item>
         <ion-label class="login-lables" floating>Description <span color="danger">*</span></ion-label>
         <ion-textarea formControlName="testimonialDescription" type="text" name="testimonialDescription" keyNext>
         </ion-textarea>
       </ion-item>
+      <div *ngIf="!testimonialForm.get('testimonialDescription').valid && testimonialForm.get('testimonialDescription').touched">
+        <p class="error-text" *ngIf="testimonialForm.get('testimonialDescription').errors['required']">
+          Description is required
+        </p>
+        <p class="error-text" *ngIf="testimonialForm.get('testimonialDescription').errors['maxlength']">
+          Description should be less than 64 characters
+        </p>
+        <p class="error-text" *ngIf="testimonialForm.get('testimonialDescription').errors['minlength']">
+          Description should be more than 4 characters
+        </p>
+      </div>
+    </ion-row>
+    <ion-row class="formbox">  
       <div padding-top>
         <button type="button" ion-button (click)="uploadImage()" padding>
           <ion-icon name="md-photos"></ion-icon>
