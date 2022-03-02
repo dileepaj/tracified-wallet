@@ -48,7 +48,7 @@ export class AccountInfoPage {
         });
         this.logger.error("Copying to clipboard failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
       });
-    } else {
+    } else if(option == 2){
       this.clipboard.copy(this.account.privateKey).then(() => {
         this.translate.get(['PRIVATE_KEY_COPIED']).subscribe(text => {
           this.presentToast(text['PRIVATE_KEY_COPIED']);

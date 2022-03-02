@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController} from 'ionic-angular';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { Keypair } from 'stellar-sdk';
 import { Properties } from '../../shared/properties';
@@ -9,6 +9,8 @@ import { BlockchainServiceProvider } from '../../providers/blockchain-service/bl
 import { TranslateService } from '@ngx-translate/core';
 import { AccountRegisterPage } from '../../pages/account-register/account-register';
 import { Organization } from 'shared/models/organization';
+import { Clipboard } from '@ionic-native/clipboard/index';
+import { Logger } from 'ionic-logger-new';
 
 @IonicPage()
 @Component({
@@ -32,6 +34,9 @@ export class AccountDetailsPage {
     private dataService: DataServiceProvider,
     private blockchainService: BlockchainServiceProvider,
     private translate: TranslateService,
+    private clipboard: Clipboard,
+    private logger: Logger,
+    public toastCtrl: ToastController,
   ) {
     this.account = this.navParams.get("account");
     this.checkIfRegistered(this.account.pk)
@@ -177,5 +182,40 @@ export class AccountDetailsPage {
   backButton() {
     this.navCtrl.setRoot(BcAccountPage);
   }
+   
+  copyToClipboard(option) {
+    if (option == 1) {
+      this.clipboard.copy(this.account.pk).then(() => {
+        this.translate.get(['PUBLIC_KEY_COPIED']).subscribe(text => {
+          this.presentToast(text['PUBLIC_KEY_COPIED']);
+        });
+      }).catch((err) => {
+        this.translate.get(['ERROR', 'FALIED_TO_COPY_KEY']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['FALIED_TO_COPY_KEY']);
+        });
+        this.logger.error("Copying to clipboard failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+      });
+    } else if(option == 2){
+      this.clipboard.copy(this.privateKey).then(() => {
+        this.translate.get(['PRIVATE_KEY_COPIED']).subscribe(text => {
+          this.presentToast(text['PRIVATE_KEY_COPIED']);
+        });
+      }).catch((err) => {
+        this.translate.get(['ERROR', 'FALIED_TO_COPY_KEY']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['FALIED_TO_COPY_KEY']);
+        });
+        this.logger.error("Copying to clipboard failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+      });
+    }
 
+  }
+
+  presentToast(message) {
+    let toast = this.toastCtrl.create({
+      message: message,
+      duration: 2500,
+      position: "bottom"
+    });
+    toast.present();
+  }
 }

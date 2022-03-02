@@ -42,7 +42,16 @@
         <h4 class="secondary-font">{{'PUBLIC_KEY' | translate}}</h4>
       </ion-row>
       <ion-row class="full-width line-spacing" text-wrap>
+        <ion-col col-11>
         <h3 class="primary-font word-wrap" text-wrap>{{ account.pk }}</h3>
+        </ion-col>
+        <ion-col col-1>
+          <div class="button-wrapper">
+            <button class="icon-only-btn" (click)="copyToClipboard(1)">
+              <img src="../../assets/icon/ic_copy_green.png" class="toolbar-btn-img" />
+            </button>
+          </div>
+        </ion-col>
       </ion-row>
     </ion-row>
     <ion-row class="full-width line-spacing mt-1">
@@ -50,7 +59,7 @@
         <h4 class="secondary-font">{{'PRIVATE_KEY' | translate}}</h4>
       </ion-row>
       <ion-row class="full-width line-spacing" *ngIf="keyDecrypted" text-wrap>
-        <h3 class="primary-font word-wrap">{{ privateKey }}</h3>
+           <h3 class="primary-font word-wrap">{{ privateKey }}</h3>
       </ion-row>
       <ion-row class="full-width" *ngIf="!keyDecrypted">
         <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button
