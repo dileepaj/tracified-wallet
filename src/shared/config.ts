@@ -31,7 +31,7 @@ export const login: string = admin + '/sign/login'; // POST
 export const subAccStatus: string = admin + '/transaction/coc/subAccountStatus'; // POST
 export const verifyEmail: string = admin + '/sign/forgetpassword'; // POST 
 export const resetPassword: string = admin + '/sign/forgetpassword'; // POST
-
+export const changeTransactionPasswordwithsk: string = admin + '/api/bc/user/mainAccount/sk'; // PUT
 // Gateway GET
 export const previosTxnId: string = gateway + '/transaction/lastTxn/'; // GET
 export const cocReceived: string = gateway + '/getcocbyreceiver/';

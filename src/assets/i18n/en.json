@@ -256,5 +256,8 @@
   "SUCCESS_APPROVED": "Successfully approved",
   "BC_BAD_SEQ" : "Trasaction has sequence number conflict.",
   "BC_TOO_LATE" : "Transaction expired.",
-  "BC_COULD_NOT_PROCEED": "Could not proceed with the action."
+  "BC_COULD_NOT_PROCEED": "Could not proceed with the action.",
+  "FAILED_UPDATE_NEW_PASSWORD": "Failed to update the new password!",
+  "CANNOT_ENCRYPT_NEW_PASSWORD": "Cannot encrypt with the new password. Try again.",
+  "PRIVATE_KEY_INCORRECT": "Private key entered is incorrect. Please try again."
 }

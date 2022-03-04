@@ -9,6 +9,7 @@ import { Logger } from 'ionic-logger-new';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { AES } from 'crypto-js';
 
 @Injectable()
 export class BlockchainServiceProvider {
@@ -696,6 +697,37 @@ export class BlockchainServiceProvider {
       });
     });
   }
+
+  validateSecretKey(secretKey: string) {
+    try {
+      let keyPair = Keypair.fromSecret(secretKey);
+      let publicK = keyPair.publicKey();
+      if (publicK === this.properties.defaultAccount.pk) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch {
+      return false;
+    }
+
+  }
+
+  encryptBlockchainKey(key: string, password: string) {
+    try {
+      let encKey = AES.encrypt(key, password).toString();
+      if (encKey) {
+        return encKey;
+      } else {
+        return false;
+      }
+    } catch{
+      return false;
+    }
+  }
+
+  
+
 }
 
 

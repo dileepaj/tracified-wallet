@@ -153,4 +153,18 @@ export class DataServiceProvider {
   getApprovedOrganizationsPaginated(page: number,perPage: number): Promise<any> {
     return this.apiService.queryAllOrganizationsPaginated(page,perPage);
   }
+
+  validateSecretKey(key: string) {
+    return this.blockchainService.validateSecretKey(key);
+}
+
+encryptKey(key: string, password: string) {
+  return this.blockchainService.encryptBlockchainKey(key, password);
+}
+changeTransactionPasswordWithPrivateKey(updatedInfo): Promise<any> {
+  return this.apiService.changeTransactionPasswordWithPrivateKey(
+      updatedInfo,
+      this.properties.token
+  );
+}
 }

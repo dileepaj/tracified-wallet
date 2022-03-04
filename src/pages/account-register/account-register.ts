@@ -256,9 +256,7 @@ export class AccountRegisterPage {
                   })
                }).catch((passwordError: any) => {
                   this.dissmissLoading();
-                  this.translate.get(['ERROR', 'INVALID_TRANSACTION_PASSWORD']).subscribe(text => {
-                    this.presentAlert(text['ERROR'], text['INVALID_TRANSACTION_PASSWORD']);
-                  });
+                  this.forgetPasswordPopUp();
                   this.logger.error("Password validation failed: " + JSON.stringify(passwordError), this.properties.skipConsoleLogs, this.properties.writeToFile);
                })
          })
@@ -333,4 +331,128 @@ export class AccountRegisterPage {
       toast.present();
    }
 
+   forgetPasswordPopUp() {
+      let alert = this.alertCtrl.create({
+        title: "Incorrect Password!",
+        subTitle: 'The password you entered is incorrect. Please try again or reset your password.',
+        buttons: [
+          {
+            text: 'Forgot Password',
+            handler: data => {
+              this.privateKeyPopUp();
+            }
+          },
+          {
+            text: 'OK'
+          }
+        ]
+      });
+      alert.present();
+    }
+  
+  
+  
+    privateKeyPopUp() {
+      let alert = this.alertCtrl.create({
+        title: "Forgot Password.",
+        inputs: [
+          {
+            name: 'privateKey',
+            placeholder: 'Private Key'
+          }
+        ],
+        buttons: [
+          {
+            text: 'Submit',
+            handler: data => {
+              this.forgotTransactionPassword(data.privateKey);
+            }
+          }
+        ]
+      });
+      alert.present();
+    }
+  
+  
+    forgotTransactionPassword(privateKey: string) {
+      if (this.dataService.validateSecretKey(privateKey)) {
+        this.newPasswordPopUp().then((password) => {
+          let encKey = this.dataService.encryptKey(privateKey, password);
+          if (encKey) {
+            let update = {
+              accName: this.properties.defaultAccount.accountName,
+              sk: encKey
+            }
+            this.dataService.changeTransactionPasswordWithPrivateKey(update).then((res) => {
+              if (res.status === 200) {
+                this.translate.get(['SUCCESS_CHANGED_PASSWORD']).subscribe(text => {
+                  this.presentToast(text['SUCCESS_CHANGED_PASSWORD']);
+                });
+              } else {
+                this.translate.get(['COULD_NOT_RESET']).subscribe(text => {
+                  this.presentToast(text['COULD_NOT_RESET']);
+                });
+              }
+            }).catch((err) => {
+              this.translate.get(['FAILED_UPDATE_NEW_PASSWORD']).subscribe(text => {
+                this.presentToast(text['FAILED_UPDATE_NEW_PASSWORD']);
+              });
+              this.logger.error("[FORGOT]Password update failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+            });
+          } else {
+            this.translate.get(['CANNOT_ENCRYPT_NEW_PASSWORD']).subscribe(text => {
+              this.presentToast(text['CANNOT_ENCRYPT_NEW_PASSWORD']);
+            });
+          }
+        }).catch((err) => {
+          this.translate.get(['FAILED_UPDATE_NEW_PASSWORD']).subscribe(text => {
+            this.presentToast(text['FAILED_UPDATE_NEW_PASSWORD']);
+          });
+          this.logger.error("[FORGOT]Popup error: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+        });
+      } else {
+        this.translate.get(['PRIVATE_KEY_INCORRECT']).subscribe(text => {
+          this.presentToast(text['PRIVATE_KEY_INCORRECT']);
+        });
+      }
+    }
+  
+    newPasswordPopUp(): Promise<any> {
+  
+      let resolveFunction: (newPassword: any) => void;
+      let promise = new Promise<any>(resolve => {
+        resolveFunction = resolve;
+      });
+  
+      let passwordPopUp = this.alertCtrl.create({
+        title: "Enter your new Transaction password",
+        inputs: [
+          {
+            name: "password",
+            placeholder: "New Transaction Password",
+            type: 'password'
+          }
+        ],
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            handler: data => {
+              resolveFunction(false);
+            }
+          },
+          {
+            text: 'OK',
+            handler: data => {
+              resolveFunction(data.password);
+            }
+          }
+        ]
+      });
+  
+      passwordPopUp.present();
+  
+      return promise;
+    }
+  
 }

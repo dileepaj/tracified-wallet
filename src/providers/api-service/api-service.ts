@@ -29,7 +29,8 @@ import {
   approvedOrganization,
   organizationRequests,
   testimonialAPI,
-  approvedOrganziationsPaginated
+  approvedOrganziationsPaginated,
+  changeTransactionPasswordwithsk
 } from '../../shared/config';
 import { Organization } from '../../shared/models/organization';
 import { Testimonial } from '../../shared/models/testimonial';
@@ -521,4 +522,45 @@ export class ApiServiceProvider {
 
     return this.getN(approvedOrganziationsPaginated + '?page=' + page + '&perPage=' + perPage, header);
   }
+  changeTransactionPasswordWithPrivateKey(updatedInfo, verify): Promise<any> {
+    let sk = encodeURIComponent(updatedInfo.sk);
+    let accName = encodeURIComponent(updatedInfo.accName);
+    let url = changeTransactionPasswordwithsk + "?sk=" + sk + "&accountName=" + accName;
+    return this.adminPut(url, updatedInfo, verify);
+}
+
+
+private adminPut(url, params, token): Promise<any> {
+  return new Promise((resolve, reject) => {
+      this.http
+          .put(url, "", {
+              observe: "response",
+              headers: new HttpHeaders({
+                  Accept: "application/json",
+                  "Content-Type": "Application/json",
+                  Authorization: "Bearer " + token,
+              }),
+          })
+          .timeout(25000)
+          .subscribe(
+              (response) => {
+                  this.logger.info(
+                      "adminPut success",
+                      this.properties.skipConsoleLogs,
+                      this.properties.writeToFile
+                  );
+                  console.log(response);
+                  resolve(response);
+              },
+              (error) => {
+                  this.logger.error(
+                      "adminPut error: " + JSON.stringify(error),
+                      this.properties.skipConsoleLogs,
+                      this.properties.writeToFile
+                  );
+                  reject(error);
+              }
+          );
+  });
+}
 }
