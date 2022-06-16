@@ -91,7 +91,7 @@ export class AddAccountPage {
       this.validateAccountName(this.form.value.accName).then((status) => {
         if (status) {
           let mainPair = this.createKeyPair();
-
+         
           this.mappingService.encyrptSecret(mainPair.secret(), this.form.value.password).then((encMainSecretKey) => {
             const mainAccount = {
               accName: this.form.value.accName,

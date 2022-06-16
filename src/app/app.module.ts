@@ -51,6 +51,9 @@ import { TransferPageModule } from '../pages/transfer/transfer.module';
 import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
 import { CodePush } from '@ionic-native/code-push';
 import { FundTransferPage } from 'pages/fund-transfer/fund-transfer';
+import { IonicPageModule } from 'ionic-angular';
+ import { MintNftPageModule } from '../pages/mint-nft/mint-nft.module';
+ 
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -69,6 +72,7 @@ export function createTranslateLoader(http: HttpClient) {
     AccountInfoPageModule,
     ResetPasswordPageModule,
     ItemReceivedPageModule,
+    MintNftPageModule,
     ItemDetailPageModule,
     TabsPageModule,
     DeviceDetectorModule.forRoot(),

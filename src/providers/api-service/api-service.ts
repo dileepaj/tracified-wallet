@@ -415,4 +415,71 @@ export class ApiServiceProvider {
     return this.getN(cocSent + accountKey, header);
   }
 
+  getNewIssuerPublicKey(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+      this.http.get(this.url + "/nft/createNFTIssuerAccount").subscribe(
+        (response) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  minNFTStellar(
+    transactionResultSuccessful,
+    issuerPublicKey,
+    distributorPublickKey,
+    asset_code,
+    TDPtxnhash,
+    TDPID,
+    NFTBlockChain,
+    created_at,
+    Identifier,
+    ProductName
+  ): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+      let NFTModel = {
+        DistributorPublickKey: distributorPublickKey,
+        IssuerPublicKey:issuerPublicKey,
+        Asset_code: asset_code,
+        TDPtxnhash: TDPtxnhash,
+        Identifier: Identifier,
+        TDPID: TDPID,
+        NFTBlockChain: NFTBlockChain,
+        Successfull: transactionResultSuccessful,
+        TrustLineCreatedAt: created_at,
+        ProductName: ProductName,
+      };
+      this.http
+        .post(this.url + "/nft/mintStellar", NFTModel, this.reqOpts)
+        .subscribe(
+          (response) => {
+            resolve(response);
+          },
+          (error) => {
+            console.log(error);
+            reject(error);
+          }
+        );
+    });
+  }
+
+
 }

@@ -23,6 +23,7 @@ import { SettingsPage } from '../pages/settings/settings';
 import { ContentPage } from '../pages/content/content';
 import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
 import { CodePush, ILocalPackage, IRemotePackage } from '@ionic-native/code-push';
+import { MintNftPage } from '../pages/mint-nft/mint-nft';
 
 @Component({
   templateUrl: 'app.html'
@@ -40,6 +41,7 @@ export class MyApp {
 
   pages: any[] = [
     { icon: 'custom-itemIcon', title: 'Items', component: 'TabsPage', action: null },
+    { icon: 'custom-nft', title: 'Nft', component: 'MintNftPage', action: null },
     { icon: 'custom-blockchain', title: 'Accounts', component: 'BcAccountPage', action: null },
     { icon: 'custom-fundTransfer', title: 'Fund Transfer', component: 'FundTransferPage', action: null },
     { icon: 'custom-settings', title: 'Settings', component: 'SettingsPage', action: null },
@@ -167,6 +169,9 @@ export class MyApp {
       case "items":
         this.nav.setRoot(TabsPage);
         break;
+      case "nft":
+        this.nav.setRoot(MintNftPage);
+        break;
       case "accounts":
         this.nav.setRoot(BcAccountPage);
         break;
@@ -259,7 +264,7 @@ export class MyApp {
   }
 
   waitResponseAlert(title, message, agreeBtn, disagreeBtn) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       let alert = this.alertCtrl.create({
         title: title,
         message: message,
