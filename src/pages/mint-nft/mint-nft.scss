@@ -1,0 +1,56 @@
+page-mint-nft {
+        .view {
+            background-size: cover;
+            background-repeat: no-repeat;
+          }
+          .hide-icon {
+            color: #2EBE60 !important;
+          }
+          .item-input-has-focus .label-md[floating], .input-has-focus .label-md[floating]{
+            color: #2EBE60 !important;
+          }
+          .item-md.item-input .item-inner {
+            border-bottom-color:2EBE60 !important;
+          }
+          .item.md {
+            padding: 0 0 0 0 !important;
+          }
+          .item-input-has-focus .label-md[floating], .input-has-focus .label-md[floating]{
+            color: #28a745 !important;
+          }
+          ion-item.item-md.item-input.input-has-focus .item-inner,
+          ion-item.item-md.item-input.ng-valid.input-has-value:not(.input-has-focus) .item-inner,
+          ion-item.item-md.item-input.ng-invalid.ng-touched:not(.input-has-focus) .item-inner {
+          border-bottom-color: #28a745 !important;
+          box-shadow:none !important;
+          }
+          .alert-wrapper{
+            margin-top: 200px!important;
+          }
+          .popup-alert .alert-wrapper {
+            min-width: 450px!important;
+          }
+          .custom-alert button.alert-button-group {
+            width: 33.33%;
+        }
+        
+        .custom-alert .alert-button-group .button-inner {
+            -webkit-box-pack: center;
+            -webkit-justify-content: center;
+            -ms-flex-pack: center;
+            justify-content: center;
+        }
+        
+        .custom-alert .alert-button-group-vertical {
+            -webkit-flex-direction: row;
+            -ms-flex-direction: row;
+            flex-direction: row ;
+        }
+        .primary-font {
+          color: #4f525d;
+        }
+        
+        .secondary-font {
+          color: #b1b1b1;
+        }
+}

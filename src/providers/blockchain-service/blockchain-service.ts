@@ -587,4 +587,43 @@ export class BlockchainServiceProvider {
       });
     });
   }
+
+  changeTrustByDistributor(asset_code, asset_issuer, signerSK) {
+    return new Promise((resolve, reject) => {
+      let sourceKeypair = Keypair.fromSecret(signerSK);
+      if (blockchainNetType === "live") {
+        Network.usePublicNetwork();
+      } else {
+        Network.useTestNetwork();
+      }
+      const senderPublickKey = this.properties.defaultAccount.pk; //distributor
+      var asset = new Asset(asset_code, asset_issuer);
+      var opts = { fee: 100 };
+      
+      let server = new Server(blockchainNet);
+      server
+        .loadAccount(sourceKeypair.publicKey())
+        .then((account) => {
+          var transaction = new TransactionBuilder(account, opts)
+            .addOperation(
+              Operation.changeTrust({
+                asset: asset,
+                limit: "1",
+                source: senderPublickKey,
+              })
+            )
+            .build();
+          transaction.sign(sourceKeypair);
+          return server.submitTransaction(transaction);
+        })
+        .then((transactionResult) => {
+          resolve(transactionResult);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+  
 }
+
