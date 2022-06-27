@@ -435,6 +435,26 @@ export class ApiServiceProvider {
     });
   }
 
+  getAccountFunded(publickey): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+      this.http.get(this.url + "/nft/fundAccount/"+publickey).subscribe(
+        (response) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
   minNFTStellar(
     transactionResultSuccessful,
     issuerPublicKey,

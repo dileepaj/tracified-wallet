@@ -7,7 +7,7 @@ import { MappingServiceProvider } from '../../providers/mapping-service/mapping-
 import { Properties } from '../../shared/properties';
 import { Keypair } from 'stellar-sdk';
 import { Logger } from 'ionic-logger-new';
-import { BcAccountPage } from 'pages/bc-account/bc-account';
+import { BcAccountPage } from '../../pages/bc-account/bc-account';
 
 /**
  * @MintNftPage page.
@@ -30,6 +30,7 @@ export class MintNftPage {
   private ProductName = "carrot"
   private NFTBlockChain = "Stellar"
   nftName: string = "";
+  imageSrc:any;
   loading;
   Item: any;
   isLoadingPresent: boolean;
@@ -71,17 +72,23 @@ export class MintNftPage {
    * In stellar NFT same is an asset for craete an asset minter need to 
    * create trust line with asset isser first after issuer need to trasfer the asset to distributor(minter) ,transfer part do in the gateway side
    */
-  mintNFT(privateKey) {
+   createNFTWithNewAccount() {
     this.presentLoading();
+    var keypair=this.blockchainService.createAddress()
+    console.log("Public Key is", keypair.publicKey)
+    console.log("Keypair is", keypair)
     this.apiService.getNewIssuerPublicKey().then(issuerPublcKey => {
       let distributorPK = this.properties.defaultAccount.pk
-      if (!!privateKey && !!this.nftName) {
-        this.blockchainService.changeTrustByDistributor(this.nftName, issuerPublcKey.NFTIssuerPK, this.privateKey).then((transactionResult: any) => {
+      if (!!this.nftName) {
+        this.apiService.getAccountFunded(keypair.publicKey).then(txn=>{
+          console.log("The transaction for account funding",txn)
+        })
+        this.blockchainService.changeTrustByDistributor(this.nftName, issuerPublcKey.NFTIssuerPK, keypair.secret).then((transactionResult: any) => {
           if (transactionResult.successful) {
             this.apiService.minNFTStellar(
               transactionResult.successful,
               issuerPublcKey.NFTIssuerPK,
-              distributorPK,
+              keypair.publicKey,
               this.nftName,
               this.TDPtxnhash,
               this.TDPID,
@@ -136,27 +143,7 @@ export class MintNftPage {
     })
   }
 
-  decryptSecretKey() {
-    this.transactionPasswordPopUp(this.account.accountName,this.accountFunds,"0.00001","0.5","0.00001").then((password) => {
-      this.mappingService.decryptSecret(this.account.sk, password).then((secretKey) => {
-        let pair = Keypair.fromSecret(secretKey.toString());
-        if (pair.publicKey() === this.account.pk) {
-          this.keyDecrypted = true;
-          this.privateKey = secretKey.toString();
-          this.mintNFT(this.privateKey)
-        } else {
-          this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
-            this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
-          });
-        }
-      }).catch((err) => {
-        this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
-          this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
-        });
-      });
-    });
-  }
-
+  
   presentAlert(title: string, message: string) {
     let alert = this.alertCtrl.create({
       title: title,
@@ -223,9 +210,7 @@ export class MintNftPage {
     this.privateKey = "";
   }
   
-  createNFT() {
-    this.decryptSecretKey()
-  }
+  
 
   presentLoading() {
     this.isLoadingPresent = true;
@@ -247,5 +232,9 @@ export class MintNftPage {
         this.nav.setRoot(BcAccountPage);
         break;
     }
+  }
+
+  onFileChange(event){
+
   }
 }

@@ -9,15 +9,21 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Create NFT</ion-title>
+    <ion-title>Claim Your NFT Now!</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <ion-card text-wrap style="border-radius: 15px;" padding>
+    <ion-row>
+      <ion-col>
+      <!-- <img [src]="imageSrc" *ngIf="imageSrc" style="height: 100%; width: 100%;"/> -->
+      <img src="appicon.png" style="height: 100%; width: 100%;">
+      </ion-col>
+    </ion-row>
     <ion-row class="full-width line-spacing mt-1">
       <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">{{'Producr Name'}}</h4>
+        <h4 class="secondary-font">{{'Product Name'}}</h4> 
       </ion-row>
       <ion-row class="full-width line-spacing">
         <h3 class="primary-font">{{ProductName}}</h3>
@@ -62,12 +68,10 @@
       </ion-item>
     </ion-row>
     <ion-row  class="full-width line-spacing">
-        <button class="btn-green" (click)="createNFT()">
-          Create NFT by Tracified
-        </button>
-        <button class="btn-green" (click)="openPage('accounts')">
-         Create a new BC Account
-        </button>
-    </ion-row>
+      <button class="btn-green" (click)="createNFTWithNewAccount()">
+        Create New Account and Claim NFT
+      </button>
+  </ion-row>
+   
   </ion-card>
 </ion-content>
