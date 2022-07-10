@@ -1,0 +1,119 @@
+page-otp {
+    .main{
+        position: absolute;
+    }
+    .title{
+        position: absolute;
+        width: 287px;
+        height: 45px;
+        left: 410px;
+        top: 40px;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 30px;
+        line-height: 139.52%;
+        /* identical to box height, or 45px */
+        text-align: center;
+        color: #000000;
+    }
+
+    .bold{
+        position: absolute;
+        width: 287px;
+        height: 45px;
+        left: 180px;
+        top: -1.5px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 30px;
+        line-height: 139.52%;
+        /* identical to box height, or 45px */
+
+        text-align: center;
+
+        color: #28A745;
+
+    }
+
+    
+
+    .semi-title1{
+        position: absolute;
+        width: 572px;
+        height: 29px;
+        left: 440px;
+        top: 100px;
+        
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 20px;
+        line-height: 29px;
+        /* identical to box height */
+        color: #000000;
+        
+    }
+
+    .semi-title2{
+        position: absolute;
+        width: 391px;
+        height: 29px;
+        left: 500px;
+        top: 130px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 20px;
+        line-height: 29px;
+        /* identical to box height */
+
+
+        color: #000000;
+
+    }
+
+    .input{
+        position: absolute;
+        width: 500px;
+        height: 45px;
+        left: 415px;
+        top: 230px;
+        background: #DEDEDE;
+        border-radius: 16px;
+    }
+
+    .button{
+        position: absolute;
+        width: 153px;
+        height: 43px;
+        left: 580px;
+        top: 310px;
+
+        background: #28A745;
+        border-radius: 20px;
+    }
+
+    .button.b{
+        position: absolute;
+        width: 167px;
+        height: 29px;
+        left: 636px;
+        top: 479px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 29px;
+        /* identical to box height */
+
+        text-align: center;
+
+        color: #FFFFFF;
+    }
+
+}

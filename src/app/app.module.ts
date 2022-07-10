@@ -53,7 +53,13 @@ import { CodePush } from '@ionic-native/code-push';
 import { FundTransferPage } from 'pages/fund-transfer/fund-transfer';
 import { IonicPageModule } from 'ionic-angular';
  import { MintNftPageModule } from '../pages/mint-nft/mint-nft.module';
- 
+import { GetNftPageModule } from '../pages/get-nft/get-nft.module';
+import { GetKeysPageModule } from '../pages/get-keys/get-keys.module';
+import { OtpPageModule } from '../pages/otp/otp.module';
+import { Dialogs } from '@ionic-native/dialogs';
+import { PagesLoadSvgPage } from '../pages/pages-load-svg/pages-load-svg';
+import { PagesLoadSvgPageModule } from '../pages/pages-load-svg/pages-load-svg.module';
+
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -73,6 +79,9 @@ export function createTranslateLoader(http: HttpClient) {
     ResetPasswordPageModule,
     ItemReceivedPageModule,
     MintNftPageModule,
+    OtpPageModule,
+    GetKeysPageModule,
+    GetNftPageModule,
     ItemDetailPageModule,
     TabsPageModule,
     DeviceDetectorModule.forRoot(),
@@ -80,6 +89,7 @@ export function createTranslateLoader(http: HttpClient) {
     ItemSentPageModule,
     LoginPageModule,
     BcAccountPageModule,
+    PagesLoadSvgPageModule,
     SettingsPageModule,
     ContentPageModule,
     SettingFormPageModule,
@@ -115,6 +125,7 @@ export function createTranslateLoader(http: HttpClient) {
     Device,
     DeviceDetectorService,
     Camera,
+    Dialogs,
     SplashScreen,
     StatusBar,
     { provide: ErrorHandler, useClass: IonicErrorHandler },

@@ -4,6 +4,8 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
+
+    
 <ion-header>
   <ion-navbar>
     <button ion-button menuToggle>
@@ -13,54 +15,16 @@
   </ion-navbar>
 </ion-header>
 
+
+
 <ion-content padding>
   <ion-card text-wrap style="border-radius: 15px;" padding>
-    <ion-row>
-      <ion-col>
+   
+     
       <!-- <img [src]="imageSrc" *ngIf="imageSrc" style="height: 100%; width: 100%;"/> -->
-      <img src="appicon.png" style="height: 100%; width: 100%;">
-      </ion-col>
-    </ion-row>
-    <ion-row class="full-width line-spacing mt-1">
-      <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">{{'Product Name'}}</h4> 
-      </ion-row>
-      <ion-row class="full-width line-spacing">
-        <h3 class="primary-font">{{ProductName}}</h3>
-      </ion-row>
-    </ion-row>
-    <ion-row class="full-width line-spacing mt-1">
-      <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">{{'TDP Hash'}}</h4>
-      </ion-row>
-      <ion-col class="full-width line-spacing">
-        <h3 class="primary-font">{{TDPtxnhash}}</h3>
-      </ion-col>
-    </ion-row>
-    <ion-row class="full-width line-spacing mt-1">
-      <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">{{'Producr Name'}}</h4>
-      </ion-row>
-      <ion-row class="full-width line-spacing">
-        <h3 class="primary-font">{{ProductName}}</h3>
-      </ion-row>
-    </ion-row>
-    <ion-row class="full-width line-spacing mt-1">
-      <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">{{'TDPID'}}</h4>
-      </ion-row>
-      <ion-row class="full-width line-spacing">
-        <h3 class="primary-font">{{TDPID}}</h3>
-      </ion-row>
-    </ion-row>
-    <ion-row class="full-width line-spacing mt-1">
-      <ion-row class="full-width line-spacing">
-        <h4 class="secondary-font">{{'Identifier'}}</h4>
-      </ion-row>
-      <ion-row class="full-width line-spacing">
-        <h3 class="primary-font">{{Identifier}}</h3>
-      </ion-row>
-    </ion-row>
+      <img src="../../assets/imgs/Madagascan-Iolite.jpg" class="svg">
+     
+  
     <ion-row  class="full-width line-spacing">
       <ion-item>
         <ion-label class="login-lables" floating>{{'NFT Name'}}</ion-label>
@@ -72,6 +36,10 @@
         Create New Account and Claim NFT
       </button>
   </ion-row>
-   
+  <ion-row  class="full-width line-spacing">
+    <button class="btn-green" (click)="loadSVG()">
+      Open NFT Content
+    </button>
+</ion-row>
   </ion-card>
 </ion-content>

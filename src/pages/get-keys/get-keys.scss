@@ -1,0 +1,203 @@
+page-get-keys {
+     .main{
+        position: fixed;
+    }
+
+    .h4{
+        position: absolute;
+        width: 730px;
+        height: 58px;
+        left: 357px;
+        top: 100px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 24px;
+        line-height: 29px;
+        text-align: center;
+
+        color: #000000;
+
+    }
+
+    .labelPK{
+        position: absolute;
+        width: 121px;
+        height: 29px;
+        left: 357px;
+        top: 200px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 29px;
+        /* identical to box height */
+
+
+        color: #000000;
+
+    }
+
+    .labelSK{
+        position: absolute;
+        width: 121px;
+        height: 29px;
+        left: 357px;
+        top: 300px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 29px;
+        /* identical to box height */
+
+
+        color: #000000;
+
+    }
+
+    .container1PK{
+        position: absolute;
+        width: 698px;
+        height: 55px;
+        left: 353px;
+        top: 250px;
+
+        background: #DEDEDE;
+        border-radius: 16px;
+    }
+
+    .container1SK{
+        position: absolute;
+        width: 698px;
+        height: 55px;
+        left: 353px;
+        top: 350px;
+
+        background: #DEDEDE;
+        border-radius: 16px;
+    }
+
+    .PK{
+        position: absolute;
+        width: 653px;
+        height: 29px;
+        left: 375px;
+        top: 280px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 20px;
+        line-height: 29px;
+        /* identical to box height */
+
+        color: #000000;
+
+    }
+
+    .SK{
+        position: absolute;
+        width: 653px;
+        height: 29px;
+        left: 381px;
+        top: 355px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 300;
+        font-size: 24px;
+        line-height: 29px;
+        /* identical to box height */
+
+
+        color: #000000;
+
+    }
+
+    .container2{
+        position: absolute;
+        width: 694px;
+        height: 94px;
+        left: 357px;
+        top: 619px;
+
+        background: #914D4D;
+        border-radius: 10px;
+    }
+
+    .container2.h3{
+        position: absolute;
+        width: 147px;
+        height: 29px;
+        left: 631px;
+        top: 635px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 29px;
+        /* identical to box height */
+
+        text-align: center;
+
+        color: #FF7373;
+
+
+    }
+
+    .container2.h4{
+        position: absolute;
+        width: 614px;
+        height: 33px;
+        left: 397px;
+        top: 665px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 33px;
+        /* identical to box height */
+
+        text-align: center;
+
+        color: #FFFFFF;
+
+    }
+
+    .btn-green{
+        position: absolute;
+        width: 153px;
+        height: 43px;
+        left: 628px;
+        top: 780px;
+
+        background: #28A745;
+        border-radius: 20px;
+    }
+
+    .btn-green.b{
+        position: absolute;
+        width: 167px;
+        height: 29px;
+        left: 621px;
+        top: 788px;
+
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 29px;
+        /* identical to box height */
+
+        text-align: center;
+
+        color: #FFFFFF;
+    }
+
+}

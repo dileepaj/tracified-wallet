@@ -87,4 +87,5 @@
     <allow-navigation href="*" />
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
     <engine name="browser" spec="6.0.0" />
+    <allow-navigation href="http://localhost:8100" sessionid="2ed886b5" />
 </widget>

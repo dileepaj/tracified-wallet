@@ -1,0 +1,66 @@
+<!--
+  Generated template for the GetNftPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Claimed NFTs!</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <h1>MY NFT</h1>
+  <ion-card *ngFor="let item of ownNFTs"  text-wrap style="border-radius: 15px;" padding>
+    <ion-card-content>
+      <ion-row >
+        <ion-card-title> NFT : {{item.NftContentName}}</ion-card-title>
+        <div *ngIf="item.SellingStatus=='FORSALE'" class="item-content">
+          <p class="onsale" *ngIf="item.SellingStatus=='FORSALE'">NFT ONSALE</p>
+        </div>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'Current Owner : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.CurrentOwnerNFTPK}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'Product Name : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.NftContentName}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'TDP TxnHash : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.ImageBase64}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row class="full-width line-spacing mt-1">
+        <ion-row class="full-width line-spacing">
+          <h4 class="secondary-font">{{'NFTTXNhash : '}}</h4>
+        </ion-row>
+        <ion-col class="full-width line-spacing">
+          <h3 class="primary-font">{{item.NFTTXNhash}}</h3>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <button class="btn-green" (click)="LoadSVG(item.ImageBase64)">
+         <b>Open NFT</b>
+        </button>
+    </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
