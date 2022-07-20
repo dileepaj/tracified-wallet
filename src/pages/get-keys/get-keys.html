@@ -21,17 +21,20 @@
   </ion-row>
   <ion-row>
       <ion-label class="labelPK"><b>Public Key</b></ion-label><br>
-     <ion-item class="container1PK"><p class="PK">KHGJGJLHKLKLDFKFJHLBBFHLKFHFKFF</p></ion-item> <img src="" onclick="copyData(PublicKey)">
+     <ion-item class="container1PK">
+      {{PK}}<img src="../../assets/imgs/copy.png" (click)="copyData(PK)" id={{PK}}  style="position:relative; width: 25px; height: 25px; left: 370px;">
+     </ion-item> 
   </ion-row>
 
   <ion-row>
       <ion-label class="labelSK"><b>Private Key</b></ion-label><br>
-      <ion-item class="container1SK"><p class="PK">SBJBJKFBJFKFJDKFJFBJFDHKDFJFDDF</p></ion-item><img src="" onclick="copyData(PrivateKey)">
+      <ion-item class="container1SK" > {{SK}}<img src="../../assets/imgs/copy.png" (click)="copyData(SK)"  style="position:relative; width: 25px; height: 25px; left: 370px;"></ion-item>
+       
   </ion-row>
   <ion-row>
     <ion-item class="container2">
-      <h3>SSSS!</h3><br>
-      <h4>Never share these keys with anyone. Store them securely</h4>
+      <h3 class="imp1"><b>IMPORTANT!</b></h3><br>
+      <h4 class="imp2">Never share these keys with anyone. Store them securely</h4>
     </ion-item>
   </ion-row>
   <ion-row  class="full-width line-spacing">

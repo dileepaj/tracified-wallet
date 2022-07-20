@@ -10,6 +10,7 @@ import { Logger } from 'ionic-logger-new';
 import { GetKeysPage } from '../../pages/get-keys/get-keys';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Dialogs } from '@ionic-native/dialogs';
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 
 /**
  * @MintNftPage page.
@@ -24,6 +25,7 @@ import { Dialogs } from '@ionic-native/dialogs';
 export class MintNftPage {
   public permission: boolean;
   form: any;
+  keypair:any;
   transactionResult :boolean;
   public totalBatches = 10;
   private account;
@@ -66,6 +68,7 @@ export class MintNftPage {
     private dialogs: Dialogs,
     private loadingCtrl: LoadingController,
     private logger: Logger,
+    private storage:StorageServiceProvider,
   ) {
     this.result = this.navParams.get("res")
     console.log("data passed ",this.result)
@@ -118,81 +121,111 @@ export class MintNftPage {
   .catch(e => console.log('Error displaying dialog', e));
   }
 
+  createNewAccount(){
+     var keypair=this.blockchainService.createAddress()
+    console.log("Public Key is", keypair.publicKey().toString())
+    console.log("Secret Key is", keypair.secret().toString())
+    console.log("Keypair is", keypair)
+    this.storage.setBcAccounts("keleighb@tracified.com",keypair.secret().toString()).then(res=>{
+      console.log("result ",res)
+      alert("Successfully set!")
+     
+    })
 
-   createNFTWithNewAccount() {
-    // this.presentLoading();
-    // var keypair=this.blockchainService.createAddress()
-    // console.log("Public Key is", keypair.publicKey().toString())
-    // console.log("Secret Key is", keypair.secret().toString())
-    // console.log("Keypair is", keypair)
-    // this.apiService.getNewIssuerPublicKey().then(issuerPublcKey => {
-    //   console.log("Issuer: ",issuerPublcKey)
-    //   this.Issuer=issuerPublcKey.NFTIssuerPK
-    //   console.log("issuer json: ",this.Issuer)
+  }
+createNFTWithNewAcc(){
+  this.createNewAccount()
+  this.createNFT()
+
+}
+
+  createNFT() {
+     this.presentLoading();
+    this.storage.getBcAccounts("keleighb@tracified.com").then((res1:any)=>{
+      console.log("retieved result ",res1)
+      if(res1!=null){
+        let keypair = Keypair.fromSecret(res1);
+        console.log("Public Key is", keypair.publicKey().toString())
+        console.log("Secret Key is", keypair.secret().toString())
+      }
+      else{
+        alert("You don't have an account exisiting with your username. Proceeding to creating a new one!")
+        this.createNewAccount();
+      }
+     
+
+     
+     
+    })
+    this.apiService.getNewIssuerPublicKey().then(issuerPublcKey => {
+      console.log("Issuer: ",issuerPublcKey)
+      this.Issuer=issuerPublcKey.NFTIssuerPK
+      console.log("issuer json: ",this.Issuer)
       
-    //   let distributorPK = keypair.publicKey})
-    //   if (!!this.nftName) {
-    //     this.apiService.getAccountFunded(keypair.publicKey,this.nftName,issuerPublcKey.NFTBlockChain).then(txn=>{
-    //       console.log("The transaction for account funding",txn)
-    //       console.log("XDR from gateway : ",txn.XDR)
-          this.xdr = "AAAAAgAAAADCcha3oy3p5U0/YF1mD/vfip8yyXvMkuiwpMcVD+c2zAAAAlgAAk/SAAAADAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAABAAAAAMJyFrejLenlTT9gXWYP+9+KnzLJe8yS6LCkxxUP5zbMAAAAEAAAAABwc+KZNxEEFzNhl1BWQBZfmtl5KGiRdg8sppzNgf10JQAAAAEAAAAAwnIWt6Mt6eVNP2BdZg/734qfMsl7zJLosKTHFQ/nNswAAAAAAAAAAHBz4pk3EQQXM2GXUFZAFl+a2XkoaJF2DyymnM2B/XQlAAAAAAAAAAAAAAABAAAAAHBz4pk3EQQXM2GXUFZAFl+a2XkoaJF2DyymnM2B/XQlAAAAEQAAAAEAAAAAwnIWt6Mt6eVNP2BdZg/734qfMsl7zJLosKTHFQ/nNswAAAAQAAAAAHBz4pk3EQQXM2GXUFZAFl+a2XkoaJF2DyymnM2B/XQlAAAAAQAAAABwc+KZNxEEFzNhl1BWQBZfmtl5KGiRdg8sppzNgf10JQAAAAYAAAACQkVXMDAxAAAAAAAAAAAAABePWeK/vTwskWG5PG37UC3mL/9rj8mYKxZgOcP1o4CQAAAAAAL68IAAAAABAAAAAHBz4pk3EQQXM2GXUFZAFl+a2XkoaJF2DyymnM2B/XQlAAAAEQAAAAAAAAABD+c2zAAAAEAZVECEjIOj8NSDWed5hYt65Cxa9Hrx43ZjtHDBavKPyXyVY5ucEAnyxE0tmHlvF07nMLysVSm8OWr/FMbd0FoJ"//txn.XDR
-    // //     })
-        var txn = this.blockchainService.signXdr(this.xdr,'SBOV2D6M432VEQSM42GGPPEF4HE3MSOESCFWHWTYF4HKNJAKOWFUAEVI')//keypair.secret().string()
+      let distributorPK = this.keypair.publicKey().toString()
+  
+      if (!!this.nftName) {
+        this.apiService.getAccountFunded(this.keypair.publicKey().toString(),this.nftName,issuerPublcKey.NFTBlockChain).then(txn=>{
+          console.log("The transaction for account funding",txn)
+          console.log("XDR from gateway : ",txn.XDR)
+         this.xdr = txn.XDR
+         })
+       var txn = this.blockchainService.signXdr(this.xdr,this.keypair.secret().toString())
       console.log("Account sponsored: ",txn)
-    // //    if (txn!=null){
-    //     this.transactionResult =true//==
-    // //    }
-    // //       if (this.transactionResult=="Success") {
-    //         this.apiService.minNFTStellar(
-    //          this.transactionResult,
-    //           'GAXAQT3L7AML4MYR2BYUAXHCN3JTZWGQKM4ED3QVG4ZFSRSBWKEJQBCL',//this.Issuer
-    //           'GDIQVRTOA62JEM4VGM6WBYXLGDSUTN25FPV3L3FDLMWILKLIFYAOCXYZ',//keypair.publicKey().toString()
-    //           this.nftName,
-    //           'RURI',
-    //           'Gems',
-    //           this.NFTBlockChain,
-    //           'Time',//this.transactionResult.created_at
-    //           'Gems',
-    //           '7696cc36d38bf0d1190f65bfa49060f93955a5831d734cd9977a093dc3308932')
-    //           .then(nft => {
-    //             if (this.isLoadingPresent) {
-    //               this.dissmissLoading();
-    //             }
-    //             this.logger.info("NFT created", this.properties.skipConsoleLogs, this.properties.writeToFile);
-    //             this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
-    //             this.presentAlert(text['MINTED'], text[`NFT ${this.nftName} WAS MINTED`]);
-    //             });
-    //             this.nftName="";
-    //             //this.navCtrl.push(GetKeysPage,{res:keypair});
-    //           })
-              //.catch(error => {
-    //             if (this.isLoadingPresent) {
-    //               this.dissmissLoading();
-    //             }
-    //             this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
-    //               this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
-    //             });
-    //           })
-    //       }
-    //       else {
-    //         if (this.isLoadingPresent) {
-    //           this.dissmissLoading();
-    //         }
-    //         this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
-    //           this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
-    //         });
-    //       }
+      if (txn!=null){
+        this.transactionResult ==true
+      }
+         if (this.transactionResult==true) {
+            this.apiService.minNFTStellar(
+             this.transactionResult,
+              this.Issuer,
+            this.keypair.publicKey().toString(),
+              this.nftName,
+              'RURI',
+              'Gems',
+              this.NFTBlockChain,
+              'Time',//this.transactionResult.created_at
+              'Gems',
+              '7696cc36d38bf0d1190f65bfa49060f93955a5831d734cd9977a093dc3308932')
+              .then(nft => {
+                if (this.isLoadingPresent) {
+                  this.dissmissLoading();
+                }
+                this.logger.info("NFT created", this.properties.skipConsoleLogs, this.properties.writeToFile);
+                this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
+                this.presentAlert(text['MINTED'], text[`NFT ${this.nftName} WAS MINTED`]);
+                });
+                this.nftName="";
+                //this.navCtrl.push(GetKeysPage,{res:keypair});
+              })
+              .catch(error => {
+                if (this.isLoadingPresent) {
+                  this.dissmissLoading();
+                }
+                this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
+                  this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+                });
+              })
+          }
+          else {
+            if (this.isLoadingPresent) {
+              this.dissmissLoading();
+            }
+            this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
+              this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
+            });
+          }
         
-    //   }
-    // }).catch(error => {
-    //   if (this.isLoadingPresent) {
-    //     this.dissmissLoading();
-    //   }
-    //   this.logger.error("NFT reciveing issue in gateway side : " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
-    //   this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
-    //     this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
-    //   });
-    // })
+      }
+    }).catch(error => {
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
+      this.logger.error("NFT reciveing issue in gateway side : " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+      this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
+      });
+    })
    
   }
 

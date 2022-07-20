@@ -90,7 +90,7 @@ export class FundTransferPage {
   }
 
   getMainAccounts() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.presentLoading();
       this.dataService.getBlockchainAccounts().then((accounts) => {
         this.dissmissLoading();

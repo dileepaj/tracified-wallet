@@ -7,7 +7,7 @@ import {
   LoadingController
 } from "ionic-angular";
 import { Items } from "../../providers/items/items";
-import { Network, Keypair, Transaction } from "stellar-base";
+import { Networks, Keypair, Transaction } from "stellar-base";
 import { AES, enc } from "crypto-js";
 import { ApiServiceProvider } from "../../providers/api-service/api-service";
 import { StorageServiceProvider } from "../../providers/storage-service/storage-service";
@@ -90,9 +90,9 @@ export class ItemReceivedPage {
         this.dataService.getAccountNamesOfKeys(param).then((res) => {
           let accountNames = res.body.pk;
           cocs.forEach((coc) => {
-            const transaction = new Transaction(coc.AcceptXdr);
-            let minTime = new Date(transaction.timeBounds.minTime * 1000);
-            let maxTime = new Date(transaction.timeBounds.maxTime * 1000);
+            const transaction = new Transaction(coc.AcceptXdr,Networks.TESTNET);
+            let minTime = new Date(parseInt(transaction.timeBounds.minTime) * 1000);
+            let maxTime = new Date(parseInt(transaction.timeBounds.maxTime) * 1000);
 
             let assetName;
             let amount;

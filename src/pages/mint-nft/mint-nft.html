@@ -18,28 +18,34 @@
 
 
 <ion-content padding>
-  <ion-card text-wrap style="border-radius: 15px;" padding>
+  <ion-card text-wrap style="border-radius: 15px; " padding>
    
      
       <!-- <img [src]="imageSrc" *ngIf="imageSrc" style="height: 100%; width: 100%;"/> -->
-      <img src="../../assets/imgs/Madagascan-Iolite.jpg" class="svg">
      
-  
-    <ion-row  class="full-width line-spacing">
+     <ion-col>
+     
+    <ion-row  class="line-spacing">
       <ion-item>
         <ion-label class="login-lables" floating>{{'NFT Name'}}</ion-label>
         <ion-input color="secondary" type="text" text-left id="input" [(ngModel)]="nftName" autofocus="true"></ion-input>
       </ion-item>
     </ion-row>
-    <ion-row  class="full-width line-spacing">
-      <button class="btn-green" (click)="createNFTWithNewAccount()">
+    <ion-row  class="line-spacing">
+      <button class="btn-green" (click)="createNFT()">
         Create New Account and Claim NFT
       </button>
   </ion-row>
-  <ion-row  class="full-width line-spacing">
+  <ion-row  class="line-spacing">
     <button class="btn-green" (click)="loadSVG()">
       Open NFT Content
     </button>
 </ion-row>
+</ion-col>
+<ion-col>
+  <img src="../../assets/imgs/Madagascan-Iolite.jpg" class="svg">
+</ion-col>
+
   </ion-card>
+  
 </ion-content>

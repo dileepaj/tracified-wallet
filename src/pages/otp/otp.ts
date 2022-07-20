@@ -19,13 +19,14 @@ import { GetNftPage } from '../../pages/get-nft/get-nft';
 })
 export class OtpPage {
   otp:string=""
+  email:string=""
  
   constructor(public navCtrl: NavController, public navParams: NavParams, private service: ApiServiceProvider) {
   }
 
   checkOTP(){
     if(this.otp!=null){
-      // this.service.checkOTP(this.otp).subscribe(res=>{
+       //this.service.checkOTP(this.otp,this.email).subscribe(res=>{
       //   console.log("result is: ",res)
       //   this.navCtrl.push(MintNftPage,res);
       // })

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, ModalController, LoadingController, AlertController } from 'ionic-angular';
-import { Server, Transaction, Network } from 'stellar-sdk';
+import { Server, Transaction, Networks } from 'stellar-sdk';
 import { Items } from '../../providers/items/items';
 import { ItemDetailPage } from '../item-detail/item-detail';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
@@ -73,9 +73,9 @@ export class TransferPage {
   getBalance() {
     let assets = [];
     if (blockchainNetType === 'live') {
-      Network.usePublicNetwork();
+      Networks.PUBLIC;
     } else {
-      Network.useTestNetwork();
+      Networks.TESTNET;
     }
     let server = new Server(blockchainNet);
     server.loadAccount(this.mainAccount.pk).then((account) => {

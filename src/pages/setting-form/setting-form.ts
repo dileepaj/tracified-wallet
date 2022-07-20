@@ -282,7 +282,7 @@ export class SettingFormPage {
   }
 
   alertWaitResponse(title, message): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       let alert = this.alertCtrl.create({
         title: title,
         message: message,

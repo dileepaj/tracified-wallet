@@ -137,9 +137,9 @@ export class ApiServiceProvider {
     });
   }
 
-checkOTP(otp:any){
+checkOTP(otp:any,email:any){
   console.log("Inside service")
-  return this.http.get(this.url + '/' + otp);
+  return this.http.get(this.url + '/' + otp+'/'+email);
 }
 
   verifyEmail(body: any, reqOpts?: any): Promise<any> {

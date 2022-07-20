@@ -1,7 +1,8 @@
 import { Component , ViewChild} from '@angular/core';
-import { IonicPage, Nav, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, Nav, NavController, NavParams, Platform } from 'ionic-angular';
 import { GetNftPage } from '../../pages/get-nft/get-nft';
 import { Clipboard } from '@ionic-native/clipboard';
+
 /**
  * Generated class for the GetKeysPage page.
  *
@@ -15,25 +16,32 @@ import { Clipboard } from '@ionic-native/clipboard';
   templateUrl: 'get-keys.html',
 })
 export class GetKeysPage {
-  PK:any;
-  SK:any;
+ public PK:string;
+public SK:string;
   result:any;
   @ViewChild(Nav) nav: Nav;
-  constructor(public navCtrl: NavController, public navParams: NavParams, private clipboard:Clipboard) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private clipboard:Clipboard,private platform: Platform) {
     this.result = this.navParams.get("res")
     console.log("data passed ",this.result)
-    if (this.result){
-      this.SK=this.result.publicKey().toString()
-      this.PK=this.result.secret().toString()
+   // if (this.result){
+      this.SK='SJFN759930GNGKKRM8GD7D8D9MMFKMG'//this.result.publicKey().toString()
+      this.PK='GJFN759930GNGKKRM8GD7D8D9MMFKMG'//this.result.secret().toString()
       // this.PrivateKey=this.result.secret()
       // this.PublicKey=this.result.publicKey()
       console.log("private key: ",this.SK)
       console.log("public key: ",this.PK)
-    }
+   // }
   }
 
   copyData(key){
-    this.clipboard.copy(key);
+    console.log("key:",key)
+    //this.clipboard.copy(key);
+    let aux = document.createElement("input");
+    aux.setAttribute("value",document.getElementById(key).innerHTML);
+    document.body.appendChild(aux);
+    aux.select();
+    document.execCommand("copy");
+    console.log("text copied!")
   }
 
   market(){

@@ -39,7 +39,7 @@ export class CodePushServiceProvider {
   }
 
   doUpdate(remotePackage: IRemotePackage): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (remotePackage) {
         const downloadProgress = (progress) => {
           console.log("Progres: ", progress);
