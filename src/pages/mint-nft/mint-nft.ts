@@ -11,7 +11,8 @@ import { GetKeysPage } from '../../pages/get-keys/get-keys';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Dialogs } from '@ionic-native/dialogs';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
-
+import CryptoJS from 'crypto-js';
+import { PagesLoadSvgPage } from '../../pages/pages-load-svg/pages-load-svg';
 /**
  * @MintNftPage page.
  * This class  use to MINT NFT
@@ -55,6 +56,10 @@ export class MintNftPage {
   public page: number;
   xdr: string;
   result:any;
+  base64: any;
+  Encoded: string;
+  hash: string;
+  mail:any="mabcsdasd@somthing.com";
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -72,9 +77,10 @@ export class MintNftPage {
   ) {
     this.result = this.navParams.get("res")
     console.log("data passed ",this.result)
+    console.log("data passed for svg : ",this.result.Response.svg)
     if (this.result){
-      this.TDPID=this.result
-      console.log("checking ---tdpid", this.TDPID)
+      this.SVG=this.result.Response.svg
+      this.convertToBase64(this.SVG)
     }
     this.account = this.properties.defaultAccount;
     this.blockchainService.accountBalance(this.account.pk).then((balance) => {
@@ -103,68 +109,92 @@ export class MintNftPage {
    * create trust line with asset isser first after issuer need to trasfer the asset to distributor(minter) ,transfer part do in the gateway side
    */
   
-  
-  loadSVG(){
-    console.log("hash: ",this.TDPID)
-    this.apiService.getSVGByHash(this.TDPID).subscribe((res:any)=>{
-      this.Decryption = res.Response.Base64ImageSVG
+  convertToBase64(svg:any){
+    var encodedData = window.btoa(svg);
+    console.log("converted base64: ",encodedData)
+    this.hash=CryptoJS.SHA256(encodedData).toString(CryptoJS.enc.Hex);
+    console.log("converted hash: ",this.hash)
+    this.apiService.updateSVG(this.result.Response.svgid,this.hash).subscribe((res:any)=>{
+      console.log("update svg API result : ",res)
+      this.loadSVG(this.hash)
+    })
+  }
+
+  loadSVG(hash:string){
+    console.log("hash: ",hash)
+    this.apiService.getSVGByHash(hash).subscribe((res:any)=>{
+      console.log("get svg by hash response: ",res)
+      this.Decryption = res.Response
      this.dec = btoa(this.Decryption);
+     console.log("dec content:",this.dec)
     var str2 = this.dec.toString(); 
     var str1 = new String( "data:image/svg+xml;base64,"); 
     var src = str1.concat(str2.toString());
     this.imageSrc = this._sanitizer.bypassSecurityTrustResourceUrl(src);
     console.log("this image: ",this.imageSrc)
+    
     })
 
-    this.dialogs.alert(this.imageSrc)
-  .then(() => console.log('Dialog dismissed'))
-  .catch(e => console.log('Error displaying dialog', e));
+  //   this.dialogs.alert(this.imageSrc)
+  // .then(() => console.log('Dialog dismissed'))
+  // .catch(e => console.log('Error displaying dialog', e));
   }
 
-  createNewAccount(){
-     var keypair=this.blockchainService.createAddress()
-    console.log("Public Key is", keypair.publicKey().toString())
-    console.log("Secret Key is", keypair.secret().toString())
-    console.log("Keypair is", keypair)
-    this.storage.setBcAccounts("keleighb@tracified.com",keypair.secret().toString()).then(res=>{
-      console.log("result ",res)
-      alert("Successfully set!")
-     
+  viewSVG(){
+    this.navCtrl.push(PagesLoadSvgPage,{res:this.imageSrc});
+  }
+
+    createNewAccount():void{
+      console.log("acc gen started")
+      var keypair=this.blockchainService.createAddress()
+      console.log("Public Key is", keypair.publicKey().toString())
+      console.log("Secret Key is", keypair.secret().toString())
+      console.log("Keypair is", keypair)
+      this.storage.setBcAccounts(this.mail,keypair.secret().toString()).then(res=>{
+        console.log("result ",res)
+        alert("Successfully set!")
+        this.mintNFT()
     })
 
   }
 createNFTWithNewAcc(){
-  this.createNewAccount()
+  //this.createNewAccount()
   this.createNFT()
 
 }
 
-  createNFT() {
+   createNFT() {
      this.presentLoading();
-    this.storage.getBcAccounts("keleighb@tracified.com").then((res1:any)=>{
+     console.log("--------------1----------------")
+     this.storage.getBcAccounts(this.mail).then((res1:any)=>{
       console.log("retieved result ",res1)
       if(res1!=null){
         let keypair = Keypair.fromSecret(res1);
         console.log("Public Key is", keypair.publicKey().toString())
         console.log("Secret Key is", keypair.secret().toString())
+        this.mintNFT()
       }
       else{
         alert("You don't have an account exisiting with your username. Proceeding to creating a new one!")
         this.createNewAccount();
       }
-     
 
-     
-     
     })
+    
+   
+  }
+
+  mintNFT(){
     this.apiService.getNewIssuerPublicKey().then(issuerPublcKey => {
       console.log("Issuer: ",issuerPublcKey)
       this.Issuer=issuerPublcKey.NFTIssuerPK
       console.log("issuer json: ",this.Issuer)
       
-      let distributorPK = this.keypair.publicKey().toString()
+      //let distributorPK = this.keypair.publicKey().toString()
   
-      if (!!this.nftName) {
+      if (this.nftName!=null) {
+        console.log("Entering if condtion PK : ")
+        console.log("Entering if condtion other data : ",this.nftName,issuerPublcKey.NFTBlockChai)
         this.apiService.getAccountFunded(this.keypair.publicKey().toString(),this.nftName,issuerPublcKey.NFTBlockChain).then(txn=>{
           console.log("The transaction for account funding",txn)
           console.log("XDR from gateway : ",txn.XDR)
@@ -186,7 +216,7 @@ createNFTWithNewAcc(){
               this.NFTBlockChain,
               'Time',//this.transactionResult.created_at
               'Gems',
-              '7696cc36d38bf0d1190f65bfa49060f93955a5831d734cd9977a093dc3308932')
+               this.hash)
               .then(nft => {
                 if (this.isLoadingPresent) {
                   this.dissmissLoading();
@@ -226,9 +256,7 @@ createNFTWithNewAcc(){
         this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
       });
     })
-   
   }
-
   
   presentAlert(title: string, message: string) {
     let alert = this.alertCtrl.create({

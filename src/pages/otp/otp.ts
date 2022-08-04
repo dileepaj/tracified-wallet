@@ -4,6 +4,7 @@ import { MintNftPage } from '../../pages/mint-nft/mint-nft';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { GetKeysPage } from '../../pages/get-keys/get-keys';
 import { GetNftPage } from '../../pages/get-nft/get-nft';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Generated class for the OtpPage page.
@@ -19,19 +20,24 @@ import { GetNftPage } from '../../pages/get-nft/get-nft';
 })
 export class OtpPage {
   otp:string=""
-  email:string=""
+  email:string="techgamer12345@gmail.com"
  
   constructor(public navCtrl: NavController, public navParams: NavParams, private service: ApiServiceProvider) {
   }
 
   checkOTP(){
     if(this.otp!=null){
-       //this.service.checkOTP(this.otp,this.email).subscribe(res=>{
-      //   console.log("result is: ",res)
-      //   this.navCtrl.push(MintNftPage,res);
-      // })
-     // this.navCtrl.push(MintNftPage,{res:this.otp});
-     this.navCtrl.push(MintNftPage);
+       this.service.ValidateUserOTP(this.otp,this.email).subscribe((res:any)=>{
+          console.log("result is: ",res)
+          if (res!=null){
+            this.navCtrl.push(MintNftPage,{res:res});
+          }else{
+            alert("Invalid OTP Please try again")
+          }
+        
+      })
+    //  this.navCtrl.push(MintNftPage,{res:this.otp});
+    //  this.navCtrl.push(MintNftPage);
     }
     
   }

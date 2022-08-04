@@ -55,11 +55,18 @@ page-mint-nft {
         }
 
         .svg{
-          position: relative;
-          width: 288px;
-          height: 286.03px;
-          left: 292px;
-          top: 252px;
+          position: absolute;
+          width: 297px;
+          height: 160px;
+          left: 1170px;
+          top: 33px;
           // background: url('Madagascan-Iolite.jpg');
+        }
+        .view_SVG{
+          position: relative;
+          left: 1350px;
+          top:-15px;
+          width: 750px;
+          background: none;
         }
 }

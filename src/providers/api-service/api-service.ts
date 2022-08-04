@@ -29,11 +29,14 @@ import {
 
 @Injectable()
 export class ApiServiceProvider {
-  url: string = "http://localhost:9080";
-  baseUrlSVG:string='http://localhost:6081/api/svg';
+  //TODO  : Move APi to env file
+  url: string = "http://localhost:6081/otp/validate";
+  gatewayMintNFTURL: string = "http://localhost:9080"
+  baseUrlSVG:string='http://localhost:6081/svg';
   LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
   reqOpts: any;
   nftbeurl='http://localhost:6081';
+  updateSVGurl: string= "http://localhost:6081/svg/";
 
 
   constructor(
@@ -92,6 +95,16 @@ export class ApiServiceProvider {
     return this.http.get(`${this.baseUrlSVG}/${Hash}`);
   }
 
+  updateSVG(svgid:any,hash:string){
+    let nft= {
+      svgid: svgid,
+      hash:hash
+    }
+    console.log("data passed for update: ",nft)
+    return this.http.put(this.updateSVGurl,nft);
+    
+  }
+
   addSubAccount(body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.reqOpts = {
@@ -137,9 +150,14 @@ export class ApiServiceProvider {
     });
   }
 
-checkOTP(otp:any,email:any){
+ValidateUserOTP(otp:any,email:any){
   console.log("Inside service")
-  return this.http.get(this.url + '/' + otp+'/'+email);
+  let otpModel = {
+    email : email,
+    otp : otp
+  }
+  return this.http.post(this.url,otpModel);
+
 }
 
   verifyEmail(body: any, reqOpts?: any): Promise<any> {
@@ -435,7 +453,7 @@ checkOTP(otp:any,email:any){
           "Content-Type": "Application/json",
         }),
       };
-      this.http.get(this.url + "/nft/createNFTIssuerAccount").subscribe(
+      this.http.get(this.gatewayMintNFTURL + "/nft/createNFTIssuerAccount").subscribe(
         (response) => {
           resolve(response);
         },
@@ -447,6 +465,7 @@ checkOTP(otp:any,email:any){
   }
 
   getAccountFunded(publickey,nftName,issuer): Promise<any> {
+    console.log("data passed:",publickey,nftName,issuer)
     return new Promise((resolve, reject) => {
       this.reqOpts = {
         observe: "response",
@@ -455,7 +474,7 @@ checkOTP(otp:any,email:any){
           "Content-Type": "Application/json",
         }),
       };
-      this.http.get(this.url + "/nft/fundAccount/"+publickey+"/"+nftName+"/"+issuer).subscribe(
+      this.http.get(this.gatewayMintNFTURL + "/nft/fundAccount/"+publickey+"/"+nftName+"/"+issuer).subscribe(
         (response) => {
           resolve(response);
         },

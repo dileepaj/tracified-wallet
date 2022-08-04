@@ -21,7 +21,7 @@
   <ion-card text-wrap style="border-radius: 15px; " padding>
    
      
-      <!-- <img [src]="imageSrc" *ngIf="imageSrc" style="height: 100%; width: 100%;"/> -->
+       <img [src]="imageSrc" *ngIf="imageSrc" class="svg"/> 
      
      <ion-col>
      
@@ -37,13 +37,13 @@
       </button>
   </ion-row>
   <ion-row  class="line-spacing">
-    <button class="btn-green" (click)="loadSVG()">
-      Open NFT Content
+    <button class="view_SVG" (click)="viewSVG()">
+      <img src="../../assets/imgs/eye.png" style="width:45px;height:35px">
     </button>
 </ion-row>
 </ion-col>
 <ion-col>
-  <img src="../../assets/imgs/Madagascan-Iolite.jpg" class="svg">
+    
 </ion-col>
 
   </ion-card>
