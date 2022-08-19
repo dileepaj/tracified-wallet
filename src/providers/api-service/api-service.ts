@@ -474,7 +474,30 @@ ValidateUserOTP(otp:any,email:any){
           "Content-Type": "Application/json",
         }),
       };
-      this.http.get(this.gatewayMintNFTURL + "/nft/fundAccount/"+publickey+"/"+nftName+"/"+issuer).subscribe(
+     // `/nft/updateStellarMarketplaceBuy?sellingStatus=${sellingStatus}&currentPK=${currentPK}&previousPK=${previousPK}&nfthash=${nfthash}`
+      this.http.get(this.gatewayMintNFTURL + `/nft/sponsor?publickey=${publickey}&nftName=${nftName}&issuer=${issuer}`).subscribe(
+        (response) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  getTrustFunded(publickey,nftName,issuer): Promise<any> {
+    console.log("data passed olddddd:",publickey,nftName,issuer)
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+     // `/nft/updateStellarMarketplaceBuy?sellingStatus=${sellingStatus}&currentPK=${currentPK}&previousPK=${previousPK}&nfthash=${nfthash}`
+      this.http.get(this.gatewayMintNFTURL + `/nft/sponsortrust?publickey=${publickey}&nftName=${nftName}&issuer=${issuer}`).subscribe(
         (response) => {
           resolve(response);
         },
@@ -524,7 +547,7 @@ ValidateUserOTP(otp:any,email:any){
         TrustLineCreatedAt: created_at,
       };
       this.http
-        .post(this.url + "/nft/mintStellar", NFTModel, this.reqOpts)
+        .post(this.gatewayMintNFTURL + "/nft/mintStellar", NFTModel, this.reqOpts)
         .subscribe(
           (response) => {
             resolve(response);
@@ -548,7 +571,7 @@ ValidateUserOTP(otp:any,email:any){
       };
       this.http
         .get(
-          this.url + `/nft/retriveNFTByStatusAndPK?sellingstatus=${sellingStatus}&distributorPK=${distributorPK}`,
+          this.gatewayMintNFTURL + `/nft/retriveNFTByStatusAndPK?sellingstatus=${sellingStatus}&distributorPK=${distributorPK}`,
           this.reqOpts
         )
         .subscribe(

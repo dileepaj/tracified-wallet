@@ -5,6 +5,8 @@ import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Dialogs } from '@ionic-native/dialogs';
 import { PagesLoadSvgPage } from '../../pages/pages-load-svg/pages-load-svg';
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { Keypair } from 'stellar-sdk';
 
 /**
  * Generated class for the GetNftPage page.
@@ -27,11 +29,15 @@ export class GetNftPage {
   Decryption:any;
   dec:any;
   imageSrc:any;
+  mail: any="fena@somthing.com";
+  keypair: any;
+  nft: any;
   constructor(public navCtrl: NavController,
      public navParams: NavParams,
      public apiService: ApiServiceProvider,
      private _sanitizer: DomSanitizer,
      private dialogs: Dialogs,
+     private storage:StorageServiceProvider,
      private logger: Logger) {
       this.result = this.navParams.get("res")
       console.log("data passed ",this.result)
@@ -50,11 +56,44 @@ export class GetNftPage {
    */
    getOwnNFT() {
     let assetOwn = [];
-    this.apiService.retriveNFT("NOTFORSALE", 'GDIQVRTOA62JEM4VGM6WBYXLGDSUTN25FPV3L3FDLMWILKLIFYAOCXYZ').then(a => {//this.mainAccount.pk
-      a.body.forEach(element => {
-        assetOwn.push(element);
-      });
-      this.ownNFTs = assetOwn;
+    this.storage.getBcAccounts(this.mail).then((res1:any)=>{
+      console.log("retieved result ",res1)
+      this.keypair = Keypair.fromSecret(res1);
+      console.log("Public Key is", this.keypair.publicKey().toString())}
+      )
+    this.apiService.retriveNFT("NOTFORSALE",this.mainAccount).then(a => {//this.mainAccount.pk
+        console.log("size: ",a.body.length)
+        console.log("all data: ",a.body)
+        this.nft=a.body
+        for(let x=0; x< (this.nft.length); x++){
+          console.log("inside if condition")
+          this.apiService.getSVGByHash(this.nft[x].ImageBase64).subscribe((res:any)=>{
+            console.log("reslts  svg: ",res)
+          this.Decryption = res.Response.Base64ImageSVG
+         this.dec = btoa(this.Decryption);
+        var str2 = this.dec.toString(); 
+        var str1 = new String( "data:image/svg+xml;base64,"); 
+        var src = str1.concat(str2.toString());
+        this.imageSrc = this._sanitizer.bypassSecurityTrustResourceUrl(src);
+
+        let NFTModel = {
+          Owner:this.nft[x].CurrentOwnerNFTPK,
+          Name:this.nft[x].NftContentName,
+          Issuer:this.nft[x].InitialIssuerPK,
+          Txn:this.nft[x].NFTTXNhash,
+          ImageBase:this.imageSrc,
+          Hash:this.nft[x].ImageBase64,
+        };
+        assetOwn.push(NFTModel);
+        console.log("data elements ",NFTModel)
+        this.ownNFTs = assetOwn;
+        console.log("list : ", this.ownNFTs)
+        })
+        }
+        
+       
+   
+     
       
       if (this.isLoadingPresent) {
         this.dissmissLoading();
@@ -75,7 +114,8 @@ export class GetNftPage {
   LoadSVG(hash){
     console.log("hash: ",hash)
         this.apiService.getSVGByHash(hash).subscribe((res:any)=>{
-          this.Decryption = res.Response.Base64ImageSVG
+          console.log("result: ",res)
+          this.Decryption = res.Response
          this.dec = btoa(this.Decryption);
         var str2 = this.dec.toString(); 
         var str1 = new String( "data:image/svg+xml;base64,"); 

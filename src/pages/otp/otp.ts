@@ -20,7 +20,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class OtpPage {
   otp:string=""
-  email:string="techgamer12345@gmail.com"
+  email:string="keleighberenger@gmail.com"
  
   constructor(public navCtrl: NavController, public navParams: NavParams, private service: ApiServiceProvider) {
   }

@@ -24,8 +24,8 @@ public SK:string;
     this.result = this.navParams.get("res")
     console.log("data passed ",this.result)
    // if (this.result){
-      this.SK='SJFN759930GNGKKRM8GD7D8D9MMFKMG'//this.result.publicKey().toString()
-      this.PK='GJFN759930GNGKKRM8GD7D8D9MMFKMG'//this.result.secret().toString()
+      this.SK=this.result.secret().toString()//this.result.publicKey().toString()
+      this.PK=this.result.publicKey().toString()//this.result.secret().toString()
       // this.PrivateKey=this.result.secret()
       // this.PublicKey=this.result.publicKey()
       console.log("private key: ",this.SK)
@@ -45,7 +45,7 @@ public SK:string;
   }
 
   market(){
-    this.nav.push(GetNftPage,{res:this.PK});
+    this.navCtrl.push(GetNftPage,{res:this.PK});
   }
 
 

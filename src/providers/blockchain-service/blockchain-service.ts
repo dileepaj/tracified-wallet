@@ -537,7 +537,7 @@ export class BlockchainServiceProvider {
   }
 
   signXdr(xdr, decKey) {
-    console.log("XDR: ", xdr);
+    console.log("XDR: ", xdr,decKey);
     let keyPair = Keypair.fromSecret(decKey);
     console.log("kp:  ",keyPair.publicKey().toString())
     if (blockchainNetType === 'live') {

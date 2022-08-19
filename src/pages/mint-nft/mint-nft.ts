@@ -59,7 +59,8 @@ export class MintNftPage {
   base64: any;
   Encoded: string;
   hash: string;
-  mail:any="mabcsdasd@somthing.com";
+  mail:any="keleighberenger13@gmail.com";
+  txn: void;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -146,19 +147,18 @@ export class MintNftPage {
 
     createNewAccount():void{
       console.log("acc gen started")
-      var keypair=this.blockchainService.createAddress()
-      console.log("Public Key is", keypair.publicKey().toString())
-      console.log("Secret Key is", keypair.secret().toString())
-      console.log("Keypair is", keypair)
-      this.storage.setBcAccounts(this.mail,keypair.secret().toString()).then(res=>{
+      this.keypair=this.blockchainService.createAddress()
+      console.log("Public Key is", this.keypair.publicKey().toString())
+      console.log("Secret Key is", this.keypair.secret().toString())
+      console.log("Keypair is", this.keypair)
+      this.storage.setBcAccounts(this.mail,this.keypair.secret().toString()).then(res=>{
         console.log("result ",res)
         alert("Successfully set!")
-        this.mintNFT()
+        this.sponsorNewAcc()
     })
 
   }
 createNFTWithNewAcc(){
-  //this.createNewAccount()
   this.createNFT()
 
 }
@@ -169,10 +169,10 @@ createNFTWithNewAcc(){
      this.storage.getBcAccounts(this.mail).then((res1:any)=>{
       console.log("retieved result ",res1)
       if(res1!=null){
-        let keypair = Keypair.fromSecret(res1);
-        console.log("Public Key is", keypair.publicKey().toString())
-        console.log("Secret Key is", keypair.secret().toString())
-        this.mintNFT()
+        this.keypair = Keypair.fromSecret(res1);
+        console.log("Public Key is", this.keypair.publicKey().toString())
+        console.log("Secret Key is", this.keypair.secret().toString())
+        this.sponsorOldAcc()
       }
       else{
         alert("You don't have an account exisiting with your username. Proceeding to creating a new one!")
@@ -184,68 +184,28 @@ createNFTWithNewAcc(){
    
   }
 
-  mintNFT(){
+  sponsorNewAcc(){
     this.apiService.getNewIssuerPublicKey().then(issuerPublcKey => {
       console.log("Issuer: ",issuerPublcKey)
       this.Issuer=issuerPublcKey.NFTIssuerPK
       console.log("issuer json: ",this.Issuer)
-      
-      //let distributorPK = this.keypair.publicKey().toString()
   
       if (this.nftName!=null) {
-        console.log("Entering if condtion PK : ")
-        console.log("Entering if condtion other data : ",this.nftName,issuerPublcKey.NFTBlockChai)
-        this.apiService.getAccountFunded(this.keypair.publicKey().toString(),this.nftName,issuerPublcKey.NFTBlockChain).then(txn=>{
+        console.log("Entering if condtion PK : ", this.keypair.publicKey().toString())
+        console.log("Entering if condtion other data : ",this.nftName,this.Issuer)
+        this.apiService.getAccountFunded(this.keypair.publicKey().toString(),this.nftName,this.Issuer).then(txn=>{
           console.log("The transaction for account funding",txn)
           console.log("XDR from gateway : ",txn.XDR)
          this.xdr = txn.XDR
-         })
-       var txn = this.blockchainService.signXdr(this.xdr,this.keypair.secret().toString())
+         
+         console.log("after ",this.xdr)
+       this.txn = this.blockchainService.signXdr(this.xdr,this.keypair.secret().toString())
       console.log("Account sponsored: ",txn)
       if (txn!=null){
-        this.transactionResult ==true
+        this.transactionResult =true
       }
-         if (this.transactionResult==true) {
-            this.apiService.minNFTStellar(
-             this.transactionResult,
-              this.Issuer,
-            this.keypair.publicKey().toString(),
-              this.nftName,
-              'RURI',
-              'Gems',
-              this.NFTBlockChain,
-              'Time',//this.transactionResult.created_at
-              'Gems',
-               this.hash)
-              .then(nft => {
-                if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-                }
-                this.logger.info("NFT created", this.properties.skipConsoleLogs, this.properties.writeToFile);
-                this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
-                this.presentAlert(text['MINTED'], text[`NFT ${this.nftName} WAS MINTED`]);
-                });
-                this.nftName="";
-                //this.navCtrl.push(GetKeysPage,{res:keypair});
-              })
-              .catch(error => {
-                if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-                }
-                this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
-                  this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
-                });
-              })
-          }
-          else {
-            if (this.isLoadingPresent) {
-              this.dissmissLoading();
-            }
-            this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
-              this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
-            });
-          }
-        
+      this.mintNFT()
+         })
       }
     }).catch(error => {
       if (this.isLoadingPresent) {
@@ -256,6 +216,85 @@ createNFTWithNewAcc(){
         this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
       });
     })
+  }
+
+  sponsorOldAcc(){
+    this.apiService.getNewIssuerPublicKey().then(issuerPublcKey => {
+      console.log("Issuer: ",issuerPublcKey)
+      this.Issuer=issuerPublcKey.NFTIssuerPK
+      console.log("issuer json: ",this.Issuer)
+  
+      if (this.nftName!=null) {
+        console.log("Entering if condtion PK : ", this.keypair.publicKey().toString())
+        console.log("Entering if condtion other data : ",this.nftName,this.Issuer)
+        this.apiService.getTrustFunded(this.keypair.publicKey().toString(),this.nftName,this.Issuer).then(txn=>{
+          console.log("The transaction for account funding",txn)
+          console.log("XDR from gateway : ",txn.XDR)
+         this.xdr = txn.XDR
+         
+         console.log("after ",this.xdr)
+       this.txn = this.blockchainService.signXdr(this.xdr,this.keypair.secret().toString())
+      console.log("Account sponsored: ",txn)
+      if (txn!=null){
+        this.transactionResult =true
+        this.mintNFT()
+
+      }
+     
+         })
+      }
+    }).catch(error => {
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
+      this.logger.error("NFT reciveing issue in gateway side : " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+      this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
+      });
+    })
+  }
+
+
+  mintNFT(){
+    if (this.transactionResult==true) {
+      this.apiService.minNFTStellar(
+       this.transactionResult,
+        this.Issuer,
+      this.keypair.publicKey().toString(),
+        this.nftName,
+        'RURI',
+        'Gems',
+        this.NFTBlockChain,
+        'Time',//this.transactionResult.created_at
+        'Gems',
+         this.hash)
+        .then(nft => {
+          if (this.isLoadingPresent) {
+            this.dissmissLoading();
+          }
+          this.logger.info("NFT created", this.properties.skipConsoleLogs, this.properties.writeToFile);
+          this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
+          this.presentAlert(text['MINTED'], text[`NFT ${this.nftName} WAS MINTED`]);
+          });
+          this.navCtrl.push(GetKeysPage,{res:this.keypair});
+        })
+        .catch(error => {
+          if (this.isLoadingPresent) {
+            this.dissmissLoading();
+          }
+          this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
+            this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+          });
+        })
+    }
+    else {
+      if (this.isLoadingPresent) {
+        this.dissmissLoading();
+      }
+      this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
+        this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
+      });
+    }
   }
   
   presentAlert(title: string, message: string) {
