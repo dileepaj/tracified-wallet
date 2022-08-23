@@ -59,7 +59,7 @@ export class MintNftPage {
   base64: any;
   Encoded: string;
   hash: string;
-  mail:any="keleighberenger13@gmail.com";
+  mail:any="keleighberenger@gmail.com";
   txn: void;
   constructor(
     public navCtrl: NavController,

@@ -19,7 +19,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: 'otp.html',
 })
 export class OtpPage {
-  otp:string=""
+  otp:string="nn"
   email:string="keleighberenger@gmail.com"
  
   constructor(public navCtrl: NavController, public navParams: NavParams, private service: ApiServiceProvider) {
@@ -36,8 +36,8 @@ export class OtpPage {
           }
         
       })
-    //  this.navCtrl.push(MintNftPage,{res:this.otp});
-    //  this.navCtrl.push(MintNftPage);
+     //this.navCtrl.push(MintNftPage,{res:this.otp});
+     //this.navCtrl.push(MintNftPage);
     }
     
   }

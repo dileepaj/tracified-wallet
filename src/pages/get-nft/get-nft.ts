@@ -29,7 +29,7 @@ export class GetNftPage {
   Decryption:any;
   dec:any;
   imageSrc:any;
-  mail: any="fena@somthing.com";
+  mail: any="keleighberenger@gmail.com";
   keypair: any;
   nft: any;
   constructor(public navCtrl: NavController,

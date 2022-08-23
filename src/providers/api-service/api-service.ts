@@ -36,7 +36,7 @@ export class ApiServiceProvider {
   LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
   reqOpts: any;
   nftbeurl='http://localhost:6081';
-  updateSVGurl: string= "http://localhost:6081/svg/";
+  updateSVGurl: string= "http://localhost:6081/svgmap/";
 
 
   constructor(
@@ -92,7 +92,7 @@ export class ApiServiceProvider {
   getSVGByHash(Hash:string){
     //request to get collection name according to user public key
     console.log("inside get svg service: ",Hash)
-    return this.http.get(`${this.baseUrlSVG}/${Hash}`);
+    return this.http.get(`${this.updateSVGurl}/${Hash}`);
   }
 
   updateSVG(svgid:any,hash:string){
