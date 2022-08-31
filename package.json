@@ -26,8 +26,9 @@
     "@ionic-native/camera": "4.3.3",
     "@ionic-native/clipboard": "^4.20.0",
     "@ionic-native/code-push": "^4.20.0",
-    "@ionic-native/core": "~4.15.0",
+    "@ionic-native/core": "^4.15.0",
     "@ionic-native/device": "^5.2.0",
+    "@ionic-native/dialogs": "^4.20.0",
     "@ionic-native/file": "^4.20.0",
     "@ionic-native/in-app-browser": "^5.36.0",
     "@ionic-native/network": "^4.18.0",
@@ -93,7 +94,8 @@
       "cordova-plugin-file-transfer": {},
       "cordova-plugin-code-push": {},
       "cordova-plugin-zip": {},
-      "cordova-plugin-inappbrowser": {}
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-dialogs": {}
     },
     "platforms": [
       "browser",

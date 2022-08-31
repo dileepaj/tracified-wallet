@@ -29,9 +29,11 @@ import {
 
 @Injectable()
 export class ApiServiceProvider {
-  url: string = 'https://tracified-gateway.herokuapp.com';
+  url: string = "http://localhost:9080";
+  baseUrlSVG:string='http://localhost:6081/api/svg';
   LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
   reqOpts: any;
+  nftbeurl='http://localhost:6081';
 
 
   constructor(
@@ -84,6 +86,12 @@ export class ApiServiceProvider {
     return this.http.post(getMainPublicKeys, body, this.reqOpts)
   }
 
+  getSVGByHash(Hash:string){
+    //request to get collection name according to user public key
+    console.log("inside get svg service: ",Hash)
+    return this.http.get(`${this.baseUrlSVG}/${Hash}`);
+  }
+
   addSubAccount(body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.reqOpts = {
@@ -129,7 +137,10 @@ export class ApiServiceProvider {
     });
   }
 
-
+checkOTP(otp:any){
+  console.log("Inside service")
+  return this.http.get(this.url + '/' + otp);
+}
 
   verifyEmail(body: any, reqOpts?: any): Promise<any> {
     let confirm = { 'confirmUser': body };
@@ -435,17 +446,37 @@ export class ApiServiceProvider {
     });
   }
 
+  getAccountFunded(publickey,nftName,issuer): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+      this.http.get(this.url + "/nft/fundAccount/"+publickey+"/"+nftName+"/"+issuer).subscribe(
+        (response) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
   minNFTStellar(
     transactionResultSuccessful,
     issuerPublicKey,
     distributorPublickKey,
     asset_code,
-    TDPtxnhash,
-    TDPID,
+    collection,
+    Categories,
     NFTBlockChain,
     created_at,
-    Identifier,
-    ProductName
+    Tags,
+    NFTURL
   ): Promise<any> {
     return new Promise((resolve, reject) => {
       this.reqOpts = {
@@ -455,17 +486,23 @@ export class ApiServiceProvider {
           "Content-Type": "Application/json",
         }),
       };
+      console.log("inside the service")
       let NFTModel = {
         DistributorPublickKey: distributorPublickKey,
         IssuerPublicKey:issuerPublicKey,
         Asset_code: asset_code,
-        TDPtxnhash: TDPtxnhash,
-        Identifier: Identifier,
-        TDPID: TDPID,
+        NFTURL: NFTURL,
+        Description:'Ruri Gems',
+        Collection:collection,
+        Tags: Tags,
+        Categories:Categories,
+        Copies:'1',
+        NFTLinks:'',
         NFTBlockChain: NFTBlockChain,
+        ArtistName:'RURI',
+        ArtistLink:'',
         Successfull: transactionResultSuccessful,
         TrustLineCreatedAt: created_at,
-        ProductName: ProductName,
       };
       this.http
         .post(this.url + "/nft/mintStellar", NFTModel, this.reqOpts)
@@ -475,6 +512,31 @@ export class ApiServiceProvider {
           },
           (error) => {
             console.log(error);
+            reject(error);
+          }
+        );
+    });
+  }
+
+  retriveNFT(sellingStatus, distributorPK): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+      this.http
+        .get(
+          this.url + `/nft/retriveNFTByStatusAndPK?sellingstatus=${sellingStatus}&distributorPK=${distributorPK}`,
+          this.reqOpts
+        )
+        .subscribe(
+          (response) => {
+            resolve(response);
+          },
+          (error) => {
             reject(error);
           }
         );
