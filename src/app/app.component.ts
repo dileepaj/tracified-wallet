@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild,NgZone } from '@angular/core';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -27,6 +27,8 @@ import { MintNftPage } from '../pages/mint-nft/mint-nft';
 import { OtpPage } from '../pages/otp/otp';
 import { GetKeysPage } from '../pages/get-keys/get-keys';
 import { GetNftPage } from '../pages/get-nft/get-nft';
+import { Router } from '@angular/router';
+import { App, URLOpenListenerEvent } from '@capacitor/app';
 
 @Component({
   templateUrl: 'app.html'
@@ -74,9 +76,11 @@ export class MyApp {
     private dataService: DataServiceProvider,
     private blockchainService: BlockchainServiceProvider,
     private codepushService: CodePushServiceProvider,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private router: Router, private zone: NgZone
   ) {
     platform.ready().then(() => {
+      this.initializeApp();
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
       this.codepushService.notifyApplicationReady().then(() => {
@@ -137,6 +141,22 @@ export class MyApp {
 
   }
 
+  initializeApp() {
+    App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
+        this.zone.run(() => {
+          const domain = 'nft.tracified.com'
+            // Example url: https://beerswift.app/tabs/tab2
+            // slug = /tabs/tab2
+            const slug = event.url.split(domain).pop();
+            if (slug) {
+                this.router.navigateByUrl(slug);
+            }
+            // If no match, do nothing - let regular routing
+            // logic take over
+        });
+    });
+}
+
   deviceDetails() {
     this.deviceInfo = this.deviceService.getDeviceInfo();
     const isMobile = this.deviceService.isMobile();
@@ -175,7 +195,7 @@ export class MyApp {
       case "items":
         this.nav.setRoot(TabsPage);
         break;
-      case "nft":
+      case "nft/:email":
         this.nav.setRoot(OtpPage);
         break;
       case "market":

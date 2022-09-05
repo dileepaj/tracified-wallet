@@ -59,6 +59,9 @@ import { OtpPageModule } from '../pages/otp/otp.module';
 import { Dialogs } from '@ionic-native/dialogs';
 import { PagesLoadSvgPage } from '../pages/pages-load-svg/pages-load-svg';
 import { PagesLoadSvgPageModule } from '../pages/pages-load-svg/pages-load-svg.module';
+import { Component, NgZone } from '@angular/core';
+import { Router } from '@angular/router';
+import { App, URLOpenListenerEvent } from '@capacitor/app';
 
 
 export function createTranslateLoader(http: HttpClient) {

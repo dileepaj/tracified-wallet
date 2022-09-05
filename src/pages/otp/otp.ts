@@ -5,6 +5,7 @@ import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { GetKeysPage } from '../../pages/get-keys/get-keys';
 import { GetNftPage } from '../../pages/get-nft/get-nft';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Generated class for the OtpPage page.
@@ -22,7 +23,8 @@ export class OtpPage {
   otp:string=""
   email:string="keleighberenger@gmail.com"
  
-  constructor(public navCtrl: NavController, public navParams: NavParams, private service: ApiServiceProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private service: ApiServiceProvider, private route:ActivatedRoute) {
+    this.email = this.route.snapshot.paramMap.get('email');
   }
 
   checkOTP(){

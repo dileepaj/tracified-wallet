@@ -18,11 +18,15 @@
     "@angular/common": "5.2.11",
     "@angular/compiler": "5.2.11",
     "@angular/compiler-cli": "5.2.11",
-    "@angular/core": "5.2.11",
+    "@angular/core": "^5.2.11",
     "@angular/forms": "5.2.11",
     "@angular/http": "5.2.11",
     "@angular/platform-browser": "5.2.11",
     "@angular/platform-browser-dynamic": "5.2.11",
+    "@angular/router": "^5.2.11",
+    "@capacitor/android": "^4.1.0",
+    "@capacitor/app": "^4.0.1",
+    "@capacitor/core": "^4.1.0",
     "@ionic-native/camera": "4.3.3",
     "@ionic-native/clipboard": "^4.20.0",
     "@ionic-native/code-push": "^4.20.0",
@@ -76,6 +80,7 @@
     "zone.js": "0.8.26"
   },
   "devDependencies": {
+    "@capacitor/cli": "^4.1.0",
     "@ionic/app-scripts": "^3.2.3",
     "cordova-plugin-inappbrowser": "^5.0.0",
     "typescript": "^4.7.4"
