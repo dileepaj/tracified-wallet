@@ -1,0 +1,5 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target" : { "namespace": "android_app", "package_name": "com.tracified.app.wallet",
+                 "sha256_cert_fingerprints": ["63:40:1D:CB:DC:00:09:04:AB:7D:CF:A8:DD:21:B0:CF:DF:E9:C3:05:41:3F:9A:FC:E5:19:97:D2:42:78:1D:11"] }
+  }]

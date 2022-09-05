@@ -27,6 +27,7 @@
     "@ionic-native/clipboard": "^4.20.0",
     "@ionic-native/code-push": "^4.20.0",
     "@ionic-native/core": "^4.15.0",
+    "@ionic-native/deeplinks": "^5.36.0",
     "@ionic-native/device": "^5.2.0",
     "@ionic-native/dialogs": "^4.20.0",
     "@ionic-native/file": "^4.20.0",
@@ -60,8 +61,9 @@
     "crypto-js": "^3.1.9-1",
     "duration": "^0.2.2",
     "hsimp-purescript": "^0.1.1",
-    "ionic-angular": "3.9.2",
+    "ionic-angular": "^3.9.2",
     "ionic-logger-new": "^0.4.9",
+    "ionic-plugin-deeplinks": "^1.0.24",
     "ionic-selectable": "^3.5.0",
     "ionicons": "3.0.0",
     "jsonwebtoken": "^8.4.0",
@@ -97,7 +99,12 @@
       "cordova-plugin-code-push": {},
       "cordova-plugin-zip": {},
       "cordova-plugin-inappbrowser": {},
-      "cordova-plugin-dialogs": {}
+      "cordova-plugin-dialogs": {},
+      "ionic-plugin-deeplinks": {
+        "URL_SCHEME": "nft.tracified",
+        "DEEPLINK_SCHEME": "https",
+        "DEEPLINK_HOST": "nft.tracified.com"
+      }
     },
     "platforms": [
       "browser",

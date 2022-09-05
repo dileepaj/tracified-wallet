@@ -59,7 +59,7 @@ import { OtpPageModule } from '../pages/otp/otp.module';
 import { Dialogs } from '@ionic-native/dialogs';
 import { PagesLoadSvgPage } from '../pages/pages-load-svg/pages-load-svg';
 import { PagesLoadSvgPageModule } from '../pages/pages-load-svg/pages-load-svg.module';
-
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -126,6 +126,7 @@ export function createTranslateLoader(http: HttpClient) {
     DeviceDetectorService,
     Camera,
     Dialogs,
+    Deeplinks,
     SplashScreen,
     StatusBar,
     { provide: ErrorHandler, useClass: IonicErrorHandler },

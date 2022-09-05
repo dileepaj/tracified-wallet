@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Config, Nav, Platform, AlertController, LoadingController } from 'ionic-angular';
 import { Device } from '@ionic-native/device/ngx';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { Properties } from '../shared/properties';
 import { Events } from 'ionic-angular';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
@@ -74,9 +74,13 @@ export class MyApp {
     private dataService: DataServiceProvider,
     private blockchainService: BlockchainServiceProvider,
     private codepushService: CodePushServiceProvider,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private deeplinks:Deeplinks
   ) {
     platform.ready().then(() => {
+      deeplinks.routeWithNavController(this.nav, {
+        '/nft/:email': OtpPage
+      });
       this.statusBar.styleLightContent();
       this.splashScreen.hide();
       this.codepushService.notifyApplicationReady().then(() => {
@@ -175,7 +179,7 @@ export class MyApp {
       case "items":
         this.nav.setRoot(TabsPage);
         break;
-      case "nft":
+      case "nft/:email":
         this.nav.setRoot(OtpPage);
         break;
       case "market":
