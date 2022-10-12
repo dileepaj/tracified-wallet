@@ -2,9 +2,12 @@ import { Component } from '@angular/core';
 import { IonicPage,  NavController, NavParams } from 'ionic-angular';
 import { MintNftPage } from '../../pages/mint-nft/mint-nft';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
+import CryptoJS from 'crypto-js';
 import { GetKeysPage } from '../../pages/get-keys/get-keys';
 import { GetNftPage } from '../../pages/get-nft/get-nft';
-
+import {createMessage,readKey,encrypt,readMessage} from 'openpgp';
+import * as openpgp from 'openpgp';
+import { retry } from 'rxjs/operator/retry';
 /**
  * Generated class for the OtpPage page.
  *
@@ -19,7 +22,8 @@ import { GetNftPage } from '../../pages/get-nft/get-nft';
 })
 export class OtpPage {
   otp:string=""
- 
+  hash: string;
+  //const openpgp = require('openpgp');
   constructor(public navCtrl: NavController, public navParams: NavParams, private service: ApiServiceProvider) {
   }
 
@@ -35,8 +39,13 @@ export class OtpPage {
     
   }
 
-  ionViewDidLoad() {
+   async ionViewDidLoad() {
+    const openpgp = require('openpgp');
     console.log('ionViewDidLoad OtpPage');
+   // this.generatekeypari()
   }
 
+  
+
+  
 }
