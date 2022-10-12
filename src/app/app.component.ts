@@ -27,7 +27,11 @@ import { MintNftPage } from '../pages/mint-nft/mint-nft';
 import { OtpPage } from '../pages/otp/otp';
 import { GetKeysPage } from '../pages/get-keys/get-keys';
 import { GetNftPage } from '../pages/get-nft/get-nft';
-
+import * as openpgp from 'openpgp';
+import CryptoJS from 'crypto-js';
+import { ApiServiceProvider } from '../providers/api-service/api-service';
+import { key } from 'localforage';
+//import { ApiServiceProvider } from 'providers/api-service/api-service';
 @Component({
   templateUrl: 'app.html'
 })
@@ -55,7 +59,8 @@ export class MyApp {
     { icon: 'custom-about', title: 'About', component: 'ContentPage', action: null },
     { icon: 'custom-logout', title: 'Logout', component: 'LoginPage', action: this.logOut.bind(this) }
   ]
-
+  hash: string;
+  
   constructor(
     private deviceService: DeviceDetectorService,
     private device: Device,
@@ -74,7 +79,8 @@ export class MyApp {
     private dataService: DataServiceProvider,
     private blockchainService: BlockchainServiceProvider,
     private codepushService: CodePushServiceProvider,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private service:ApiServiceProvider
   ) {
     platform.ready().then(() => {
       this.statusBar.styleLightContent();
@@ -295,5 +301,24 @@ export class MyApp {
       });
       alert.present();
     });
+  }
+
+  generatekeypari(){
+    const openpgp = require('openpgp');
+    (async () => {
+      const key = await openpgp.generateKey({
+          userIds: [{name:"mithilap",email:"mithilap@tracfied.com"}], // you can pass multiple user IDs
+          rsaBits: 2048,                                              // RSA key size
+          passphrase: 'hackerseatthegalbanis'           // protects the private key
+      });
+      console.log("public key: ",key.publicKeyArmored)
+      console.log("private key: ",key.privateKeyArmored)
+      this.hash = CryptoJS.SHA256(key.publicKeyArmored).toString(CryptoJS.enc.Hex);
+      console.log("SHA256-hash:",this.hash)
+
+      this.service.saveRSAkeyData(this.hash,key.publicKeyArmored,key.privateKeyArmored)  
+      })(); 
+
+     
   }
 }

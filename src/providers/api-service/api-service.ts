@@ -543,5 +543,36 @@ checkOTP(otp:any){
     });
   }
 
+  saveRSAkeyData(sha256Encode:string,pk:string,sk:string): Promise<any>{
+    let data = {
+      sha256pk:sha256Encode,
+      publicKey:pk,
+      secretKey:sk
+    }
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+
+      this.http
+      .post(this.url+"/pgp",data,this.reqOpts)
+      .subscribe(
+        (response) => {
+          alert("key pair saved")
+          resolve(response);
+        },
+        (error) => {
+          console.log(error);
+          reject(error);
+        }
+      );
+    });
+
+  }
+  
 
 }

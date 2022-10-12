@@ -14,21 +14,31 @@
 </ion-header>
 
 <ion-content padding class="main">
-  <ion-row >
+  <ion-row>
     <h3 class="title">Product : <b class="bold">Gem Item</b></h3>
   </ion-row>
-  <ion-row >
+  <ion-row>
     <h5 class="semi-title1">A one time password has been sent to your email</h5>
   </ion-row>
-  <ion-row >
+  <ion-row>
     <h5 class="semi-title2">Please enter to verify your identity</h5>
   </ion-row>
-  <ion-row >
-    <ion-input  type="text" text-left id="input" [(ngModel)]="otp" autofocus="true"></ion-input>
-  </ion-row>
-  <ion-row  >
-    <button class="button" (click)="checkOTP()">
-      <b>Submit</b>
+  <ion-row>
+    <button class="button" (click)="generatekeypari()">
+      Generate key pair
     </button>
-</ion-row>
+  </ion-row>
+  <ion-row>
+    <ion-input type="text" text-left id="input" [(ngModel)]="otp" autofocus="true"></ion-input>
+  </ion-row>
+  <ion-row>
+    <button class="button" (click)="checkOTP()">
+      <b>Submit please</b>
+    </button><br><br>
+    <ion-row>
+      <button class="button" (click)="generatekeypari()">
+        Generate key pair
+      </button>
+    </ion-row>
+  </ion-row>
 </ion-content>
