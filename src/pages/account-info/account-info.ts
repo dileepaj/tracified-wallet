@@ -3,7 +3,7 @@ import { IonicPage, NavController, NavParams, AlertController, ToastController }
 
 import { Properties } from '../../shared/properties';
 
-import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
+//import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { TabsPage } from '../../pages/tabs/tabs';
@@ -25,7 +25,7 @@ export class AccountInfoPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public properties: Properties,
-    private blockchainService: BlockchainServiceProvider,
+   // private blockchainService: BlockchainServiceProvider,
     private clipboard: Clipboard,
     private alertCtrl: AlertController,
     public toastCtrl: ToastController,
@@ -33,6 +33,7 @@ export class AccountInfoPage {
     private translate: TranslateService
   ) {
     this.account = this.navParams.get("account");
+    console.log("data recived: ",this.account)
     this.navigation = this.navParams.get("navigation");
   }
 

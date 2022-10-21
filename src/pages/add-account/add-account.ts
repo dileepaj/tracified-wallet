@@ -20,7 +20,7 @@ import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
-
+import CryptoJS from 'crypto-js';
 // Shared Services
 import { Properties } from '../../shared/properties';
 import { Logger } from 'ionic-logger-new';
@@ -46,6 +46,8 @@ export class AddAccountPage {
   form: FormGroup;
   private navigation: any;
   private toastInstance: Toast;
+  hash: any;
+  pgpMainKeyPair: any;
 
   constructor(
     public navCtrl: NavController,
@@ -59,12 +61,14 @@ export class AddAccountPage {
     private dataService: DataServiceProvider,
     private mappingService: MappingServiceProvider,
     private navParams: NavParams,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private service:ApiServiceProvider,
   ) {
 
     this.form = new FormGroup({
       accName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
       strength: new FormControl(''),
+      email:new FormControl('',[Validators.email,Validators.required]),
       password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
       confirmPassword: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
     });
@@ -86,11 +90,12 @@ export class AddAccountPage {
 
     if (this.connectivity.onDevice) {
       this.presentLoading();
-      this.validateAccountName(this.form.value.accName).then((status) => {
+      this.validateAccountName(this.form.value.accName).then(async (status) => {
         if (status) {
           let mainPair = this.createKeyPair();
+          this.pgpMainKeyPair= await this.generatePGPGkeypari()
 
-          this.mappingService.encyrptSecret(mainPair.secret(), this.form.value.password).then((encMainSecretKey) => {
+          this.mappingService.encyrptSecret(mainPair.secret(), this.form.value.password).then(async (encMainSecretKey) => {
             const mainAccount = {
               accName: this.form.value.accName,
               publicKey: mainPair.publicKey(),
@@ -109,16 +114,37 @@ export class AddAccountPage {
               }
             }
 
-            this.dataService.addTransactionAccount(account).then((res) => {
+            await this.dataService.addTransactionAccount(account).then((res:any) => {
+              //TODO : 
+              const PGPAccount = {
+                "pgpPublickKey":this.pgpMainKeyPair.publicKeyArmored,
+                "pgppksha256": this.hash,
+                "stelletPublicKey":mainAccount.publicKey,
+                "userName": this.form.value.accName
+              }
+              const fullAccount = {
+                accName: mainAccount.accName,
+                publicKey: mainAccount.publicKey,
+                privateKey: mainAccount.privateKey,
+                pgpPublickKey:this.pgpMainKeyPair.publicKeyArmored,
+                pgpPrivateKey:this.pgpMainKeyPair.privateKeyArmored
+              }
+              console.log("PGP modal : ",PGPAccount)
+              this.service.SavePGPkeyForEndorsment(PGPAccount)
+              this.dataService.storePGPAccounts(this.pgpMainKeyPair).then(() => {
+
+              })
               this.dissmissLoading();
+              console.log("Response :",res)
               if (res.status === 200) {
                 this.translate.get(['TRANSACTION_ACCOUNT_ADDED']).subscribe(text => {
                   this.presentToast(text['TRANSACTION_ACCOUNT_ADDED']);
                 });
-                this.navCtrl.setRoot(AccountInfoPage, { account: mainAccount, navigation: this.navigation });
+                this.navCtrl.setRoot(AccountInfoPage, { account: fullAccount, navigation: this.navigation });
               } else {
                 this.translate.get(['ERROR', 'FAILED_ADD_TRANSACTION']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['FAILED_ADD_TRANSACTION']);
+                  console.log("Response :",res)
                 });
               }
             }, (err) => {
@@ -130,12 +156,15 @@ export class AddAccountPage {
               } else {
                 this.translate.get(['ERROR', 'FAILED_ADD_TRANSACTION']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['FAILED_ADD_TRANSACTION']);
+                  console.log("error msg1:",err)
                 });
               }
             }).catch((error) => {
               this.dissmissLoading();
               this.translate.get(['ERROR', 'FAILED_ADD_TRANSACTION']).subscribe(text => {
                 this.presentAlert(text['ERROR'], text['FAILED_ADD_TRANSACTION']);
+                console.log("pgp pair2:",this.pgpMainKeyPair)
+                console.log("error msg2:",error)
               });
               this.logger.error("Failed to add transaction account: " + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
@@ -269,5 +298,29 @@ export class AddAccountPage {
     this.isLoadingPresent = false;
     this.loading.dismiss();
   }
+
+  async generatePGPGkeypari(){
+    const openpgp = require('openpgp');
+    let key
+    await (async () => {
+          key = await openpgp.generateKey({
+          userIds: [{name:this.form.value.accName,email:this.form.value.email}], // you can pass multiple user IDs
+          rsaBits: 2048,                                              // RSA key size
+          passphrase: 'hackerseatthegalbanis'           // protects the private key
+      });
+      console.log("public key: ",key.publicKeyArmored)
+      console.log("private key: ",key.privateKeyArmored)
+      this.hash = CryptoJS.SHA256(key.publicKeyArmored).toString(CryptoJS.enc.Hex);
+      console.log("SHA256-hash:",this.hash)
+
+      // this.service.saveRSAkeyData(this.hash,key.publicKeyArmored,key.privateKeyArmored)  //? remove
+      //this.createDigitalSginature(key.publicKeyArmored,key.privateKeyArmored)
+      
+      })(); 
+      return key
+      
+     
+  }
+
 
 }

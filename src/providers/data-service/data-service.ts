@@ -167,4 +167,10 @@ changeTransactionPasswordWithPrivateKey(updatedInfo): Promise<any> {
       this.properties.token
   );
 }
+storePGPAccounts(accounts): Promise<any> {
+  return this.storage.setPGPAccounts(this.properties.userName, accounts);
+}
+retrievePGPAccounts(): Promise<any> {
+  return this.storage.getPGPAccounts(this.properties.userName);
+}
 }

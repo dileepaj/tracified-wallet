@@ -17,6 +17,11 @@ export class StorageServiceProvider {
     storeName: "bcAccounts"
   });
 
+  public pgpAccounts = localforage.createInstance({
+    name: "pgpAccounts",
+    storeName: "pgpAccounts"
+  });
+
   public photo = localforage.createInstance({
     name: "photo",
     storeName: "photo"
@@ -166,5 +171,37 @@ export class StorageServiceProvider {
   public setLanguage(language) {
     this.language.setItem('language', language);
   }
+
+  setPGPAccounts(username: string, accounts: any): Promise<any> {
+    return new Promise(resolve => {
+      let encAccounts = AES.encrypt(JSON.stringify(accounts), this.key).toString();
+      this.pgpAccounts.setItem(username, encAccounts).then(() => {
+        resolve(true);
+      });
+    });
+  }
+
+  getPGPAccounts(username) {
+    return new Promise((resolve, reject) => {
+      this.pgpAccounts.length().then(noOfKeys => {
+        if (noOfKeys > 0) {
+          this.pgpAccounts.getItem(username).then(accounts => {
+            let decryptedAccs = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+            resolve(decryptedAccs);
+          }).catch((err) => {
+            this.logger.error("Storage get pgp item failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+            reject(err);
+          });
+        } else {
+          this.logger.error("No pgp accounts found.", this.properties.skipConsoleLogs, this.properties.writeToFile);
+          reject(false);
+        }
+      }).catch((err) => {
+        this.logger.error("Storage check length failed for pgp: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+        reject(err);
+      });
+    });
+  }
+
 
 }

@@ -50,6 +50,39 @@
           </div>
         </ion-col>
       </ion-row>
+      <!-- RSA PK  -->
+      <ion-row class="full-width">
+        <h4 class="secondary-font">RSA publicKey</h4>
+      </ion-row>
+      <ion-row class="full-width list-spacing word-wrap">
+        <ion-col col-11>
+          <h4 class="primary-font word-wrap right-padding"> {{ account.pgpPublickKey}} </h4>
+        </ion-col>
+        <ion-col col-1>
+          <div class="button-wrapper">
+            <button class="icon-only-btn" (click)="copyToClipboard(2)">
+              <img src="../../assets/icon/ic_copy_green.png" class="toolbar-btn-img" />
+            </button>
+          </div>
+        </ion-col>
+      </ion-row>
+      <!-- RSA Pvt  -->
+      <ion-row class="full-width">
+        <h4 class="secondary-font">RSA privateKey</h4>
+      </ion-row>
+      <ion-row class="full-width list-spacing word-wrap">
+        <ion-col col-11>
+          <h4 class="primary-font word-wrap right-padding"> {{ account.pgpPrivateKey}} </h4>
+        </ion-col>
+        <ion-col col-1>
+          <div class="button-wrapper">
+            <button class="icon-only-btn" (click)="copyToClipboard(2)">
+              <img src="../../assets/icon/ic_copy_green.png" class="toolbar-btn-img" />
+            </button>
+          </div>
+        </ion-col>
+      </ion-row>
+
       <ion-row class="full-width list-spacing word-wrap">
         <h5 class="warning-font uppercase-font">{{'IMPORTANT' | translate}}!</h5>
         <h5 class="secondary-font line-spacing">{{ 'SAFE_KEY' | translate}}</h5>

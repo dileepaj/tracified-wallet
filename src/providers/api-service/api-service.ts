@@ -37,7 +37,8 @@ import { Testimonial } from '../../shared/models/testimonial';
 
 @Injectable()
 export class ApiServiceProvider {
-  url: string = 'https://tracified-gateway.herokuapp.com';
+  // url: string = 'https://tracified-gateway.herokuapp.com';
+  url: string = 'http://localhost:9080';
   LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
   reqOpts: any;
 
@@ -561,6 +562,83 @@ private adminPut(url, params, token): Promise<any> {
                   reject(error);
               }
           );
+  });
+}
+saveRSAkeyData(sha256Encode:string,pk:string,sk:string): Promise<any>{
+  let data = {
+    sha256pk:sha256Encode,
+    publicKey:pk,
+   // secretKey:sk
+  }
+  return new Promise((resolve, reject) => {
+    this.reqOpts = {
+      observe: "response",
+      headers: new HttpHeaders({
+        Accept: "application/json",
+        "Content-Type": "Application/json",
+      }),
+    };
+
+    this.http
+    .post(this.url+"/pgp",data,this.reqOpts)
+    .subscribe(
+      (response) => {
+        alert("key pair saved")
+        resolve(response);
+      },
+      (error) => {
+        console.log(error);
+        reject(error);
+      }
+    );
+  });
+
+}
+
+SavePGPkeyForEndorsment(PGPAccount:any): Promise<any>{
+  console.log("data sent to: ",PGPAccount)
+  return new Promise((resolve, reject) => {
+    this.reqOpts = {
+      observe: "response",
+      headers: new HttpHeaders({
+        Accept: "application/json",
+        "Content-Type": "Application/json",
+      }),
+    };
+
+    this.http
+    .post(this.url+"/pgp",PGPAccount,this.reqOpts)
+    .subscribe(
+      (response) => {
+        alert("key pair saved")
+        resolve(response);
+      },
+      (error) => {
+        console.log(error);
+        reject(error);
+      }
+    );
+  });
+
+}
+
+GetAccountDetailsforEndorsment(stellarpk:string): Promise<any>{
+  return new Promise((resolve, reject) => {
+    this.reqOpts = {
+      observe: "response",
+      headers: new HttpHeaders({
+        Accept: "application/json",
+        "Content-Type": "Application/json",
+      }),
+    };
+    this.http.get(this.url + "/pgp/getaccounts/"+stellarpk).subscribe(
+      (response) => {
+        resolve(response);
+      },
+      (error) => {
+        reject(error);
+      }
+    );
   });
 }
 }

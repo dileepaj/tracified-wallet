@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction } from 'stellar-sdk';
+import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction, Networks } from 'stellar-sdk';
 
 import { Properties } from '../../shared/properties';
 import { blockchainNet } from '../../shared/config';
@@ -726,7 +726,217 @@ export class BlockchainServiceProvider {
     }
   }
 
-  
+  SavePGPAccount(
+    /*transactionResult:string,*/
+     username:string,
+     pgppublickeyhash:string,
+     stellarpkkey: string, 
+     stellarskkey:string
+   ) {
+     return new Promise((resolve, reject) => {//buyers secret key
+      let sourceKeypair = Keypair.fromSecret(stellarskkey); 
+       if (blockchainNetType === "live") {
+         Networks.TESTNET
+       } else {
+         Networks.PUBLIC
+       }
+       
+       var opts = {
+         fee: 100,
+         timebounds: {
+           minTime: 0,
+           maxTime: 0,
+         },
+         networkPassphrase: Networks.TESTNET,
+       };
+       let server = new Server(blockchainNet);
+       server
+         .loadAccount(sourceKeypair.publicKey())
+         .then(async (account) => {
+           var transaction = new TransactionBuilder(account, opts)
+             .addOperation(
+               Operation.manageData({
+                 name: "User Name",
+                 value: username,
+               })
+             )
+             .addOperation(
+               Operation.manageData({
+                 name: "Stellar Key",
+                 value: stellarpkkey,
+               })
+             )
+             .addOperation(
+               Operation.manageData({
+                 name: "PGP Public Key in SHA256",
+                 value: pgppublickeyhash,
+               })
+             )
+            //  .setTimeout(80000)
+             .build();
+             transaction.sign(sourceKeypair);
+             return server.submitTransaction(transaction);
+           })
+         .then((transactionResult) => {
+          this.logger.info("PGP Keys stored successfully");
+           resolve(transactionResult);
+         })
+         .catch((err) => {
+           reject(err);
+         });
+     });
+   }
+
+
+   SaveDigitalSignature(
+    /*transactionResult:string,*/
+    digitalsignature:string,
+     cyphermsg:string,
+     pgppublickeyhash:string,
+     stellarpkkey: string, 
+     stellarskkey:string
+   ) {
+     return new Promise((resolve, reject) => {//buyers secret key
+      let sourceKeypair = Keypair.fromSecret(stellarskkey); 
+       if (blockchainNetType === "live") {
+         Networks.TESTNET
+       } else {
+         Networks.PUBLIC
+       }
+       
+       var opts = {
+         fee: 100,
+         timebounds: {
+           minTime: 0,
+           maxTime: 0,
+         },
+         networkPassphrase: Networks.TESTNET,
+       };
+       let server = new Server(blockchainNet);
+       server
+         .loadAccount(sourceKeypair.publicKey())
+         .then(async (account) => {
+           var transaction = new TransactionBuilder(account, opts)
+             .addOperation(
+               Operation.manageData({
+                 name: "Cypher Message",
+                 value: cyphermsg,
+               })
+             )
+             .addOperation(
+               Operation.manageData({
+                 name: "Stellar Key",
+                 value: stellarpkkey,
+               })
+             )
+             .addOperation(
+               Operation.manageData({
+                 name: "PGP Public Key in SHA256",
+                 value: pgppublickeyhash,
+               })
+             )
+             .addOperation(
+              Operation.manageData({
+                name: "Digital Signature for Endorsement",
+                value: digitalsignature,
+              })
+            )
+            //  .setTimeout(80000)
+             .build();
+             transaction.sign(sourceKeypair);
+             return server.submitTransaction(transaction);
+           })
+         .then((transactionResult) => {
+          this.logger.info("PGP Keys stored successfully");
+           resolve(transactionResult);
+         })
+         .catch((err) => {
+           reject(err);
+         });
+     });
+   }
+
+   VerifyDigitalSignature(
+    /*transactionResult:string,*/
+    digitalsignature:string,
+     cyphermsg:string,
+     pgppublickeyhash:string,
+     endorseepk: string, 
+     tracifieduserpk:string,
+     tracifiedusersk:string,
+     status:string
+   ) {
+     return new Promise((resolve, reject) => {//buyers secret key
+      let sourceKeypair = Keypair.fromSecret(tracifiedusersk); 
+       if (blockchainNetType === "live") {
+         Networks.TESTNET
+       } else {
+         Networks.PUBLIC
+       }
+       
+       var opts = {
+         fee: 100,
+         timebounds: {
+           minTime: 0,
+           maxTime: 0,
+         },
+         networkPassphrase: Networks.TESTNET,
+       };
+       let server = new Server(blockchainNet);
+       server
+         .loadAccount(sourceKeypair.publicKey())
+         .then(async (account) => {
+           var transaction = new TransactionBuilder(account, opts)
+             .addOperation(
+               Operation.manageData({
+                 name: "Cypher Message",
+                 value: cyphermsg,
+               })
+             )
+             .addOperation(
+               Operation.manageData({
+                 name: "Tracified Public Key",
+                 value: tracifieduserpk,
+               })
+             )
+             .addOperation(
+              Operation.manageData({
+                name: "Endorsee Public Key",
+                value: endorseepk,
+              })
+            )
+             .addOperation(
+               Operation.manageData({
+                 name: "PGP Public Key in SHA256",
+                 value: pgppublickeyhash,
+               })
+             )
+             .addOperation(
+              Operation.manageData({
+                name: "Digital Signature for Endorsement",
+                value: digitalsignature,
+              })
+            )
+            .addOperation(
+              Operation.manageData({
+                name: "Status of Verification",
+                value: status,
+              })
+            )
+            //  .setTimeout(80000)
+             .build();
+             transaction.sign(sourceKeypair);
+             return server.submitTransaction(transaction);
+           })
+         .then((transactionResult) => {
+          this.logger.info("PGP Keys stored successfully");
+           resolve(transactionResult);
+         })
+         .catch((err) => {
+           reject(err);
+         });
+     });
+   }
 
 }
 
