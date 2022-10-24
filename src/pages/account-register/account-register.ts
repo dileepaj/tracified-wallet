@@ -8,10 +8,11 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
 import { File } from '@ionic-native/file';
 import { AccountServiceProvider } from '../../providers/account-service/account-service';
 import { tracSuperAcc } from '../../shared/config';
-import { Organization } from '../../shared/models/organization';
+import { Organization, PGPInformation } from '../../shared/models/organization';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { Logger } from 'ionic-logger-new';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
+import { ApiServiceProvider } from '../../providers/api-service/api-service';
 
 @IonicPage()
 @Component({
@@ -27,6 +28,10 @@ export class AccountRegisterPage {
    public orgLogo: string;
 
    private defaultAccSK: string;
+   keyAccount: any;
+   pgpPK: any;
+   signature: any;
+   hash: any;
 
    constructor(
       public navCtrl: NavController,
@@ -42,7 +47,8 @@ export class AccountRegisterPage {
       private camera: Camera,
       private logger: Logger,
       private file: File,
-      public translate: TranslateService
+      public translate: TranslateService,
+      private service:ApiServiceProvider
    ) {
       this.orgKey = this.navParams.get('organizationKey');
       this.formRegister = new FormGroup({
@@ -55,7 +61,12 @@ export class AccountRegisterPage {
       });
    }
 
-   ionViewDidLoad() { }
+   ionViewDidLoad() {
+      console.log("----------------------------")
+      this.dataService.retrieveBlockchainAccounts().then((steAcc:any)=>{
+         console.log("stellar account: ",steAcc.account.mainAccount.pk)
+      })
+    }
 
    ionViewCanLeave() {
       return !this.isLoadingPresent;
@@ -190,13 +201,44 @@ export class AccountRegisterPage {
                         Phone: this.formRegister.get("orgPrimaryMobile").value,
                         PhoneSecondary: this.formRegister.get("orgSecondMobile").value,
                      }
+                     console.log("stellar key is: ",this.orgKey)
+                     this.service.GetAccountDetailsforEndorsment(this.orgKey).then(res=>{
+                        console.log("stellar ac info recived : ",res.pgppublickkey,res.username)
+                        this.dataService.retrievePGPAccounts().then(accres=>{
+                          console.log("pgp account: ",accres.publicKeyArmored)
+                          this.pgpPK=accres.publicKeyArmored
+                          if (res.pgppublickkey == accres.publicKeyArmored){
+                           this.dataService.retrieveBlockchainAccounts().then((steAcc:any)=>{
+                              console.log("stellar account: ",steAcc)
+                              this.keyAccount=steAcc
+                           })
+                            alert("Owners are the same")
+                           this.createDigitalSginature(accres.privateKeyArmored,xdrPayload.Description,res.pgppksha256,this.orgKey,this.keyAccount.account.mainAccount.skp)
+                          }else{
+                            alert("Owners are not the same")
+                          }
+                          //TODO: Write code to check and see if the pgp ac recived == the account in the DB
+                          //* to define the PGP key use this variable IF NECESSARY pgpaccount
+                        })
+                      })
                      this.accountService.buildProofHash(xdrPayload, this.defaultAccSK, tracSuperAcc).then((proofHash: any) => {
                         let hashResponse = proofHash;
                         Promise.all([
                            this.accountService.buildAcceptXDR(xdrPayload, hashResponse, subAccount, this.defaultAccSK, tracSuperAcc), // tracSuperAcc - Adding Tracified Super Acc as Signer
                            this.accountService.buildRejectXDR(hashResponse, subAccount, this.defaultAccSK, tracSuperAcc), // tracSuperAcc - Adding Tracified Super Acc as Signer
                         ]).then((xdrs: any) => {
+
+                           const pgpData : PGPInformation = {
+                              PGPPublicKey: this.pgpPK,
+                              StellarPublicKey: this.orgKey ,
+                              DigitalSignature: this.signature,
+                              StellarTXNToSave: this.hash,
+                              StellarTXNToVerify: '',
+                              Data:xdrPayload.Description,
+
+                           }
                            const organizationPayload: Organization = {
+                              PGPData:pgpData,
                               Name: this.formRegister.get("orgName").value,
                               Description: this.formRegister.get("orgDescription").value,
                               Logo: this.orgLogo,
@@ -453,6 +495,31 @@ export class AccountRegisterPage {
       passwordPopUp.present();
   
       return promise;
+    }
+
+    createDigitalSginature(pgpprivate:any,cyphertext:any,hash:any,stellarpk,stellarsk) {
+      const openpgp = require('openpgp');
+      (async () => {
+        const passphrase = `hackerseatthegalbanis`; // what the private key is encrypted with
+    
+        const { keys: [privateKey] } = await openpgp.key.readArmored(pgpprivate);
+        console.log("before decrypted:",privateKey)
+        await privateKey.decrypt(passphrase);
+        console.log("after decrypted:",privateKey)
+  
+        const { data: cleartext } = await openpgp.sign({
+            message: openpgp.cleartext.fromText('My very seceret stellar key is here'), // CleartextMessage or Message object
+            privateKeys: [privateKey]                             // for signing
+        });
+        console.log("signed text: ",cleartext); 
+        this.signature=cleartext// '-----BEGIN PGP SIGNED MESSAGE ... END PGP SIGNATURE-----'
+        this.blockchainService.SaveDigitalSignature(cleartext,cyphertext,hash,stellarpk,stellarsk).then((hash:any)=>{
+         console.log("txn: ",hash)
+         this.hash=hash
+        })
+    
+    })();
+  
     }
   
 }

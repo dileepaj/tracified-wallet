@@ -1,4 +1,5 @@
 export class Organization {
+    public PGPData:PGPInformation;
     public Name: string;
     public Description: string;
     public Logo: string;
@@ -16,4 +17,13 @@ export class Organization {
     public Status: string;
     public ApprovedBy: string;
     public ApprovedOn: string;
+}
+
+export class PGPInformation {
+    public PGPPublicKey: string;
+    public StellarPublicKey: string;
+    public DigitalSignature: string;
+    public StellarTXNToSave: string;
+    public StellarTXNToVerify: string;
+    public Data: string;
 }

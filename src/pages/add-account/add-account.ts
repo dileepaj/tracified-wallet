@@ -90,6 +90,7 @@ export class AddAccountPage {
 
     if (this.connectivity.onDevice) {
       this.presentLoading();
+      console.log("------------test1---------------")
       this.validateAccountName(this.form.value.accName).then(async (status) => {
         if (status) {
           let mainPair = this.createKeyPair();
@@ -115,12 +116,18 @@ export class AddAccountPage {
             }
 
             await this.dataService.addTransactionAccount(account).then((res:any) => {
+              this.dataService.storeBlockchainAccounts(account).then((res1:any)=>{
+                  console.log("result 1: ",res1)
+                  this.dataService.retrieveBlockchainAccounts().then((res2:any)=>{
+                    console.log("result 2: ",res2)
+                  })
+              })
               //TODO : 
               const PGPAccount = {
-                "pgpPublickKey":this.pgpMainKeyPair.publicKeyArmored,
+                "pgppublickkey":this.pgpMainKeyPair.publicKeyArmored,
                 "pgppksha256": this.hash,
-                "stelletPublicKey":mainAccount.publicKey,
-                "userName": this.form.value.accName
+                "stellarpublickey":mainAccount.publicKey,
+                "username": this.form.value.accName
               }
               const fullAccount = {
                 accName: mainAccount.accName,
@@ -181,6 +188,7 @@ export class AddAccountPage {
       }).catch((error) => {
         if (this.isLoadingPresent) {
           this.dissmissLoading();
+          console.log("------------inside catch----------",error)
           this.translate.get(['NOT_VALIDATE_ACC_NAME']).subscribe(text => {
             this.presentToast(text['NOT_VALIDATE_ACC_NAME']);
           });
@@ -196,6 +204,7 @@ export class AddAccountPage {
   validateAccountName(accName) {
     return new Promise((resolve, reject) => {
       this.apiService.validateMainAccountN(accName).then((res) => {
+        console.log("------------validate1----------",res)
         if (res.status === 200 && res.body.status == false) {
           resolve(true);
         } else {

@@ -52,6 +52,10 @@ export class DataServiceProvider {
     return this.storage.getBcAccounts(this.properties.userName);
   }
 
+  getBlockchainAccountsByUname(uname): Promise<any> {
+    return this.storage.getBcAccounts(uname);
+  }
+
   addTransactionAccount(account): Promise<any> {
     return this.apiService.addTransactionAccount(account);
   }

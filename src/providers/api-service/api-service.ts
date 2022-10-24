@@ -299,7 +299,7 @@ export class ApiServiceProvider {
   }
 
   validateMainAccountN(payload): Promise<any> {
-
+console.log("------------validate----------")
     let headers = {
       observe: 'response',
       headers: new HttpHeaders({
@@ -607,7 +607,7 @@ SavePGPkeyForEndorsment(PGPAccount:any): Promise<any>{
     };
 
     this.http
-    .post(this.url+"/pgp",PGPAccount,this.reqOpts)
+    .post(this.url+"/pgp/",PGPAccount,this.reqOpts)
     .subscribe(
       (response) => {
         alert("key pair saved")
@@ -622,7 +622,7 @@ SavePGPkeyForEndorsment(PGPAccount:any): Promise<any>{
 
 }
 
-GetAccountDetailsforEndorsment(stellarpk:string): Promise<any>{
+GetAccountDetailsforEndorsment(stellarPublicKey:string): Promise<any>{
   return new Promise((resolve, reject) => {
     this.reqOpts = {
       observe: "response",
@@ -631,8 +631,9 @@ GetAccountDetailsforEndorsment(stellarpk:string): Promise<any>{
         "Content-Type": "Application/json",
       }),
     };
-    this.http.get(this.url + "/pgp/getaccounts/"+stellarpk).subscribe(
+    this.http.get(this.url + "/pgp/getaccounts/"+stellarPublicKey).subscribe(
       (response) => {
+        console.log("------------response: ",response)
         resolve(response);
       },
       (error) => {

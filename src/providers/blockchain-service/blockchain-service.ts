@@ -862,7 +862,6 @@ export class BlockchainServiceProvider {
      cyphermsg:string,
      pgppublickeyhash:string,
      endorseepk: string, 
-     tracifieduserpk:string,
      tracifiedusersk:string,
      status:string
    ) {
@@ -896,7 +895,7 @@ export class BlockchainServiceProvider {
              .addOperation(
                Operation.manageData({
                  name: "Tracified Public Key",
-                 value: tracifieduserpk,
+                 value: sourceKeypair.publicKey(),
                })
              )
              .addOperation(

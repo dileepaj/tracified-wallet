@@ -138,14 +138,6 @@ export class AccountDetailsPage {
     if (this.account.pk != this.properties.defaultAccount.pk) {
       this.notDefaultAccount = true;
       console.log("account pk:",this.account.pk)
-      this.service.GetAccountDetailsforEndorsment(this.account.pk).then(res=>{
-        console.log("stellar ac info recived : ",res)
-        this.dataService.retrievePGPAccounts().then(accres=>{
-          console.log("pgp account: ",accres)
-          //TODO: Write code to check and see if the pgp ac recived == the account in the DB
-          //* to define the PGP key use this variable IF NECESSARY pgpaccount
-        })
-      })
     } else {
       this.notDefaultAccount = false;
     }
