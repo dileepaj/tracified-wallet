@@ -62,9 +62,11 @@ export class AccountRegisterPage {
    }
 
    ionViewDidLoad() {
-      console.log("----------------------------")
-      this.dataService.retrieveBlockchainAccounts().then((steAcc:any)=>{
-         console.log("stellar account: ",steAcc.account.mainAccount.pk)
+      console.log("--------------------pppppppppppp--------",this.orgKey)
+      console.log("--------------------kkkkkkkkkkkkkkkkkk--------")
+      this.dataService.getBlockchainAccountsByUname('Debbie').then((steAcc:any)=>{
+         console.log("--------------------ssssssssss--------",steAcc)
+         //console.log("stellar account: ",steAcc)
       })
     }
 
@@ -208,7 +210,7 @@ export class AccountRegisterPage {
                           console.log("pgp account: ",accres.publicKeyArmored)
                           this.pgpPK=accres.publicKeyArmored
                           if (res.pgppublickkey == accres.publicKeyArmored){
-                           this.dataService.retrieveBlockchainAccounts().then((steAcc:any)=>{
+                           this.dataService.getBlockchainAccountsByUname('Debbie').then((steAcc:any)=>{
                               console.log("stellar account: ",steAcc)
                               this.keyAccount=steAcc
                            })

@@ -9,7 +9,7 @@ import { DataServiceProvider } from '../../../providers/data-service/data-servic
 import { tracSuperAcc } from '../../../shared/config';
 import { Properties } from '../../../shared/properties';
 import { NavController } from 'ionic-angular';
-import { ApiServiceProvider } from 'providers';
+import { ApiServiceProvider } from '../../../providers/api-service/api-service';
 
 @IonicPage()
 @Component({

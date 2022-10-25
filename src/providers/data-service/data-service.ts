@@ -45,10 +45,12 @@ export class DataServiceProvider {
   }
 
   storeBlockchainAccounts(accounts): Promise<any> {
-    return this.storage.setBcAccounts(this.properties.userName, accounts);
+    console.log("----------------user-------- ",accounts.account.mainAccount.accountName)
+    return this.storage.setBcAccounts(accounts.account.mainAccount.accountName, accounts);
   }
 
   retrieveBlockchainAccounts(): Promise<any> {
+    console.log("----------------uname-------- ",this.properties.userName)
     return this.storage.getBcAccounts(this.properties.userName);
   }
 
