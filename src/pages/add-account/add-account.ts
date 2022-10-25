@@ -68,7 +68,7 @@ export class AddAccountPage {
     this.form = new FormGroup({
       accName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
       strength: new FormControl(''),
-      email:new FormControl('',[Validators.email,Validators.required]),
+      // email:new FormControl('',[Validators.email,Validators.required]),
       password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
       confirmPassword: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
     });
@@ -313,7 +313,7 @@ export class AddAccountPage {
     let key
     await (async () => {
           key = await openpgp.generateKey({
-          userIds: [{name:this.form.value.accName,email:this.form.value.email}], // you can pass multiple user IDs
+          userIds: [{name:this.form.value.accName}], // you can pass multiple user IDs
           rsaBits: 2048,                                              // RSA key size
           passphrase: 'hackerseatthegalbanis'           // protects the private key
       });

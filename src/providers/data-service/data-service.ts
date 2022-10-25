@@ -45,8 +45,8 @@ export class DataServiceProvider {
   }
 
   storeBlockchainAccounts(accounts): Promise<any> {
-    console.log("----------------user-------- ",accounts.account.mainAccount.accountName)
-    return this.storage.setBcAccounts(accounts.account.mainAccount.accountName, accounts);
+    console.log("----------------user-------- ",this.properties.userName)
+    return this.storage.setBcAccounts(this.properties.userName, accounts);
   }
 
   retrieveBlockchainAccounts(): Promise<any> {
@@ -174,6 +174,7 @@ changeTransactionPasswordWithPrivateKey(updatedInfo): Promise<any> {
   );
 }
 storePGPAccounts(accounts): Promise<any> {
+  console.log("saving pgp under: ",this.properties.userName)
   return this.storage.setPGPAccounts(this.properties.userName, accounts);
 }
 retrievePGPAccounts(): Promise<any> {

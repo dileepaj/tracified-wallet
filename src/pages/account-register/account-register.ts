@@ -13,6 +13,7 @@ import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { Logger } from 'ionic-logger-new';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
+import CryptoJS from 'crypto-js';
 
 @IonicPage()
 @Component({
@@ -28,10 +29,12 @@ export class AccountRegisterPage {
    public orgLogo: string;
 
    private defaultAccSK: string;
-   keyAccount: any;
+   public keyAccount: any;
    pgpPK: any;
    signature: any;
    hash: any;
+   skp: any;
+   DS: any;
 
    constructor(
       public navCtrl: NavController,
@@ -64,8 +67,9 @@ export class AccountRegisterPage {
    ionViewDidLoad() {
       console.log("--------------------pppppppppppp--------",this.orgKey)
       console.log("--------------------kkkkkkkkkkkkkkkkkk--------")
-      this.dataService.getBlockchainAccountsByUname('Debbie').then((steAcc:any)=>{
-         console.log("--------------------ssssssssss--------",steAcc)
+      this.dataService.retrieveBlockchainAccounts().then((steAcc:any)=>{
+         console.log("--------------------ssssssssss--------",steAcc.account.mainAccount.sk)
+         this.skp=steAcc.account.mainAccount.sk
          //console.log("stellar account: ",steAcc)
       })
     }
@@ -187,15 +191,21 @@ export class AccountRegisterPage {
     * account to register
     */
    registerOrganization() {
-      if (this.formRegister.valid && this.orgLogo && this.orgLogo !== "") {
+      if (this.formRegister.valid) { 
+         console.log("-----------starting") //&& this.orgLogo && this.orgLogo !== ""
          this.passwordPrompt().then((password) => {
             this.presentLoading()
+            console.log("account : ", this.skp, this.orgKey, password)
+            console.log("Default accounts : ",this.properties.defaultAccount.sk,this.properties.defaultAccount.pk)
             this.blockchainService.validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk)
                .then((secKey) => {
                   this.defaultAccSK = secKey;
+                  console.log("secret key: ",this.defaultAccSK)
 
                   this.blockchainService.preparesubAccount(this.defaultAccSK).then((subAccount: any) => {
+                     console.log("subaccount out: ",subAccount)
                      const subAccountPair = this.blockchainService.getSubAccountPair(subAccount.publicKey, this.properties.defaultAccount);
+                     console.log("-----------------towards xdr----------")
                      const xdrPayload = {
                         Name: this.formRegister.get("orgName").value,
                         Description: this.formRegister.get("orgDescription").value,
@@ -207,15 +217,21 @@ export class AccountRegisterPage {
                      this.service.GetAccountDetailsforEndorsment(this.orgKey).then(res=>{
                         console.log("stellar ac info recived : ",res.pgppublickkey,res.username)
                         this.dataService.retrievePGPAccounts().then(accres=>{
-                          console.log("pgp account: ",accres.publicKeyArmored)
+                          console.log("pgp account: ",accres,accres.publicKeyArmored)
                           this.pgpPK=accres.publicKeyArmored
                           if (res.pgppublickkey == accres.publicKeyArmored){
-                           this.dataService.getBlockchainAccountsByUname('Debbie').then((steAcc:any)=>{
+                           console.log("pgp keys are the smae")
+                           this.dataService.retrieveBlockchainAccounts().then((steAcc:any)=>{
                               console.log("stellar account: ",steAcc)
                               this.keyAccount=steAcc
+                              alert("Owners are the same : ")
+                              console.log("tracified accounts: ",steAcc)
+                             this.createDigitalSginature(accres.privateKeyArmored,xdrPayload.Description,res.pgppksha256,steAcc.account.mainAccount.pk,steAcc.account.mainAccount.skp)
+  
                            })
-                            alert("Owners are the same")
-                           this.createDigitalSginature(accres.privateKeyArmored,xdrPayload.Description,res.pgppksha256,this.orgKey,this.keyAccount.account.mainAccount.skp)
+                           //  alert("Owners are the same : ")
+                           //  console.log("tracified accounts: ",this.keyAccount)
+                           // this.createDigitalSginature(accres.privateKeyArmored,xdrPayload.Description,res.pgppksha256,this.orgKey,this.keyAccount.account.mainAccount.skp)
                           }else{
                             alert("Owners are not the same")
                           }
@@ -233,7 +249,8 @@ export class AccountRegisterPage {
                            const pgpData : PGPInformation = {
                               PGPPublicKey: this.pgpPK,
                               StellarPublicKey: this.orgKey ,
-                              DigitalSignature: this.signature,
+                              DigitalSignature: this.DS,
+                              SignatureHash:this.signature,
                               StellarTXNToSave: this.hash,
                               StellarTXNToVerify: '',
                               Data:xdrPayload.Description,
@@ -514,10 +531,12 @@ export class AccountRegisterPage {
             privateKeys: [privateKey]                             // for signing
         });
         console.log("signed text: ",cleartext); 
-        this.signature=cleartext// '-----BEGIN PGP SIGNED MESSAGE ... END PGP SIGNATURE-----'
-        this.blockchainService.SaveDigitalSignature(cleartext,cyphertext,hash,stellarpk,stellarsk).then((hash:any)=>{
-         console.log("txn: ",hash)
-         this.hash=hash
+        this.DS=cleartext
+        console.log("signed hash: ",this.DS); 
+        this.signature= CryptoJS.SHA256(cleartext).toString(CryptoJS.enc.Hex);// '-----BEGIN PGP SIGNED MESSAGE ... END PGP SIGNATURE-----'
+        this.blockchainService.SaveDigitalSignature(this.signature,cyphertext,hash,stellarpk,stellarsk).then((hash:any)=>{
+         console.log("txn: ",hash.hash)
+         this.hash=hash.hash
         })
     
     })();

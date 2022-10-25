@@ -15,10 +15,10 @@
           <ion-label class="login-lables" floating>{{'ACCOUNT_NAME' | translate}}</ion-label>
           <ion-input formControlName="accName" type="text" name="accName" keyNext></ion-input>
         </ion-item>
-        <ion-item >
+        <!-- <ion-item >
           <ion-label class="login-lables" floating>Email</ion-label>
           <ion-input formControlName="email" type="text" name="email" keyNext></ion-input>
-        </ion-item>
+        </ion-item> -->
         <ion-item>
           <ion-label floating>{{'SECURED_PASSWORD'| translate}}</ion-label>
           <ion-input formControlName="password" [(ngModel)]="StrengthPassword" (ionChange)="checkStrength()"

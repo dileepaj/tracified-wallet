@@ -248,6 +248,7 @@ export class BlockchainServiceProvider {
     return new Promise((resolve, reject) => {
       this.mappingService.decryptSecret(encSecret, password).then((decKey: string) => {
         let keyPair = Keypair.fromSecret(decKey);
+        console.log("public key: ",keyPair.publicKey() , pubKey)
         if (keyPair.publicKey() == pubKey) {
           resolve(decKey);
         } else {
@@ -593,6 +594,7 @@ export class BlockchainServiceProvider {
   }
 
   preparesubAccount(mainAccSk: string, receiverPk?: string, operationType?: string) {
+    console.log("-----------------sbaccounts in function")
     return new Promise((resolve, reject) => {
       let subPublicKeys = [];
       this.properties.defaultAccount.subAccounts.forEach((account: any) => {
@@ -602,7 +604,10 @@ export class BlockchainServiceProvider {
         "User": this.properties.defaultAccount.accountName,
         "SubAccounts": subPublicKeys
       };
+      console.log("accounts: ",subAccounts)
+
       this.subAccountsStatus(subAccounts).then((res) => {
+        console.log("ressss-------------")
         let avaialbeAccounts = [];
         let matchingAccount: any;
         let statuses = res.body;
@@ -627,8 +632,10 @@ export class BlockchainServiceProvider {
                       sequenceNo: accountInfo.sequence
                     };
                     this.logger.info("Found Invalidated Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                    console.log("resolving")
                     resolve(subAcc);
                   }).catch((err) => {
+                    console.log("err: ",err)
                     reject(err);
                   });
                 }else{
@@ -649,13 +656,16 @@ export class BlockchainServiceProvider {
                     available: true,
                     sequenceNo: avaialbeAccounts[0].sequenceNo
                   };
+                  console.log("--------------------seconf condition resolve")
                   resolve(subAcc);
                 }).catch((err) => {
                   this.logger.info("Sub Account Invalidation failed!: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                  console.log("--------------------seconf condition reject", err)
                   reject(err);
                 });
               }
             }).catch((err) => {
+              console.log("--------------------third condition reject")
               reject(err);
             });
           } else {
@@ -667,11 +677,14 @@ export class BlockchainServiceProvider {
                   available: false,
                   sequenceNo: accountInfo.sequence
                 };
+                console.log("--------------------third condition resolve")
                 resolve(subAcc);
               }).catch((err) => {
+                console.log("--------------------fourth condition rejet")
                 reject(err);
               });
             }).catch((err) => {
+              console.log("--------------------fifth condition reject")
               reject(err);
             });
           }
@@ -684,15 +697,19 @@ export class BlockchainServiceProvider {
                 available: false,
                 sequenceNo: accountInfo.sequence
               };
+              console.log("--------------------fourth condition resolve")
               resolve(subAcc);
             }).catch((err) => {
+              console.log("--------------------sixth condition reject")
               reject(err);
             });
           }).catch((err) => {
+            console.log("--------------------seventh condition reject")
             reject(err);
           });
         }
       }).catch((err) => {
+        console.log("--------------------eight condition reject")
         reject(err);
       });
     });

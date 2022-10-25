@@ -23,6 +23,7 @@ export class PGPInformation {
     public PGPPublicKey: string;
     public StellarPublicKey: string;
     public DigitalSignature: string;
+    public SignatureHash:string;
     public StellarTXNToSave: string;
     public StellarTXNToVerify: string;
     public Data: string;

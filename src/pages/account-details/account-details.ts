@@ -135,9 +135,11 @@ export class AccountDetailsPage {
   }
 
   defaultAccountCheck() {
+    console.log("-------default: ",this.account.pk,this.properties.defaultAccount.pk)
     if (this.account.pk != this.properties.defaultAccount.pk) {
       this.notDefaultAccount = true;
       console.log("account pk:",this.account.pk)
+      this.makeDefaultAccount()
     } else {
       this.notDefaultAccount = false;
     }
