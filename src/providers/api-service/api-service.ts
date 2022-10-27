@@ -635,15 +635,19 @@ GetAccountDetailsforEndorsment(stellarPublicKey:string): Promise<any>{
     this.http.get(this.url + "/pgp/getaccounts/"+stellarPublicKey).subscribe(
       (response) => {
         if(response==null){
-          this.GetAccountDetailsforEndorsment(stellarPublicKey)
+          reject("result was null")
+          this.GetAccountDetailsforEndorsment(stellarPublicKey).then(res=>{
+            console.log("------------response second: ",response)
+            resolve(response);
+          })
         }
         else{
-          console.log("------------response: ",response)
-          resolve(response);
+          console.log("------------response first: ",response)
+            resolve(response);
         }
       },
       (error) => {
-        reject(error);
+        //reject(error);
       }
     );
   });

@@ -885,6 +885,7 @@ export class BlockchainServiceProvider {
      status:string
    ) {
      return new Promise((resolve, reject) => {//buyers secret key
+      console.log("varifying data in stellar: ",digitalsignature,cyphermsg,pgppublickeyhash,endorseepk,tracifiedusersk,status)
       let sourceKeypair = Keypair.fromSecret(tracifiedusersk); 
        if (blockchainNetType === "live") {
          Networks.TESTNET

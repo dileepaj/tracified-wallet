@@ -266,7 +266,6 @@ export class AccountRegisterPage {
                               SignatureHash:this.signature,
                               StellarTXNToSave: this.hash,
                               StellarTXNToVerify: '',
-                              Data:xdrPayload.Description,
 
                            }
                            const organizationPayload: Organization = {

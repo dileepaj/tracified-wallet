@@ -10,6 +10,7 @@ import { tracSuperAcc } from '../../../shared/config';
 import { Properties } from '../../../shared/properties';
 import { NavController } from 'ionic-angular';
 import { ApiServiceProvider } from '../../../providers/api-service/api-service';
+import CryptoJS from 'crypto-js';
 
 @IonicPage()
 @Component({
@@ -28,6 +29,7 @@ export class OrganizationRequestsPage {
    public isEmpty: boolean;
    hash: any;
    pgphash: any;
+   signature: string;
    
 
    constructor(
@@ -95,12 +97,19 @@ export class OrganizationRequestsPage {
                console.log("organization deets: ",organization.Description,organization.PGPData.PGPPublicKey,organization.PGPData.DigitalSignature)
                console.log("other deets: ",this.pgphash,organization.PGPData.StellarPublicKey,this.mainBCAccount.sk,organization.Status)
                this.validPGPkeys(organization.Description,organization.PGPData.PGPPublicKey,organization.PGPData.DigitalSignature,this.pgphash,organization.PGPData.StellarPublicKey,this.mainBCAccount.sk,organization.Status).then(res=>{
-                  organization.PGPData.StellarTXNToVerify=this.hash
+                  this.blockchainService.VerifyDigitalSignature(this.signature,organization.Description,this.pgphash,organization.PGPData.StellarPublicKey,decryptedKey,organization.Status).then((txn:any)=>{
+                     console.log("txn hash: ",txn)
+                     this.hash=txn.hash
+                     organization.PGPData.StellarTXNToVerify=this.hash
+                     console.log("verify txn before put: ",organization.PGPData.StellarTXNToVerify)
+                   })
+                
                })
             } else if (status == 'rejected') {
                organization.RejectXDR = this.blockchainService.signXdr(organization.RejectXDR, decryptedKey);
                organization.Status = 'rejected';
             }
+            console.log("organizaation data is: ",organization)
             this.dataService.updateOrganization(organization).then((res) => {
                this.dissmissLoading();
                if (status == 'accepted') {
@@ -230,10 +239,8 @@ export class OrganizationRequestsPage {
       const { valid } = verified.signatures[0];
       if (valid) {
           console.log('signed by key id ' + verified.signatures[0].keyid.toHex());
-          this.blockchainService.VerifyDigitalSignature(digitalsignature,cleartext,pgppkhash,userstellarpk,tracifiedstellarsk,status).then((txn:any)=>{
-            console.log("txn hash: ",txn)
-            this.hash=txn
-          })
+          this.signature= CryptoJS.SHA256(digitalsignature).toString(CryptoJS.enc.Hex);
+         
       } else {
           throw new Error('signature could not be verified');
       }

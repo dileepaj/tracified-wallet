@@ -26,5 +26,4 @@ export class PGPInformation {
     public SignatureHash:string;
     public StellarTXNToSave: string;
     public StellarTXNToVerify: string;
-    public Data: string;
 }
