@@ -79,6 +79,7 @@ export class OrganizationRequestsPage {
     * @param status 
     */
    updateRegisterRequest = (organization: Organization, status: string) => {
+      console.log("organization deets :", organization)
       this.service.GetAccountDetailsforEndorsment(organization.PGPData.StellarPublicKey).then(res=>{
          console.log("stellar ac info recived : ",res.pgppublickkey,res.pgppksha256)
          this.pgphash=res.pgppksha256
@@ -91,6 +92,8 @@ export class OrganizationRequestsPage {
             if (status == 'accepted') {
                organization.AcceptXDR = this.blockchainService.signXdr(organization.AcceptXDR, decryptedKey);
                organization.Status = 'approved';
+               console.log("organization deets: ",organization.Description,organization.PGPData.PGPPublicKey,organization.PGPData.DigitalSignature)
+               console.log("other deets: ",this.pgphash,organization.PGPData.StellarPublicKey,this.mainBCAccount.sk,organization.Status)
                this.validPGPkeys(organization.Description,organization.PGPData.PGPPublicKey,organization.PGPData.DigitalSignature,this.pgphash,organization.PGPData.StellarPublicKey,this.mainBCAccount.sk,organization.Status).then(res=>{
                   organization.PGPData.StellarTXNToVerify=this.hash
                })
@@ -217,8 +220,9 @@ export class OrganizationRequestsPage {
 
    async validPGPkeys(cleartext:string,pgpPublic:any,digitalsignature:any,pgppkhash:any,userstellarpk:any,tracifiedstellarsk:any,status:any){
       const openpgp = require('openpgp');
+      console.log("verify: ",digitalsignature)
       const verified = await openpgp.verify({
-        message: await openpgp.cleartext.readArmored(cleartext),           // parse armored message
+        message: await openpgp.cleartext.readArmored(digitalsignature),           // parse armored message
         publicKeys: (await openpgp.key.readArmored(pgpPublic)).keys // for verification
       });
       console.log("read armored PK: ", openpgp.key.readArmored(pgpPublic))

@@ -439,6 +439,7 @@ console.log("------------validate----------")
   //Organization Registration 
   registerOrganization(payload: Organization): Promise<any> {
     let headers = { 'Content-Type': 'application/json' };
+    console.log("inside post service: ",payload)
     return this.postN(allOrganization, payload, headers);
   }
 
@@ -633,8 +634,13 @@ GetAccountDetailsforEndorsment(stellarPublicKey:string): Promise<any>{
     };
     this.http.get(this.url + "/pgp/getaccounts/"+stellarPublicKey).subscribe(
       (response) => {
-        console.log("------------response: ",response)
-        resolve(response);
+        if(response==null){
+          this.GetAccountDetailsforEndorsment(stellarPublicKey)
+        }
+        else{
+          console.log("------------response: ",response)
+          resolve(response);
+        }
       },
       (error) => {
         reject(error);

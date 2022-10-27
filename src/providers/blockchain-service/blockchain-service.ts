@@ -813,6 +813,7 @@ export class BlockchainServiceProvider {
      stellarpkkey: string, 
      stellarskkey:string
    ) {
+    console.log("data in stellar service: ",digitalsignature,cyphermsg,pgppublickeyhash,stellarpkkey,stellarskkey)
      return new Promise((resolve, reject) => {//buyers secret key
       let sourceKeypair = Keypair.fromSecret(stellarskkey); 
        if (blockchainNetType === "live") {
@@ -868,6 +869,7 @@ export class BlockchainServiceProvider {
            resolve(transactionResult);
          })
          .catch((err) => {
+          console.log("bc error is :",err)
            reject(err);
          });
      });

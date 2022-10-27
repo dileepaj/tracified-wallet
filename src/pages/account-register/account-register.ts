@@ -35,6 +35,8 @@ export class AccountRegisterPage {
    hash: any;
    skp: any;
    DS: any;
+   keysA: any;
+   keysB: any;
 
    constructor(
       public navCtrl: NavController,
@@ -202,10 +204,36 @@ export class AccountRegisterPage {
                   this.defaultAccSK = secKey;
                   console.log("secret key: ",this.defaultAccSK)
 
+
                   this.blockchainService.preparesubAccount(this.defaultAccSK).then((subAccount: any) => {
                      console.log("subaccount out: ",subAccount)
                      const subAccountPair = this.blockchainService.getSubAccountPair(subAccount.publicKey, this.properties.defaultAccount);
                      console.log("-----------------towards xdr----------")
+                     console.log("stellar key is: ",this.orgKey),
+                     this.service.GetAccountDetailsforEndorsment(this.orgKey).then((res:any)=>{
+                        console.log("stellar ac info recived : ",res.pgppublickkey,res.username)
+                        this.keysA=res
+                        this.dataService.retrievePGPAccounts().then((accres:any)=>{
+                          console.log("pgp account: ",accres,accres.publicKeyArmored)
+                          this.pgpPK=accres.publicKeyArmored
+                          if (res.pgppublickkey == accres.publicKeyArmored){
+                           console.log("pgp keys are the smae")
+                           this.dataService.retrieveBlockchainAccounts().then((steAcc:any)=>{
+                              console.log("stellar account: ",steAcc)
+                              this.keysB=steAcc
+                             // alert("Owners are the same : ")
+                              console.log("tracified accounts: ",steAcc)
+                             this.createDigitalSginature(accres.privateKeyArmored, this.formRegister.get("orgDescription").value, res.pgppksha256, steAcc.account.mainAccount.pk, steAcc.account.mainAccount.skp)
+                           //st txn here causes undefined signature
+                          
+                           })
+                          
+                          }else{
+                            alert("Owners are not the same")
+                          }
+                        })
+                      })
+                      //failed to prepare txn if stellar transaction here
                      const xdrPayload = {
                         Name: this.formRegister.get("orgName").value,
                         Description: this.formRegister.get("orgDescription").value,
@@ -213,38 +241,23 @@ export class AccountRegisterPage {
                         Phone: this.formRegister.get("orgPrimaryMobile").value,
                         PhoneSecondary: this.formRegister.get("orgSecondMobile").value,
                      }
-                     console.log("stellar key is: ",this.orgKey)
-                     this.service.GetAccountDetailsforEndorsment(this.orgKey).then(res=>{
-                        console.log("stellar ac info recived : ",res.pgppublickkey,res.username)
-                        this.dataService.retrievePGPAccounts().then(accres=>{
-                          console.log("pgp account: ",accres,accres.publicKeyArmored)
-                          this.pgpPK=accres.publicKeyArmored
-                          if (res.pgppublickkey == accres.publicKeyArmored){
-                           console.log("pgp keys are the smae")
-                           this.dataService.retrieveBlockchainAccounts().then((steAcc:any)=>{
-                              console.log("stellar account: ",steAcc)
-                              this.keyAccount=steAcc
-                              alert("Owners are the same : ")
-                              console.log("tracified accounts: ",steAcc)
-                             this.createDigitalSginature(accres.privateKeyArmored,xdrPayload.Description,res.pgppksha256,steAcc.account.mainAccount.pk,steAcc.account.mainAccount.skp)
-  
-                           })
-                           //  alert("Owners are the same : ")
-                           //  console.log("tracified accounts: ",this.keyAccount)
-                           // this.createDigitalSginature(accres.privateKeyArmored,xdrPayload.Description,res.pgppksha256,this.orgKey,this.keyAccount.account.mainAccount.skp)
-                          }else{
-                            alert("Owners are not the same")
-                          }
-                          //TODO: Write code to check and see if the pgp ac recived == the account in the DB
-                          //* to define the PGP key use this variable IF NECESSARY pgpaccount
-                        })
-                      })
+                   
                      this.accountService.buildProofHash(xdrPayload, this.defaultAccSK, tracSuperAcc).then((proofHash: any) => {
                         let hashResponse = proofHash;
+
                         Promise.all([
                            this.accountService.buildAcceptXDR(xdrPayload, hashResponse, subAccount, this.defaultAccSK, tracSuperAcc), // tracSuperAcc - Adding Tracified Super Acc as Signer
-                           this.accountService.buildRejectXDR(hashResponse, subAccount, this.defaultAccSK, tracSuperAcc), // tracSuperAcc - Adding Tracified Super Acc as Signer
+                           this.accountService.buildRejectXDR(hashResponse, subAccount, this.defaultAccSK, tracSuperAcc),
+                           this.blockchainService.SaveDigitalSignature(this.signature,this.formRegister.get("orgDescription").value,this.keysA.pgppksha256,this.keysB.account.mainAccount.pk,this.keysB.account.mainAccount.skp).then((hash:any)=>{
+                              console.log("txn: ",hash.hash)
+                              this.hash=hash.hash
+                             })
+                         // tracSuperAcc - Adding Tracified Super Acc as Signer
                         ]).then((xdrs: any) => {
+
+               
+
+                     
 
                            const pgpData : PGPInformation = {
                               PGPPublicKey: this.pgpPK,
@@ -276,6 +289,8 @@ export class AccountRegisterPage {
                               ApprovedBy: tracSuperAcc, //Currently the receiver will Tracified
                               ApprovedOn: "",
                            }
+
+                           console.log("payload: ",organizationPayload)
                            this.dataService.registerOrganization(organizationPayload).then((res) => {
                               this.dissmissLoading();
                               this.translate.get(['SUCCESS', 'REGISTRATION_REQUEST_SUCCESS']).subscribe(text => {
@@ -290,6 +305,8 @@ export class AccountRegisterPage {
                               });
                               this.logger.error("Organization registeration failed: " + JSON.stringify(registerError), this.properties.skipConsoleLogs, this.properties.writeToFile);
                            })
+
+                        ////////////
                         }).catch((buildError: any) => {
                            this.dissmissLoading();
                            this.translate.get(['ERROR', 'FAILED_TO_BUILD_TRANSACTION']).subscribe(text => {
@@ -527,20 +544,20 @@ export class AccountRegisterPage {
         console.log("after decrypted:",privateKey)
   
         const { data: cleartext } = await openpgp.sign({
-            message: openpgp.cleartext.fromText('My very seceret stellar key is here'), // CleartextMessage or Message object
+            message: openpgp.cleartext.fromText(cyphertext), // CleartextMessage or Message object
             privateKeys: [privateKey]                             // for signing
         });
-        console.log("signed text: ",cleartext); 
         this.DS=cleartext
         console.log("signed hash: ",this.DS); 
         this.signature= CryptoJS.SHA256(cleartext).toString(CryptoJS.enc.Hex);// '-----BEGIN PGP SIGNED MESSAGE ... END PGP SIGNATURE-----'
-        this.blockchainService.SaveDigitalSignature(this.signature,cyphertext,hash,stellarpk,stellarsk).then((hash:any)=>{
-         console.log("txn: ",hash.hash)
-         this.hash=hash.hash
-        })
-    
-    })();
-  
+       
+    //when put stellar transaction here bad seq
+    })
+    ();
     }
   
 }
+// this.blockchainService.SaveDigitalSignature(this.signature,this.formRegister.get("orgDescription").value,this.keysA.pgppksha256,this.keysB.account.mainAccount.pk,this.keysB.account.mainAccount.skp).then((hash:any)=>{
+//    console.log("txn: ",hash.hash)
+//    this.hash=hash.hash
+//   })
