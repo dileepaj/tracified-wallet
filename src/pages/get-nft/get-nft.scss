@@ -1,22 +1,146 @@
 page-get-nft {
-    .item-content {
-        text-align: center;
-          background-color:#c90c0c;
-          color: rgb(255, 255, 255);
-          width: 100px;
-          height: 20px;
-          border-radius: 20px;
-        }
-      .onsale{
-        color: rgb(255, 255, 255);
-        font-size: small;
-        font-weight: 700;
-        }
-      .primary-font {
-          color: #4f525d;
-        }
-        
-      .secondary-font {
-          color: #b1b1b1;
-        }
+  .item-content {
+    text-align: center;
+    background-color: #c90c0c;
+    color: rgb(255, 255, 255);
+    width: 100px;
+    height: 20px;
+    border-radius: 20px;
+  }
+  .onsale {
+    color: rgb(255, 255, 255);
+    font-size: small;
+    font-weight: 700;
+  }
+  .primary-font {
+    color: #4f525d;
+  }
+
+  .secondary-font {
+    color: #b1b1b1;
+  }
+
+  .card {
+    width: 315px;
+    height: 295px;
+    box-shadow: none !important;
+    border-radius: 20px;
+    background: #2d2d2d;
+  
+    img {
+      height: 219px;
+    }
+  
+    ion-card-content {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+    }
+  
+    .nft-details {
+      display: flex;
+      flex-direction: column;
+    }
+  
+    .nft-title {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 29px;
+    }
+  
+    .nft-subtitle {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 18px;
+    }
+  
+    .icon {
+      width: 27px;
+      height: 27px;
+    }
+  
+    .actions {
+      display: flex;
+      flex-direction: row;
+      column-gap: 21px;
+    }
+  }
+  
+  .nft-grid {
+    width: 95%;
+    .nft-grid-col {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+  }
+  
+  .get-nft-header {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 35px;
+    margin-bottom: 55px;
+    label {
+      font-family: "Inter";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 32px;
+      line-height: 39px;
+      /* identical to box height */
+  
+      text-align: center;
+  
+      color: #4f525d;
+    }
+  
+    img {
+      position: absolute;
+      left: 40px;
+      width: 36px;
+      height: 24px;
+    }
+  }
+
+  .no-nft {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(60vh);
+  }
+  
+  @media (max-width: 576px) {
+    .get-nft-header {
+      display: flex;
+      flex-direction: column;
+      row-gap: 20px;
+      label {
+        width: 95%;
+        font-size: 28px;
+      }
+  
+      img {
+        position: unset;
+        align-self: flex-start;
+        margin-left: 20px;
+        width: 28px;
+        height: 16px;
+      }
+    }
+
+    .no-nft {
+      height: calc(50vh);
+    }
+  }
 }
+
