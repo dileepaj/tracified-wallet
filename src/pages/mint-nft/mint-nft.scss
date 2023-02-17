@@ -1,65 +1,265 @@
 page-mint-nft {
-        .view {
-            background-size: cover;
-            background-repeat: no-repeat;
-          }
-          .hide-icon {
-            color: #2EBE60 !important;
-          }
-          .item-input-has-focus .label-md[floating], .input-has-focus .label-md[floating]{
-            color: #2EBE60 !important;
-          }
-          .item-md.item-input .item-inner {
-            border-bottom-color:2EBE60 !important;
-          }
-          .item.md {
-            padding: 0 0 0 0 !important;
-          }
-          .item-input-has-focus .label-md[floating], .input-has-focus .label-md[floating]{
-            color: #28a745 !important;
-          }
-          ion-item.item-md.item-input.input-has-focus .item-inner,
-          ion-item.item-md.item-input.ng-valid.input-has-value:not(.input-has-focus) .item-inner,
-          ion-item.item-md.item-input.ng-invalid.ng-touched:not(.input-has-focus) .item-inner {
-          border-bottom-color: #28a745 !important;
-          box-shadow:none !important;
-          }
-          .alert-wrapper{
-            margin-top: 200px!important;
-          }
-          .popup-alert .alert-wrapper {
-            min-width: 450px!important;
-          }
-          .custom-alert button.alert-button-group {
-            width: 33.33%;
-        }
-        
-        .custom-alert .alert-button-group .button-inner {
-            -webkit-box-pack: center;
-            -webkit-justify-content: center;
-            -ms-flex-pack: center;
-            justify-content: center;
-        }
-        
-        .custom-alert .alert-button-group-vertical {
-            -webkit-flex-direction: row;
-            -ms-flex-direction: row;
-            flex-direction: row ;
-        }
-        .primary-font {
-          color: #4f525d;
-        }
-        
-        .secondary-font {
-          color: #b1b1b1;
+  .primary-font {
+    color: #4f525d;
+  }
+
+  .secondary-font {
+    color: #b1b1b1;
+  }
+
+  .claim-nft-preview {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    row-gap: 40px;
+    padding-right: 60px;
+    border-right: 1px solid #727272;
+
+    .back-icon {
+      position: absolute;
+      left: 40px;
+      width: 36px;
+      height: 24px;
+    }
+
+    .preview-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      row-gap: 40px;
+      .svg {
+        width: 288px;
+        height: 286.03px;
+      }
+
+      .heading-text {
+        color: #4f525d;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 32px;
+        line-height: 39px;
+      }
+    }
+  }
+
+  .claim-nft-form {
+    padding-left: 60px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    .form-wrapper {
+      display: flex;
+      flex-direction: column;
+      row-gap: 30px;
+      label {
+        font-family: "Roboto";
+        font-style: normal;
+        font-weight: 400;
+        font-size: 32px;
+        line-height: 39px;
+
+        color: #4f525d;
+      }
+      span {
+        color: #28a745;
+        font-weight: 600;
+      }
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        width: 90%;
+        max-width: 400px;
+        row-gap: 10px;
+        position: relative;
+        .input {
+          height: 55px;
+          background: #dedede;
+          border-radius: 16px;
+          font-size: 18px;
+          padding: 0px 10px 0px 10px;
         }
 
-        .svg{
-          position: absolute;
-          width: 288px;
-          height: 286.03px;
-          left: 292px;
-          top: 252px;
-          // background: url('Madagascan-Iolite.jpg');
+        .textarea {
+          resize: none;
         }
+        .title {
+          font-style: normal;
+          font-weight: 300;
+          font-size: 24px;
+          line-height: 29px;
+        }
+        .counter {
+          font-style: normal;
+          font-weight: 300;
+          font-size: 15px;
+          line-height: 18px;
+          text-align: right;
+        }
+
+        .tooltip {
+          position: absolute;
+          top: 40px;
+          right: -30px;
+          .tooltip-inner {
+            position: relative;
+            display: inline-block;
+            span {
+              z-index: 1;
+              position: absolute;
+              top: 16px;
+              right: -2px;
+              width: 0px;
+              height: 0px;
+              box-shadow: 0px 4px 3px -2px rgba(0, 0, 0, 0.12);
+              border-style: solid;
+              border-width: 0 10px 10px 10px;
+              border-color: transparent transparent #474952 transparent;
+            }
+            .info-icon {
+              cursor: pointer;
+              color: #474952;
+              font-size: 19px;
+            }
+
+            .tooltip-msg {
+              display: block;
+              position: absolute;
+              top: 25px;
+              right: -5px;
+              z-index: 1;
+              width: 205px;
+              height: 94px;
+              background: #474952;
+              box-shadow: 0px 4px 3px -2px rgba(0, 0, 0, 0.12);
+              border-radius: 3px;
+              font-style: normal;
+              font-weight: 300;
+              font-size: 15px;
+              line-height: 18px;
+
+              color: #ffffff;
+              padding: 10px;
+            }
+
+            .info-icon:focus ~ .tooltip-msg {
+              display: block;
+            }
+          }
+        }
+
+        ::placeholder {
+          font-style: normal;
+          font-weight: 300;
+          font-size: 18px;
+          line-height: 29px;
+
+          color: #737373;
+        }
+      }
+
+      .msg {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 15px;
+        line-height: 157.02%;
+        width: 90%;
+        max-width: 400px;
+      }
+
+      .checkbox-group {
+        margin-top: -20px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        column-gap: 20px;
+        width: 90%;
+        max-width: 400px;
+        .checkbox {
+          background-color: #fff;
+        }
+
+        .checkbox-lbl {
+          font-style: normal;
+          font-weight: 500;
+          font-size: 15px;
+          line-height: 157.02%;
+          color: #4f525d;
+        }
+      }
+    }
+
+    .btn-green {
+      width: 210px;
+
+      background: #28a745;
+      border-radius: 20px;
+    }
+  }
+
+  @media (max-width: 930px) {
+    .claim-nft-preview {
+      .back-icon {
+        position: unset;
+        align-self: flex-start;
+        margin-left: 20px;
+        width: 28px;
+        height: 16px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .claim-nft-preview {
+      .preview-inner {
+        .heading-text {
+          align-self: center;
+        }
+        /* width: 90%;
+        max-width: 400px;
+        .svg {
+          align-self: center;
+        } */
+      }
+    }
+
+    .claim-nft-form {
+      padding: 0px;
+      align-items: center;
+
+      .form-wrapper {
+        align-items: center;
+
+        .input-group {
+          width: 90%;
+          .tooltip {
+            position: absolute;
+            top: 10px;
+            right: 0px;
+            .tooltip-inner {
+              .info-icon {
+                cursor: pointer;
+                color: #474952;
+                font-size: 19px;
+              }
+
+              .tooltip-msg {
+                right: -5px;
+              }
+            }
+          }
+        }
+
+        .checkbox-group {
+          width: 90%;
+        }
+      }
+    }
+
+    .claim-nft-preview {
+      padding: 0px;
+      border: none;
+      align-items: center;
+    }
+  }
 }

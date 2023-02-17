@@ -9,26 +9,37 @@
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Claim Your NFT Now!</ion-title>
+    <ion-title>Claim your NFT</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding class="main">
-  <ion-row >
-    <h3 class="title">Product : <b class="bold">Gem Item</b></h3>
-  </ion-row>
-  <ion-row >
-    <h5 class="semi-title1">A one time password has been sent to your email</h5>
-  </ion-row>
-  <ion-row >
-    <h5 class="semi-title2">Please enter to verify your identity</h5>
-  </ion-row>
-  <ion-row >
-    <ion-input  type="text" text-left id="input" [(ngModel)]="otp" autofocus="true"></ion-input>
-  </ion-row>
-  <ion-row  >
-    <button class="button" (click)="checkOTP()">
-      <b>Submit</b>
-    </button>
-</ion-row>
+<ion-content padding>
+  <div class="claim-nft-header">
+    <img src="../../assets/icon/back.png" />
+    <label>Product: <span>Gem Item</span> </label>
+  </div>
+  <div class="claim-nft-form">
+    <ion-row>
+      <h5 class="semi-title1">
+        A one time password has been sent to your email
+      </h5>
+    </ion-row>
+    <ion-row>
+      <h5 class="semi-title2">Please enter to verify your identity</h5>
+    </ion-row>
+    <ion-row>
+      <ion-input
+        type="text"
+        text-left
+        id="input"
+        [(ngModel)]="otp"
+        autofocus="true"
+      ></ion-input>
+    </ion-row>
+    <ion-row>
+      <button class="button" (click)="checkOTP()">
+        <label>Verify</label>
+      </button>
+    </ion-row>
+  </div>
 </ion-content>

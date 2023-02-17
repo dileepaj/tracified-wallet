@@ -26,11 +26,11 @@ page-get-nft {
     box-shadow: none !important;
     border-radius: 20px;
     background: #2d2d2d;
-  
+
     img {
       height: 219px;
     }
-  
+
     ion-card-content {
       display: flex;
       flex-direction: row;
@@ -38,40 +38,40 @@ page-get-nft {
       align-items: center;
       color: #fff;
     }
-  
+
     .nft-details {
       display: flex;
       flex-direction: column;
     }
-  
+
     .nft-title {
-      font-family: "Inter";
+      font-family: "Roboto";
       font-style: normal;
       font-weight: 700;
       font-size: 24px;
       line-height: 29px;
     }
-  
+
     .nft-subtitle {
-      font-family: "Inter";
+      font-family: "Roboto";
       font-style: normal;
       font-weight: 400;
       font-size: 15px;
       line-height: 18px;
     }
-  
+
     .icon {
       width: 27px;
       height: 27px;
     }
-  
+
     .actions {
       display: flex;
       flex-direction: row;
       column-gap: 21px;
     }
   }
-  
+
   .nft-grid {
     width: 95%;
     .nft-grid-col {
@@ -81,7 +81,7 @@ page-get-nft {
       margin-bottom: 25px;
     }
   }
-  
+
   .get-nft-header {
     position: relative;
     display: flex;
@@ -91,18 +91,18 @@ page-get-nft {
     margin-top: 35px;
     margin-bottom: 55px;
     label {
-      font-family: "Inter";
+      font-family: "Roboto";
       font-style: normal;
       font-weight: 400;
       font-size: 32px;
       line-height: 39px;
       /* identical to box height */
-  
+
       text-align: center;
-  
+
       color: #4f525d;
     }
-  
+
     img {
       position: absolute;
       left: 40px;
@@ -118,7 +118,7 @@ page-get-nft {
     align-items: center;
     height: calc(60vh);
   }
-  
+
   @media (max-width: 576px) {
     .get-nft-header {
       display: flex;
@@ -128,7 +128,7 @@ page-get-nft {
         width: 95%;
         font-size: 28px;
       }
-  
+
       img {
         position: unset;
         align-self: flex-start;
@@ -143,4 +143,3 @@ page-get-nft {
     }
   }
 }
-

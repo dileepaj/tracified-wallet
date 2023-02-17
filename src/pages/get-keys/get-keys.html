@@ -13,9 +13,52 @@
   </ion-navbar>
 </ion-header>
 
+<ion-content padding>
+  <div class="get-keys-header">
+    <img src="../../assets/icon/back.png" />
+    <label
+      >Copy these keys and save them in a safe location<br />
+      These will be required to recover your blockchain account</label
+    >
+  </div>
+  <div class="get-keys-form">
+    <div class="container1">
+      <label class="labelPK">Public Key</label><br />
+      <div class="key-cont">
+        <ion-item class="container1PK"
+          ><p class="PK">KHGJGJLHKLKLDFKFJHLBBFHLKFHFKFF</p></ion-item
+        >
+        <img
+          class="copy-icon"
+          src="../../assets/icon/copy.png"
+          (click)="copyData(PublicKey)"
+        />
+      </div>
+    </div>
 
-<ion-content padding class="main">
-  <ion-row>
+    <div class="container1">
+      <label class="labelSK">Private Key</label><br />
+      <div class="key-cont">
+        <ion-item class="container1SK"
+          ><p class="PK">SBJBJKFBJFKFJDKFJFBJFDHKDFJFDDF</p></ion-item
+        ><img
+          class="copy-icon"
+          src="../../assets/icon/copy.png"
+          (click)="copyData(PrivateKey)"
+        />
+      </div>
+    </div>
+    <div class="container2">
+      <label class="heading">IMPORTANT!</label>
+      <label class="msg"
+        >Never share these keys with anyone. Store them securely</label
+      >
+    </div>
+    <button class="btn-green" (click)="market()">
+      <b> Done</b>
+    </button>
+  </div>
+  <!-- <ion-row>
     <p class="h4">Copy these keys and save them in a safe location<br>
     These will be required to recover your blockchain account</p>
   </ion-row>
@@ -38,5 +81,5 @@
     <button class="btn-green" (click)="market()">
      <b> Done</b>
     </button>
-</ion-row>
+</ion-row> -->
 </ion-content>

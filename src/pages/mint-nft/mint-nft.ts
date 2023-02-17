@@ -37,6 +37,8 @@ export class MintNftPage {
   private NFTBlockChain = "Stellar"
   private SVG=""
   nftName: string = "";
+  message: string = "";
+  recipientsName: string = "";
   Decryption:any;
   Issuer:any;
   dec:any;
@@ -53,6 +55,7 @@ export class MintNftPage {
   public page: number;
   xdr: string;
   result:any;
+  isTooltipOpen : boolean = false;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -120,6 +123,7 @@ export class MintNftPage {
 
 
    createNFTWithNewAccount() {
+    this.closeTooltip()
     // this.presentLoading();
     // var keypair=this.blockchainService.createAddress()
     // console.log("Public Key is", keypair.publicKey().toString())
@@ -277,6 +281,29 @@ export class MintNftPage {
   dissmissLoading() {
     this.isLoadingPresent = false;
     this.loading.dismiss();
+  }
+
+  getRemainingCharacters(fieldName : string) : number {
+    if(fieldName === 'nftName') {
+      return 12 - this.nftName.length
+    }
+    else if(fieldName === 'recipientsName') {
+      return 15 - this.recipientsName.length
+    }
+    else if(fieldName === 'message') {
+      return 50 - this.message.length
+    }
+    else {
+      return 0
+    }
+  }
+
+  toggleTooltip () {
+    this.isTooltipOpen = !this.isTooltipOpen;
+  }
+
+  closeTooltip() {
+    this.isTooltipOpen = false;
   }
 
  
