@@ -15,8 +15,43 @@
 
 
 <ion-content padding>
-  <h1>MY NFT</h1>
-  <ion-card *ngFor="let item of ownNFTs"  text-wrap style="border-radius: 15px;" padding>
+  <div class="get-nft-header">
+    <img src="../../assets/icon/back.png" />
+    <label>Explore your claimed NFTs</label>
+  </div>
+  <div class="no-nft" *ngIf="ownNFTs.length === 0">
+    <ion-row>
+      <div class="full-width text-center line-spacing-small">
+        <h1 class="primary-font">Claimed NFTs</h1>
+      </div>
+    </ion-row>
+    <ion-row text-wrap>
+      <div class="full-width text-center">
+        <h3 class="secondary-font">You do not have any claimed NFTs.</h3>
+      </div>
+    </ion-row>
+  </div>
+  <ion-grid class="nft-grid" *ngIf="ownNFTs.length > 0">
+    <ion-row class="ion-justify-content-center">
+      <ion-col class="nft-grid-col"  *ngFor="let item of ownNFTs" col-xs-12 col-sm-6 col-md-6 col-lg-4 >
+        <ion-card class="nft-card" >
+          <img alt="Silhouette of mountains" [src]="item.ImageBase64" />
+          <ion-card-content >
+            <div class="nft-details">
+              <label class="nft-title">{{item.NftContentName}}</label>
+              <label class="nft-subtitle">{{'Product Name'}}</label>
+            </div>
+            <div class="actions">
+              <img class="icon" src="../../assets/icon/share.png" />
+             <img class="icon" src="../../assets/icon/heart.png" />
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  
+  <!-- <ion-card *ngFor="let item of ownNFTs"  text-wrap style="border-radius: 15px;" padding>
     <ion-card-content>
       <ion-row >
         <ion-card-title> NFT : {{item.NftContentName}}</ion-card-title>
@@ -62,5 +97,5 @@
         </button>
     </ion-row>
     </ion-card-content>
-  </ion-card>
+  </ion-card> -->
 </ion-content>

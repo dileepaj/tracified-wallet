@@ -1,119 +1,126 @@
 page-otp {
-    .main{
-        position: absolute;
+  .semi-title1 {
+    width: 90%;
+    max-width: 500px;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 29px;
+    color: #4f525d;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .semi-title2 {
+    width: 90%;
+    max-width: 500px;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 29px;
+    text-align: center;
+
+    color: #4f525d;
+    margin-bottom: 50px;
+  }
+
+  .input {
+    width: 90%;
+    max-width: 500px;
+    height: 45px;
+    background: #dedede;
+    border-radius: 16px;
+    margin-bottom: 50px;
+    padding: 0px 10px 0px 10px;
+  }
+
+  .button {
+    width: 153px;
+    height: 43px;
+
+    background: #28a745;
+    border-radius: 20px;
+
+    label {
+      font-family: "Roboto";
+      font-style: normal;
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 29px;
+
+      text-align: center;
+
+      color: #ffffff;
     }
-    .title{
-        position: absolute;
-        width: 287px;
-        height: 45px;
-        left: 410px;
-        top: 40px;
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 30px;
-        line-height: 139.52%;
-        /* identical to box height, or 45px */
-        text-align: center;
-        color: #000000;
+  }
+
+  .claim-nft-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    ion-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+  }
 
-    .bold{
-        position: absolute;
-        width: 287px;
-        height: 45px;
-        left: 180px;
-        top: -1.5px;
+  .claim-nft-header {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 35px;
+    margin-bottom: 55px;
+    label {
+      font-family: "Roboto";
+      font-style: normal;
+      font-weight: 400;
+      font-size: 32px;
+      line-height: 39px;
+      /* identical to box height */
 
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 30px;
-        line-height: 139.52%;
-        /* identical to box height, or 45px */
+      text-align: center;
 
-        text-align: center;
+      color: #4f525d;
 
-        color: #28A745;
-
-    }
-
-    
-
-    .semi-title1{
-        position: absolute;
-        width: 572px;
-        height: 29px;
-        left: 440px;
-        top: 100px;
-        
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 300;
-        font-size: 20px;
-        line-height: 29px;
-        /* identical to box height */
-        color: #000000;
-        
-    }
-
-    .semi-title2{
-        position: absolute;
-        width: 391px;
-        height: 29px;
-        left: 500px;
-        top: 130px;
-
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 300;
-        font-size: 20px;
-        line-height: 29px;
-        /* identical to box height */
-
-
-        color: #000000;
-
-    }
-
-    .input{
-        position: absolute;
-        width: 500px;
-        height: 45px;
-        left: 415px;
-        top: 230px;
-        background: #DEDEDE;
-        border-radius: 16px;
-    }
-
-    .button{
-        position: absolute;
-        width: 153px;
-        height: 43px;
-        left: 580px;
-        top: 310px;
-
-        background: #28A745;
-        border-radius: 20px;
-    }
-
-    .button.b{
-        position: absolute;
-        width: 167px;
-        height: 29px;
-        left: 636px;
-        top: 479px;
-
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 500;
-        font-size: 24px;
-        line-height: 29px;
-        /* identical to box height */
-
-        text-align: center;
-
-        color: #FFFFFF;
+      span {
+        color: #28a745;
+        font-weight: 600;
+      }
     }
 
+    img {
+      position: absolute;
+      left: 40px;
+      width: 36px;
+      height: 24px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .claim-nft-header {
+      display: flex;
+      flex-direction: column;
+      row-gap: 20px;
+      label {
+        width: 95%;
+        font-size: 28px;
+      }
+
+      img {
+        position: unset;
+        align-self: flex-start;
+        margin-left: 20px;
+        width: 28px;
+        height: 16px;
+      }
+    }
+  }
 }
