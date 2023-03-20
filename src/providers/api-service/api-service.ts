@@ -29,11 +29,13 @@ import {
 
 @Injectable()
 export class ApiServiceProvider {
-  url: string = "http://localhost:9080";
-  baseUrlSVG:string='http://localhost:6081/api/svg';
+  url: string = "http://localhost:8000";
+  baseUrlSVG:string='http://localhost:6081/svgmap';
   LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
   reqOpts: any;
   nftbeurl='http://localhost:6081';
+  updateSVGurl: string= "http://localhost:6081/svgmap/";
+  
 
 
   constructor(
@@ -92,6 +94,51 @@ export class ApiServiceProvider {
     return this.http.get(`${this.baseUrlSVG}/${Hash}`);
   }
 
+  getAccountFunded(publickey,nftName,issuer): Promise<any> {
+    console.log("data passed:",publickey,nftName,issuer)
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+     // `/nft/updateStellarMarketplaceBuy?sellingStatus=${sellingStatus}&currentPK=${currentPK}&previousPK=${previousPK}&nfthash=${nfthash}`
+      this.http.get(this.url + `/nft/sponsor?publickey=${publickey}&nftName=${nftName}&issuer=${issuer}`).subscribe(
+        (response) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
+  
+  getTrustFunded(publickey,nftName,issuer): Promise<any> {
+    console.log("data passed olddddd:",publickey,nftName,issuer)
+    return new Promise((resolve, reject) => {
+      this.reqOpts = {
+        observe: "response",
+        headers: new HttpHeaders({
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        }),
+      };
+     // `/nft/updateStellarMarketplaceBuy?sellingStatus=${sellingStatus}&currentPK=${currentPK}&previousPK=${previousPK}&nfthash=${nfthash}`
+      this.http.get(this.url + `/nft/sponsortrust?publickey=${publickey}&nftName=${nftName}&issuer=${issuer}`).subscribe(
+        (response) => {
+          resolve(response);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
   addSubAccount(body): Promise<any> {
     return new Promise((resolve, reject) => {
       this.reqOpts = {
@@ -137,9 +184,39 @@ export class ApiServiceProvider {
     });
   }
 
-checkOTP(otp:any){
+// checkOTP(otp:any,mail:any){
+//   console.log("Inside service")
+//   let OTP = {
+//     Email: mail,
+//     OTPCode:otp}
+//   //return this.http.post(this.nftbeurl + '/validateOTP',OTP);
+//   return new Promise((resolve, reject) => {
+//     this.http.post(this.nftbeurl + '/validateOTP', OTP, reqOpts)
+//       .subscribe(response => {
+//         console.log(response);
+//         resolve(response);
+//       },
+//         error => {
+//           console.log(error);
+//           reject(error);
+//         });
+//   });
+// }
+
+checkOTP(otp:any,mail:any): Promise<any> {
+  let headers = {
+    observe: 'response',
+    headers: new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'Application/json',
+      'Authorization': 'Bearer ' + this.properties.token,
+    })
+  };
   console.log("Inside service")
-  return this.http.get(this.url + '/' + otp);
+  let OTP = {
+    Email: mail,
+    Otp:otp}
+  return this.postN(this.nftbeurl+'/validateOTP/', OTP, headers);
 }
 
   verifyEmail(body: any, reqOpts?: any): Promise<any> {
@@ -435,7 +512,7 @@ checkOTP(otp:any){
           "Content-Type": "Application/json",
         }),
       };
-      this.http.get(this.url + "/nft/createNFTIssuerAccount").subscribe(
+      this.http.get(this.url + "/nft/issueaccount").subscribe(
         (response) => {
           resolve(response);
         },
@@ -446,24 +523,15 @@ checkOTP(otp:any){
     });
   }
 
-  getAccountFunded(publickey,nftName,issuer): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.reqOpts = {
-        observe: "response",
-        headers: new HttpHeaders({
-          Accept: "application/json",
-          "Content-Type": "Application/json",
-        }),
-      };
-      this.http.get(this.url + "/nft/fundAccount/"+publickey+"/"+nftName+"/"+issuer).subscribe(
-        (response) => {
-          resolve(response);
-        },
-        (error) => {
-          reject(error);
-        }
-      );
-    });
+ 
+  updateSVG(svgid:any,hash:string){
+    let nft= {
+      svgid: svgid,
+      hash:hash
+    }
+    console.log("data passed for update: ",nft)
+    return this.http.put(this.updateSVGurl,nft);
+    
   }
 
   minNFTStellar(

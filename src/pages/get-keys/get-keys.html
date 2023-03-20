@@ -26,12 +26,12 @@
       <label class="labelPK">Public Key</label><br />
       <div class="key-cont">
         <ion-item class="container1PK"
-          ><p class="PK">KHGJGJLHKLKLDFKFJHLBBFHLKFHFKFF</p></ion-item
+          ><p class="PK">{{PK}}</p></ion-item
         >
         <img
           class="copy-icon"
           src="../../assets/icon/copy.png"
-          (click)="copyData(PublicKey)"
+          (click)="copyData(PK)"
         />
       </div>
     </div>
@@ -40,11 +40,11 @@
       <label class="labelSK">Private Key</label><br />
       <div class="key-cont">
         <ion-item class="container1SK"
-          ><p class="PK">SBJBJKFBJFKFJDKFJFBJFDHKDFJFDDF</p></ion-item
+          ><p class="PK">{{SK}}</p></ion-item
         ><img
           class="copy-icon"
           src="../../assets/icon/copy.png"
-          (click)="copyData(PrivateKey)"
+          (click)="copyData(SK)"
         />
       </div>
     </div>

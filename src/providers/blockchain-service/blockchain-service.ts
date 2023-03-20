@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Network, Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction } from 'stellar-sdk';
+import { Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction, Networks } from 'stellar-sdk';
 
 import { Properties } from '../../shared/properties';
 import { blockchainNet } from '../../shared/config';
@@ -41,9 +41,9 @@ export class BlockchainServiceProvider {
   invalidateSubAccountKey(subAccount, mainAccount) {
     return new Promise((resolve, reject) => {
       if (blockchainNetType === 'live') {
-        Network.usePublicNetwork();
+        Networks.PUBLIC;
       } else {
-        Network.useTestNetwork();
+        Networks.TESTNET;
       }
       let server = new Server(blockchainNet);
       server.loadAccount(subAccount.publicKey()).then((account) => {
@@ -82,9 +82,9 @@ export class BlockchainServiceProvider {
       var sendingAccPk = sendingAccPair.publicKey();
 
       if (blockchainNetType === 'live') {
-        Network.usePublicNetwork();
+        Networks.PUBLIC;
       } else {
-        Network.useTestNetwork();
+        Networks.TESTNET;
       }
       let server = new Server(blockchainNet);
 
@@ -114,9 +114,9 @@ export class BlockchainServiceProvider {
       var sendingAccPk = sendingAccPair.publicKey();
 
       if (blockchainNetType === 'live') {
-        Network.usePublicNetwork();
+        Networks.PUBLIC;
       } else {
-        Network.useTestNetwork();
+        Networks.TESTNET;
       }
       let server = new Server(blockchainNet);
 
@@ -207,9 +207,9 @@ export class BlockchainServiceProvider {
   blockchainAccountInfo(publicKey) {
     return new Promise((resolve, reject) => {
       if (blockchainNetType === 'live') {
-        Network.usePublicNetwork();
+        Networks.PUBLIC;
       } else {
-        Network.useTestNetwork();
+        Networks.TESTNET;
       }
       let server = new Server(blockchainNet);
       server.loadAccount(publicKey).then((account) => {
@@ -224,9 +224,9 @@ export class BlockchainServiceProvider {
   checkIfAccountInvalidated(publicKey): Promise<any> {
     return new Promise((resolve, reject) => {
       if (blockchainNetType === 'live') {
-        Network.usePublicNetwork();
+        Networks.PUBLIC;
       } else {
-        Network.useTestNetwork();
+        Networks.TESTNET;
       }
       let server = new Server(blockchainNet);
       server.loadAccount(publicKey).then((account) => {
@@ -381,9 +381,9 @@ export class BlockchainServiceProvider {
     return new Promise((resolve, reject) => {
       let sourceKeypair = Keypair.fromSecret(secretKey);
       if (blockchainNetType === 'live') {
-        Network.usePublicNetwork();
+        Networks.PUBLIC;
       } else {
-        Network.useTestNetwork();
+        Networks.TESTNET;
       }
       let server = new Server(blockchainNet);
       server.loadAccount(sourceKeypair.publicKey()).then((account) => {
@@ -410,9 +410,9 @@ export class BlockchainServiceProvider {
   acceptTransactionXdr(identifier, receiver, qty, item, validity, proofHash, subAccount, issuer, signerSK) {
     return new Promise((resolve, reject) => {
       if (blockchainNetType === 'live') {
-        Network.usePublicNetwork();
+        Networks.PUBLIC;
       } else {
-        Network.useTestNetwork();
+        Networks.TESTNET;
       }
       let server = new Server(blockchainNet);
 
@@ -447,7 +447,7 @@ export class BlockchainServiceProvider {
     var sourceKeypair = Keypair.fromSecret(signerSK);
 
     var asset = new Asset(item, issuer);
-    var opts = { timebounds: { minTime: minTime, maxTime: maxTime } };
+    var opts = { timebounds: { minTime: minTime, maxTime: maxTime }};
 
     var transaction = new TransactionBuilder(account, opts);
     transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', source: sourceKeypair.publicKey()}));
@@ -483,9 +483,9 @@ export class BlockchainServiceProvider {
     return new Promise((resolve, reject) => {
 
       if (blockchainNetType === 'live') {
-        Network.usePublicNetwork();
+        Networks.PUBLIC;
       } else {
-        Network.useTestNetwork();
+        Networks.TESTNET;
       }
       let server = new Server(blockchainNet);
 
@@ -535,13 +535,26 @@ export class BlockchainServiceProvider {
   }
 
   signXdr(xdr, decKey) {
-    console.log("XDR: ", xdr);
+    let keyPair = Keypair.fromSecret(decKey);
+    if (blockchainNetType === 'live') {
+      Networks.PUBLIC;
+    } else {
+      Networks.TESTNET;
+    }
+    const transaction = new Transaction(xdr);
+    transaction.sign(keyPair);
+    let signedTrans = transaction.toEnvelope().toXDR().toString("base64");
+    return signedTrans; 
+  }
+
+  signandsubmitXdr(xdr, decKey) {
+    console.log("XDR: ", xdr,decKey);
     let keyPair = Keypair.fromSecret(decKey);
     console.log("kp:  ",keyPair.publicKey().toString())
     if (blockchainNetType === 'live') {
-      Network.usePublicNetwork();
+      Networks.PUBLIC;
     } else {
-      Network.useTestNetwork();
+      Networks.TESTNET;
     }
     console.log("--------------------------------------------------")
     const transaction = new Transaction(xdr);
@@ -550,8 +563,11 @@ export class BlockchainServiceProvider {
     transaction.sign(keyPair);
     let signedTrans = transaction.toEnvelope().toXDR().toString("base64");
     console.log("signed txn: ",signedTrans)
-    return signedTrans;
-    
+    let server = new Server(blockchainNet);
+    console.log("transactio now: ",transaction)
+    let txn = server.submitTransaction(transaction)
+    console.log("signed txn: ",txn)
+    //return signedTrans;
   }
 
   getAssetIssuer(accountPubKey, asset_code): Promise<any> {
