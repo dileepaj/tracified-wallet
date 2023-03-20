@@ -606,9 +606,8 @@ SavePGPkeyForEndorsment(PGPAccount:any): Promise<any>{
         "Content-Type": "Application/json",
       }),
     };
-
-    this.http
-    .post(this.url+"/pgp/",PGPAccount,this.reqOpts)
+console.log("---------------------pgpppp ")
+    this.http.post(this.url+"/pgp",PGPAccount,this.reqOpts)
     .subscribe(
       (response) => {
         alert("key pair saved")

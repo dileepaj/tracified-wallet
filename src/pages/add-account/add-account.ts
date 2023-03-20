@@ -120,8 +120,7 @@ export class AddAccountPage {
                   console.log("result 1: ",res1)
                   this.dataService.retrieveBlockchainAccounts().then((res2:any)=>{
                     console.log("result 2: ",res2)
-                  })
-              })
+                
               //TODO : 
               const PGPAccount = {
                 "pgppublickkey":this.pgpMainKeyPair.publicKeyArmored,
@@ -154,6 +153,8 @@ export class AddAccountPage {
                   console.log("Response :",res)
                 });
               }
+            })
+          })
             }, (err) => {
               this.dissmissLoading();
               if (err.status == 403) {
