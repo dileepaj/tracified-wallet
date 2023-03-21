@@ -10,6 +10,9 @@ import { Logger } from 'ionic-logger-new';
 import { GetKeysPage } from '../../pages/get-keys/get-keys';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Dialogs } from '@ionic-native/dialogs';
+import CryptoJS from 'crypto-js';
+import { PagesLoadSvgPage } from '../../pages/pages-load-svg/pages-load-svg';
+import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 
 /**
  * @MintNftPage page.
@@ -35,6 +38,7 @@ export class MintNftPage {
   private Identifier = ""
   private ProductName = ""
   private NFTBlockChain = "Stellar"
+  mail:any="mithilapanagoda@gmail.com";
   private SVG=""
   nftName: string = "";
   message: string = "";
@@ -56,6 +60,10 @@ export class MintNftPage {
   xdr: string;
   result:any;
   isTooltipOpen : boolean = false;
+  txn: string;
+  hash: string;
+  keypair: Keypair;
+  txn1: void;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -69,12 +77,14 @@ export class MintNftPage {
     private dialogs: Dialogs,
     private loadingCtrl: LoadingController,
     private logger: Logger,
+    private storage:StorageServiceProvider,
   ) {
     this.result = this.navParams.get("res")
     console.log("data passed ",this.result)
+    console.log("data passed for svg : ",this.result.body.Response.svg)
     if (this.result){
-      this.TDPID=this.result
-      console.log("checking ---tdpid", this.TDPID)
+      this.SVG=this.result.body.Response.svg
+      this.convertToBase64(this.SVG)
     }
     this.account = this.properties.defaultAccount;
     this.blockchainService.accountBalance(this.account.pk).then((balance) => {
@@ -102,104 +112,193 @@ export class MintNftPage {
    * In stellar NFT same is an asset for craete an asset minter need to 
    * create trust line with asset isser first after issuer need to trasfer the asset to distributor(minter) ,transfer part do in the gateway side
    */
+  convertToBase64(svg:any){
+    var encodedData = window.btoa(svg);
+    console.log("converted base64: ",encodedData)
+    this.hash=CryptoJS.SHA256(encodedData).toString(CryptoJS.enc.Hex);
+    console.log("converted hash: ",this.hash)
+    this.apiService.updateSVG(this.result.body.Response.svgid,this.hash).subscribe((res:any)=>{
+      console.log("update svg API result : ",res)
+      this.loadSVG(this.hash)
+    })
+  }
+
   
-  
-  loadSVG(){
-    console.log("hash: ",this.TDPID)
-    this.apiService.getSVGByHash(this.TDPID).subscribe((res:any)=>{
-      this.Decryption = res.Response.Base64ImageSVG
+  loadSVG(hash:string){
+    console.log("hash: ",hash)
+    this.apiService.getSVGByHash(hash).subscribe((res:any)=>{
+      console.log("get svg by hash response: ",res)
+      this.Decryption = res.Response
      this.dec = btoa(this.Decryption);
+     console.log("dec content:",this.dec)
     var str2 = this.dec.toString(); 
     var str1 = new String( "data:image/svg+xml;base64,"); 
     var src = str1.concat(str2.toString());
     this.imageSrc = this._sanitizer.bypassSecurityTrustResourceUrl(src);
     console.log("this image: ",this.imageSrc)
+    
     })
-
     this.dialogs.alert(this.imageSrc)
   .then(() => console.log('Dialog dismissed'))
   .catch(e => console.log('Error displaying dialog', e));
   }
 
-
-   createNFTWithNewAccount() {
-    this.closeTooltip()
-    // this.presentLoading();
-    // var keypair=this.blockchainService.createAddress()
-    // console.log("Public Key is", keypair.publicKey().toString())
-    // console.log("Secret Key is", keypair.secret().toString())
-    // console.log("Keypair is", keypair)
-    // this.apiService.getNewIssuerPublicKey().then(issuerPublcKey => {
-    //   console.log("Issuer: ",issuerPublcKey)
-    //   this.Issuer=issuerPublcKey.NFTIssuerPK
-    //   console.log("issuer json: ",this.Issuer)
-      
-    //   let distributorPK = keypair.publicKey})
-    //   if (!!this.nftName) {
-    //     this.apiService.getAccountFunded(keypair.publicKey,this.nftName,issuerPublcKey.NFTBlockChain).then(txn=>{
-    //       console.log("The transaction for account funding",txn)
-    //       console.log("XDR from gateway : ",txn.XDR)
-          this.xdr = "AAAAAgAAAADCcha3oy3p5U0/YF1mD/vfip8yyXvMkuiwpMcVD+c2zAAAAlgAAk/SAAAADAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAABAAAAAMJyFrejLenlTT9gXWYP+9+KnzLJe8yS6LCkxxUP5zbMAAAAEAAAAABwc+KZNxEEFzNhl1BWQBZfmtl5KGiRdg8sppzNgf10JQAAAAEAAAAAwnIWt6Mt6eVNP2BdZg/734qfMsl7zJLosKTHFQ/nNswAAAAAAAAAAHBz4pk3EQQXM2GXUFZAFl+a2XkoaJF2DyymnM2B/XQlAAAAAAAAAAAAAAABAAAAAHBz4pk3EQQXM2GXUFZAFl+a2XkoaJF2DyymnM2B/XQlAAAAEQAAAAEAAAAAwnIWt6Mt6eVNP2BdZg/734qfMsl7zJLosKTHFQ/nNswAAAAQAAAAAHBz4pk3EQQXM2GXUFZAFl+a2XkoaJF2DyymnM2B/XQlAAAAAQAAAABwc+KZNxEEFzNhl1BWQBZfmtl5KGiRdg8sppzNgf10JQAAAAYAAAACQkVXMDAxAAAAAAAAAAAAABePWeK/vTwskWG5PG37UC3mL/9rj8mYKxZgOcP1o4CQAAAAAAL68IAAAAABAAAAAHBz4pk3EQQXM2GXUFZAFl+a2XkoaJF2DyymnM2B/XQlAAAAEQAAAAAAAAABD+c2zAAAAEAZVECEjIOj8NSDWed5hYt65Cxa9Hrx43ZjtHDBavKPyXyVY5ucEAnyxE0tmHlvF07nMLysVSm8OWr/FMbd0FoJ"//txn.XDR
-    // //     })
-        var txn = this.blockchainService.signXdr(this.xdr,'SBOV2D6M432VEQSM42GGPPEF4HE3MSOESCFWHWTYF4HKNJAKOWFUAEVI')//keypair.secret().string()
-      console.log("Account sponsored: ",txn)
-    // //    if (txn!=null){
-    //     this.transactionResult =true//==
-    // //    }
-    // //       if (this.transactionResult=="Success") {
-    //         this.apiService.minNFTStellar(
-    //          this.transactionResult,
-    //           'GAXAQT3L7AML4MYR2BYUAXHCN3JTZWGQKM4ED3QVG4ZFSRSBWKEJQBCL',//this.Issuer
-    //           'GDIQVRTOA62JEM4VGM6WBYXLGDSUTN25FPV3L3FDLMWILKLIFYAOCXYZ',//keypair.publicKey().toString()
-    //           this.nftName,
-    //           'RURI',
-    //           'Gems',
-    //           this.NFTBlockChain,
-    //           'Time',//this.transactionResult.created_at
-    //           'Gems',
-    //           '7696cc36d38bf0d1190f65bfa49060f93955a5831d734cd9977a093dc3308932')
-    //           .then(nft => {
-    //             if (this.isLoadingPresent) {
-    //               this.dissmissLoading();
-    //             }
-    //             this.logger.info("NFT created", this.properties.skipConsoleLogs, this.properties.writeToFile);
-    //             this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
-    //             this.presentAlert(text['MINTED'], text[`NFT ${this.nftName} WAS MINTED`]);
-    //             });
-    //             this.nftName="";
-    //             //this.navCtrl.push(GetKeysPage,{res:keypair});
-    //           })
-              //.catch(error => {
-    //             if (this.isLoadingPresent) {
-    //               this.dissmissLoading();
-    //             }
-    //             this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
-    //               this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
-    //             });
-    //           })
-    //       }
-    //       else {
-    //         if (this.isLoadingPresent) {
-    //           this.dissmissLoading();
-    //         }
-    //         this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
-    //           this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
-    //         });
-    //       }
-        
-    //   }
-    // }).catch(error => {
-    //   if (this.isLoadingPresent) {
-    //     this.dissmissLoading();
-    //   }
-    //   this.logger.error("NFT reciveing issue in gateway side : " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
-    //   this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
-    //     this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
-    //   });
-    // })
-   
+  viewSVG(){
+    this.navCtrl.push(PagesLoadSvgPage,{res:this.imageSrc});
   }
 
+  createNewAccount():void{
+    console.log("acc gen started")
+    this.keypair=this.blockchainService.createAddress()
+    console.log("Public Key is", this.keypair.publicKey().toString())
+    console.log("Secret Key is", this.keypair.secret().toString())
+    console.log("Keypair is", this.keypair)
+    this.storage.setBcAccounts(this.mail,this.keypair.secret().toString()).then(res=>{
+      console.log("result ",res)
+      alert("Successfully set!")
+      this.sponsorNewAcc()
+  })
+
+}
+createNFTWithNewAcc(){
+this.createNFT()
+
+}
+
+createNFT() {
+  this.presentLoading();
+  console.log("--------------1----------------")
+  this.storage.getBcAccounts("mithilapanagoda@gmail.com").then((res1:any)=>{
+   console.log("retieved result ",res1)
+   if(res1!=null){
+     this.keypair = Keypair.fromSecret(res1);
+     console.log("Public Key is", this.keypair.publicKey().toString())
+     console.log("Secret Key is", this.keypair.secret().toString())
+     this.sponsorOldAcc()
+   }
+   else{
+     alert("You don't have an account exisiting with your username. Proceeding to creating a new one!")
+     this.createNewAccount();
+   }
+
+ })
+ 
+
+}
+
+sponsorNewAcc(){
+  this.apiService.getNewIssuerPublicKey().then(issuerPublcKey => {
+    console.log("Issuer: ",issuerPublcKey)
+    this.Issuer=issuerPublcKey.NFTIssuerPK
+    console.log("issuer json: ",this.Issuer)
+
+    if (this.nftName!=null) {
+      console.log("Entering if condtion PK : ", this.keypair.publicKey().toString())
+      console.log("Entering if condtion other data : ",this.nftName,this.Issuer)
+      this.apiService.getAccountFunded(this.keypair.publicKey().toString(),this.nftName,this.Issuer).then(txn=>{
+        console.log("The transaction for account funding",txn)
+        console.log("XDR from gateway : ",txn.XDR)
+       this.xdr = txn.XDR
+       
+       console.log("after ",this.xdr)
+     this.txn1 = this.blockchainService.signandsubmitXdr(this.xdr,this.keypair.secret().toString())
+    console.log("Account sponsored: ",this.txn1)
+    if (this.txn!=null){
+      this.transactionResult =true
+    }
+    this.mintNFT()
+       })
+    }
+  }).catch(error => {
+    if (this.isLoadingPresent) {
+      this.dissmissLoading();
+    }
+    this.logger.error("NFT reciveing issue in gateway side : " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+    this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
+      this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
+    });
+  })
+}
+
+sponsorOldAcc(){
+  this.apiService.getNewIssuerPublicKey().then(issuerPublcKey => {
+    console.log("Issuer: ",issuerPublcKey)
+    this.Issuer=issuerPublcKey.NFTIssuerPK
+    console.log("issuer json: ",this.Issuer)
+
+    if (this.nftName!=null) {
+      console.log("Entering if condtion PK : ", this.keypair.publicKey().toString())
+      console.log("Entering if condtion other data : ",this.nftName,this.Issuer)
+      this.apiService.getTrustFunded(this.keypair.publicKey().toString(),this.nftName,this.Issuer).then(txn=>{
+        console.log("The transaction for account funding",txn)
+        console.log("XDR from gateway : ",txn.XDR)
+       this.xdr = txn.XDR
+       
+       console.log("after ",this.xdr)
+     this.txn1 = this.blockchainService.signandsubmitXdr(this.xdr,this.keypair.secret().toString())
+    console.log("Account sponsored: ",this.txn1)
+    if (this.txn1!=null){
+      this.transactionResult =true
+      this.mintNFT()
+
+    }
+   
+       })
+    }
+  }).catch(error => {
+    if (this.isLoadingPresent) {
+      this.dissmissLoading();
+    }
+    this.logger.error("NFT reciveing issue in gateway side : " + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+    this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
+      this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
+    });
+  })
+}
+
+
+
+mintNFT(){
+  if (this.transactionResult==true) {
+    this.apiService.minNFTStellar(
+     this.transactionResult,
+      this.Issuer,
+    this.keypair.publicKey().toString(),
+      this.nftName,
+      'RURI',
+      'Gems',
+      this.NFTBlockChain,
+      'Time',//this.transactionResult.created_at
+      'Gems',
+       this.hash)
+      .then(nft => {
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+        }
+        this.logger.info("NFT created", this.properties.skipConsoleLogs, this.properties.writeToFile);
+        this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
+        this.presentAlert(text['MINTED'], text[`NFT ${this.nftName} WAS MINTED`]);
+        });
+        this.navCtrl.push(GetKeysPage,{res:this.keypair});
+      })
+      .catch(error => {
+        if (this.isLoadingPresent) {
+          this.dissmissLoading();
+        }
+        this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
+          this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+        });
+      })
+  }
+  else {
+    if (this.isLoadingPresent) {
+      this.dissmissLoading();
+    }
+    this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
+      this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
+    });
+  }
+}
   
   presentAlert(title: string, message: string) {
     let alert = this.alertCtrl.create({

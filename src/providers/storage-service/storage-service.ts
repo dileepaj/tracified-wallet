@@ -105,10 +105,19 @@ export class StorageServiceProvider {
   getBcAccounts(username) {
     return new Promise((resolve, reject) => {
       this.blockchainAccounts.length().then(noOfKeys => {
+        console.log("no keys: ",noOfKeys)
+        console.log("bc account: ",this.blockchainAccounts.length())
         if (noOfKeys > 0) {
           this.blockchainAccounts.getItem(username).then(accounts => {
-            let decryptedAccs = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
-            resolve(decryptedAccs);
+            console.log("recived accounts: ",accounts)
+            if(accounts != null){
+              let decryptedAccs = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+              resolve(decryptedAccs);
+            }else{
+              console.log("returning null")
+              resolve(null)
+              return 
+            }
           }).catch((err) => {
             this.logger.error("Storage get bc item failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
             reject(err);

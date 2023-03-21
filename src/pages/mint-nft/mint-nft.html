@@ -22,7 +22,7 @@
         <div class="preview-inner">
           <label class="heading-text">Preview</label>
           <!-- <img class="svg" [src]="imageSrc" *ngIf="imageSrc"/> -->
-          <img src="../../assets/imgs/Madagascan-Iolite.jpg" class="svg" />
+          <img src="{{this.imageSrc}}" class="svg" />
         </div>
       </ion-col>
       <ion-col class="claim-nft-form" col-12 col-sm-12 col-md-6 col-lg-6>
@@ -102,7 +102,7 @@
             <ion-checkbox class="checkbox" slot="start"></ion-checkbox>
             <ion-label class="checkbox-lbl">I agree</ion-label>
           </div>
-          <button class="btn-green" (click)="createNFTWithNewAccount()">
+          <button class="btn-green" (click)="createNFT()">
             Claim Your NFT
           </button>
         </div>

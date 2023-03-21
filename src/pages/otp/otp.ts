@@ -19,18 +19,21 @@ import { GetNftPage } from '../../pages/get-nft/get-nft';
 })
 export class OtpPage {
   otp:string=""
+  mail: any="mithilapanagoda@gmail.com";
  
   constructor(public navCtrl: NavController, public navParams: NavParams, private service: ApiServiceProvider) {
   }
 
   checkOTP(){
     if(this.otp!=null){
-      // this.service.checkOTP(this.otp).subscribe(res=>{
-      //   console.log("result is: ",res)
-      //   this.navCtrl.push(MintNftPage,res);
-      // })
-     // this.navCtrl.push(MintNftPage,{res:this.otp});
-     this.navCtrl.push(MintNftPage);
+      this.service.checkOTP(this.otp,"mithilapanagoda@gmail.com").then(res=>{
+        console.log("result is: ",res)
+        if(res.statusText=="OK"){
+          this.navCtrl.push(MintNftPage,{res:res});
+        }else{
+          alert("The OTP has either expired or is invalid")
+        }
+      })
     }
     
   }
