@@ -1,10 +1,16 @@
-export const ENV: any = {
-  mode: 'Qa',
-  API_TRACIFIED_V1: 'https://qa.api.tracified.com/api/v1',
-  API_TRACIFIED: 'https://qa.api.tracified.com/api/v2',
-  GATEWAY: 'https://qa.gateway.tracified.com',
-  API_ADMIN: 'https://qa.admin.api.tracified.com',
-  APPCENTER_DEPLOYMENT_KEY: 'hzVMQ0zGn2fVTOMpj5EnsIcV35dxZKxY9FfzP',
-  BLOCKCHAIN_NETWORK: 'https://horizon-testnet.stellar.org',
-  NETWORK_TYPE: 'test'
+// This file can be replaced during build by using the `fileReplacements` array.
+// `ng build` replaces `environment.ts` with `environment.prod.ts`.
+// The list of file replacements can be found in `angular.json`.
+
+export const environment = {
+  production: false
 };
+
+/*
+ * For easier debugging in development mode, you can import the following file
+ * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
+ *
+ * This import should be commented out in production mode because it will have a negative impact
+ * on performance if an error is thrown.
+ */
+// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.

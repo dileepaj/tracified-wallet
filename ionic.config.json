@@ -1,7 +1,7 @@
 {
-  "name": "tracified-wallet",
+  "name": "walletV6",
   "integrations": {
-    "cordova": {}
+    "capacitor": {}
   },
-  "type": "ionic-angular"
+  "type": "angular"
 }

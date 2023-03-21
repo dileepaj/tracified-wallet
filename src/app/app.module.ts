@@ -1,148 +1,16 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { Camera } from '@ionic-native/camera';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { StatusBar } from '@ionic-native/status-bar';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx'
-// import { Device } from 'ionic-native';
-import { DeviceDetectorModule, DeviceDetectorService } from 'ngx-device-detector';
+import { RouteReuseStrategy } from '@angular/router';
 
+import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
-// import { Items } from '../mocks/providers/items';
-import { User } from '../providers';
-import { MyApp } from './app.component';
-import { ItemReceivedPageModule } from '../pages/item-received/item-received.module';
-import { ItemSentPageModule } from '../pages/item-sent/item-sent.module';
-import { ConnectivityServiceProvider } from '../providers/connectivity-service/connectivity-service';
-import { Network } from '@ionic-native/network';
-import { ResetPasswordPageModule } from '../pages/reset-password/reset-password.module';
-import { AuthServiceProvider } from '../providers/auth-service/auth-service';
-import { TabsPageModule } from '../pages/tabs/tabs.module';
-import { AddAccountPageModule } from '../pages/add-account/add-account.module';
-import { Properties } from '../shared/properties';
-import { SelectSearchableModule } from '../components/search-dropdown/select-module';
-import { IonicSelectableModule } from 'ionic-selectable';
-import { ItemDetailPageModule } from '../pages/item-detail/item-detail.module';
-import { Device } from '@ionic-native/device/ngx';
-import { StorageServiceProvider } from '../providers/storage-service/storage-service';
-import { LoginPageModule } from '../pages/login/login.module';
-import { HelpPage } from '../pages/help-support/help'
-import { MappingServiceProvider } from '../providers/mapping-service/mapping-service';
-import { ApiServiceProvider } from '../providers/api-service/api-service';
-import { IonicLoggerModule, Logger } from 'ionic-logger-new';
-import { FileSystemServiceProvider } from '../providers/file-service/file-system-service';
-import {File} from '@ionic-native/file';
-import { DataServiceProvider } from '../providers/data-service/data-service';
-import { BlockchainServiceProvider } from '../providers/blockchain-service/blockchain-service';
-import { AccountDetailsPageModule } from '../pages/account-details/account-details.module';
-import { AccountInfoPageModule } from '../pages/account-info/account-info.module';
-import { BcAccountPageModule } from '../pages/bc-account/bc-account.module';
-import { FundTransferPageModule } from '../pages/fund-transfer/fund-transfer.module';
-import { SettingsPageModule } from '../pages/settings/settings.module';
-import { ContentPageModule } from '../pages/content/content.module';
-import { TransferConfirmPageModule } from '../pages/transfer-confirm/transfer-confirm.module';
-import { Clipboard } from '@ionic-native/clipboard/index';
-import { SettingFormPageModule } from '../pages/setting-form/setting-form.module';
-import { TransferPageModule } from '../pages/transfer/transfer.module';
-import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
-import { CodePush } from '@ionic-native/code-push';
-import { FundTransferPage } from 'pages/fund-transfer/fund-transfer';
-import { IonicPageModule } from 'ionic-angular';
- import { MintNftPageModule } from '../pages/mint-nft/mint-nft.module';
-import { GetNftPageModule } from '../pages/get-nft/get-nft.module';
-import { GetKeysPageModule } from '../pages/get-keys/get-keys.module';
-import { OtpPageModule } from '../pages/otp/otp.module';
-import { Dialogs } from '@ionic-native/dialogs';
-import { PagesLoadSvgPage } from '../pages/pages-load-svg/pages-load-svg';
-import { PagesLoadSvgPageModule } from '../pages/pages-load-svg/pages-load-svg.module';
-
-
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
-  declarations: [
-    MyApp,HelpPage
-  ],
-  imports: [
-    BrowserModule,
-    AccountDetailsPageModule,
-    IonicSelectableModule,
-    HttpClientModule,
-    SelectSearchableModule,
-    AccountInfoPageModule,
-    ResetPasswordPageModule,
-    ItemReceivedPageModule,
-    MintNftPageModule,
-    OtpPageModule,
-    GetKeysPageModule,
-    GetNftPageModule,
-    ItemDetailPageModule,
-    TabsPageModule,
-    DeviceDetectorModule.forRoot(),
-    AddAccountPageModule,
-    ItemSentPageModule,
-    LoginPageModule,
-    BcAccountPageModule,
-    PagesLoadSvgPageModule,
-    SettingsPageModule,
-    ContentPageModule,
-    SettingFormPageModule,
-    TransferPageModule,
-    FundTransferPageModule,
-    TransferConfirmPageModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
-        deps: [HttpClient]
-      }
-    }),
-    IonicModule.forRoot(MyApp),
-    IonicLoggerModule.forRoot({
-      docDir: 'Tracified',
-      logDir: 'Tracified-Wallet',
-      logRetentionDays: 1,
-      debug: true,
-      printDebugMessages: true,
-      logToFle:true
-    })
-  ],
-  bootstrap: [IonicApp],
-  entryComponents: [
-    MyApp,HelpPage
-  ],
-  providers: [
-    ApiServiceProvider,
-    Properties,
-    Network,
-    User,
-    Device,
-    DeviceDetectorService,
-    Camera,
-    Dialogs,
-    SplashScreen,
-    StatusBar,
-    { provide: ErrorHandler, useClass: IonicErrorHandler },
-    ConnectivityServiceProvider,
-    AuthServiceProvider,
-    StorageServiceProvider,
-    MappingServiceProvider,
-    Logger,
-    FileSystemServiceProvider,
-    File,
-    DataServiceProvider,
-    BlockchainServiceProvider,
-    Clipboard,
-    CodePushServiceProvider,
-    CodePush,
-    InAppBrowser,
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  declarations: [AppComponent],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
