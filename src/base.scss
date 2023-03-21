@@ -1,0 +1,387 @@
+/* BASE CSS */
+
+html {
+   font-size: 62.5%;
+}
+
+h1 {
+   font-size: 2.2rem;
+   font-weight: 600;
+   margin: 0;
+}
+
+h2 {
+   font-size: 1.8rem;
+   font-weight: 400;
+   margin: 0;
+}
+
+h3 {
+   font-size: 1.6rem;
+   font-weight: 400;
+   margin: 0;
+}
+
+h4 {
+   font-size: 1.4rem;
+   font-weight: 400;
+   margin: 0;
+   line-height: 1.5;
+}
+
+h5 {
+   font-size: 1.1rem;
+   font-weight: 500;
+   margin: 0;
+}
+
+p {
+   font-size: 1.4rem;
+   margin: 0;
+   line-height: 1.5;
+}
+
+li {
+   font-size: 1.4rem;
+   margin: 5px 0;
+}
+
+button {
+   padding: 0 1.6rem;
+   border-radius: 4px;
+   font-size: 1.4rem;
+   height: 3.6rem;
+   letter-spacing: 0.1rem;
+}
+
+/* END BASE CSS */
+
+/* MODULE CSS */
+
+.vertical-separators {
+   height: 90%;
+   width: 0.1em;
+}
+
+/* END MODULE CSS */
+
+/* IONIC CSS */
+
+ion-row {
+   width: 100%;
+}
+
+.datetime-md {
+   padding-left: 8px;
+}
+
+.toolbar-background {
+   background-color: #474952;
+}
+
+.toolbar-title-md {
+   color: white;
+   font-size: 1.8rem;
+   font-weight: 400;
+   padding: 0 2px;
+}
+
+.bar-button-default-md {
+   color: white;
+}
+
+.bar-button-menutoggle-md {
+   margin: 0;
+}
+
+.back-button-md {
+   margin: 0;
+}
+
+.toolbar-md {
+   padding: 4px 8px;
+}
+
+.col {
+   padding-left: 0;
+   padding-right: 0;
+}
+
+.item-md {
+   padding-left: 0;
+   font-size: 1.4rem;
+}
+
+.picker-md .picker-opt {
+   font-size: 0.8em;
+}
+
+/* END IONIC CSS */
+
+/* UTILS */
+
+.italic-font {
+   font-style: italic;
+}
+
+.uppercase-font {
+   text-transform: uppercase;
+}
+
+.lowercase-font {
+   text-transform: lowercase;
+}
+
+.capitalize-font {
+   text-transform: capitalize;
+}
+
+.bold-font {
+   font-weight: 600;
+}
+
+.full-height {
+   height: 100%;
+}
+
+.full-width {
+   width: 100%;
+}
+
+.padding-sm {
+   padding: 0.5em;
+}
+
+.left-padding {
+   padding-left: 0.5em;
+}
+
+.right-padding {
+   padding-right: 0.5em;
+}
+
+.list-spacing {
+   margin: 1em 0;
+}
+
+.line-spacing-small {
+   margin: 0.2em 0;
+}
+
+.line-spacing {
+   margin: 0.3em 0;
+}
+
+.hide-div {
+   display: none;
+}
+
+.fixed-margin-top {
+   margin-top: 2em;
+   height: 1px;
+}
+
+.fixed-margin-bottom {
+   margin-bottom: 2em;
+   height: 1px;
+}
+
+.left-float {
+   float: left;
+}
+
+.right-float {
+   float: right;
+}
+
+.clear-float {
+   clear: both;
+}
+
+.text-right-align-horizontally {
+   text-align: right;
+}
+
+.text-overflow-ellipsis {
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+
+.button-text-wrapper {
+   width: 100%;
+   overflow: hidden;
+   white-space: nowrap;
+   display: block;
+   text-overflow: ellipsis;
+}
+
+.content-center-both {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.word-wrap {
+   overflow: scroll;
+}
+
+.content-start {
+   padding-top: 1.6em;
+}
+
+.text-center {
+   text-align: center;
+}
+
+.row-padding-top-bottom {
+   padding-top: 1em;
+   padding-bottom: 1em;
+}
+
+.btn-text-only {
+   background-color: transparent;
+   box-shadow: none !important;
+}
+
+.button-wrapper {
+   width: 100%;
+   display: flex;
+   justify-content: center;
+   margin: 0 auto;
+}
+
+.icon-only-btn {
+   background-color: transparent;
+   padding: 0 !important;
+}
+
+.no-padding-x {
+   padding-left: 0;
+   padding-right: 0;
+}
+
+.no-margin-x {
+   margin-left: 0;
+   margin-right: 0;
+}
+
+/* END UTILS */
+
+/* COLORS */
+
+.primary-font {
+   color: #4f525d;
+}
+
+.secondary-font {
+   color: #b1b1b1;
+}
+
+.warning-font {
+   color: #fa4646;
+}
+
+.green-font {
+   color: #28a745;
+}
+
+.white-font {
+   color: #fff;
+}
+
+.gray-backgroud {
+   background-color: #373940;
+}
+
+.white-background {
+   background-color: white;
+}
+
+.green-color {
+   background-color: #28a745;
+}
+
+.highlight-font {
+   color: #3f5dcb;
+}
+
+.btn-green {
+   color: #ffffff;
+   background-color: #28a745;
+}
+
+.btn-red-outline {
+   color: #df2323;
+   background-color: transparent;
+   border: 1px solid #df2323;
+   box-shadow: 0 0 0 transparent;
+}
+
+.btn-green.activated {
+   background-color: #22923d;
+}
+
+.btn-green-txt-only {
+   color: #28a745;
+   background-color: transparent;
+   box-shadow: none !important;
+}
+
+.btn-green-outline {
+   color: #28a745;
+   background-color: transparent;
+   border: 1px solid #28a745;
+   box-shadow: none !important;
+}
+
+.btn-green-txt-only.activated {
+   background-color: transparent;
+}
+
+.btn-primary-txt-only {
+   color: #4f525d;
+   background-color: transparent;
+   box-shadow: none !important;
+}
+
+.btn-bg-gray {
+   background-color: #ebebeb;
+}
+
+.btn-icon-gray {
+   color: #777777;
+}
+
+.btn-text-only.activated {
+   background-color: transparent;
+}
+
+/* END COLORS */
+
+/* APP.HTML */
+
+.profile-image-holder {
+   width: 6.5em;
+   height: 6.5em;
+   border-radius: 50%;
+   background-color: black;
+   margin: 1em auto;
+}
+
+.icon-alignment {
+   margin-top: 0.4em !important;
+}
+
+.padding-width {
+   width: 95%;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+.padding-content {
+   width: 90%;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+/* END APP.HTML */
