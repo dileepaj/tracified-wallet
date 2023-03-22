@@ -24,7 +24,14 @@
       "strictNullChecks": false,
       "skipLibCheck": true,
       "lib": ["es2018", "dom"],
-      "useDefineForClassFields": false
+      "useDefineForClassFields": false,
+      "paths": {
+         "crypto": ["node_modules/crypto-browserify"],
+         "stream": ["node_modules/stream-browserify"],
+         "http": ["node_modules/stream-http"],
+         "https": ["node_modules/https-browserify"],
+         "process": ["node_modules/process"]
+      }
    },
    "angularCompilerOptions": {
       "enableI18nLegacyMessageIdFormat": false,
