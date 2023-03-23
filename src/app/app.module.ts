@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -30,12 +30,17 @@ import { OtpPage } from './pages/otp/otp';
 import { MintNftPage } from './pages/mint-nft/mint-nft';
 import { GetKeysPage } from './pages/get-keys/get-keys';
 
+import { LoginPage } from './pages/login/login';
+import { InitializerService } from './providers/initializer/initializer.service';
+import { FileSystemService } from './providers/file-service/file-system-service';
+import { CommonModule } from '@angular/common';
+
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 @NgModule({
-   declarations: [AppComponent, GetNftPage, PagesLoadSvgPage, TabsPage, OtpPage, MintNftPage, GetNftPage, GetKeysPage],
+   declarations: [AppComponent, GetNftPage, PagesLoadSvgPage, TabsPage, OtpPage, MintNftPage, GetNftPage, GetKeysPage, LoginPage],
    imports: [
       BrowserModule,
       IonicModule.forRoot({}),
@@ -43,6 +48,7 @@ export function createTranslateLoader(http: HttpClient) {
       HttpClientModule,
       FormsModule,
       ReactiveFormsModule,
+      CommonModule,
       TranslateModule.forRoot({
          loader: {
             provide: TranslateLoader,
@@ -53,6 +59,8 @@ export function createTranslateLoader(http: HttpClient) {
    ],
    providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+      { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [InitializerService], multi: true },
+      Properties,
       ApiServiceProvider,
       AuthServiceProvider,
       LoggerService,
@@ -62,9 +70,17 @@ export function createTranslateLoader(http: HttpClient) {
       ConnectivityServiceProvider,
       BlockchainServiceProvider,
       DataServiceProvider,
+      FileSystemService,
       Items,
       Properties,
+      Clipboard,
    ],
    bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+export function initializeApp(initializerService: InitializerService) {
+   return (): Promise<any> => {
+      return initializerService.init();
+   };
+}
