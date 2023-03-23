@@ -40,7 +40,7 @@ export function createTranslateLoader(http: HttpClient) {
 }
 
 @NgModule({
-   declarations: [AppComponent, GetNftPage, PagesLoadSvgPage, TabsPage, OtpPage, MintNftPage, GetNftPage, GetKeysPage, LoginPage],
+   declarations: [AppComponent, GetNftPage, PagesLoadSvgPage, TabsPage, OtpPage, MintNftPage, GetNftPage, GetKeysPage, LoginPage, GetNftPage],
    imports: [
       BrowserModule,
       IonicModule.forRoot({}),

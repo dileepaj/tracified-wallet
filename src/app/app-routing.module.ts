@@ -11,12 +11,13 @@ import { AuthGuardService } from './providers/auth/auth-guard.service';
 
 const routes: Routes = [
    { path: '', component: TabsPage },
-   { path: 'home', component: TabsPage },
-   { path: 'get-nft', component: GetNftPage, canActivate: [AuthGuardService] },
+   { path: 'assets', component: TabsPage, canActivate: [AuthGuardService] },
+   { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
    { path: 'mint-nft', component: MintNftPage },
    { path: 'get-key', component: GetKeysPage },
+   { path: 'get-nft', component: GetNftPage },
 ];
 
 @NgModule({

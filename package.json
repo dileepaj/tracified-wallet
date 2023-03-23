@@ -36,6 +36,7 @@
     "ionicons": "^6.0.3",
     "jsonwebtoken": "^9.0.0",
     "localforage": "^1.10.0",
+    "ngx-device-detector": "^5.0.1",
     "process": "^0.11.10",
     "rxjs": "~7.5.0",
     "stellar-sdk": "^10.4.1",

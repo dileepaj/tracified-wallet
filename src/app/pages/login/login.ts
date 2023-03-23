@@ -93,7 +93,7 @@ export class LoginPage {
                               .storeBlockchainAccounts(accounts)
                               .then(() => {
                                  this.dissmissLoading();
-                                 this.router.navigate(['/home'], { state: { navigation: 'initial' } });
+                                 this.router.navigate(['/assets'], { state: { navigation: 'initial' } });
                               })
                               .catch(err => {
                                  this.dissmissLoading();

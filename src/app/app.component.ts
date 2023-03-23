@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Config, Platform, AlertController, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
 // import { Device } from '@ionic-native/device/ngx';
-// import { DeviceDetectorService } from 'ngx-device-detector';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 import { Properties } from '../app/shared/properties';
 import { AuthServiceProvider } from './providers/auth-service/auth-service';
@@ -48,7 +48,7 @@ export class AppComponent {
    // @ViewChild(Nav) nav: Nav;
 
    constructor(
-      // private deviceService: DeviceDetectorService,
+      private deviceService: DeviceDetectorService,
       // private device: Device,
       private translate: TranslateService,
       private properties: Properties,
@@ -68,68 +68,77 @@ export class AppComponent {
       private loadingCtrl: LoadingController,
       private router: Router
    ) {
-      // platform.ready().then(() => {
-      //    this.statusBar.styleLightContent();
-      //    this.splashScreen.hide();
-      //    this.codepushService.notifyApplicationReady().then(() => {
-      //      this.codepushService.checkForUpdate().then((remotePackage: IRemotePackage) => {
-      //        if (remotePackage.isMandatory) {
-      //          this.presentUpdating();
-      //          this.codepushService.doUpdate(remotePackage).then(() => {
-      //            this.splashScreen.show();
-      //            this.dismissLoading();
-      //          }).catch(() => {
-      //            this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
-      //            this.dismissLoading();
-      //          });
-      //        } else {
-      //          this.waitResponseAlert("Updates Avaialable", "There is a pending application update. Would you like to install it right now?", "Yes", "No").then(() => {
-      //            this.codepushService.doUpdate(remotePackage).then(() => {
-      //              this.splashScreen.show();
-      //              this.dismissLoading();
-      //            }).catch(() => {
-      //              this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
-      //              this.dismissLoading();
-      //            });
-      //          });
-      //        }
-      //      });
-      //    });
-      //    this.properties.skipConsoleLogs = false;
-      //    this.properties.writeToFile = true;
-      //    this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
-      //  });
+      platform.ready().then(() => {
+         // this.statusBar.styleLightContent();
+         // this.splashScreen.hide();
+         // this.codepushService.notifyApplicationReady().then(() => {
+         //   this.codepushService.checkForUpdate().then((remotePackage: IRemotePackage) => {
+         //     if (remotePackage.isMandatory) {
+         //       this.presentUpdating();
+         //       this.codepushService.doUpdate(remotePackage).then(() => {
+         //         this.splashScreen.show();
+         //         this.dismissLoading();
+         //       }).catch(() => {
+         //         this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
+         //         this.dismissLoading();
+         //       });
+         //     } else {
+         //       this.waitResponseAlert("Updates Avaialable", "There is a pending application update. Would you like to install it right now?", "Yes", "No").then(() => {
+         //         this.codepushService.doUpdate(remotePackage).then(() => {
+         //           this.splashScreen.show();
+         //           this.dismissLoading();
+         //         }).catch(() => {
+         //           this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
+         //           this.dismissLoading();
+         //         });
+         //       });
+         //     }
+         //   });
+         // });
+         this.properties.skipConsoleLogs = false;
+         this.properties.writeToFile = true;
+         // this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
+      });
       this.initTranslate();
-      //  this.activePage = this.pages[0];
-      //  this.deviceDetails();
-      //  this.events.subscribe('dislayName', (name) => { this.user = name; });
-      //  this.events.subscribe('company', (company) => { this.company = company; });
-      //  this.authService.authorizeLocalProfile().then((res) => {
-      //    if (res) {
-      //      this.dataService.retrieveDefaultAccount().then((account) => {
-      //        this.properties.defaultAccount = account;
-      //        this.rootPage = TabsPage;
-      //      }).catch((err) => {
-      //        this.presentAlert("Error", "Could not retrieve transaction accounts from storage. Please login again.");
-      //        this.dataService.clearLocalData();
-      //        this.rootPage = LoginPage;
-      //      });
-      //    } else {
-      //      this.dataService.clearLocalData();
-      //      this.rootPage = LoginPage;
-      //    }
-      //  }).catch((err) => {
-      //    this.logger.error("Authorize local profile failed: ", err);
-      //    this.presentAlert("Error", "Failed to authorize the user. Please login again.");
-      //    this.rootPage = LoginPage
-      //  });
+      this.deviceDetails();
+      this.events.subscribe('dislayName', name => {
+         this.user = name;
+      });
+      this.events.subscribe('company', company => {
+         this.company = company;
+      });
+      this.authService
+         .authorizeLocalProfile()
+         .then(res => {
+            if (res) {
+               this.dataService
+                  .retrieveDefaultAccount()
+                  .then(account => {
+                     this.properties.defaultAccount = account;
+                     this.router.navigate(['/assets'], { replaceUrl: true });
+                  })
+                  .catch(err => {
+                     this.presentAlert('Error', 'Could not retrieve transaction accounts from storage. Please login again.');
+                     this.dataService.clearLocalData();
+                     this.router.navigate(['/login'], { replaceUrl: true });
+                  });
+            } else {
+               this.dataService.clearLocalData();
+               this.router.navigate(['/login'], { replaceUrl: true });
+            }
+         })
+         .catch(err => {
+            this.logger.error('Authorize local profile failed: ', err);
+            this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
+            this.router.navigate(['/login'], { replaceUrl: true });
+         });
    }
 
    deviceDetails() {
-      // this.deviceInfo = this.deviceService.getDeviceInfo();
-      // const isMobile = this.deviceService.isMobile();
-      // const isTablet = this.deviceService.isTablet();
-      // const isDesktopDevice = this.deviceService.isDesktop();
+      this.deviceInfo = this.deviceService.getDeviceInfo();
+      const isMobile = this.deviceService.isMobile();
+      const isTablet = this.deviceService.isTablet();
+      const isDesktopDevice = this.deviceService.isDesktop();
    }
 
    initTranslate() {
@@ -161,14 +170,14 @@ export class AppComponent {
    openPage(page: string) {
       switch (page) {
          case 'items':
-            //  this.nav.setRoot(TabsPage);
+            this.router.navigate(['/assets'], { replaceUrl: true });
             break;
          case 'nft':
             console.log('hello');
             this.router.navigate(['/otp-page']);
             break;
          case 'market':
-            // this.nav.setRoot(GetNftPage);
+            this.router.navigate(['/get-nft']);
             break;
          case 'accounts':
             //  this.nav.setRoot(BcAccountPage);
@@ -212,7 +221,7 @@ export class AppComponent {
                text: 'Yes',
                handler: () => {
                   this.storageService.clearAllLocalStores();
-                  //   this.nav.setRoot(LoginPage);
+                  this.router.navigate(['/login'], { replaceUrl: true });
                },
             },
          ],
