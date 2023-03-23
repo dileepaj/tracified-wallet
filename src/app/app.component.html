@@ -14,13 +14,12 @@
       </ion-header>
 
       <ion-content>
-         <ion-list no-lines padding>
+         <ion-list>
             <ion-menu-toggle>
                <ion-item (click)="openPage('items')">
                   <ion-icon name="clipboard" slot="start"></ion-icon>
-                  <ion-label
-                     >List
-                     <!-- {{ 'LIST_MASTER_TITLE' | translate }} -->
+                  <ion-label>
+                     {{ 'LIST_MASTER_TITLE' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>
@@ -28,9 +27,8 @@
             <ion-menu-toggle>
                <ion-item (click)="openPage('nft')">
                   <ion-icon name="reader" slot="start"></ion-icon>
-                  <ion-label
-                     >Mint NFT
-                     <!-- {{  'Mint NFT'  | translate }} -->
+                  <ion-label>
+                     {{ 'Mint NFT' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>
@@ -38,9 +36,8 @@
             <ion-menu-toggle>
                <ion-item (click)="openPage('market')">
                   <ion-icon name="receipt" slot="start"></ion-icon>
-                  <ion-label
-                     >Claimed NFT
-                     <!-- {{ 'Claimed NFT' | translate }} -->
+                  <ion-label>
+                     {{ 'Claimed NFT' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>
@@ -48,9 +45,8 @@
             <ion-menu-toggle>
                <ion-item (click)="openPage('accounts')">
                   <ion-icon name="people" slot="start"></ion-icon>
-                  <ion-label
-                     >ACCOUNTS
-                     <!-- {{ 'ACCOUNTS' | translate }} -->
+                  <ion-label>
+                     {{ 'ACCOUNTS' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>
@@ -58,9 +54,8 @@
             <ion-menu-toggle>
                <ion-item (click)="openPage('fundTransfer')">
                   <ion-icon name="cash" slot="start"></ion-icon>
-                  <ion-label
-                     >TRANSFER_FUNDS
-                     <!-- {{ 'TRANSFER_FUNDS' | translate }} -->
+                  <ion-label>
+                     {{ 'TRANSFER_FUNDS' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>
@@ -68,9 +63,8 @@
             <ion-menu-toggle>
                <ion-item (click)="openPage('settings')">
                   <ion-icon name="settings" slot="start"></ion-icon>
-                  <ion-label
-                     >SETTINGS_TITLE
-                     <!-- {{ 'SETTINGS_TITLE' | translate }} -->
+                  <ion-label>
+                     {{ 'SETTINGS_TITLE' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>
@@ -78,9 +72,8 @@
             <ion-menu-toggle>
                <ion-item (click)="openPage('about')">
                   <ion-icon name="information" slot="start"></ion-icon>
-                  <ion-label
-                     >ABOUT
-                     <!-- {{ 'ABOUT' | translate }} -->
+                  <ion-label>
+                     {{ 'ABOUT' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>
@@ -88,9 +81,8 @@
             <ion-menu-toggle>
                <ion-item (click)="openPage('help')">
                   <ion-icon name="help" slot="start"></ion-icon>
-                  <ion-label
-                     >Help
-                     <!-- {{ 'Help' | translate }} -->
+                  <ion-label>
+                     {{ 'Help' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>
@@ -98,33 +90,32 @@
             <ion-menu-toggle>
                <ion-item (click)="openPage('logout')">
                   <ion-icon name="power" slot="start"></ion-icon>
-                  <ion-label
-                     >LOGOUT
-                     <!-- {{ 'LOGOUT' | translate }} -->
+                  <ion-label>
+                     {{ 'LOGOUT' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>
          </ion-list>
       </ion-content>
-      <!-- <ion-footer>
+      <ion-footer>
          <ion-row>
-            <ion-col col-4>
-               <button ion-button (click)="languageChange('english')" class="btn-text-only primary-font padding-width capitalize-font">
+            <ion-col size="4">
+               <ion-button fill="clear" (click)="languageChange('english')" class="primary-font capitalize-font">
                   {{ 'ENGLISH' | translate }}
-               </button>
+               </ion-button>
             </ion-col>
-            <ion-col col-4>
-               <button ion-button (click)="languageChange('sinhala')" class="btn-text-only primary-font padding-width capitalize-font">
+            <ion-col size="4">
+               <ion-button fill="clear" (click)="languageChange('sinhala')" class="primary-font capitalize-font">
                   {{ 'SINHALA' | translate }}
-               </button>
+               </ion-button>
             </ion-col>
-            <ion-col col-4>
-               <button ion-button (click)="languageChange('tamil')" class="btn-text-only primary-font padding-width capitalize-font">
+            <ion-col size="4">
+               <ion-button fill="clear" (click)="languageChange('tamil')" class="primary-font capitalize-font">
                   {{ 'TAMIL' | translate }}
-               </button>
+               </ion-button>
             </ion-col>
          </ion-row>
-      </ion-footer> -->
+      </ion-footer>
    </ion-menu>
 
    <ion-router-outlet id="main"></ion-router-outlet>
