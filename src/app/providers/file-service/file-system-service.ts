@@ -1,23 +1,26 @@
-// import { Injectable } from '@angular/core';
-// import { FileSystem, Logger } from 'ionic-logger-new';
-// import { Entry, File } from '@ionic-native/file';
-// import { Platform } from 'ionic-angular';
-// /*
-//   Generated class for the FileSystemServiceProvider provider.
+import { Injectable } from '@angular/core';
+import { Platform } from '@ionic/angular';
 
-//   See https://angular.io/guide/dependency-injection for more info on providers
-//   and Angular DI.
-// */
-// @Injectable()
-// export class FileSystemServiceProvider implements FileSystem {
+/*
+  Generated class for the FileSystemServiceProvider provider.
 
-//   private _documentsDirectory: string;
+  See https://angular.io/guide/dependency-injection for more info on providers
+  and Angular DI.
+*/
+@Injectable({
+  providedIn: 'root',
+})
+export class FileSystemService implements FileSystem {
 
-//   constructor(
-//     private file: File,
-//     private platform: Platform
-//   ) {
-//   }
+  private _documentsDirectory: string;
+  name: string;
+  root: FileSystemDirectoryEntry;
+  
+  constructor(
+
+  ) {
+  }
+
 
 //   public isIOS(): boolean {
 //     return this.platform.is('ios');
@@ -62,4 +65,4 @@
 //     return this.file.removeFile(path, fileName);
 //   }
 
-// }
+}
