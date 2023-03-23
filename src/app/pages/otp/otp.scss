@@ -1,0 +1,43 @@
+.sub-header {
+   font-family: 'Inter';
+   font-style: normal;
+   font-weight: 300;
+   font-size: 16px;
+   text-align: center;
+   display: flex;
+   justify-content: center;
+}
+
+ion-input {
+   --background: #dedede;
+   --color: black;
+   --placeholder-opacity: 0.8;
+   --padding-bottom: 10px;
+   --padding-end: 10px;
+   --padding-start: 10px !important;
+   --padding-top: 10px;
+   border-radius: 10px;
+   padding: 20px;
+}
+
+ion-button {
+   height: 32px;
+   width: 100px;
+}
+
+.claim-nft-header {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-top: 35px;
+   ion-label {
+      font-family: 'Inter';
+      font-weight: 400;
+      font-size: 30px;
+      text-align: center;
+      span {
+         color: #28a745;
+         font-weight: 600;
+      }
+   }
+}

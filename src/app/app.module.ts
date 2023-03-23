@@ -3,9 +3,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // pages
 import { GetNftPage } from './pages/get-nft/get-nft';
@@ -21,10 +25,32 @@ import { ConnectivityServiceProvider } from './providers/connectivity-service/co
 import { BlockchainServiceProvider } from './providers/blockchain-service/blockchain-service';
 import { DataServiceProvider } from './providers/data-service/data-service';
 import { Items } from './providers/items/items';
+import { Properties } from './shared/properties';
+import { OtpPage } from './pages/otp/otp';
+import { MintNftPage } from './pages/mint-nft/mint-nft';
+import { GetKeysPage } from './pages/get-keys/get-keys';
+
+export function createTranslateLoader(http: HttpClient) {
+   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+}
 
 @NgModule({
-   declarations: [AppComponent, GetNftPage, PagesLoadSvgPage, TabsPage],
-   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+   declarations: [AppComponent, GetNftPage, PagesLoadSvgPage, TabsPage, OtpPage, MintNftPage, GetNftPage, GetKeysPage],
+   imports: [
+      BrowserModule,
+      IonicModule.forRoot({}),
+      AppRoutingModule,
+      HttpClientModule,
+      FormsModule,
+      ReactiveFormsModule,
+      TranslateModule.forRoot({
+         loader: {
+            provide: TranslateLoader,
+            useFactory: createTranslateLoader,
+            deps: [HttpClient],
+         },
+      }),
+   ],
    providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
       ApiServiceProvider,
@@ -37,6 +63,7 @@ import { Items } from './providers/items/items';
       BlockchainServiceProvider,
       DataServiceProvider,
       Items,
+      Properties,
    ],
    bootstrap: [AppComponent],
 })

@@ -1,0 +1,26 @@
+<ion-header>
+   <ion-toolbar>
+      <ion-buttons slot="start">
+         <ion-back-button></ion-back-button>
+      </ion-buttons>
+      <ion-title>Claim your NFT</ion-title>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-pading">
+   <ion-item lines="none" class="claim-nft-header">
+      <ion-label>Product: <span>Gem Item</span> </ion-label>
+   </ion-item>
+   <ion-list lines="none">
+      <ion-label class="sub-header ion-text-wrap">A one time password has been sent to your email</ion-label>
+      <ion-label class="sub-header ion-text-wrap">Please enter to verify your identity</ion-label>
+   </ion-list>
+   <ion-item lines="none" style="padding: 20px">
+      <ion-input fill="clear" type="text" [(ngModel)]="otp" autofocus="true"></ion-input>
+   </ion-item>
+   <ion-item lines="none">
+      <ion-row style="display: flex; justify-content: center">
+         <ion-button shape="round" color="primary" [disabled]="!otp" (click)="checkOTP()"> Verify </ion-button>
+      </ion-row>
+   </ion-item>
+</ion-content>

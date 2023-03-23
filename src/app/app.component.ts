@@ -1,4 +1,35 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+// import { SplashScreen } from '@ionic-native/splash-screen';
+// import { StatusBar } from '@ionic-native/status-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { Config, Platform, AlertController, LoadingController } from '@ionic/angular';
+import { Router } from '@angular/router';
+// import { Device } from '@ionic-native/device/ngx';
+// import { DeviceDetectorService } from 'ngx-device-detector';
+
+import { Properties } from '../app/shared/properties';
+import { AuthServiceProvider } from './providers/auth-service/auth-service';
+
+import { StorageServiceProvider } from './providers/storage-service/storage-service';
+// import { Logger } from 'ionic-logger-new';
+import { LoggerService } from './providers/logger-service/logger.service';
+import { EventsService } from './providers/event-service/events.service';
+// import { FileSystemServiceProvider } from './providers/file-service/file-system-service';
+import { DataServiceProvider } from './providers/data-service/data-service';
+import { BlockchainServiceProvider } from './providers/blockchain-service/blockchain-service';
+// import { BcAccountPage } from '../pages/bc-account/bc-account';
+// import { FundTransferPage } from '../pages/fund-transfer/fund-transfer';
+// import { SettingsPage } from '../pages/settings/settings';
+// import { ContentPage } from '../pages/content/content';
+// import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
+// import { CodePush, ILocalPackage, IRemotePackage } from '@ionic-native/code-push';
+// import { MintNftPage } from '../pages/mint-nft/mint-nft';
+// import { OtpPage } from '../pages/otp/otp';
+// import { GetKeysPage } from '../pages/get-keys/get-keys';
+// import { GetNftPage } from '../pages/get-nft/get-nft';
+// import { TabsPage } from '../pages/tabs/tabs';
+// import { HelpPage } from '../pages/help-support/help';
+// import { LoginPage } from '../pages/login/login';
 
 @Component({
    selector: 'app-root',
@@ -6,37 +37,251 @@ import { Component } from '@angular/core';
    styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-   constructor() {}
+   activePage: any;
+   rootPage;
+   company = 'Tracified Wallet';
+   userType = 'Wallet User';
+   user: any;
+   deviceInfo = null;
+   private loading;
+
+   // @ViewChild(Nav) nav: Nav;
+
+   constructor(
+      // private deviceService: DeviceDetectorService,
+      // private device: Device,
+      private translate: TranslateService,
+      private properties: Properties,
+      platform: Platform,
+      private config: Config,
+      // private statusBar: StatusBar,
+      // private splashScreen: SplashScreen,
+      private events: EventsService,
+      private authService: AuthServiceProvider,
+      private alertCtrl: AlertController,
+      private storageService: StorageServiceProvider,
+      private logger: LoggerService,
+      // private fileSystem: FileSystemServiceProvider,
+      private dataService: DataServiceProvider,
+      private blockchainService: BlockchainServiceProvider,
+      // private codepushService: CodePushServiceProvider,
+      private loadingCtrl: LoadingController,
+      private router: Router
+   ) {
+      // platform.ready().then(() => {
+      //    this.statusBar.styleLightContent();
+      //    this.splashScreen.hide();
+      //    this.codepushService.notifyApplicationReady().then(() => {
+      //      this.codepushService.checkForUpdate().then((remotePackage: IRemotePackage) => {
+      //        if (remotePackage.isMandatory) {
+      //          this.presentUpdating();
+      //          this.codepushService.doUpdate(remotePackage).then(() => {
+      //            this.splashScreen.show();
+      //            this.dismissLoading();
+      //          }).catch(() => {
+      //            this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
+      //            this.dismissLoading();
+      //          });
+      //        } else {
+      //          this.waitResponseAlert("Updates Avaialable", "There is a pending application update. Would you like to install it right now?", "Yes", "No").then(() => {
+      //            this.codepushService.doUpdate(remotePackage).then(() => {
+      //              this.splashScreen.show();
+      //              this.dismissLoading();
+      //            }).catch(() => {
+      //              this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
+      //              this.dismissLoading();
+      //            });
+      //          });
+      //        }
+      //      });
+      //    });
+      //    this.properties.skipConsoleLogs = false;
+      //    this.properties.writeToFile = true;
+      //    this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
+      //  });
+      this.initTranslate();
+      //  this.activePage = this.pages[0];
+      //  this.deviceDetails();
+      //  this.events.subscribe('dislayName', (name) => { this.user = name; });
+      //  this.events.subscribe('company', (company) => { this.company = company; });
+      //  this.authService.authorizeLocalProfile().then((res) => {
+      //    if (res) {
+      //      this.dataService.retrieveDefaultAccount().then((account) => {
+      //        this.properties.defaultAccount = account;
+      //        this.rootPage = TabsPage;
+      //      }).catch((err) => {
+      //        this.presentAlert("Error", "Could not retrieve transaction accounts from storage. Please login again.");
+      //        this.dataService.clearLocalData();
+      //        this.rootPage = LoginPage;
+      //      });
+      //    } else {
+      //      this.dataService.clearLocalData();
+      //      this.rootPage = LoginPage;
+      //    }
+      //  }).catch((err) => {
+      //    this.logger.error("Authorize local profile failed: ", err);
+      //    this.presentAlert("Error", "Failed to authorize the user. Please login again.");
+      //    this.rootPage = LoginPage
+      //  });
+   }
+
+   deviceDetails() {
+      // this.deviceInfo = this.deviceService.getDeviceInfo();
+      // const isMobile = this.deviceService.isMobile();
+      // const isTablet = this.deviceService.isTablet();
+      // const isDesktopDevice = this.deviceService.isDesktop();
+   }
+
+   initTranslate() {
+      // Set the default language for translation strings, and the current language.
+      this.translate.setDefaultLang('en');
+      const browserLang = this.translate.getBrowserLang();
+
+      if (browserLang) {
+         if (browserLang === 'zh') {
+            const browserCultureLang = this.translate.getBrowserCultureLang();
+
+            if (browserCultureLang.match(/-CN|CHS|Hans/i)) {
+               this.translate.use('zh-cmn-Hans');
+            } else if (browserCultureLang.match(/-TW|CHT|Hant/i)) {
+               this.translate.use('zh-cmn-Hant');
+            }
+         } else {
+            this.translate.use(this.translate.getBrowserLang());
+         }
+      } else {
+         this.translate.use('en'); // Set your language here
+      }
+
+      // this.translate.get(['BACK_BUTTON_TEXT']).subscribe(values => {
+      //    this.config.set('ios', 'backButtonText', values.BACK_BUTTON_TEXT);
+      // });
+   }
 
    openPage(page: string) {
       switch (page) {
          case 'items':
-            // this.nav.setRoot(TabsPage);
+            //  this.nav.setRoot(TabsPage);
             break;
          case 'nft':
-            // this.nav.setRoot(OtpPage);
+            console.log('hello');
+            this.router.navigate(['/otp-page']);
             break;
          case 'market':
             // this.nav.setRoot(GetNftPage);
             break;
          case 'accounts':
-            // this.nav.setRoot(BcAccountPage);
+            //  this.nav.setRoot(BcAccountPage);
             break;
          case 'fundTransfer':
-            // this.nav.setRoot(FundTransferPage);
+            //  this.nav.setRoot(FundTransferPage);
             break;
          case 'settings':
-            // this.nav.setRoot(SettingsPage);
+            //  this.nav.setRoot(SettingsPage);
             break;
          case 'about':
-            // this.nav.setRoot(ContentPage);
+            //  this.nav.setRoot(ContentPage);
             break;
          case 'logout':
-            // this.logOut();
+            this.logOut();
             break;
          case 'help':
-            // this.nav.setRoot(HelpPage);
+            //  this.nav.setRoot(HelpPage);
             break;
       }
+   }
+
+   checkActive(page) {
+      // return page == this.activePage;
+   }
+
+   underDevelopment() {
+      this.presentAlert('Settings', 'This feature is under development. You cannot view settings at the moment.');
+   }
+
+   async logOut() {
+      let confirm = await this.alertCtrl.create({
+         header: 'Confirmation',
+         message: 'Are you sure you want to logout?',
+         buttons: [
+            {
+               text: 'No',
+               handler: () => {},
+            },
+            {
+               text: 'Yes',
+               handler: () => {
+                  this.storageService.clearAllLocalStores();
+                  //   this.nav.setRoot(LoginPage);
+               },
+            },
+         ],
+      });
+      await confirm.present();
+   }
+
+   async presentAlert(title: string, message: string) {
+      const alert = await this.alertCtrl.create({
+         header: title,
+         message: message,
+         buttons: [
+            {
+               text: 'OK',
+               handler: data => {},
+            },
+         ],
+      });
+
+      await alert.present();
+   }
+
+   languageChange(language) {
+      if (language === 'english') {
+         this.translate.use('en');
+         this.dataService.setLanguage(language);
+      } else if (language === 'sinhala') {
+         this.translate.use('si');
+         this.dataService.setLanguage(language);
+      } else if (language === 'tamil') {
+         this.presentAlert('Language', 'This feature is under development. You cannot change languages at the moment.');
+      }
+   }
+
+   async presentUpdating() {
+      this.loading = await this.loadingCtrl.create({
+         backdropDismiss: false,
+         showBackdrop: true,
+         message: 'Please wait, downloading required updates..',
+      });
+      await this.loading.present();
+   }
+
+   async dismissLoading() {
+      await this.loading.dismiss();
+   }
+
+   waitResponseAlert(title, message, agreeBtn, disagreeBtn) {
+      return new Promise<void>(async (resolve, reject) => {
+         const alert = await this.alertCtrl.create({
+            header: title,
+            message: message,
+            buttons: [
+               {
+                  text: disagreeBtn,
+                  handler: data => {
+                     reject();
+                  },
+               },
+               {
+                  text: agreeBtn,
+                  handler: data => {
+                     resolve();
+                  },
+               },
+            ],
+            backdropDismiss: false,
+         });
+         await alert.present();
+      });
    }
 }
