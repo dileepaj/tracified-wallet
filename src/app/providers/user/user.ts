@@ -1,4 +1,3 @@
-import 'rxjs/add/operator/toPromise';
 
 import { Injectable } from '@angular/core';
 import { share } from 'rxjs/operators';

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -21,12 +21,30 @@ import { ConnectivityServiceProvider } from './providers/connectivity-service/co
 import { BlockchainServiceProvider } from './providers/blockchain-service/blockchain-service';
 import { DataServiceProvider } from './providers/data-service/data-service';
 import { Items } from './providers/items/items';
+import { LoginPage } from './pages/login/login';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { Properties } from './shared/properties';
+import { InitializerService } from './providers/initializer/initializer.service';
+import { FileSystemService } from './providers/file-service/file-system-service';
 
 @NgModule({
-   declarations: [AppComponent, GetNftPage, PagesLoadSvgPage, TabsPage],
-   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+   declarations: [AppComponent, GetNftPage, PagesLoadSvgPage, TabsPage, LoginPage],
+   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, FormsModule, ReactiveFormsModule, ReactiveFormsModule, HttpClientModule, FormsModule,
+      TranslateModule.forRoot({
+         loader: {
+            provide: TranslateLoader,
+            useFactory: createTranslateLoader,
+            deps: [HttpClient],
+         },
+      }),
+   ],
    providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+      { provide: APP_INITIALIZER,useFactory: initializeApp, deps: [InitializerService], multi: true},
+      Properties,
       ApiServiceProvider,
       AuthServiceProvider,
       LoggerService,
@@ -36,8 +54,20 @@ import { Items } from './providers/items/items';
       ConnectivityServiceProvider,
       BlockchainServiceProvider,
       DataServiceProvider,
+      FileSystemService,
       Items,
    ],
    bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+
+export function createTranslateLoader(http: HttpClient) {
+   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
+}
+
+export function initializeApp(initializerService: InitializerService) {
+   return (): Promise<any> => { 
+     return initializerService.init();
+   }
+ }
