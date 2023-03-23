@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { GetNftPage } from '../../pages/get-nft/get-nft';
 import { Clipboard } from '@capacitor/clipboard';
 import { NavigationExtras, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
    selector: 'page-get-keys',
@@ -12,7 +13,7 @@ export class GetKeysPage {
    PK: any = 'wifhowfweofwejfwjhf90wf0wjfwfwe';
    SK: any = '45484284284587928edfwef89424884';
    result: any;
-   constructor(public router: Router, private clipboard: Clipboard) {
+   constructor(public router: Router, private clipboard: Clipboard, private translate: TranslateService) {
       // this.result = this.router.getCurrentNavigation().extras.state.res;
       console.log('data passed ', this.result);
       if (this.result) {

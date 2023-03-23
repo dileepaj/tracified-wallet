@@ -46,20 +46,19 @@ export class LoginPage {
       private toastCtrl: ToastController,
       private loadingCtrl: LoadingController,
       private alertCtrl: AlertController,
-      private translateService: TranslateService,
+      private translate: TranslateService,
       private properties: Properties,
       private logger: LoggerService,
       private dataService: DataServiceProvider,
       private blockchainService: BlockchainServiceProvider,
-      private translate: TranslateService,
-      private router: Router,
+      private router: Router
    ) {
       this.form = new FormGroup({
          username: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
          password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
       });
 
-      this.translateService.get('LOGIN_ERROR').subscribe(value => {
+      this.translate.get('LOGIN_ERROR').subscribe(value => {
          this.loginErrorString = value;
       });
    }
@@ -95,7 +94,6 @@ export class LoginPage {
                               .then(() => {
                                  this.dissmissLoading();
                                  this.router.navigate(['/home'], { state: { navigation: 'initial' } });
-
                               })
                               .catch(err => {
                                  this.dissmissLoading();
@@ -108,7 +106,7 @@ export class LoginPage {
                         .catch(err => {
                            this.dissmissLoading();
                            if (err.status == 406) {
-                            this.router.navigate(['/add-account'], { state: { navigation: 'initial' } });
+                              this.router.navigate(['/add-account'], { state: { navigation: 'initial' } });
                            } else {
                               this.translate.get(['ERROR', 'FAILED_TO_FETCH_TRANS']).subscribe(text => {
                                  this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_TRANS']);
@@ -118,14 +116,13 @@ export class LoginPage {
                         });
                   } else if (res.status === 205) {
                      this.dissmissLoading();
-                     this.router.navigate(['/reset-password'], { 
-                      queryParams: { 
-                        type: 'initial', 
-                        username: this.form.value.username, 
-                        code: this.form.value.password 
-                      } 
-                    });
-                    
+                     this.router.navigate(['/reset-password'], {
+                        queryParams: {
+                           type: 'initial',
+                           username: this.form.value.username,
+                           code: this.form.value.password,
+                        },
+                     });
                   } else {
                      this.dissmissLoading();
                      this.translate.get(['AUTHENTICATION_FAILED', 'FAILED_TO_LOGIN']).subscribe(text => {
