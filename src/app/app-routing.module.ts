@@ -8,16 +8,19 @@ import { LoginPage } from './pages/login/login';
 import { PagesLoadSvgPage } from './pages/pages-load-svg/pages-load-svg';
 import { TabsPage } from './pages/tabs/tabs';
 import { AuthGuardService } from './providers/auth/auth-guard.service';
+import { BcAccountPage } from './pages/bc-account/bc-account';
+import { AddAccountPage } from './pages/add-account/add-account';
 
 const routes: Routes = [
    { path: '', component: TabsPage },
-   { path: 'assets', component: TabsPage, canActivate: [AuthGuardService] },
+   { path: 'assets', component: GetNftPage, canActivate: [AuthGuardService] },
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
    { path: 'mint-nft', component: MintNftPage },
    { path: 'get-key', component: GetKeysPage },
-   { path: 'get-nft', component: GetNftPage },
+   { path: 'bc-account', component: BcAccountPage },
+   { path: 'bc-account', component: AddAccountPage },
 ];
 
 @NgModule({

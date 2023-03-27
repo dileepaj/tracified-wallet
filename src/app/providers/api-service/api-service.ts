@@ -26,18 +26,23 @@ import {
    blockchainAccsByTenant,
    resetPassword,
    verifyEmail,
+   nftbackUrl,
+   gatewayUrl,
+   updateSVG,
+   adminUrl,
+   claimNft,
 } from '../../shared/config';
 
 @Injectable({
    providedIn: 'root',
 })
 export class ApiServiceProvider {
-   url: string = 'http://localhost:8000';
-   baseUrlSVG: string = 'http://localhost:6081/svgmap';
-   LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
    reqOpts: any;
-   nftbeurl = 'http://localhost:6081';
-   updateSVGurl: string = 'http://localhost:6081/svgmap/';
+   // url: string = 'http://localhost:8000';
+   // baseUrlSVG: string = 'http://localhost:6081/svgmap';
+   // LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
+   // nftbeurl = 'https://qa.api.nft.tracified.com';
+   // updateSVGurl: string = 'http://localhost:6081/svgmap/';
 
    constructor(public http: HttpClient, private properties: Properties, private logger: LoggerService) {}
 
@@ -58,15 +63,15 @@ export class ApiServiceProvider {
          }
       }
 
-      return this.http.get(this.url + '/' + endpoint, reqOpts);
+      return this.http.get(gatewayUrl + '/' + endpoint, reqOpts);
    }
 
    query(endpoint: string, params: any, reqOpts?: any) {
-      return this.http.get(this.url + '/' + endpoint + '/' + params, reqOpts);
+      return this.http.get(gatewayUrl + '/' + endpoint + '/' + params, reqOpts);
    }
 
    post(endpoint: string, body: any, reqOpts?: any) {
-      return this.http.post(this.url + '/' + endpoint, body, reqOpts);
+      return this.http.post(gatewayUrl + '/' + endpoint, body, reqOpts);
    }
 
    getNames(body) {
@@ -85,7 +90,7 @@ export class ApiServiceProvider {
    getSVGByHash(Hash: string) {
       //request to get collection name according to user public key
       console.log('inside get svg service: ', Hash);
-      return this.http.get(`${this.baseUrlSVG}/${Hash}`);
+      return this.http.get(`${updateSVG}/${Hash}`);
    }
 
    getAccountFunded(publickey, nftName, issuer): Promise<any> {
@@ -99,7 +104,7 @@ export class ApiServiceProvider {
             }),
          };
          // `/nft/updateStellarMarketplaceBuy?sellingStatus=${sellingStatus}&currentPK=${currentPK}&previousPK=${previousPK}&nfthash=${nfthash}`
-         this.http.get(this.url + `/nft/sponsor?publickey=${publickey}&nftName=${nftName}&issuer=${issuer}`).subscribe(
+         this.http.get(gatewayUrl + `/nft/sponsor?publickey=${publickey}&nftName=${nftName}&issuer=${issuer}`).subscribe(
             response => {
                resolve(response);
             },
@@ -121,7 +126,7 @@ export class ApiServiceProvider {
             }),
          };
          // `/nft/updateStellarMarketplaceBuy?sellingStatus=${sellingStatus}&currentPK=${currentPK}&previousPK=${previousPK}&nfthash=${nfthash}`
-         this.http.get(this.url + `/nft/sponsortrust?publickey=${publickey}&nftName=${nftName}&issuer=${issuer}`).subscribe(
+         this.http.get(gatewayUrl + `/nft/sponsortrust?publickey=${publickey}&nftName=${nftName}&issuer=${issuer}`).subscribe(
             response => {
                resolve(response);
             },
@@ -142,7 +147,7 @@ export class ApiServiceProvider {
                Authorization: 'Bearer ' + this.properties.token,
             }),
          };
-         this.http.put(this.LocalAdminURL + '/api/bc/user/subAccount', body, this.reqOpts).subscribe(
+         this.http.put(adminUrl + '/api/bc/user/subAccount', body, this.reqOpts).subscribe(
             response => {
                // console.log(response);
 
@@ -165,7 +170,7 @@ export class ApiServiceProvider {
                'Content-Type': 'Application/json',
             }),
          };
-         this.http.post(this.url + '/transaction/coc/subAccountStatus', body, this.reqOpts).subscribe(
+         this.http.post(gatewayUrl + '/transaction/coc/subAccountStatus', body, this.reqOpts).subscribe(
             response => {
                // console.log(response);
 
@@ -178,25 +183,6 @@ export class ApiServiceProvider {
          );
       });
    }
-
-   // checkOTP(otp:any,mail:any){
-   //   console.log("Inside service")
-   //   let OTP = {
-   //     Email: mail,
-   //     OTPCode:otp}
-   //   //return this.http.post(this.nftbeurl + '/validateOTP',OTP);
-   //   return new Promise((resolve, reject) => {
-   //     this.http.post(this.nftbeurl + '/validateOTP', OTP, reqOpts)
-   //       .subscribe(response => {
-   //         console.log(response);
-   //         resolve(response);
-   //       },
-   //         error => {
-   //           console.log(error);
-   //           reject(error);
-   //         });
-   //   });
-   // }
 
    checkOTP(otp: any, mail: any): Promise<any> {
       let headers = {
@@ -212,7 +198,20 @@ export class ApiServiceProvider {
          Email: mail,
          Otp: otp,
       };
-      return this.postN(this.nftbeurl + '/validateOTP/', OTP, headers);
+      return this.postN(nftbackUrl + '/validateOTP/', OTP, headers);
+   }
+
+   walletNftSave(payload: any): Promise<any> {
+      let headers = {
+         observe: 'response',
+         headers: new HttpHeaders({
+            Accept: 'application/json',
+            'Content-Type': 'Application/json',
+            Authorization: 'Bearer ' + this.properties.token,
+         }),
+      };
+      console.log('Inside service');
+      return this.postN(nftbackUrl + '/walletnft/save', payload, headers);
    }
 
    verifyEmail(body: any, reqOpts?: any): Promise<any> {
@@ -248,7 +247,7 @@ export class ApiServiceProvider {
    }
 
    put(endpoint: string, body: any, reqOpts?: any) {
-      return this.http.put(this.url + '/' + endpoint, body, reqOpts);
+      return this.http.put(gatewayUrl + '/' + endpoint, body, reqOpts);
    }
 
    /* REFACTORED CODE BELOW */
@@ -515,7 +514,7 @@ export class ApiServiceProvider {
                'Content-Type': 'Application/json',
             }),
          };
-         this.http.get(this.url + '/nft/issueaccount').subscribe(
+         this.http.get(gatewayUrl + '/nft/issueaccount').subscribe(
             response => {
                resolve(response);
             },
@@ -532,7 +531,7 @@ export class ApiServiceProvider {
          hash: hash,
       };
       console.log('data passed for update: ', nft);
-      return this.http.put(this.updateSVGurl, nft);
+      return this.http.put(updateSVG, nft);
    }
 
    minNFTStellar(transactionResultSuccessful, issuerPublicKey, distributorPublickKey, asset_code, collection, Categories, NFTBlockChain, created_at, Tags, NFTURL): Promise<any> {
@@ -562,7 +561,7 @@ export class ApiServiceProvider {
             Successfull: transactionResultSuccessful,
             TrustLineCreatedAt: created_at,
          };
-         this.http.post(this.url + '/nft/mintStellar', NFTModel, this.reqOpts).subscribe(
+         this.http.post(gatewayUrl + '/nft/mintStellar', NFTModel, this.reqOpts).subscribe(
             response => {
                resolve(response);
             },
@@ -583,7 +582,27 @@ export class ApiServiceProvider {
                'Content-Type': 'Application/json',
             }),
          };
-         this.http.get(this.url + `/nft/retriveNFTByStatusAndPK?sellingstatus=${sellingStatus}&distributorPK=${distributorPK}`, this.reqOpts).subscribe(
+         this.http.get(gatewayUrl + `/nft/retriveNFTByStatusAndPK?sellingstatus=${sellingStatus}&distributorPK=${distributorPK}`, this.reqOpts).subscribe(
+            response => {
+               resolve(response);
+            },
+            error => {
+               reject(error);
+            }
+         );
+      });
+   }
+
+   getAllNft() {
+      return new Promise((resolve, reject) => {
+         let reqNft = {
+            observe: 'response',
+            headers: new HttpHeaders({
+               Accept: 'application/json',
+               'Content-Type': 'Application/json',
+            }),
+         };
+         this.http.get(claimNft).subscribe(
             response => {
                resolve(response);
             },

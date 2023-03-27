@@ -6,6 +6,10 @@ const blockchainNetwork = ENV.BLOCKCHAIN_NETWORK;
 const blockchainType = ENV.NETWORK_TYPE;
 const backend = ENV.API_TRACIFIED;
 const backendv1 = ENV.API_TRACIFIED_V1;
+const nftbackend = ENV.NFT_BACKEND;
+
+export const gatewayUrl: string = gateway;
+export const adminUrl: string = admin;
 
 // Backend GET
 
@@ -53,3 +57,8 @@ export const blockchainNetType: string = blockchainType;
 
 export const currency: string = 'Lumens';
 export const mainAccountBalance: number = 1;
+
+//NFT
+export const nftbackUrl: string = nftbackend;
+export const updateSVG: string = nftbackend + '/svgmap/';
+export const claimNft: string = nftbackend + '/walletnfts';
