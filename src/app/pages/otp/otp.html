@@ -8,19 +8,36 @@
 </ion-header>
 
 <ion-content class="ion-pading">
-   <ion-item lines="none" class="claim-nft-header">
-      <ion-label>Product: <span>Gem Item</span> </ion-label>
-   </ion-item>
-   <ion-list lines="none">
-      <ion-label class="sub-header ion-text-wrap">A one time password has been sent to your email</ion-label>
-      <ion-label class="sub-header ion-text-wrap">Please enter to verify your identity</ion-label>
-   </ion-list>
-   <ion-item lines="none" style="padding: 20px">
-      <ion-input fill="clear" type="text" [(ngModel)]="otp" autofocus="true"></ion-input>
-   </ion-item>
-   <ion-item lines="none">
-      <ion-row style="display: flex; justify-content: center">
-         <ion-button shape="round" color="primary" [disabled]="!otp" (click)="checkOTP()"> Verify </ion-button>
-      </ion-row>
-   </ion-item>
+   <form [formGroup]="verifyForm">
+      <ion-item lines="none"> <ion-label class="sub-header ion-text-wrap" style="padding-top: 20px">Enter your email address</ion-label> </ion-item>
+      <ion-item lines="none" style="padding: 0px 20px 30px 20px">
+         <ion-input [clearInput]="true" formControlName="OTP" fill="clear" type="text" [(ngModel)]="mail" autofocus="true"></ion-input>
+      </ion-item>
+      <ion-item lines="none" style="padding: 0px 20px">
+         <ion-label class="sub-header ion-text-wrap">Enter the One-Time Password that has been sent to this email</ion-label>
+      </ion-item>
+      <ion-item lines="none" style="padding: 0px 20px 30px 20px">
+         <ion-input formControlName="Email" fill="clear" type="text" [(ngModel)]="otp" autofocus="true"></ion-input>
+      </ion-item>
+      <ion-item lines="none">
+         <ion-row style="display: flex; justify-content: center">
+            <ion-button shape="round" color="primary" [disabled]="!verifyForm.valid" (click)="checkOTP()"> Verify </ion-button>
+         </ion-row>
+      </ion-item>
+      <!-- <ion-item lines="none" class="claim-nft-header">
+         <ion-label>Product: <span>Gem Item</span> </ion-label>
+      </ion-item> 
+      <ion-list lines="none">
+         <ion-label class="sub-header ion-text-wrap">A one time password has been sent to your email</ion-label>
+         <ion-label class="sub-header ion-text-wrap">Please enter to verify your identity</ion-label>
+      </ion-list>
+      <ion-item lines="none" style="padding: 20px">
+         <ion-input formControlName="OTP" fill="clear" type="text" [(ngModel)]="otp" autofocus="true"></ion-input>
+      </ion-item>
+      <ion-item lines="none">
+         <ion-row style="display: flex; justify-content: center">
+            <ion-button shape="round" color="primary" [disabled]="!otp" (click)="checkOTP()"> Verify </ion-button>
+         </ion-row>
+      </ion-item>-->
+   </form>
 </ion-content>

@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { ToastController, LoadingController } from '@ionic/angular';
 // import { MintNftPage } from '../../pages/mint-nft/mint-nft';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 // import { GetKeysPage } from '../../pages/get-keys/get-keys';
 import { GetNftPage } from '../../pages/get-nft/get-nft';
 import { Router, NavigationExtras } from '@angular/router';
+import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 
 @Component({
    selector: 'page-otp',
@@ -12,31 +13,47 @@ import { Router, NavigationExtras } from '@angular/router';
    styleUrls: ['./otp.scss'],
 })
 export class OtpPage {
-   otp: string = '';
+   otp: string = 'CKHTMGAs';
    mail: any = 'mithilapanagoda@gmail.com';
 
-   constructor(public navCtrl: NavController, public router: Router, private service: ApiServiceProvider) {}
+   verifyForm = new FormGroup({
+      OTP: new FormControl('', Validators.required),
+      Email: new FormControl('', Validators.required),
+   });
+
+   constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController) {}
 
    checkOTP() {
-      this.router.navigate(['/mint-nft']);
-      // if (this.otp != null) {
-      //    this.service.checkOTP(this.otp, 'mithilapanagoda@gmail.com').then(res => {
-      //       console.log('result is: ', res);
-      //       if (res.statusText != 'OK') {
-      //          const options: NavigationExtras = {
-      //             state: {
-      //                res: res,
-      //             },
-      //          };
-      //          this.router.navigate(['/mint-nft'], options);
-      //       } else {
-      //          alert('The OTP has either expired or is invalid');
-      //       }
-      //    });
-      // }
+      this.showLoading();
+      this.service.checkOTP(this.otp, this.mail).then(res => {
+         if (res.body.Response == 'Valid OTP') {
+            this.router.navigate(['/mint-nft'], { queryParams: res });
+            this.dimissLoading();
+         } else {
+            this.presentToast();
+            this.dimissLoading();
+         }
+      });
    }
 
-   ionViewDidLoad() {
-      console.log('ionViewDidLoad OtpPage');
+   async presentToast() {
+      const toast = await this.toastCtrl.create({
+         message: 'The OTP has either expired or is invalid',
+         duration: 2500,
+         position: 'bottom',
+      });
+      await toast.present();
+   }
+
+   async showLoading() {
+      const loading = await this.loadingCtrl.create({
+         message: 'Loading...',
+      });
+
+      loading.present();
+   }
+
+   async dimissLoading() {
+      this.loadingCtrl.dismiss();
    }
 }

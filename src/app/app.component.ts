@@ -180,7 +180,7 @@ export class AppComponent {
             this.router.navigate(['/get-nft']);
             break;
          case 'accounts':
-            //  this.nav.setRoot(BcAccountPage);
+            this.router.navigate(['/bc-account']);
             break;
          case 'fundTransfer':
             //  this.nav.setRoot(FundTransferPage);

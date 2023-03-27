@@ -1,0 +1,30 @@
+.notification-icon {
+   display: flex;
+   margin-top: 20vh;
+   margin-left: auto;
+   margin-right: auto;
+   height: 100%;
+   width: 25vh;
+}
+
+ion-card {
+   padding: 7px 2px 1px 7px;
+   font-size: 14.4px !important;
+}
+
+[padding] h5:first-child {
+   margin-top: 0px !important ;
+}
+
+.label {
+   font-weight: 600;
+   font-size: 14px;
+}
+.data {
+   font-weight: 500;
+   font-size: 14px;
+}
+
+ion-app.md [padding] .scroll-content {
+   padding: 10px !important;
+}

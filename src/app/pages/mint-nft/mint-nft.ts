@@ -79,22 +79,23 @@ export class MintNftPage {
       private storage: StorageServiceProvider,
       private router: Router
    ) {
-      // this.result = this.router.getCurrentNavigation().extras.state.res;
-      // console.log('data passed ', this.result);
-      // console.log('data passed for svg : ', this.result.body.Response.svg);
-      // if (this.result) {
-      //    this.SVG = this.result.body.Response.svg;
-      //    this.convertToBase64(this.SVG);
-      // }
-      // this.account = this.properties.defaultAccount;
-      // this.blockchainService
-      //    .accountBalance(this.account.pk)
-      //    .then(balance => {
-      //       this.accountFunds = balance.toString();
-      //    })
-      //    .catch(err => {
-      //       this.accountFunds = '0 ';
-      //    });
+      this.result = this.router.getCurrentNavigation().extras.queryParams;
+
+      if (this.result) {
+         console.log('data passed ', this.result);
+         console.log('data passed for svg : ', this.result.body.Response.svg);
+         this.SVG = this.result.body.Response.svg;
+         this.convertToBase64(this.SVG);
+      }
+      this.account = this.properties.defaultAccount;
+      this.blockchainService
+         .accountBalance(this.account.pk)
+         .then(balance => {
+            this.accountFunds = balance.toString();
+         })
+         .catch(err => {
+            this.accountFunds = '0 ';
+         });
    }
 
    //  @ViewChild(Nav) nav: Nav;
@@ -156,6 +157,25 @@ export class MintNftPage {
       // this.navCtrl.push(PagesLoadSvgPage, { res: this.imageSrc });
    }
 
+   createNFT() {
+      // this.router.navigate(['/get-key']);
+      console.log(this.nftForm);
+      this.presentLoading();
+      console.log('--------------1----------------');
+      this.storage.getBcAccounts('mithilapanagoda@gmail.com').then((res1: any) => {
+         console.log('retieved result ', res1);
+         if (res1 != null) {
+            this.keypair = Keypair.fromSecret(res1);
+            console.log('Public Key is', this.keypair.publicKey().toString());
+            console.log('Secret Key is', this.keypair.secret().toString());
+            // this.sponsorOldAcc();
+         } else {
+            alert("You don't have an account exisiting with your username. Proceeding to creating a new one!");
+            // this.createNewAccount();
+         }
+      });
+   }
+
    createNewAccount(): void {
       console.log('acc gen started');
       this.keypair = this.blockchainService.createAddress();
@@ -167,28 +187,6 @@ export class MintNftPage {
          alert('Successfully set!');
          this.sponsorNewAcc();
       });
-   }
-   createNFTWithNewAcc() {
-      this.createNFT();
-   }
-
-   createNFT() {
-      this.router.navigate(['/get-key']);
-      console.log(this.nftForm);
-      // this.presentLoading();
-      // console.log('--------------1----------------');
-      // this.storage.getBcAccounts('mithilapanagoda@gmail.com').then((res1: any) => {
-      //    console.log('retieved result ', res1);
-      //    if (res1 != null) {
-      //       this.keypair = Keypair.fromSecret(res1);
-      //       console.log('Public Key is', this.keypair.publicKey().toString());
-      //       console.log('Secret Key is', this.keypair.secret().toString());
-      //       this.sponsorOldAcc();
-      //    } else {
-      //       alert("You don't have an account exisiting with your username. Proceeding to creating a new one!");
-      //       this.createNewAccount();
-      //    }
-      // });
    }
 
    sponsorNewAcc() {
@@ -284,6 +282,22 @@ export class MintNftPage {
                if (this.isLoadingPresent) {
                   this.dissmissLoading();
                }
+               let NFT = {
+                  IssuerPublicKey: this.Issuer,
+                  NFTCreator: this.keypair.publicKey().toString(),
+                  NFTName: this.nftName,
+                  NFTContent: this.hash,
+                  Description: '',
+                  Collection: 'Ruri',
+                  BlockChain: 'stellar',
+                  NFTStatus: 'Minted',
+                  OTP: '',
+                  Email: '',
+                  Timestamp: new Date().toISOString(),
+               };
+
+               this.apiService.walletNftSave(NFT).then().catch();
+
                this.logger.info('NFT created', this.properties.skipConsoleLogs, this.properties.writeToFile);
                this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
                   this.presentAlert(text['MINTED'], text[`NFT ${this.nftName} WAS MINTED`]);
