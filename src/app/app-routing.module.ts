@@ -13,7 +13,7 @@ import { AddAccountPage } from './pages/add-account/add-account';
 
 const routes: Routes = [
    { path: '', component: TabsPage },
-   { path: 'assets', component: GetNftPage, canActivate: [AuthGuardService] },
+   { path: 'assets', component: TabsPage, canActivate: [AuthGuardService] },
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
