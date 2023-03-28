@@ -10,6 +10,8 @@ import { TabsPage } from './pages/tabs/tabs';
 import { AuthGuardService } from './providers/auth/auth-guard.service';
 import { BcAccountPage } from './pages/bc-account/bc-account';
 import { AddAccountPage } from './pages/add-account/add-account';
+import { AccountDetailsPage } from './pages/account-details/account-details/account-details.page';
+import { FundTransferPage } from './pages/fund-transfer/fund-transfer.page';
 
 const routes: Routes = [
    { path: '', component: TabsPage },
@@ -19,8 +21,21 @@ const routes: Routes = [
    { path: 'otp-page', component: OtpPage },
    { path: 'mint-nft', component: MintNftPage },
    { path: 'get-key', component: GetKeysPage },
-   { path: 'bc-account', component: BcAccountPage },
-   { path: 'bc-account', component: AddAccountPage },
+   { path: 'bc-account', component: BcAccountPage, canActivate: [AuthGuardService] },
+   { path: 'add-account', component: AddAccountPage, canActivate: [AuthGuardService] },
+
+   {
+      path: 'account-details',
+      component: AccountDetailsPage,
+      canActivate: [AuthGuardService],
+   },
+   {
+      path: 'fund-transfer',
+      component: FundTransferPage,
+      canActivate: [AuthGuardService],
+   },
+
+   // { path: 'bc-account', component: AddAccountPage },
 ];
 
 @NgModule({

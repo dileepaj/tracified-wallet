@@ -27,15 +27,21 @@ export class BcAccountPage {
       private loadingCtrl: LoadingController,
       public alertCtrl: AlertController,
       public dataService: DataServiceProvider
-   ) {}
+   ) {
 
-   ionViewDidLoad() {
+      console.log('construct BcAccountPage');
+
+
+   }
+
+   ionViewDidEnter() {
+      //v6 load rename to enter as load is not getting called : check
       console.log('ionViewDidLoad BcAccountPage');
       this.getMainAccounts();
    }
 
    goToAddAccount() {
-      this.router.navigate(['/']);
+      this.router.navigate(['add-account/']);
       // this.navCtrl.push(AddAccountPage);
    }
 
@@ -52,6 +58,7 @@ export class BcAccountPage {
             .then(accounts => {
                this.dissmissLoading();
                this.userAcc = accounts;
+               console.log("accounts: ", accounts);
                resolve(accounts);
             })
             .catch(error => {
@@ -103,6 +110,6 @@ export class BcAccountPage {
    }
 
    viewAccount(account) {
-      // this.navCtrl.push(AccountDetailsPage, { account: account });
+      this.router.navigate(['/account-details'], { state: { account: account } });
    }
 }
