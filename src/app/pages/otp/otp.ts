@@ -22,8 +22,8 @@ export class OtpPage {
    });
 
    constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController, private route: ActivatedRoute) {
-      const emailParam = this.route.snapshot.paramMap.get('email');
-      const shopidParam = this.route.snapshot.paramMap.get('shopid');
+      const emailParam = this.route.snapshot.queryParamMap.get('email');
+      const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
 
       if (emailParam) {
          this.mail = emailParam;

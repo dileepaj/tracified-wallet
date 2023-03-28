@@ -113,7 +113,6 @@ export class AppComponent {
          this.company = company;
       });
 
-
       //v6 plz remove and move to activate
 
       // this.authService
@@ -141,7 +140,6 @@ export class AppComponent {
       //    this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
       //    this.router.navigate(['/login'], { replaceUrl: true });
       // });
-
    }
 
    initDeepLink() {
@@ -149,20 +147,21 @@ export class AppComponent {
          this.zone.run(() => {
             const segments = event.url.split('://')[1].split('/');
             const slug = segments?.[0];
-            const email = segments?.[1]; 
-            const shopId = segments?.[1]; 
+            const email = segments?.[1];
+            const shopId = segments?.[2];
 
             if (slug === 'nft') {
                const queryParams = {};
                if (email) {
-                 queryParams['email'] = email;
+                  queryParams['email'] = email;
                }
                if (shopId) {
-                 queryParams['shopId'] = shopId;
+                  queryParams['shopId'] = shopId;
                }
                this.router.navigate(['/otp-page'], { queryParams });
+            } else {
+               this.router.navigateByUrl('/');
             }
-            this.router.navigateByUrl('/');
          });
       });
    }
