@@ -116,31 +116,31 @@ export class AppComponent {
 
       //v6 plz remove and move to activate
 
-      this.authService
-      .authorizeLocalProfile()
-      .then(res => {
-         if (res) {
-            this.dataService
-               .retrieveDefaultAccount()
-               .then(account => {
-                  this.properties.defaultAccount = account;
-                  this.router.navigate(['/assets'], { replaceUrl: true });
-               })
-               .catch(err => {
-                  this.presentAlert('Error', 'Could not retrieve transaction accounts from storage. Please login again.');
-                  this.dataService.clearLocalData();
-                  this.router.navigate(['/login'], { replaceUrl: true });
-               });
-         } else {
-            this.dataService.clearLocalData();
-            this.router.navigate(['/login'], { replaceUrl: true });
-         }
-      })
-      .catch(err => {
-         this.logger.error('Authorize local profile failed: ', err);
-         this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
-         this.router.navigate(['/login'], { replaceUrl: true });
-      });
+      // this.authService
+      // .authorizeLocalProfile()
+      // .then(res => {
+      //    if (res) {
+      //       this.dataService
+      //          .retrieveDefaultAccount()
+      //          .then(account => {
+      //             this.properties.defaultAccount = account;
+      //             this.router.navigate(['/assets'], { replaceUrl: true });
+      //          })
+      //          .catch(err => {
+      //             this.presentAlert('Error', 'Could not retrieve transaction accounts from storage. Please login again.');
+      //             this.dataService.clearLocalData();
+      //             this.router.navigate(['/login'], { replaceUrl: true });
+      //          });
+      //    } else {
+      //       this.dataService.clearLocalData();
+      //       this.router.navigate(['/login'], { replaceUrl: true });
+      //    }
+      // })
+      // .catch(err => {
+      //    this.logger.error('Authorize local profile failed: ', err);
+      //    this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
+      //    this.router.navigate(['/login'], { replaceUrl: true });
+      // });
 
    }
 
@@ -150,9 +150,17 @@ export class AppComponent {
             const segments = event.url.split('://')[1].split('/');
             const slug = segments?.[0];
             const email = segments?.[1]; 
+            const shopId = segments?.[1]; 
+
             if (slug === 'nft') {
-               this.router.navigateByUrl(email ? `/otp-page/${email}` : '/otp-page/');
-               return;
+               const queryParams = {};
+               if (email) {
+                 queryParams['email'] = email;
+               }
+               if (shopId) {
+                 queryParams['shopId'] = shopId;
+               }
+               this.router.navigate(['/otp-page'], { queryParams });
             }
             this.router.navigateByUrl('/');
          });

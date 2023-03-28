@@ -21,8 +21,13 @@ export class OtpPage {
       Email: new FormControl('', Validators.required),
    });
 
-   constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController,private route: ActivatedRoute) {
-      this.mail = this.route.snapshot.paramMap.get('email');
+   constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController, private route: ActivatedRoute) {
+      const emailParam = this.route.snapshot.paramMap.get('email');
+      const shopidParam = this.route.snapshot.paramMap.get('shopid');
+
+      if (emailParam) {
+         this.mail = emailParam;
+      }
    }
 
    checkOTP() {

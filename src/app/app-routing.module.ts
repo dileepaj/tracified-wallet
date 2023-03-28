@@ -18,7 +18,7 @@ const routes: Routes = [
    { path: 'assets', component: TabsPage, canActivate: [AuthGuardService] },
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
-   { path: 'otp-page/:email', component: OtpPage },
+   { path: 'otp-page', component: OtpPage },
    { path: 'mint-nft', component: MintNftPage },
    { path: 'get-key', component: GetKeysPage },
    { path: 'bc-account', component: BcAccountPage, canActivate: [AuthGuardService] },
