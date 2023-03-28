@@ -36,13 +36,15 @@ import { FileSystemService } from './providers/file-service/file-system-service'
 import { CommonModule } from '@angular/common';
 import { BcAccountPage } from './pages/bc-account/bc-account';
 import { AddAccountPage } from './pages/add-account/add-account';
+import { AccountDetailsPage } from './pages/account-details/account-details/account-details.page';
+import { FundTransferPage } from './pages/fund-transfer/fund-transfer.page';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
 @NgModule({
-   declarations: [AppComponent, GetNftPage, PagesLoadSvgPage, TabsPage, OtpPage, MintNftPage, GetNftPage, GetKeysPage, LoginPage, GetNftPage, BcAccountPage, AddAccountPage],
+   declarations: [AppComponent, GetNftPage, PagesLoadSvgPage, TabsPage, OtpPage, MintNftPage, GetNftPage, GetKeysPage, LoginPage, GetNftPage, BcAccountPage, AddAccountPage,AccountDetailsPage,FundTransferPage],
    imports: [
       BrowserModule,
       IonicModule.forRoot({}),

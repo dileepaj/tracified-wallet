@@ -1,9 +1,11 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, NgZone, ViewChild } from '@angular/core';
 // import { SplashScreen } from '@ionic-native/splash-screen';
 // import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Config, Platform, AlertController, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { App, URLOpenListenerEvent } from '@capacitor/app';
+
 // import { Device } from '@ionic-native/device/ngx';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
@@ -66,8 +68,11 @@ export class AppComponent {
       private blockchainService: BlockchainServiceProvider,
       // private codepushService: CodePushServiceProvider,
       private loadingCtrl: LoadingController,
-      private router: Router
+      private router: Router,
+      private zone: NgZone
    ) {
+      this.initDeepLink();
+
       platform.ready().then(() => {
          // this.statusBar.styleLightContent();
          // this.splashScreen.hide();
@@ -107,31 +112,51 @@ export class AppComponent {
       this.events.subscribe('company', company => {
          this.company = company;
       });
+
+
+      //v6 plz remove and move to activate
+
       this.authService
-         .authorizeLocalProfile()
-         .then(res => {
-            if (res) {
-               this.dataService
-                  .retrieveDefaultAccount()
-                  .then(account => {
-                     this.properties.defaultAccount = account;
-                     this.router.navigate(['/assets'], { replaceUrl: true });
-                  })
-                  .catch(err => {
-                     this.presentAlert('Error', 'Could not retrieve transaction accounts from storage. Please login again.');
-                     this.dataService.clearLocalData();
-                     this.router.navigate(['/login'], { replaceUrl: true });
-                  });
-            } else {
-               this.dataService.clearLocalData();
-               this.router.navigate(['/login'], { replaceUrl: true });
-            }
-         })
-         .catch(err => {
-            this.logger.error('Authorize local profile failed: ', err);
-            this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
+      .authorizeLocalProfile()
+      .then(res => {
+         if (res) {
+            this.dataService
+               .retrieveDefaultAccount()
+               .then(account => {
+                  this.properties.defaultAccount = account;
+                  this.router.navigate(['/assets'], { replaceUrl: true });
+               })
+               .catch(err => {
+                  this.presentAlert('Error', 'Could not retrieve transaction accounts from storage. Please login again.');
+                  this.dataService.clearLocalData();
+                  this.router.navigate(['/login'], { replaceUrl: true });
+               });
+         } else {
+            this.dataService.clearLocalData();
             this.router.navigate(['/login'], { replaceUrl: true });
+         }
+      })
+      .catch(err => {
+         this.logger.error('Authorize local profile failed: ', err);
+         this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
+         this.router.navigate(['/login'], { replaceUrl: true });
+      });
+
+   }
+
+   initDeepLink() {
+      App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
+         this.zone.run(() => {
+            const segments = event.url.split('://')[1].split('/');
+            const slug = segments?.[0];
+            const email = segments?.[1]; 
+            if (slug === 'nft') {
+               this.router.navigateByUrl(email ? `/otp-page/${email}` : '/otp-page/');
+               return;
+            }
+            this.router.navigateByUrl('/');
          });
+      });
    }
 
    deviceDetails() {
