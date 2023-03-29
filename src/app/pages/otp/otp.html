@@ -14,7 +14,7 @@
             <ion-label class="headerOne ion-text-wrap">Enter your email address</ion-label>
          </ion-row>
          <ion-row>
-            <ion-input class="cusInput email" formControlName="OTP" fill="clear" type="text" autofocus="true"> </ion-input>
+            <ion-input class="cusInput email" formControlName="Email" fill="clear" type="text" autofocus="true" [(ngModel)]="email"> </ion-input>
             <!-- <ion-input class="cusInput email" formControlName="OTP" fill="clear" type="text" autofocus="true"> <ion-icon slot="end" name="pencil"></ion-icon></ion-input> -->
          </ion-row>
       </ion-grid>
@@ -23,7 +23,7 @@
             <ion-label class="headerOne ion-text-wrap">Enter the One-Time Password that has been sent to this email</ion-label>
          </ion-row>
          <ion-row>
-            <ion-input class="cusInput" formControlName="Email" fill="clear" type="text" autofocus="true"></ion-input>
+            <ion-input class="cusInput" formControlName="OTP" fill="clear" type="text" autofocus="true"></ion-input>
          </ion-row>
       </ion-grid>
       <ion-grid class="ion-padding-top">
