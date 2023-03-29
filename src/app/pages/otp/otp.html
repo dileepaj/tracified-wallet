@@ -9,7 +9,7 @@
 
 <ion-content class="ion-pading">
    <form [formGroup]="verifyForm" *ngIf="otpForm" class="formOne ion-padding-top">
-      <ion-grid class="ion-padding-top">
+      <ion-grid class="ion-padding-top cusGrid">
          <ion-row>
             <ion-label class="headerOne ion-text-wrap">Enter your email address</ion-label>
          </ion-row>
@@ -18,7 +18,7 @@
             <!-- <ion-input class="cusInput email" formControlName="OTP" fill="clear" type="text" autofocus="true"> <ion-icon slot="end" name="pencil"></ion-icon></ion-input> -->
          </ion-row>
       </ion-grid>
-      <ion-grid class="ion-padding-top">
+      <ion-grid class="ion-padding-top cusGrid">
          <ion-row>
             <ion-label class="headerOne ion-text-wrap">Enter the One-Time Password that has been sent to this email</ion-label>
          </ion-row>
@@ -26,7 +26,7 @@
             <ion-input class="cusInput" formControlName="OTP" fill="clear" type="text" autofocus="true"></ion-input>
          </ion-row>
       </ion-grid>
-      <ion-grid class="ion-padding-top">
+      <ion-grid class="ion-padding-top cusGrid">
          <ion-row>
             <ion-button shape="round" color="primary" [disabled]="!verifyForm.valid" (click)="checkOTP()"> Verify </ion-button>
          </ion-row>
@@ -34,7 +34,7 @@
    </form>
 
    <form [formGroup]="nftForm" *ngIf="otpForm" class="formTwo ion-padding-top">
-      <ion-grid>
+      <ion-grid class="cusGrid">
          <ion-row>
             <ion-label class="headerTwo ion-text-wrap">NFT Name</ion-label>
          </ion-row>
@@ -45,7 +45,7 @@
          </ion-row>
       </ion-grid>
 
-      <ion-grid>
+      <ion-grid class="cusGrid">
          <ion-row>
             <ion-label class="headerTwo ion-text-wrap">Recipient's Name</ion-label>
          </ion-row>
@@ -56,7 +56,7 @@
          </ion-row>
       </ion-grid>
 
-      <ion-grid>
+      <ion-grid class="cusGrid">
          <ion-row>
             <ion-label class="headerTwo ion-text-wrap">Message</ion-label>
          </ion-row>
@@ -66,7 +66,7 @@
             </ion-item>
          </ion-row>
       </ion-grid>
-      <ion-grid class="checkbox-group">
+      <ion-grid class="checkbox-group cusGrid">
          <ion-row>
             <ion-label class="header">Please note that these information cannot be modified once the NFT is claimed.</ion-label>
          </ion-row>
@@ -76,7 +76,7 @@
          </ion-row>
       </ion-grid>
 
-      <ion-grid class="centered-container ion-padding-top">
+      <ion-grid class="centered-container ion-padding-top cusGrid">
          <ion-row style="display: flex; justify-content: center">
             <ion-button shape="round" color="primary" [disabled]="!nftForm.valid" (click)="sendDetails()"> Next </ion-button>
          </ion-row>
