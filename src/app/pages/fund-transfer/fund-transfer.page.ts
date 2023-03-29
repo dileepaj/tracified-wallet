@@ -19,7 +19,7 @@ export class FundTransferPage implements OnInit {
    userAcc;
    transferAmount;
    receiverPK;
-   showaccount: Array<string> = [];
+   showaccount: Array<any> = [];
 
    constructor(
       private alertCtrl: AlertController,
@@ -34,9 +34,11 @@ export class FundTransferPage implements OnInit {
    ) {
       this.mainAccount = this.properties.defaultAccount;
       this.getMainAccounts();
+
+
+
    }
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
   }
 
    ionViewDidLoad() {
@@ -68,13 +70,15 @@ export class FundTransferPage implements OnInit {
                   });
                } else {
                   this.dissmissLoading();
+
+                  console.log("passing data ", this.transferAmount, this.mainAccount.accountName, this.mainAccount.pk, this.receiverPK, this.receiverPK);
                   this.router.navigate(['/transfer-confirm'], {
                      state: {
                         transferAmount: this.transferAmount,
                         senderName: this.mainAccount.accountName,
                         senderPK: this.mainAccount.pk,
-                        recieverPK: this.receiverPK,
-                        recieverName: this.receiverPK,
+                        receiverPK: this.receiverPK,
+                        receiverName: this.receiverPK,
                      },
                   });
                }
@@ -113,8 +117,12 @@ export class FundTransferPage implements OnInit {
                for (var i = 0; i < Object.keys(this.userAcc).length; i++) {
                   if (this.properties.defaultAccount.accountName != this.userAcc[i].accountName) {
                      this.showaccount.push(this.userAcc[i]);
+                     console.log("account type ",typeof this.userAcc[i]);
                   }
                }
+
+               console.log("accounts ",this.showaccount);
+
                resolve();
             })
             .catch(error => {
@@ -165,6 +173,10 @@ export class FundTransferPage implements OnInit {
          alert.present();
       });
    }
+
+
+   getType(val) { return typeof val  }
+
 
    async goBackAlert(title, message) {
       let alert = await this.alertCtrl.create({

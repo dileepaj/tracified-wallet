@@ -12,6 +12,7 @@ import { BcAccountPage } from './pages/bc-account/bc-account';
 import { AddAccountPage } from './pages/add-account/add-account';
 import { AccountDetailsPage } from './pages/account-details/account-details/account-details.page';
 import { FundTransferPage } from './pages/fund-transfer/fund-transfer.page';
+import { TransferConfirmPage } from './pages/transfer-confirm/transfer-confirm.page';
 
 const routes: Routes = [
    { path: '', component: TabsPage },
@@ -34,6 +35,12 @@ const routes: Routes = [
       component: FundTransferPage,
       canActivate: [AuthGuardService],
    },
+  {
+    path: 'transfer-confirm',
+    component:TransferConfirmPage,
+    canActivate: [AuthGuardService]
+  },
+
 
    // { path: 'bc-account', component: AddAccountPage },
 ];

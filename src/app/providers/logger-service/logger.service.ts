@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class LoggerService {
    debug(arg0: string) {
+      console.debug(arg0);
    }
    init(fileSystem: any) {
       //v6 return fake promise
@@ -12,9 +13,12 @@ export class LoggerService {
          resolve(true);
       });
    }
-   error(arg0: string, skipConsoleLogs?: boolean, writeToFile?: boolean) {}
-   info(arg0: string, skipConsoleLogs?: boolean, writeToFile?: boolean) {}
-   
+   error(arg0: string, skipConsoleLogs?: boolean, writeToFile?: boolean) {
+      console.error(arg0);
+   }
+   info(arg0: string, skipConsoleLogs?: boolean, writeToFile?: boolean) {
+      console.info(arg0);
+   }
 
    constructor() {}
 }
