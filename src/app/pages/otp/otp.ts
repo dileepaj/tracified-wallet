@@ -4,7 +4,7 @@ import { ToastController, LoadingController } from '@ionic/angular';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 // import { GetKeysPage } from '../../pages/get-keys/get-keys';
 import { GetNftPage } from '../../pages/get-nft/get-nft';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras, ExtraOptions } from '@angular/router';
 import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 
 @Component({
@@ -13,27 +13,52 @@ import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/
    styleUrls: ['./otp.scss'],
 })
 export class OtpPage {
-   otp: string = 'CKHTMGAs';
-   mail: any = 'mithilapanagoda@gmail.com';
-
+   otpForm: boolean = true;
+   svgResult: any;
+   customCounterFormatter(inputLength: number, maxLength: number) {
+      return `${maxLength - inputLength} characters remaining`;
+   }
    verifyForm = new FormGroup({
-      OTP: new FormControl('', Validators.required),
-      Email: new FormControl('', Validators.required),
+      OTP: new FormControl('CKHTMGA', Validators.required),
+      Email: new FormControl('mithilapanagoda@gmail.com', Validators.required),
+   });
+
+   nftForm = new FormGroup({
+      nftName: new FormControl('', Validators.required),
+      recipName: new FormControl('', Validators.required),
+      message: new FormControl('', Validators.required),
+      agreeTick: new FormControl('false', Validators.requiredTrue),
    });
 
    constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController) {}
 
    checkOTP() {
+      let otp = this.verifyForm.get('OTP').value;
+      let mail = this.verifyForm.get('Email').value;
       this.showLoading();
-      this.service.checkOTP(this.otp, this.mail).then(res => {
-         if (res.body.Response == 'Valid OTP') {
-            this.router.navigate(['/mint-nft'], { queryParams: res });
+      this.service.checkOTP(otp, mail).then(res => {
+         console.log(res);
+         this.svgResult = res;
+         if (res.body.Response) {
+            this.otpForm = false;
+            // this.router.navigate(['/mint-nft'], { queryParams: res });
             this.dimissLoading();
          } else {
             this.presentToast();
             this.dimissLoading();
          }
       });
+   }
+
+   sendDetails() {
+      const option: NavigationExtras = {
+         queryParams: {
+            svg: this.svgResult,
+            nftName: this.nftForm.get('nftName').value,
+            recipName: this.nftForm.get('recipName').value,
+            message: this.nftForm.get('message').value,
+         },
+      };
    }
 
    async presentToast() {
@@ -47,9 +72,8 @@ export class OtpPage {
 
    async showLoading() {
       const loading = await this.loadingCtrl.create({
-         message: 'Loading...',
+         message: 'Verifying...',
       });
-
       loading.present();
    }
 

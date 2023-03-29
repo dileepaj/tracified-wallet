@@ -616,7 +616,7 @@ export class BlockchainServiceProvider {
       return signedTrans;
    }
 
-   signandsubmitXdr(xdr, decKey) {
+   signandsubmitXdr(xdr, decKey): Promise<any> {
       console.log('XDR: ', xdr, decKey);
       let keyPair = Keypair.fromSecret(decKey);
       console.log('kp:  ', keyPair.publicKey().toString());
@@ -634,8 +634,9 @@ export class BlockchainServiceProvider {
       console.log('signed txn: ', signedTrans);
       let server = new Server(blockchainNet);
       console.log('transactio now: ', transaction);
-      let txn = server.submitTransaction(transaction);
-      console.log('signed txn: ', txn);
+      // console.log('signed txn: ', txn);
+      return server.submitTransaction(transaction);
+
       //return signedTrans;
    }
 

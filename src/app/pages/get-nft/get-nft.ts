@@ -51,7 +51,9 @@ export class GetNftPage implements OnInit {
          .getAllNft()
          .then(res => {
             this.list = res;
-            console.log(res);
+            let hash: string = this.list[0].nftcontent;
+            this.getSVG(hash);
+            // console.log(res);
             // this.dissmissLoading();
          })
          .catch(error => {
@@ -69,6 +71,23 @@ export class GetNftPage implements OnInit {
 
    async dissmissLoading() {
       await this.loading.dismiss();
+   }
+
+   async getSVG(hash: any) {
+      this.apiService.getSVGByHash(hash).subscribe((res: any) => {
+         console.log('get svg by hash response: ', res);
+         return res;
+         // this.Decryption = res.Response;
+
+         // const svgString = this.Decryption.toString();
+         // console.log(svgString);
+
+         // const base64String = btoa(svgString);
+
+         // let imgElement = `data:image/svg+xml;base64,${base64String}`;
+         // this.imageSrc = imgElement;
+         // console.log(imgElement);
+      });
    }
 
    // getOwnNFT() {

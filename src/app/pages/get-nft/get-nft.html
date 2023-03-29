@@ -10,7 +10,7 @@
 <ion-content class="ion-padding">
    <ion-item lines="none" *ngIf="ownNFTs.length === 0">
       <ion-grid>
-         <ion-row>
+         <ion-row class="ion-text-center">
             <ion-img src="../../assets/imgs/emptystatus-04.png"></ion-img>
          </ion-row>
          <ion-row class="ion-justify-content-center ion-padding-top">
@@ -22,7 +22,7 @@
       </ion-grid>
    </ion-item>
 
-   <ion-grid>
+   <!-- <ion-grid>
       <ion-row *ngFor="let row of imgrowlist">
          <ion-col size="4" style="display: flex" *ngFor="let img of row">
             <ion-card style="margin: 0px; background-color: #2d2d2d">
@@ -34,5 +34,5 @@
             </ion-card>
          </ion-col>
       </ion-row>
-   </ion-grid>
+   </ion-grid> -->
 </ion-content>

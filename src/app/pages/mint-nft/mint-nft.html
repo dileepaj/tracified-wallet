@@ -8,82 +8,17 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-   <form [formGroup]="nftForm">
-      <ion-grid>
-         <ion-row class="ion-justify-content-center">
-            <ion-col class="claim-nft-preview">
-               <!-- <ion-img class="back-icon" src="../../assets/icon/back.png"></ion-img> -->
-               <div class="preview-inner">
-                  <ion-label class="heading-text">Preview</ion-label>
-                  <!-- <img class="svg" [src]="imageSrc" *ngIf="imageSrc"/> -->
-                  <ion-img src="{{this.imageSrc}}" class="svg"></ion-img>
-               </div>
-            </ion-col>
-            <ion-col class="claim-nft-form">
-               <div class="form-wrapper">
-                  <ion-label>Product: <span>Gem Item</span> </ion-label>
-                  <div class="input-group">
-                     <ion-label class="title">NFT Name</ion-label>
-                     <ion-input
-                        formControlName="nftName"
-                        class="input"
-                        type="text"
-                        id="input"
-                        maxlength="12"
-                        [(ngModel)]="nftName"
-                        (click)="closeTooltip()"
-                        autofocus="true"
-                        placeholder="Enter a name for your NFT"></ion-input>
-                     <ion-label class="counter">{{getRemainingCharacters('nftName')}} characters remaining</ion-label>
-                  </div>
-                  <div class="input-group">
-                     <ion-label class="title">Recipient’s Name</ion-label>
-                     <ion-input
-                        formControlName="recipName"
-                        class="input"
-                        type="text"
-                        maxlength="15"
-                        id="input"
-                        placeholder="Enter name of the recipient"
-                        [(ngModel)]="recipientsName"
-                        (click)="closeTooltip()"></ion-input>
-                     <ion-label class="counter">{{getRemainingCharacters('recipientsName')}} characters remaining</ion-label>
-                  </div>
-                  <div class="input-group">
-                     <div class="tooltip">
-                        <div class="tooltip-inner">
-                           <ion-icon class="info-icon" name="information-circle" (click)="presentPopover($event)"></ion-icon>
-                           <!-- <ion-popover #popover [isOpen]="isOpen" (didDismiss)="isOpen = false">
-                              <ng-template>
-                                 <ion-content class="tooltip">A message you want to display to your receipient that will be added as part of the NFT.</ion-content>
-                              </ng-template>
-                           </ion-popover> -->
-                           <!-- <ion-icon class="info-icon" name="information-circle" (click)="toggleTooltip()"></ion-icon>
-                           <span *ngIf="isTooltipOpen"></span>
-                           <div class="tooltip-msg" *ngIf="isTooltipOpen">A message you want to display to your receipient that will be added as part of the NFT.</div> -->
-                        </div>
-                     </div>
-                     <ion-label class="title">Message</ion-label>
-                     <ion-textarea
-                        formControlName="message"
-                        class="input textarea"
-                        rows="4"
-                        cols="5"
-                        maxlength="50"
-                        id="input"
-                        placeholder="Enter a message for the recipient"
-                        [(ngModel)]="message"></ion-textarea>
-                     <ion-label class="counter">{{getRemainingCharacters('message')}} characters remaining</ion-label>
-                  </div>
-                  <ion-label class="msg">Please note that these information cannot be modified once the NFT is claimed.</ion-label>
-                  <div class="checkbox-group">
-                     <ion-checkbox formControlName="agreeTick" class="checkbox" slot="start"></ion-checkbox>
-                     <ion-label class="checkbox-lbl">I agree</ion-label>
-                  </div>
-                  <ion-button class="btn-green" [disabled]="!nftForm.valid" (click)="createNFT()">Claim Your NFT</ion-button>
-               </div>
-            </ion-col>
-         </ion-row>
-      </ion-grid>
-   </form>
+   <ion-grid class="claim-nft-preview">
+      <ion-row class="ion-padding-top">
+         <ion-label class="heading-text">SVG Preview</ion-label>
+      </ion-row>
+      <ion-row class="ion-padding-top">
+         <div class="svg" [innerHTML]="SVG"></div>
+      </ion-row>
+   </ion-grid>
 </ion-content>
+<ion-footer>
+   <ion-row class="ion-padding">
+      <ion-button class="btn-green" (click)="createNFT()">Claim Your NFT</ion-button>
+   </ion-row>
+</ion-footer>

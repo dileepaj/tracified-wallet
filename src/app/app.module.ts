@@ -78,6 +78,7 @@ export function createTranslateLoader(http: HttpClient) {
       Clipboard,
    ],
    bootstrap: [AppComponent],
+   exports: [MintNftPage],
 })
 export class AppModule {}
 
