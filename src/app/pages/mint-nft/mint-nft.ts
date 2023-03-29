@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
@@ -8,9 +8,7 @@ import { Properties } from '../../shared/properties';
 import { Keypair } from 'stellar-sdk';
 // import { Logger } from 'ionic-logger-new';
 import { LoggerService } from 'src/app/providers/logger-service/logger.service';
-// import { GetKeysPage } from '../../pages/get-keys/get-keys';
 import { DomSanitizer } from '@angular/platform-browser';
-// import { Dialogs } from '@ionic-native/dialogs';
 import CryptoJS from 'crypto-js';
 import { PagesLoadSvgPage } from '../../pages/pages-load-svg/pages-load-svg';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
@@ -37,7 +35,8 @@ export class MintNftPage {
    private ProductName = '';
    private NFTBlockChain = 'Stellar';
    mail: any = 'mithilapanagoda@gmail.com';
-   private SVG = '';
+   SVG = '';
+   SVGID = '';
    nftName: string = '';
    message: string = '';
    recipientsName: string = '';
@@ -73,18 +72,17 @@ export class MintNftPage {
       private translate: TranslateService,
       private apiService: ApiServiceProvider,
       private _sanitizer: DomSanitizer,
-      // private dialogs: Dialogs,
       private loadingCtrl: LoadingController,
       private logger: LoggerService,
       private storage: StorageServiceProvider,
-      private router: Router
+      private router: Router,
+      private toastCtrl: ToastController
    ) {
       this.result = this.router.getCurrentNavigation().extras.queryParams;
 
       if (this.result) {
-         console.log('data passed ', this.result);
-         console.log('data passed for svg : ', this.result.body.Response.svg);
-         this.SVG = this.result.body.Response.svg;
+         this.SVG = this.result.body.Response.SVG;
+         this.SVGID = this.result.body.Response.SVGID;
          this.convertToBase64(this.SVG);
       }
       this.account = this.properties.defaultAccount;
@@ -98,17 +96,6 @@ export class MintNftPage {
          });
    }
 
-   //  @ViewChild(Nav) nav: Nav;
-   nftForm = new FormGroup({
-      nftName: new FormControl('', Validators.required),
-      recipName: new FormControl('', Validators.required),
-      message: new FormControl('', Validators.required),
-      agreeTick: new FormControl('false', Validators.requiredTrue),
-   });
-
-   ionViewDidLoad() {
-      console.log('ionViewDidLoad CreateNftPage');
-   }
    ionViewDidEnter() {
       this.account = this.properties.defaultAccount;
    }
@@ -128,10 +115,15 @@ export class MintNftPage {
       console.log('converted base64: ', encodedData);
       this.hash = CryptoJS.SHA256(encodedData).toString(CryptoJS.enc.Hex);
       console.log('converted hash: ', this.hash);
-      this.apiService.updateSVG(this.result.body.Response.svgid, this.hash).subscribe((res: any) => {
-         console.log('update svg API result : ', res);
-         this.loadSVG(this.hash);
-      });
+      this.apiService.updateSVG(this.SVGID, this.hash).subscribe(
+         (res: any) => {
+            console.log('update svg API result : ', res);
+            this.loadSVG(this.hash);
+         },
+         error => {
+            console.log(error);
+         }
+      );
    }
 
    loadSVG(hash: string) {
@@ -139,18 +131,25 @@ export class MintNftPage {
       this.apiService.getSVGByHash(hash).subscribe((res: any) => {
          console.log('get svg by hash response: ', res);
          this.Decryption = res.Response;
-         this.dec = btoa(this.Decryption);
-         console.log('dec content:', this.dec);
-         var str2 = this.dec.toString();
-         var str1 = new String('data:image/svg+xml;base64,');
-         var src = str1.concat(str2.toString());
-         this.imageSrc = this._sanitizer.bypassSecurityTrustResourceUrl(src);
-         console.log('this image: ', this.imageSrc);
+         // this.dec = btoa(this.Decryption);
+         // console.log('dec content:', this.dec);
+         // var str2 = this.dec.toString();
+         // var str1 = new String('data:image/svg+xml;base64,');
+         // let t = str1 + this.dec;
+         // console.log(t);
+
+         const svgString = this.Decryption.toString();
+         console.log(svgString);
+
+         const base64String = btoa(svgString);
+
+         let imgElement = `data:image/svg+xml;base64,${base64String}`;
+         this.imageSrc = imgElement;
+         console.log(imgElement);
+         // var src = str1.concat(str2.toString());
+         // this.imageSrc = this._sanitizer.bypassSecurityTrustResourceUrl(src);
+         // console.log('this image: ', this.imageSrc);
       });
-      // this.dialogs
-      //    .alert(this.imageSrc)
-      //    .then(() => console.log('Dialog dismissed'))
-      //    .catch(e => console.log('Error displaying dialog', e));
    }
 
    viewSVG() {
@@ -158,8 +157,6 @@ export class MintNftPage {
    }
 
    createNFT() {
-      // this.router.navigate(['/get-key']);
-      console.log(this.nftForm);
       this.presentLoading();
       console.log('--------------1----------------');
       this.storage.getBcAccounts('mithilapanagoda@gmail.com').then((res1: any) => {
@@ -168,10 +165,10 @@ export class MintNftPage {
             this.keypair = Keypair.fromSecret(res1);
             console.log('Public Key is', this.keypair.publicKey().toString());
             console.log('Secret Key is', this.keypair.secret().toString());
-            // this.sponsorOldAcc();
+            this.sponsorOldAcc();
          } else {
-            alert("You don't have an account exisiting with your username. Proceeding to creating a new one!");
-            // this.createNewAccount();
+            this.presentToast("You don't have an account exisiting with your username. Proceeding to creating a new one!");
+            this.createNewAccount();
          }
       });
    }
@@ -182,11 +179,14 @@ export class MintNftPage {
       console.log('Public Key is', this.keypair.publicKey().toString());
       console.log('Secret Key is', this.keypair.secret().toString());
       console.log('Keypair is', this.keypair);
-      this.storage.setBcAccounts(this.mail, this.keypair.secret().toString()).then(res => {
-         console.log('result ', res);
-         alert('Successfully set!');
-         this.sponsorNewAcc();
-      });
+      this.storage
+         .setBcAccounts(this.mail, this.keypair.secret().toString())
+         .then(res => {
+            console.log('result ', res);
+            this.presentToast('Successfully set!');
+            this.sponsorNewAcc();
+         })
+         .catch(error => this.dissmissLoading());
    }
 
    sponsorNewAcc() {
@@ -206,12 +206,12 @@ export class MintNftPage {
                   this.xdr = txn.XDR;
 
                   console.log('after ', this.xdr);
-                  this.txn1 = this.blockchainService.signandsubmitXdr(this.xdr, this.keypair.secret().toString());
-                  console.log('Account sponsored: ', this.txn1);
-                  if (this.txn != null) {
-                     this.transactionResult = true;
-                  }
-                  this.mintNFT();
+                  this.blockchainService.signandsubmitXdr(this.xdr, this.keypair.secret().toString()).then((res): any => {
+                     if (this.txn != null) {
+                        this.transactionResult = true;
+                     }
+                     this.mintNFT();
+                  });
                });
             }
          })
@@ -243,12 +243,13 @@ export class MintNftPage {
                   this.xdr = txn.XDR;
 
                   console.log('after ', this.xdr);
-                  this.txn1 = this.blockchainService.signandsubmitXdr(this.xdr, this.keypair.secret().toString());
-                  console.log('Account sponsored: ', this.txn1);
-                  if (this.txn1 != null) {
-                     this.transactionResult = true;
-                     this.mintNFT();
-                  }
+                  this.blockchainService.signandsubmitXdr(this.xdr, this.keypair.secret().toString()).then((res): any => {
+                     console.log(res);
+                     if (res != null) {
+                        this.transactionResult = true;
+                        this.mintNFT();
+                     }
+                  });
                });
             }
          })
@@ -279,24 +280,32 @@ export class MintNftPage {
                this.hash
             )
             .then(nft => {
-               if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-               }
+               // if (this.isLoadingPresent) {
+               // this.dissmissLoading();
+               // }
+               this.dissmissLoading();
                let NFT = {
                   IssuerPublicKey: this.Issuer,
                   NFTCreator: this.keypair.publicKey().toString(),
                   NFTName: this.nftName,
                   NFTContent: this.hash,
-                  Description: '',
+                  Description: 'test',
                   Collection: 'Ruri',
                   BlockChain: 'stellar',
-                  NFTStatus: 'Minted',
-                  OTP: '',
-                  Email: '',
+                  NFTStatus: '',
+                  OTP: 'CKHTMGA',
+                  Email: 'mithilapanagoda@gmail.com',
                   Timestamp: new Date().toISOString(),
                };
 
-               this.apiService.walletNftSave(NFT).then().catch();
+               this.apiService
+                  .walletNftSave(NFT)
+                  .then(res => {
+                     console.log(res);
+                  })
+                  .catch(error => {
+                     console.log(error);
+                  });
 
                this.logger.info('NFT created', this.properties.skipConsoleLogs, this.properties.writeToFile);
                this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
@@ -417,6 +426,15 @@ export class MintNftPage {
       }
    }
 
+   async presentToast(msg) {
+      const toast = await this.toastCtrl.create({
+         message: msg,
+         duration: 2000,
+         position: 'bottom',
+      });
+      await toast.present();
+   }
+
    toggleTooltip() {
       this.isTooltipOpen = !this.isTooltipOpen;
    }
@@ -426,6 +444,7 @@ export class MintNftPage {
    }
 
    onFileChange(event) {}
+
    presentPopover(e: Event) {
       this.popover.event = e;
       this.isOpen = true;

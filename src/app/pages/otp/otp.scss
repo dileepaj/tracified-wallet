@@ -1,14 +1,42 @@
-.sub-header {
-   // font-family: 'Inter';
-   // font-style: normal;
-   font-weight: 300;
+.headerOne {
+   font-weight: 500;
    font-size: 16px;
    text-align: center;
    display: flex;
    justify-content: center;
 }
 
-ion-input {
+.headerTwo {
+   font-weight: 500;
+   font-size: 16px;
+}
+.formOne {
+   ion-row {
+      display: flex;
+      justify-content: center;
+      width: 90%;
+   }
+}
+
+.formTwo {
+   ion-row {
+      width: 90%;
+   }
+}
+ion-item {
+   width: 100%;
+}
+.cusItem {
+   --inner-padding-end: 0px;
+}
+
+ion-grid {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+}
+
+.cusInput {
    --background: #eaeaea;
    --color: black;
    --placeholder-opacity: 0.8;
@@ -17,29 +45,45 @@ ion-input {
    --padding-start: 10px !important;
    --padding-top: 10px;
    border-radius: 10px;
-   padding: 20px;
    width: 90%;
+   font-size: 14px;
+}
+.cusDiv {
+   display: flex;
+   justify-content: center;
+}
+
+.email ion-icon {
+   position: absolute;
+   top: 50%;
+   right: 10px;
+   transform: translateY(-50%);
+   color: white;
+   background-color: black;
+   border-radius: 30px;
+   font-size: 12px;
 }
 
 ion-button {
-   // font-weight: bold;
-   // height: 32px;
-   width: 100px;
+   height: 3rem;
 }
 
-.claim-nft-header {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   margin-top: 35px;
-   ion-label {
-      font-family: 'Inter';
-      font-weight: 400;
-      font-size: 30px;
-      text-align: center;
-      span {
-         color: #28a745;
-         font-weight: 600;
-      }
+.checkbox-group {
+   .header {
+      padding-bottom: 10px;
+      font-size: 14px;
+      font-weight: 500;
+   }
+   .checkbox {
+      background-color: #fff;
+      font-size: 14px;
+   }
+
+   .checkbox-lbl {
+      display: flex;
+      align-items: center;
+      padding-left: 5px;
+      font-weight: 500;
+      font-size: 15px;
    }
 }

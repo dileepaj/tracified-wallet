@@ -8,36 +8,78 @@
 </ion-header>
 
 <ion-content class="ion-pading">
-   <form [formGroup]="verifyForm">
-      <ion-item lines="none"> <ion-label class="sub-header ion-text-wrap" style="padding-top: 20px">Enter your email address</ion-label> </ion-item>
-      <ion-item lines="none" style="padding: 0px 20px 30px 20px">
-         <ion-input [clearInput]="true" formControlName="OTP" fill="clear" type="text" [(ngModel)]="mail" autofocus="true"></ion-input>
-      </ion-item>
-      <ion-item lines="none" style="padding: 0px 20px">
-         <ion-label class="sub-header ion-text-wrap">Enter the One-Time Password that has been sent to this email</ion-label>
-      </ion-item>
-      <ion-item lines="none" style="padding: 0px 20px 30px 20px">
-         <ion-input formControlName="Email" fill="clear" type="text" [(ngModel)]="otp" autofocus="true"></ion-input>
-      </ion-item>
-      <ion-item lines="none">
-         <ion-row style="display: flex; justify-content: center">
+   <form [formGroup]="verifyForm" *ngIf="otpForm" class="formOne ion-padding-top">
+      <ion-grid class="ion-padding-top">
+         <ion-row>
+            <ion-label class="headerOne ion-text-wrap">Enter your email address</ion-label>
+         </ion-row>
+         <ion-row>
+            <ion-input class="cusInput email" formControlName="OTP" fill="clear" type="text" autofocus="true"> </ion-input>
+            <!-- <ion-input class="cusInput email" formControlName="OTP" fill="clear" type="text" autofocus="true"> <ion-icon slot="end" name="pencil"></ion-icon></ion-input> -->
+         </ion-row>
+      </ion-grid>
+      <ion-grid class="ion-padding-top">
+         <ion-row>
+            <ion-label class="headerOne ion-text-wrap">Enter the One-Time Password that has been sent to this email</ion-label>
+         </ion-row>
+         <ion-row>
+            <ion-input class="cusInput" formControlName="Email" fill="clear" type="text" autofocus="true"></ion-input>
+         </ion-row>
+      </ion-grid>
+      <ion-grid class="ion-padding-top">
+         <ion-row>
             <ion-button shape="round" color="primary" [disabled]="!verifyForm.valid" (click)="checkOTP()"> Verify </ion-button>
          </ion-row>
-      </ion-item>
-      <!-- <ion-item lines="none" class="claim-nft-header">
-         <ion-label>Product: <span>Gem Item</span> </ion-label>
-      </ion-item> 
-      <ion-list lines="none">
-         <ion-label class="sub-header ion-text-wrap">A one time password has been sent to your email</ion-label>
-         <ion-label class="sub-header ion-text-wrap">Please enter to verify your identity</ion-label>
-      </ion-list>
-      <ion-item lines="none" style="padding: 20px">
-         <ion-input formControlName="OTP" fill="clear" type="text" [(ngModel)]="otp" autofocus="true"></ion-input>
-      </ion-item>
-      <ion-item lines="none">
-         <ion-row style="display: flex; justify-content: center">
-            <ion-button shape="round" color="primary" [disabled]="!otp" (click)="checkOTP()"> Verify </ion-button>
+      </ion-grid>
+   </form>
+
+   <form [formGroup]="nftForm" *ngIf="otpForm" class="formTwo ion-padding-top">
+      <ion-grid>
+         <ion-row>
+            <ion-label class="headerTwo ion-text-wrap">NFT Name</ion-label>
          </ion-row>
-      </ion-item>-->
+         <ion-row>
+            <ion-item lines="none" id="custom-item" counter="true" [counterFormatter]="customCounterFormatter" class="ion-no-padding cusItem">
+               <ion-input id="custom-item" formControlName="nftName" class="cusInput" maxlength="12" placeholder="Enter a name for your NFT"></ion-input>
+            </ion-item>
+         </ion-row>
+      </ion-grid>
+
+      <ion-grid>
+         <ion-row>
+            <ion-label class="headerTwo ion-text-wrap">Recipient's Name</ion-label>
+         </ion-row>
+         <ion-row>
+            <ion-item lines="none" id="custom-item" counter="true" [counterFormatter]="customCounterFormatter" class="ion-no-padding cusItem">
+               <ion-input id="custom-item" formControlName="recipName" class="cusInput" maxlength="12" placeholder="Enter a name of the recipent"></ion-input>
+            </ion-item>
+         </ion-row>
+      </ion-grid>
+
+      <ion-grid>
+         <ion-row>
+            <ion-label class="headerTwo ion-text-wrap">Message</ion-label>
+         </ion-row>
+         <ion-row>
+            <ion-item lines="none" id="custom-item" counter="true" [counterFormatter]="customCounterFormatter" class="ion-no-padding cusItem">
+               <ion-textarea class="cusInput" formControlName="message" rows="4" cols="5" maxlength="50" placeholder="Enter a message for the recipient." style="padding-right: 0px"></ion-textarea>
+            </ion-item>
+         </ion-row>
+      </ion-grid>
+      <ion-grid class="checkbox-group">
+         <ion-row>
+            <ion-label class="header">Please note that these information cannot be modified once the NFT is claimed.</ion-label>
+         </ion-row>
+         <ion-row>
+            <ion-checkbox formControlName="agreeTick" class="checkbox"></ion-checkbox>
+            <ion-label class="checkbox-lbl">I agree</ion-label>
+         </ion-row>
+      </ion-grid>
+
+      <ion-grid class="centered-container ion-padding-top">
+         <ion-row style="display: flex; justify-content: center">
+            <ion-button shape="round" color="primary" [disabled]="!nftForm.valid" (click)="sendDetails()"> Next </ion-button>
+         </ion-row>
+      </ion-grid>
    </form>
 </ion-content>

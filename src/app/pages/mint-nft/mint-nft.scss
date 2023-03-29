@@ -1,277 +1,86 @@
-.primary-font {
-   color: #4f525d;
+.svg {
+   width: 90%;
+   height: 400px;
+   border: 1px solid #dedede;
+   overflow-y: auto;
+   overflow-x: auto;
 }
 
-.secondary-font {
-   color: #b1b1b1;
+ion-row {
+   display: flex;
+   justify-content: center;
 }
 
 .claim-nft-preview {
-   margin-top: 20px;
-   margin-bottom: 20px;
    display: flex;
-   flex-direction: column;
-   align-items: flex-end;
-   row-gap: 40px;
-   padding-right: 60px;
-   border-right: 1px solid #727272;
+   flex-wrap: wrap;
+   justify-content: center;
+   align-items: center;
 
-   .back-icon {
-      position: absolute;
-      left: 40px;
-      width: 36px;
-      height: 24px;
-   }
-
-   .preview-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      row-gap: 40px;
-      .svg {
-         width: 288px;
-         height: 286.03px;
-      }
-
-      .heading-text {
-         color: black;
-         font-style: normal;
-         font-weight: 400;
-         font-size: 32px;
-         line-height: 39px;
-      }
+   .heading-text {
+      color: black;
+      font-weight: 500;
+      font-size: 20px;
    }
 }
 
-.claim-nft-form {
-   padding-left: 60px;
-   margin-top: 20px;
-   margin-bottom: 20px;
-   .form-wrapper {
-      display: flex;
-      flex-direction: column;
-      row-gap: 30px;
-      ion-label {
-         font-family: 'Roboto';
-         font-style: normal;
-         font-weight: 400;
-         font-size: 32px;
-         line-height: 39px;
-         color: black;
-      }
-      span {
-         color: #28a745;
-         font-weight: 600;
-      }
-      .input-group {
-         display: flex;
-         flex-direction: column;
-         width: 90%;
-         max-width: 400px;
-         row-gap: 10px;
-         position: relative;
-         .input {
-            height: 55px;
-            background: #dedede;
-            border-radius: 16px;
-            font-size: 16px;
-            padding: 0px 10px 0px 10px;
-            --padding-start: 14px;
-         }
-
-         .title {
-            font-style: normal;
-            font-weight: 400;
-            font-size: 20px;
-            line-height: 29px;
-         }
-         .counter {
-            font-style: normal;
-            font-weight: 300;
-            font-size: 14px;
-            line-height: 18px;
-            text-align: right;
-            color: #474952;
-         }
-
-         .tooltip {
-            position: absolute;
-            top: 40px;
-            right: -30px;
-            .tooltip-inner {
-               position: relative;
-               display: inline-block;
-               span {
-                  z-index: 1;
-                  position: absolute;
-                  top: 16px;
-                  right: -2px;
-                  width: 0px;
-                  height: 0px;
-                  box-shadow: 0px 4px 3px -2px rgba(0, 0, 0, 0.12);
-                  border-style: solid;
-                  border-width: 0 10px 10px 10px;
-                  border-color: transparent transparent #474952 transparent;
-               }
-               .info-icon {
-                  cursor: pointer;
-                  color: #474952;
-                  font-size: 19px;
-               }
-
-               .info-icon:focus ~ .tooltip-msg {
-                  display: block;
-               }
-            }
-         }
-
-         ::placeholder {
-            font-style: normal;
-            font-weight: 300;
-            font-size: 16px;
-            line-height: 29px;
-            color: #9e2d2d;
-         }
-      }
-
-      .msg {
-         font-style: normal;
-         font-weight: 500;
-         font-size: 15px;
-         line-height: 157.02%;
-         width: 90%;
-         max-width: 400px;
-      }
-
-      .checkbox-group {
-         margin-top: -20px;
-         display: flex;
-         flex-direction: row;
-         align-items: center;
-         column-gap: 20px;
-         width: 90%;
-         max-width: 400px;
-         .checkbox {
-            background-color: #fff;
-         }
-
-         .checkbox-lbl {
-            font-style: normal;
-            font-weight: 500;
-            font-size: 15px;
-            line-height: 157.02%;
-            color: #4f525d;
-         }
-      }
-   }
-
-   .btn-green {
-      width: 210px;
-
-      background: #28a745;
-      border-radius: 20px;
-   }
-}
-// .tooltip {
-//    display: block;
-//    position: absolute;
-//    top: 25px;
-//    right: -5px;
-//    z-index: 100;
-//    width: 205px;
-//    height: 94px;
-//    background: #474952;
-//    box-shadow: 0px 4px 3px -2px rgba(0, 0, 0, 0.12);
-//    border-radius: 3px;
-//    font-style: normal;
-//    font-weight: 300;
-//    font-size: 15px;
-//    line-height: 18px;
-//    color: #ffffff;
-//    padding: 10px;
+// @media (max-width: 930px) {
+//    .claim-nft-preview {
+//       .back-icon {
+//          position: unset;
+//          align-self: flex-start;
+//          margin-left: 20px;
+//          width: 28px;
+//          height: 16px;
+//       }
+//    }
 // }
-ion-popover {
-   --background: #474952;
-   --backdrop-opacity: 0.6;
-   --box-shadow: 0px 4px 3px -2px rgba(0, 0, 0, 0.12);
-   --color: white;
-   --width: 205px;
-   --height: 64px;
-   --padding: 10px;
-}
 
-ion-popover ion-content {
-   --background: #474952;
-   --color: white;
-   --padding: 10px;
-}
+// @media (max-width: 768px) {
+//    .claim-nft-preview {
+//       .preview-inner {
+//          .heading-text {
+//             align-self: center;
+//          }
 
-ion-popover::part(backdrop) {
-   background-color: transparent;
-}
+//       }
+//    }
 
-@media (max-width: 930px) {
-   .claim-nft-preview {
-      .back-icon {
-         position: unset;
-         align-self: flex-start;
-         margin-left: 20px;
-         width: 28px;
-         height: 16px;
-      }
-   }
-}
+//    .claim-nft-form {
+//       padding: 0px;
+//       align-items: center;
 
-@media (max-width: 768px) {
-   .claim-nft-preview {
-      .preview-inner {
-         .heading-text {
-            align-self: center;
-         }
-         /* width: 90%;
-        max-width: 400px;
-        .svg {
-          align-self: center;
-        } */
-      }
-   }
+//       .form-wrapper {
+//          align-items: center;
 
-   .claim-nft-form {
-      padding: 0px;
-      align-items: center;
+//          .input-group {
+//             width: 90%;
+//             .tooltip {
+//                position: absolute;
+//                top: 10px;
+//                right: 0px;
+//                .tooltip-inner {
+//                   .info-icon {
+//                      cursor: pointer;
+//                      color: black;
+//                      font-size: 19px;
+//                   }
 
-      .form-wrapper {
-         align-items: center;
+//                   .tooltip-msg {
+//                      right: -5px;
+//                   }
+//                }
+//             }
+//          }
 
-         .input-group {
-            width: 90%;
-            .tooltip {
-               position: absolute;
-               top: 10px;
-               right: 0px;
-               .tooltip-inner {
-                  .info-icon {
-                     cursor: pointer;
-                     color: black;
-                     font-size: 19px;
-                  }
+//          .checkbox-group {
+//             width: 90%;
+//          }
+//       }
+//    }
 
-                  .tooltip-msg {
-                     right: -5px;
-                  }
-               }
-            }
-         }
-
-         .checkbox-group {
-            width: 90%;
-         }
-      }
-   }
-
-   .claim-nft-preview {
-      padding: 0px;
-      border: none;
-      align-items: center;
-   }
-}
+//    .claim-nft-preview {
+//       padding: 0px;
+//       border: none;
+//       align-items: center;
+//    }
