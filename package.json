@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ionic build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
@@ -60,6 +60,7 @@
     "@angular/language-service": "^15.0.0",
     "@capacitor/cli": "4.7.1",
     "@ionic/angular-toolkit": "^8.0.0",
+    "@ionic/cli": "^6.20.9",
     "@types/crypto-js": "^4.1.1",
     "@types/jasmine": "~4.0.0",
     "@types/jsonwebtoken": "^9.0.1",
