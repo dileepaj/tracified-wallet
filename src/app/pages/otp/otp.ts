@@ -15,6 +15,7 @@ import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/
 export class OtpPage {
    otpForm: boolean = true;
    svgResult: any;
+   email = '';
    customCounterFormatter(inputLength: number, maxLength: number) {
       return `${maxLength - inputLength} characters remaining`;
    }
@@ -35,7 +36,7 @@ export class OtpPage {
       const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
 
       if (emailParam) {
-         this.mail = emailParam;
+         this.email = emailParam;
       }
    }
 
