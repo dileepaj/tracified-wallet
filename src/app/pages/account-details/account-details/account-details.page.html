@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{'ACCOUNT_DETAILS' | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-grid class="padding-width content-start">
+    <ion-row class="full-width line-spacing mt-2">
+      <ion-row class="full-width line-spacing">
+        <div class="full-width text-center">
+          <h2 class="primary-font fund-amount">{{ accountFunds }}</h2>
+        </div>
+      </ion-row>
+      <ion-row class="full-width line-spacing">
+        <div class="full-width text-center">
+          <h3 class="secondary-font">{{'LUMENS' | translate}}</h3>
+        </div>
+      </ion-row>
+    </ion-row>
+    <!-- <ion-row class="line-spacing">
+      <div class="button-wrapper">
+        <button class="btn-green-outline">Transfer</button>
+      </div>
+    </ion-row> -->
+    <ion-row class="full-width line-spacing mt-1">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">{{'ACCOUNT_NAME' | translate}}</h4>
+      </ion-row>
+      <ion-row class="full-width line-spacing">
+        <h3 class="primary-font">{{ account.accountName }}</h3>
+      </ion-row>
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-1">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">{{'PUBLIC_KEY' | translate}}</h4>
+      </ion-row>
+      <ion-row class="full-width line-spacing" text-wrap>
+        <h3 class="primary-font word-wrap" text-wrap>{{ account.pk }}</h3>
+      </ion-row>
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-1">
+      <ion-row class="full-width line-spacing">
+        <h4 class="secondary-font">{{'PRIVATE_KEY' | translate}}</h4>
+      </ion-row>
+      <ion-row class="full-width line-spacing" *ngIf="keyDecrypted" text-wrap>
+        <h3 class="primary-font word-wrap">{{ privateKey }}</h3>
+      </ion-row>
+      <ion-row class="full-width" *ngIf="!keyDecrypted">
+        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="decryptSecretKey()">{{'VIEW_KEY' | translate}}</button>
+      </ion-row>
+      <ion-row class="full-width" *ngIf="keyDecrypted">
+        <button class="btn-text-only green-font no-padding-x no-marging-x" ion-button (click)="encryptSecretKey()">{{'HIDE_KEY' | translate}}</button>
+      </ion-row>
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-2" *ngIf="!notDefaultAccount">
+      <h4 class="primary-font">{{'ACC_MSG' | translate}}</h4>
+      <!-- <div class="button-wrapper">
+        <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
+      </div> -->
+    </ion-row>
+    <ion-row class="full-width line-spacing mt-2" *ngIf="notDefaultAccount">
+      <div class="button-wrapper">
+          <button ion-button class="btn-green" (click)="makeDefaultAccount()">{{'MAKE_DEFAULT' | translate}}</button>
+      </div>
+    </ion-row>
+  </ion-grid>
+</ion-content>

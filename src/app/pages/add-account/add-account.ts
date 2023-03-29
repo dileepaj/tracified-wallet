@@ -75,6 +75,7 @@ export class AddAccountPage {
    }
 
    addMainAccount() {
+      //v6 plz refactor
       let password = this.form.get('password').value;
       let confirmPassword = this.form.get('confirmPassword').value;
 
@@ -176,22 +177,18 @@ export class AddAccountPage {
       }
    }
 
-   validateAccountName(accName) {
-      return new Promise((resolve, reject) => {
-         this.apiService
-            .validateMainAccountN(accName)
-            .then(res => {
-               if (res.status === 200 && res.body.status == false) {
-                  resolve(true);
-               } else {
-                  resolve(false);
-               }
-            })
-            .catch(error => {
-               this.logger.error('Account name validation failed: ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
-               reject();
-            });
-      });
+   async validateAccountName(accName) {
+      try {
+         const res = await this.apiService.validateMainAccountN(accName);
+         if (res.status === 200 && res.body.status === false) {
+            return true;
+         } else {
+            return false;
+         }
+      } catch (error) {
+         this.logger.error(`Account name validation failed: ${JSON.stringify(error)}`, this.properties.skipConsoleLogs, this.properties.writeToFile);
+         throw error;
+      }
    }
 
    checkStrength() {
@@ -220,14 +217,12 @@ export class AddAccountPage {
    }
 
    encyrptSecret(key, signer) {
-      return new Promise((resolve, reject) => {
-         try {
-            var encSecretKey = AES.encrypt(key, signer);
-            resolve(encSecretKey.toString());
-         } catch {
-            reject();
-         }
-      });
+      try {
+         const encSecretKey = AES.encrypt(key, signer);
+         return encSecretKey.toString();
+      } catch (error) {
+         throw error;
+      }
    }
 
    hideShowPassword(option) {

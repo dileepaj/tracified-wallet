@@ -4,7 +4,7 @@ import { ToastController, LoadingController } from '@ionic/angular';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 // import { GetKeysPage } from '../../pages/get-keys/get-keys';
 import { GetNftPage } from '../../pages/get-nft/get-nft';
-import { Router, NavigationExtras, ExtraOptions } from '@angular/router';
+import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 
 @Component({
@@ -30,7 +30,14 @@ export class OtpPage {
       agreeTick: new FormControl('false', Validators.requiredTrue),
    });
 
-   constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController) {}
+   constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController, private route: ActivatedRoute) {
+      const emailParam = this.route.snapshot.queryParamMap.get('email');
+      const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
+
+      if (emailParam) {
+         this.mail = emailParam;
+      }
+   }
 
    checkOTP() {
       let otp = this.verifyForm.get('OTP').value;
