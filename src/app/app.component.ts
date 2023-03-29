@@ -215,7 +215,7 @@ export class AppComponent {
             this.router.navigate(['/bc-account']);
             break;
          case 'fundTransfer':
-            //  this.nav.setRoot(FundTransferPage);
+            this.router.navigate(['/fund-transfer']);
             break;
          case 'settings':
             //  this.nav.setRoot(SettingsPage);
