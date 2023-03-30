@@ -19,6 +19,7 @@ import { EventsService } from './providers/event-service/events.service';
 // import { FileSystemServiceProvider } from './providers/file-service/file-system-service';
 import { DataServiceProvider } from './providers/data-service/data-service';
 import { BlockchainServiceProvider } from './providers/blockchain-service/blockchain-service';
+import { ConnectivityServiceProvider } from './providers/connectivity-service/connectivity-service';
 // import { BcAccountPage } from '../pages/bc-account/bc-account';
 // import { FundTransferPage } from '../pages/fund-transfer/fund-transfer';
 // import { SettingsPage } from '../pages/settings/settings';
@@ -70,7 +71,8 @@ export class AppComponent {
       // private codepushService: CodePushServiceProvider,
       private loadingCtrl: LoadingController,
       private router: Router,
-      private zone: NgZone
+      private zone: NgZone,
+      public connectivity: ConnectivityServiceProvider
    ) {
       this.initDeepLink();
 
@@ -144,6 +146,7 @@ export class AppComponent {
    }
 
    initDeepLink() {
+      console.log('initDeepLink');
       App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
          this.zone.run(() => {
             const segments = event.url.split('://')[1].split('/');
