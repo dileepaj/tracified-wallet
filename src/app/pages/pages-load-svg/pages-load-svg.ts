@@ -1,21 +1,25 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from '@ionic/angular';
+
+import { Router } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
-  selector: 'page-pages-load-svg',
-  templateUrl: 'pages-load-svg.html',
+   selector: 'page-pages-load-svg',
+   templateUrl: 'pages-load-svg.html',
+   styleUrls: ['./pages-load-svg.scss'],
 })
 export class PagesLoadSvgPage {
-  result: any;
-  imageSrc: any;
+   result: any;
+   SVG: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.result = this.navParams.get('res');
-    console.log('data passed ', this.result);
-    this.imageSrc = this.result;
-  }
+   constructor(public router: Router, private _sanitizer: DomSanitizer) {
+      this.result = this.router.getCurrentNavigation().extras.queryParams;
+      console.log('data passed ', this.result.Response);
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad PagesLoadSvgPage');
-  }
+      let encodedData = btoa(unescape(encodeURIComponent(this.result.Response)));
+      // let hash = CryptoJS.SHA256(encodedData).toString(CryptoJS.enc.Hex);
+      let str1 = new String('data:image/svg+xml;base64,');
+      let imgBa64 = str1 + encodedData;
+      this.SVG = this._sanitizer.bypassSecurityTrustResourceUrl(imgBa64);
+   }
 }

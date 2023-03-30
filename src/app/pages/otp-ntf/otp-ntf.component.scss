@@ -1,0 +1,126 @@
+.headerOne {
+   font-weight: 500;
+   font-size: 16px;
+   text-align: center;
+   display: flex;
+   justify-content: center;
+}
+.cusGrid {
+   width: 90%;
+}
+
+.headerTwo {
+   font-weight: 500;
+   font-size: 16px;
+}
+.formOne {
+   ion-row {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+   }
+}
+
+.formTwo {
+   ion-row {
+      width: 100%;
+   }
+}
+ion-item {
+   width: 100%;
+}
+.cusItem {
+   --inner-padding-end: 0px;
+}
+
+ion-grid {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+}
+
+.cusInput {
+   --background: #eaeaea;
+   --color: black;
+   --placeholder-opacity: 0.8;
+   --padding-bottom: 10px;
+   --padding-end: 10px;
+   --padding-start: 10px !important;
+   --padding-top: 10px;
+   border-radius: 10px;
+   font-size: 14px;
+}
+.cusDiv {
+   display: flex;
+   justify-content: center;
+}
+
+.email ion-icon {
+   position: absolute;
+   top: 50%;
+   right: 10px;
+   transform: translateY(-50%);
+   color: white;
+   background-color: black;
+   border-radius: 30px;
+   font-size: 12px;
+}
+
+ion-button {
+   height: 3rem;
+}
+
+.checkbox-group {
+   .header {
+      padding-bottom: 10px;
+      font-size: 14px;
+      font-weight: 500;
+   }
+   .checkbox {
+      background-color: #fff;
+      font-size: 14px;
+   }
+
+   .checkbox-lbl {
+      display: flex;
+      align-items: center;
+      padding-left: 5px;
+      font-weight: 500;
+      font-size: 15px;
+   }
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+   .cusGrid {
+      width: 90%;
+   }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+   .cusGrid {
+      width: 60%;
+   }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+   .cusGrid {
+      width: 50%;
+   }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+   .cusGrid {
+      width: 40%;
+   }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+   .cusGrid {
+      width: 30%;
+   }
+}

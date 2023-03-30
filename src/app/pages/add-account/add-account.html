@@ -7,48 +7,47 @@
    </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
    <ion-grid>
-     <form [formGroup]="form">
-       <ion-row>
-         <ion-col>
-           <ion-item>
-             <ion-label position="floating" class="login-lables">{{'ACCOUNT_NAME' | translate}}</ion-label>
-             <ion-input formControlName="accName" type="text" name="accName" keyNext></ion-input>
-           </ion-item>
-         </ion-col>
-       </ion-row>
-       <ion-row>
-         <ion-col>
-           <ion-item>
-             <ion-label position="floating">{{'SECURED_PASSWORD'| translate}}</ion-label>
-             <ion-input formControlName="password" [(ngModel)]="StrengthPassword" (ionChange)="checkStrength()" name="password" [type]="passwordType" clearOnEdit="false"></ion-input>
-             <ion-icon slot="end" [name]="passwordIcon" color="secondary" class="passwordIcon" (click)="hideShowPassword(1)"> </ion-icon>
-           </ion-item>
-         </ion-col>
-       </ion-row>
-       <ion-row>
-         <ion-col>
-           <ion-item>
-             <ion-label position="floating">{{'CONFIRM_PASSWORD' | translate}}</ion-label>
-             <ion-input formControlName="confirmPassword" name="confirmPassword" [type]="confirmPasswordType" clearOnEdit="false"></ion-input>
-             <ion-icon slot="end" [name]="confirmPasswordIcon" color="secondary" class="confirmPasswordIcon" (click)="hideShowPassword(2)"> </ion-icon>
-           </ion-item>
-         </ion-col>
-       </ion-row>
-       <ion-row>
-         <ion-col>
-           <h4 *ngIf="form.valid === true" class="desc">It takes {{PasswordStrength}} to crack your password!</h4>
-         </ion-col>
-       </ion-row>
-       <ion-row>
-         <ion-col>
-           <div class="button-wrapper">
-            <ion-button [disabled]="!form.valid" (click)="addMainAccount()" color="secondary">{{ 'GENERATE_BK' | translate}}</ion-button>
-           </div>
-         </ion-col>
-       </ion-row>
-     </form>
+      <form [formGroup]="form">
+         <ion-row>
+            <ion-col>
+               <ion-item>
+                  <ion-label position="floating" class="login-lables">{{'ACCOUNT_NAME' | translate}}</ion-label>
+                  <ion-input formControlName="accName" type="text" name="accName" keyNext></ion-input>
+               </ion-item>
+            </ion-col>
+         </ion-row>
+         <ion-row>
+            <ion-col>
+               <ion-item>
+                  <ion-label position="floating">{{'SECURED_PASSWORD'| translate}}</ion-label>
+                  <ion-input formControlName="password" [(ngModel)]="StrengthPassword" (ionChange)="checkStrength()" name="password" [type]="passwordType" clearOnEdit="false"></ion-input>
+                  <ion-icon slot="end" [name]="passwordIcon" color="primary" class="passwordIcon" (click)="hideShowPassword(1)"> </ion-icon>
+               </ion-item>
+            </ion-col>
+         </ion-row>
+         <ion-row>
+            <ion-col>
+               <ion-item>
+                  <ion-label position="floating">{{'CONFIRM_PASSWORD' | translate}}</ion-label>
+                  <ion-input formControlName="confirmPassword" name="confirmPassword" [type]="confirmPasswordType" clearOnEdit="false"></ion-input>
+                  <ion-icon slot="end" [name]="confirmPasswordIcon" color="primary" class="confirmPasswordIcon" (click)="hideShowPassword(2)"> </ion-icon>
+               </ion-item>
+            </ion-col>
+         </ion-row>
+         <!-- <ion-row>
+            <ion-col>
+               <h4 *ngIf="form.valid === true" class="desc">It takes {{PasswordStrength}} to crack your password!</h4>
+            </ion-col>
+         </ion-row> -->
+         <ion-row class="ion-padding-top">
+            <ion-col>
+               <div class="button-wrapper">
+                  <ion-button [disabled]="!form.valid" (click)="addMainAccount()" color="primary">{{ 'GENERATE_BK' | translate}}</ion-button>
+               </div>
+            </ion-col>
+         </ion-row>
+      </form>
    </ion-grid>
- </ion-content>
- 
+</ion-content>

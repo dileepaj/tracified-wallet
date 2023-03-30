@@ -13,10 +13,11 @@ import { AddAccountPage } from './pages/add-account/add-account';
 import { AccountDetailsPage } from './pages/account-details/account-details/account-details.page';
 import { FundTransferPage } from './pages/fund-transfer/fund-transfer.page';
 import { TransferConfirmPage } from './pages/transfer-confirm/transfer-confirm.page';
+import { OtpNtfComponent } from './pages/otp-ntf/otp-ntf.component';
 
 const routes: Routes = [
    { path: '', component: TabsPage },
-   { path: 'assets', component: TabsPage, canActivate: [AuthGuardService] },
+   { path: 'assets', component: GetKeysPage },
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
@@ -24,6 +25,8 @@ const routes: Routes = [
    { path: 'get-key', component: GetKeysPage },
    { path: 'bc-account', component: BcAccountPage, canActivate: [AuthGuardService] },
    { path: 'add-account', component: AddAccountPage, canActivate: [AuthGuardService] },
+   { path: 'svg-preview', component: PagesLoadSvgPage },
+   { path: 'otp-nft', component: OtpNtfComponent },
 
    {
       path: 'account-details',
@@ -35,12 +38,11 @@ const routes: Routes = [
       component: FundTransferPage,
       canActivate: [AuthGuardService],
    },
-  {
-    path: 'transfer-confirm',
-    component:TransferConfirmPage,
-    canActivate: [AuthGuardService]
-  },
-
+   {
+      path: 'transfer-confirm',
+      component: TransferConfirmPage,
+      canActivate: [AuthGuardService],
+   },
 
    // { path: 'bc-account', component: AddAccountPage },
 ];

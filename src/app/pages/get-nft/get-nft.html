@@ -1,17 +1,17 @@
 <ion-header>
    <ion-toolbar>
       <ion-buttons slot="start">
-         <ion-back-button></ion-back-button>
+         <ion-menu-button menu="main-menu"></ion-menu-button>
       </ion-buttons>
       <ion-title>Claimed NFTs!</ion-title>
    </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-   <ion-item lines="none" *ngIf="ownNFTs.length === 0">
+   <ion-item lines="none" *ngIf="imgrowlist.length === 0">
       <ion-grid>
-         <ion-row class="ion-text-center">
-            <ion-img src="../../assets/imgs/emptystatus-04.png"></ion-img>
+         <ion-row class="ion-text-center" style="display: flex; justify-content: center">
+            <ion-img style="width: 250px; height: auto" src="../../assets/imgs/emptystatus-04.png"></ion-img>
          </ion-row>
          <ion-row class="ion-justify-content-center ion-padding-top">
             <h1>Claimed NFTs</h1>
@@ -22,17 +22,17 @@
       </ion-grid>
    </ion-item>
 
-   <!-- <ion-grid>
+   <ion-grid>
       <ion-row *ngFor="let row of imgrowlist">
-         <ion-col size="4" style="display: flex" *ngFor="let img of row">
-            <ion-card style="margin: 0px; background-color: #2d2d2d">
-               <img class="" alt="Silhouette of mountains" [src]="img" />
+         <ion-col style="display: flex" *ngFor="let img of row">
+            <ion-card style="margin: 0px; background-color: #2d2d2d" (click)="getSVG(img.nftcontent)">
+               <img [src]="img.Thumbnail" />
                <ion-card-header>
-                  <ion-card-title>NFT NAme</ion-card-title>
-                  <ion-card-subtitle>product name</ion-card-subtitle>
+                  <ion-card-title>{{img.nftname}}</ion-card-title>
+                  <ion-card-subtitle>{{img.collection}}</ion-card-subtitle>
                </ion-card-header>
             </ion-card>
          </ion-col>
       </ion-row>
-   </ion-grid> -->
+   </ion-grid>
 </ion-content>

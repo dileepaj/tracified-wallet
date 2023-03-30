@@ -14,6 +14,7 @@ import { PagesLoadSvgPage } from '../../pages/pages-load-svg/pages-load-svg';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { NavigationExtras, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { debug } from 'console';
 
 @Component({
    selector: 'page-mint-nft',
@@ -61,6 +62,9 @@ export class MintNftPage {
    hash: string;
    keypair: Keypair;
    txn1: void;
+   shopID = '';
+   img;
+   accountType;
 
    @ViewChild('popover') popover;
    isOpen = false;
@@ -78,22 +82,24 @@ export class MintNftPage {
       private router: Router,
       private toastCtrl: ToastController
    ) {
-      this.result = this.router.getCurrentNavigation().extras.queryParams;
-
+      this.result = this.router.getCurrentNavigation().extras.queryParams.result;
+      this.shopID = this.router.getCurrentNavigation().extras.queryParams.ShopId;
+      this.nftName = this.router.getCurrentNavigation().extras.queryParams.NFTname;
+      console.log(this.nftName);
       if (this.result) {
-         this.SVG = this.result.body.Response.SVG;
-         this.SVGID = this.result.body.Response.SVGID;
-         this.convertToBase64(this.SVG);
+         this.SVG = this.result.svg;
+         this.SVGID = this.result.svgid;
+         this.convertToBase64(this.result.svg);
       }
-      this.account = this.properties.defaultAccount;
-      this.blockchainService
-         .accountBalance(this.account.pk)
-         .then(balance => {
-            this.accountFunds = balance.toString();
-         })
-         .catch(err => {
-            this.accountFunds = '0 ';
-         });
+      // this.account = this.properties.defaultAccount;
+      // this.blockchainService
+      //    .accountBalance(this.account.pk)
+      //    .then(balance => {
+      //       this.accountFunds = balance.toString();
+      //    })
+      //    .catch(err => {
+      //       this.accountFunds = '0 ';
+      //    });
    }
 
    ionViewDidEnter() {
@@ -111,19 +117,24 @@ export class MintNftPage {
     */
 
    convertToBase64(svg: any) {
-      var encodedData = window.btoa(svg);
+      var encodedData = btoa(unescape(encodeURIComponent(svg)));
       console.log('converted base64: ', encodedData);
       this.hash = CryptoJS.SHA256(encodedData).toString(CryptoJS.enc.Hex);
       console.log('converted hash: ', this.hash);
-      this.apiService.updateSVG(this.SVGID, this.hash).subscribe(
-         (res: any) => {
-            console.log('update svg API result : ', res);
-            this.loadSVG(this.hash);
-         },
-         error => {
-            console.log(error);
-         }
-      );
+      let str1 = new String('data:image/svg+xml;base64,');
+      this.img = str1 + encodedData;
+      this.imageSrc = this._sanitizer.bypassSecurityTrustResourceUrl(this.img);
+      // console.log(this.img);
+
+      // this.apiService.updateSVG(this.SVGID, this.hash).subscribe(
+      //    (res: any) => {
+      //       console.log('update svg API result : ', res);
+      //       this.loadSVG(this.hash);
+      //    },
+      //    error => {
+      //       console.log(error);
+      //    }
+      // );
    }
 
    loadSVG(hash: string) {
@@ -152,12 +163,8 @@ export class MintNftPage {
       });
    }
 
-   viewSVG() {
-      // this.navCtrl.push(PagesLoadSvgPage, { res: this.imageSrc });
-   }
-
    createNFT() {
-      this.presentLoading();
+      this.presentLoading('Checking account...');
       console.log('--------------1----------------');
       this.storage.getBcAccounts('mithilapanagoda@gmail.com').then((res1: any) => {
          console.log('retieved result ', res1);
@@ -174,6 +181,7 @@ export class MintNftPage {
    }
 
    createNewAccount(): void {
+      this.loading.message = 'Creating a new account...';
       console.log('acc gen started');
       this.keypair = this.blockchainService.createAddress();
       console.log('Public Key is', this.keypair.publicKey().toString());
@@ -190,6 +198,7 @@ export class MintNftPage {
    }
 
    sponsorNewAcc() {
+      this.accountType = 'new';
       this.apiService
          .getNewIssuerPublicKey()
          .then(issuerPublcKey => {
@@ -227,6 +236,8 @@ export class MintNftPage {
    }
 
    sponsorOldAcc() {
+      this.loading.message = 'transaction...';
+      this.accountType = 'old';
       this.apiService
          .getNewIssuerPublicKey()
          .then(issuerPublcKey => {
@@ -254,9 +265,8 @@ export class MintNftPage {
             }
          })
          .catch(error => {
-            if (this.isLoadingPresent) {
-               this.dissmissLoading();
-            }
+            this.dissmissLoading();
+
             this.logger.error('NFT reciveing issue in gateway side : ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
             this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
                this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
@@ -265,6 +275,7 @@ export class MintNftPage {
    }
 
    mintNFT() {
+      this.loading.message = 'NFT Minting...';
       if (this.transactionResult == true) {
          this.apiService
             .minNFTStellar(
@@ -280,10 +291,8 @@ export class MintNftPage {
                this.hash
             )
             .then(nft => {
-               // if (this.isLoadingPresent) {
-               // this.dissmissLoading();
-               // }
-               this.dissmissLoading();
+               console.log(nft);
+               console.log('hash123', nft.body.NFTTxnHash);
                let NFT = {
                   IssuerPublicKey: this.Issuer,
                   NFTCreator: this.keypair.publicKey().toString(),
@@ -296,39 +305,43 @@ export class MintNftPage {
                   OTP: 'CKHTMGA',
                   Email: 'mithilapanagoda@gmail.com',
                   Timestamp: new Date().toISOString(),
+                  TXNHash: nft.body.NFTTxnHash,
+                  ShopId: this.shopID,
                };
-
                this.apiService
                   .walletNftSave(NFT)
                   .then(res => {
+                     this.dissmissLoading();
                      console.log(res);
                   })
                   .catch(error => {
+                     this.dissmissLoading();
                      console.log(error);
                   });
 
                this.logger.info('NFT created', this.properties.skipConsoleLogs, this.properties.writeToFile);
                this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
-                  this.presentAlert(text['MINTED'], text[`NFT ${this.nftName} WAS MINTED`]);
+                  this.presentToast(text[`NFT ${this.nftName} WAS MINTED`]);
                });
-               const option: NavigationExtras = {
-                  state: { res: this.keypair },
-               };
-               this.router.navigate(['/get-key'], option);
-               //  this.navCtrl.push(GetKeysPage, { res: this.keypair });
+               console.log(this.keypair);
+
+               if (this.accountType == 'new') {
+                  const option: NavigationExtras = {
+                     state: { res: this.keypair },
+                  };
+                  this.router.navigate(['/get-key'], option);
+               } else {
+                  this.router.navigate(['/otp-page'], { replaceUrl: true });
+               }
             })
             .catch(error => {
-               if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-               }
-               this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).subscribe(text => {
-                  this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+               this.dissmissLoading();
+               this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
+                  this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
                });
             });
       } else {
-         if (this.isLoadingPresent) {
-            this.dissmissLoading();
-         }
+         this.dissmissLoading();
          this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
          });
@@ -342,7 +355,9 @@ export class MintNftPage {
          buttons: [
             {
                text: 'OK',
-               handler: data => {},
+               handler: data => {
+                  this.router.navigate(['/otp-page'], { replaceUrl: true, state: { otpForm: true } });
+               },
             },
          ],
       });
@@ -386,6 +401,7 @@ export class MintNftPage {
                },
             },
          ],
+         backdropDismiss: false,
       });
       await popup.present();
       return promise;
@@ -401,10 +417,11 @@ export class MintNftPage {
       this.privateKey = '';
    }
 
-   async presentLoading() {
+   async presentLoading(msg) {
       this.isLoadingPresent = true;
       this.loading = await this.loadingCtrl.create({
-         message: 'NFT Minting...',
+         message: msg,
+         backdropDismiss: false,
       });
       await this.loading.present();
    }
@@ -429,24 +446,9 @@ export class MintNftPage {
    async presentToast(msg) {
       const toast = await this.toastCtrl.create({
          message: msg,
-         duration: 2000,
+         duration: 3000,
          position: 'bottom',
       });
       await toast.present();
-   }
-
-   toggleTooltip() {
-      this.isTooltipOpen = !this.isTooltipOpen;
-   }
-
-   closeTooltip() {
-      this.isTooltipOpen = false;
-   }
-
-   onFileChange(event) {}
-
-   presentPopover(e: Event) {
-      this.popover.event = e;
-      this.isOpen = true;
    }
 }

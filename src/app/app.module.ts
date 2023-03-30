@@ -39,6 +39,7 @@ import { AddAccountPage } from './pages/add-account/add-account';
 import { AccountDetailsPage } from './pages/account-details/account-details/account-details.page';
 import { FundTransferPage } from './pages/fund-transfer/fund-transfer.page';
 import { TransferConfirmPage } from './pages/transfer-confirm/transfer-confirm.page';
+import { OtpNtfComponent } from './pages/otp-ntf/otp-ntf.component';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -60,7 +61,8 @@ export function createTranslateLoader(http: HttpClient) {
       AddAccountPage,
       AccountDetailsPage,
       FundTransferPage,
-      TransferConfirmPage
+      TransferConfirmPage,
+      OtpNtfComponent,
    ],
    imports: [
       BrowserModule,

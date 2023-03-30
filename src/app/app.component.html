@@ -15,7 +15,7 @@
 
       <ion-content>
          <ion-list>
-            <ion-menu-toggle>
+            <ion-menu-toggle *ngIf="!pageHide">
                <ion-item (click)="openPage('items')">
                   <ion-icon name="clipboard" slot="start"></ion-icon>
                   <ion-label>
@@ -42,7 +42,7 @@
                </ion-item>
             </ion-menu-toggle>
 
-            <ion-menu-toggle>
+            <ion-menu-toggle *ngIf="!pageHide">
                <ion-item (click)="openPage('accounts')">
                   <ion-icon name="people" slot="start"></ion-icon>
                   <ion-label>
@@ -60,7 +60,7 @@
                </ion-item>
             </ion-menu-toggle>
 
-            <ion-menu-toggle>
+            <ion-menu-toggle *ngIf="!pageHide">
                <ion-item (click)="openPage('settings')">
                   <ion-icon name="settings" slot="start"></ion-icon>
                   <ion-label>
@@ -69,7 +69,7 @@
                </ion-item>
             </ion-menu-toggle>
 
-            <ion-menu-toggle>
+            <ion-menu-toggle *ngIf="!pageHide">
                <ion-item (click)="openPage('about')">
                   <ion-icon name="information" slot="start"></ion-icon>
                   <ion-label>
@@ -78,7 +78,7 @@
                </ion-item>
             </ion-menu-toggle>
 
-            <ion-menu-toggle>
+            <ion-menu-toggle *ngIf="!pageHide">
                <ion-item (click)="openPage('help')">
                   <ion-icon name="help" slot="start"></ion-icon>
                   <ion-label>
@@ -87,7 +87,7 @@
                </ion-item>
             </ion-menu-toggle>
 
-            <ion-menu-toggle>
+            <ion-menu-toggle *ngIf="!pageHide">
                <ion-item (click)="openPage('logout')">
                   <ion-icon name="power" slot="start"></ion-icon>
                   <ion-label>
@@ -97,7 +97,7 @@
             </ion-menu-toggle>
          </ion-list>
       </ion-content>
-      <ion-footer>
+      <!-- <ion-footer>
          <ion-row>
             <ion-col size="4">
                <ion-button fill="clear" (click)="languageChange('english')" class="primary-font capitalize-font">
@@ -115,7 +115,7 @@
                </ion-button>
             </ion-col>
          </ion-row>
-      </ion-footer>
+      </ion-footer> -->
    </ion-menu>
 
    <ion-router-outlet id="main"></ion-router-outlet>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToastController, LoadingController } from '@ionic/angular';
 // import { MintNftPage } from '../../pages/mint-nft/mint-nft';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
@@ -13,22 +13,13 @@ import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/
    styleUrls: ['./otp.scss'],
 })
 export class OtpPage {
-   otpForm: boolean = true;
    svgResult: any;
-   email = '';
-   customCounterFormatter(inputLength: number, maxLength: number) {
-      return `${maxLength - inputLength} characters remaining`;
-   }
-   verifyForm = new FormGroup({
-      OTP: new FormControl('CKHTMGA', Validators.required),
-      Email: new FormControl('mithilapanagoda@gmail.com', Validators.required),
-   });
+   email = 'mithilapanagoda@gmail.com';
+   shopId = '7125709521094';
 
-   nftForm = new FormGroup({
-      nftName: new FormControl('', Validators.required),
-      recipName: new FormControl('', Validators.required),
-      message: new FormControl('', Validators.required),
-      agreeTick: new FormControl('false', Validators.requiredTrue),
+   verifyForm = new FormGroup({
+      OTP: new FormControl('CKHTMGA1', Validators.required),
+      Email: new FormControl('mithilapanagoda@gmail.com', Validators.required),
    });
 
    constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController, private route: ActivatedRoute) {
@@ -37,6 +28,11 @@ export class OtpPage {
 
       if (emailParam) {
          this.email = emailParam;
+         this.verifyForm.controls['Email'].setValue(emailParam);
+         console.log(this.email);
+      }
+      if (shopidParam) {
+         this.shopId = shopidParam;
       }
    }
 
@@ -44,34 +40,40 @@ export class OtpPage {
       let otp = this.verifyForm.get('OTP').value;
       let mail = this.verifyForm.get('Email').value;
       this.showLoading();
-      this.service.checkOTP(otp, mail).then(res => {
-         console.log(res);
-         this.svgResult = res;
-         if (res.body.Response) {
-            this.otpForm = false;
-            // this.router.navigate(['/mint-nft'], { queryParams: res });
+      this.service
+         .checkOTP(otp, mail)
+         .then(res => {
+            console.log(res);
+            if (res.body.Status == 200 && res.body.Response.Status == 'Valid') {
+               this.dimissLoading();
+               this.presentToast('OTP verified.');
+               const option: NavigationExtras = {
+                  queryParams: {
+                     ShopId: this.shopId,
+                     otp: otp,
+                     mail: mail,
+                  },
+               };
+               this.router.navigate(['/otp-nft'], option);
+            }
+         })
+         .catch(error => {
+            let err = error.error;
+            console.log(err);
             this.dimissLoading();
-         } else {
-            this.presentToast();
-            this.dimissLoading();
-         }
-      });
+            if (err.status && err.message == 'Invalid OTP') {
+               this.presentToast('Invalid OTP or Email.');
+            } else if (err.status && err.message == 'NFT already Minted') {
+               this.presentToast('NFT already Minted.');
+            } else {
+               this.presentToast('Something wrong.');
+            }
+         });
    }
 
-   sendDetails() {
-      const option: NavigationExtras = {
-         queryParams: {
-            svg: this.svgResult,
-            nftName: this.nftForm.get('nftName').value,
-            recipName: this.nftForm.get('recipName').value,
-            message: this.nftForm.get('message').value,
-         },
-      };
-   }
-
-   async presentToast() {
+   async presentToast(msg) {
       const toast = await this.toastCtrl.create({
-         message: 'The OTP has either expired or is invalid',
+         message: msg,
          duration: 2500,
          position: 'bottom',
       });
