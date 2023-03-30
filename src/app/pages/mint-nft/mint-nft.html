@@ -12,13 +12,12 @@
       <ion-row class="ion-padding-top">
          <ion-label class="heading-text">SVG Preview</ion-label>
       </ion-row>
-      <ion-row class="ion-padding-top">
-         <div class="svg" [innerHTML]="SVG"></div>
-      </ion-row>
    </ion-grid>
+
+   <embed class="img" [src]="imageSrc" />
 </ion-content>
 <ion-footer>
    <ion-row class="ion-padding">
-      <ion-button class="btn-green" (click)="createNFT()">Claim Your NFT</ion-button>
+      <ion-button color="primary" (click)="createNFT()">Claim Your NFT</ion-button>
    </ion-row>
 </ion-footer>

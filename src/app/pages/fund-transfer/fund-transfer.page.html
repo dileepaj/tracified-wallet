@@ -1,48 +1,47 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>{{ 'FUND_TRANSFER' | translate}}</ion-title>
-  </ion-toolbar>
+   <ion-toolbar>
+      <ion-buttons slot="start">
+         <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>{{ 'FUND_TRANSFER' | translate}}</ion-title>
+   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid class="padding-width">
-    <ion-row class="content-start">
-      <ion-col size="12" class="content-start">
-        <h4 class="primary-font">{{ 'FILL_FIELD_TRANSFER' | translate}}</h4>
-        <h4 class="primary-font content-start"><b>{{ 'NOTE' | translate}}</b> {{'DEFAULT_ACC_TRANSFER' | translate}}</h4>
-      </ion-col>
-    </ion-row>
+   <ion-grid class="padding-width">
+      <ion-row class="content-start">
+         <ion-col size="12" class="content-start">
+            <h4 class="primary-font">{{ 'FILL_FIELD_TRANSFER' | translate}}</h4>
+            <h4 class="primary-font content-start"><b>{{ 'NOTE' | translate}}</b> {{'DEFAULT_ACC_TRANSFER' | translate}}</h4>
+         </ion-col>
+      </ion-row>
 
-    <ion-row>
-      <ion-col size="12">
-        <ion-item>
-          <ion-label position="floating">{{ 'ENTER_AMOUNT' | translate}}</ion-label>
-          <ion-input type="number" [(ngModel)]="transferAmount"></ion-input>
-        </ion-item>
-      </ion-col>
-    </ion-row>
+      <ion-row>
+         <ion-col size="12">
+            <ion-item>
+               <ion-label position="floating">{{ 'ENTER_AMOUNT' | translate}}</ion-label>
+               <ion-input type="number" [(ngModel)]="transferAmount"></ion-input>
+            </ion-item>
+         </ion-col>
+      </ion-row>
 
-    <ion-row class="content-start">
-      <ion-col size="12">
-        <ion-item>
-          <ion-label>{{ 'SELECT_ACC' | translate}}</ion-label>
-          <ion-select [(ngModel)]="receiverPK">
-            <ion-select-option *ngFor="let account of showaccount" [value]="account.pk">{{account.accountName}}</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ion-col>
-    </ion-row>
+      <ion-row class="content-start">
+         <ion-col size="12">
+            <ion-item>
+               <ion-label>{{ 'SELECT_ACC' | translate}}</ion-label>
+               <ion-select [(ngModel)]="receiverPK">
+                  <ion-select-option *ngFor="let account of showaccount" [value]="account.pk">{{account.accountName}}</ion-select-option>
+               </ion-select>
+            </ion-item>
+         </ion-col>
+      </ion-row>
 
-    <ion-row class="content-start">
-      <ion-col size="12">
-        <div class="button-wrapper">
-          <ion-button class="btn-green" (click)="transferFunds()">{{ 'TRANSFER_FUNDS' | translate}}</ion-button>
-        </div>
-      </ion-col>
-    </ion-row>
-    
-  </ion-grid>
+      <ion-row class="content-start">
+         <ion-col size="12">
+            <div class="button-wrapper">
+               <ion-button (click)="transferFunds()">{{ 'TRANSFER_FUNDS' | translate}}</ion-button>
+            </div>
+         </ion-col>
+      </ion-row>
+   </ion-grid>
 </ion-content>

@@ -31,13 +31,6 @@ export class GetKeysPage {
    }
 
    market() {
-      const option: NavigationExtras = {
-         state: { res: this.PK },
-      };
-      this.router.navigate(['/get-nft'], option);
-   }
-
-   ionViewDidLoad() {
-      console.log('ionViewDidLoad GetKeysPage');
+      this.router.navigate(['/otp-page'], { replaceUrl: true });
    }
 }

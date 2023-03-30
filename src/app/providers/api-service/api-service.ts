@@ -525,13 +525,27 @@ export class ApiServiceProvider {
       });
    }
 
-   updateSVG(svgid: any, hash: string) {
-      let nft = {
-         svgid: svgid,
-         hash: hash,
-      };
-      console.log('data passed for update: ', nft);
-      return this.http.put(updateSVG, nft);
+   updateSVG(data: any): Promise<any> {
+      return new Promise((resolve, reject) => {
+         this.reqOpts = {
+            observe: 'response',
+            headers: new HttpHeaders({
+               Accept: 'application/json',
+               'Content-Type': 'Application/json',
+            }),
+         };
+         console.log('inside the service');
+
+         this.http.post(updateSVG, data, this.reqOpts).subscribe(
+            response => {
+               resolve(response);
+            },
+            error => {
+               console.log(error);
+               reject(error);
+            }
+         );
+      });
    }
 
    minNFTStellar(transactionResultSuccessful, issuerPublicKey, distributorPublickKey, asset_code, collection, Categories, NFTBlockChain, created_at, Tags, NFTURL): Promise<any> {

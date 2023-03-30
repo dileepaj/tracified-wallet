@@ -46,6 +46,7 @@ export class AppComponent {
    user: any;
    deviceInfo = null;
    private loading;
+   pageHide: boolean = false;
 
    // @ViewChild(Nav) nav: Nav;
 
@@ -158,6 +159,8 @@ export class AppComponent {
                if (shopId) {
                   queryParams['shopId'] = shopId;
                }
+               console.log('page Hide');
+               this.pageHide = true;
                this.router.navigate(['/otp-page'], { queryParams });
             } else {
                this.router.navigateByUrl('/');

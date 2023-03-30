@@ -27,39 +27,58 @@ export class GetNftPage implements OnInit {
    keypair: any;
    nft: any;
    imgrowlist = [];
-   list: any = [
-      'https://ionicframework.com/docs/img/demos/card-media.png',
-      'https://ionicframework.com/docs/img/demos/card-media.png',
-      'https://ionicframework.com/docs/img/demos/card-media.png',
-      'https://ionicframework.com/docs/img/demos/card-media.png',
-      'https://ionicframework.com/docs/img/demos/card-media.png',
-   ];
+   columCount;
+   // list: any = [
+   //    'https://ionicframework.com/docs/img/demos/card-media.png',
+   //    'https://ionicframework.com/docs/img/demos/card-media.png',
+   //    'https://ionicframework.com/docs/img/demos/card-media.png',
+   //    'https://ionicframework.com/docs/img/demos/card-media.png',
+   //    'https://ionicframework.com/docs/img/demos/card-media.png',
+   // ];
    constructor(private loadCtrl: LoadingController, public apiService: ApiServiceProvider, private translate: TranslateService, private logger: LoggerService, private router: Router) {}
-   ngOnInit(): void {
-      // this.startloading();
-      this.splitImage();
+   ngOnInit() {
+      this.startloading();
+      this.checkScreenWidth();
    }
-   async splitImage() {
-      for (let i = 0; i < this.list.length; i = i + 3) {
-         this.imgrowlist.push(this.list.slice(i, i + 3));
-         console.log('img', this.imgrowlist);
+
+   checkScreenWidth() {
+      let width = window.innerWidth;
+      if (width < 768) {
+         this.columCount = 3;
+      } else if (768 < width && width < 1200) {
+         this.columCount = 4;
+      } else if (1200 < width) {
+         this.columCount = 5;
       }
       this.claimNft();
    }
+
    claimNft() {
       this.apiService
          .getAllNft()
          .then(res => {
-            this.list = res;
-            let hash: string = this.list[0].nftcontent;
-            this.getSVG(hash);
-            // console.log(res);
-            // this.dissmissLoading();
+            // let hash: string = this.list[0].nftcontent;
+            // this.getSVG(hash);
+            console.log(res);
+            if (res) {
+               this.splitImage(res);
+            } else {
+               this.dissmissLoading();
+            }
          })
          .catch(error => {
-            // this.dissmissLoading();
+            this.dissmissLoading();
             console.log(error);
          });
+   }
+
+   async splitImage(list) {
+      console.log(this.columCount);
+      for (let i = 0; i < list.length; i = i + this.columCount) {
+         this.imgrowlist.push(list.slice(i, i + this.columCount));
+         console.log('img', this.imgrowlist);
+      }
+      this.dissmissLoading();
    }
 
    async startloading() {
@@ -74,20 +93,29 @@ export class GetNftPage implements OnInit {
    }
 
    async getSVG(hash: any) {
-      this.apiService.getSVGByHash(hash).subscribe((res: any) => {
-         console.log('get svg by hash response: ', res);
-         return res;
-         // this.Decryption = res.Response;
+      this.startloading();
+      this.apiService.getSVGByHash(hash).subscribe(
+         (res: any) => {
+            console.log('get svg by hash response: ', res);
 
-         // const svgString = this.Decryption.toString();
-         // console.log(svgString);
+            this.router.navigate(['/svg-preview'], { queryParams: res });
+            this.dissmissLoading();
+            // this.Decryption = res.Response;
 
-         // const base64String = btoa(svgString);
+            // const svgString = this.Decryption.toString();
+            // console.log(svgString);
 
-         // let imgElement = `data:image/svg+xml;base64,${base64String}`;
-         // this.imageSrc = imgElement;
-         // console.log(imgElement);
-      });
+            // const base64String = btoa(svgString);
+
+            // let imgElement = `data:image/svg+xml;base64,${base64String}`;
+            // this.imageSrc = imgElement;
+            // console.log(imgElement);
+         },
+         error => {
+            this.dissmissLoading();
+            console.log(error);
+         }
+      );
    }
 
    // getOwnNFT() {
