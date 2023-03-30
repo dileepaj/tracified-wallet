@@ -301,7 +301,7 @@ export class MintNftPage {
                   Description: 'test',
                   Collection: 'Ruri',
                   BlockChain: 'stellar',
-                  NFTStatus: '',
+                  NFTStatus: 'Minted',
                   OTP: 'CKHTMGA',
                   Email: 'mithilapanagoda@gmail.com',
                   Timestamp: new Date().toISOString(),
