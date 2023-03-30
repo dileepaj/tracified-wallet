@@ -6,6 +6,7 @@ import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { GetNftPage } from '../../pages/get-nft/get-nft';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
+import { ConnectivityServiceProvider } from 'src/app/providers/connectivity-service/connectivity-service';
 
 @Component({
    selector: 'page-otp',
@@ -15,14 +16,21 @@ import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/
 export class OtpPage {
    svgResult: any;
    email = '';
-   shopId = '7125709521094';
+   shopId = '';
 
    verifyForm = new FormGroup({
       OTP: new FormControl('', Validators.required),
-      Email: new FormControl('', Validators.required),
+      Email: new FormControl('', Validators.email),
    });
 
-   constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController, private route: ActivatedRoute) {
+   constructor(
+      public toastCtrl: ToastController,
+      public router: Router,
+      private service: ApiServiceProvider,
+      private loadingCtrl: LoadingController,
+      private route: ActivatedRoute,
+      public connectivity: ConnectivityServiceProvider
+   ) {
       const emailParam = this.route.snapshot.queryParamMap.get('email');
       const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
 
@@ -33,6 +41,9 @@ export class OtpPage {
       if (shopidParam) {
          this.shopId = shopidParam;
          console.log('params shopId', this.shopId);
+      }
+      if (emailParam && shopidParam) {
+         this.connectivity.putMenuHide(true);
       }
    }
 
@@ -60,12 +71,15 @@ export class OtpPage {
          .catch(error => {
             let err = error.error;
             console.log(err);
+
             this.dimissLoading();
+
             if (err.status && err.message == 'Invalid OTP') {
                this.presentToast('Invalid OTP or Email.');
             } else if (err.status && err.message == 'NFT already Minted') {
                this.presentToast('NFT already Minted.');
             } else {
+               this.dimissLoading();
                this.presentToast('Something wrong.');
             }
          });
@@ -84,10 +98,10 @@ export class OtpPage {
       const loading = await this.loadingCtrl.create({
          message: 'Verifying...',
       });
-      loading.present();
+      await loading.present();
    }
 
    async dimissLoading() {
-      this.loadingCtrl.dismiss();
+      await this.loadingCtrl.dismiss();
    }
 }

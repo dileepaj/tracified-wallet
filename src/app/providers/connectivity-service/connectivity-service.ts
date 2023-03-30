@@ -12,6 +12,8 @@ import { EventsService } from '../event-service/events.service';
 export class ConnectivityServiceProvider {
    public onDevice: boolean;
    toastInstance: any;
+   menuHide: boolean = false;
+
    constructor(
       private platform: Platform,
       //   private network: Network,
@@ -69,5 +71,13 @@ export class ConnectivityServiceProvider {
       });
       const { role } = await this.toastInstance.onDidDismiss();
       await this.toastInstance.present();
+   }
+
+   putMenuHide(status: boolean) {
+      this.menuHide = status;
+   }
+
+   checkMenuHide() {
+      return this.menuHide;
    }
 }
