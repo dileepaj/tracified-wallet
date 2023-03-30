@@ -72,12 +72,12 @@ export class OtpPage {
             let err = error.error;
             console.log(err);
 
-            this.dimissLoading();
-
             if (err.status && err.message == 'Invalid OTP') {
                this.presentToast('Invalid OTP or Email.');
+               this.dimissLoading();
             } else if (err.status && err.message == 'NFT already Minted') {
                this.presentToast('NFT already Minted.');
+               this.dimissLoading();
             } else {
                this.dimissLoading();
                this.presentToast('Something wrong.');
@@ -98,10 +98,12 @@ export class OtpPage {
       const loading = await this.loadingCtrl.create({
          message: 'Verifying...',
       });
+      console.log('loading');
       await loading.present();
    }
 
    async dimissLoading() {
-      await this.loadingCtrl.dismiss();
+      console.log('dismiss');
+      await this.loadingCtrl?.dismiss();
    }
 }
