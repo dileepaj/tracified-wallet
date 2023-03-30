@@ -323,11 +323,10 @@ export class MintNftPage {
                this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
                   this.presentToast(text[`NFT ${this.nftName} WAS MINTED`]);
                });
-               console.log(this.keypair);
 
                if (this.accountType == 'new') {
                   const option: NavigationExtras = {
-                     state: { res: this.keypair },
+                     state: { keys: this.keypair },
                   };
                   this.router.navigate(['/get-key'], option);
                } else {
