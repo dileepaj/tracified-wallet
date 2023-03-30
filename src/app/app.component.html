@@ -2,7 +2,10 @@
    <ion-menu menuId="main-menu" content-id="main" auto-hide="false" swipeGesture="false">
       <ion-header>
          <ion-toolbar>
-            <div class="ion-text-center ion-padding">
+            <div *ngIf="pageHide" class="ion-text-center ion-padding">
+               <ion-img style="height: 70px" src="../assets/imgs/tracified-wallet .png" alt="Profile Picture"></ion-img>
+            </div>
+            <div *ngIf="!pageHide" class="ion-text-center ion-padding">
                <div class="profile-image-holder">
                   <ion-img class="profile-image" src="../assets/imgs/user.png" alt="Profile Picture"></ion-img>
                </div>
