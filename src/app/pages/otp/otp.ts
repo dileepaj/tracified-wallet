@@ -14,12 +14,12 @@ import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/
 })
 export class OtpPage {
    svgResult: any;
-   email = 'mithilapanagoda@gmail.com';
+   email = '';
    shopId = '7125709521094';
 
    verifyForm = new FormGroup({
-      OTP: new FormControl('CKHTMGA1', Validators.required),
-      Email: new FormControl('mithilapanagoda@gmail.com', Validators.required),
+      OTP: new FormControl('', Validators.required),
+      Email: new FormControl('', Validators.required),
    });
 
    constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController, private route: ActivatedRoute) {
@@ -28,11 +28,11 @@ export class OtpPage {
 
       if (emailParam) {
          this.email = emailParam;
-         this.verifyForm.controls['Email'].setValue(emailParam);
-         console.log(this.email);
+         console.log('params email', this.email);
       }
       if (shopidParam) {
          this.shopId = shopidParam;
+         console.log('params shopId', this.shopId);
       }
    }
 

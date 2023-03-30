@@ -17,7 +17,7 @@ import { OtpNtfComponent } from './pages/otp-ntf/otp-ntf.component';
 
 const routes: Routes = [
    { path: '', component: TabsPage },
-   { path: 'assets', component: GetKeysPage },
+   { path: 'assets', component: TabsPage },
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },

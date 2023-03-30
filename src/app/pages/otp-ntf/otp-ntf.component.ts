@@ -29,9 +29,9 @@ export class OtpNtfComponent {
    }
 
    nftForm = new FormGroup({
-      nftName: new FormControl('Mithila', [Validators.required, restrictedCharacters]),
-      recipName: new FormControl('anne', Validators.required),
-      message: new FormControl('test', Validators.required),
+      nftName: new FormControl('', [Validators.required, restrictedCharacters]),
+      recipName: new FormControl('', Validators.required),
+      message: new FormControl('', Validators.required),
       agreeTick: new FormControl('false', Validators.requiredTrue),
    });
 

@@ -10,12 +10,11 @@ import { TranslateService } from '@ngx-translate/core';
    styleUrls: ['./get-keys.scss'],
 })
 export class GetKeysPage {
-   PK: any = 'wifhowfweofwejfwjhf90wf0wjfwfwe';
-   SK: any = '45484284284587928edfwef89424884';
+   PK: any = '';
+   SK: any = '';
    result: any;
    constructor(public router: Router, private clipboard: Clipboard, private translate: TranslateService) {
-      // this.result = this.router.getCurrentNavigation().extras.state.res;
-      console.log('data passed ', this.result);
+      this.result = this.router.getCurrentNavigation().extras.state.keys;
       if (this.result) {
          this.SK = this.result.publicKey().toString();
          this.PK = this.result.secret().toString();
