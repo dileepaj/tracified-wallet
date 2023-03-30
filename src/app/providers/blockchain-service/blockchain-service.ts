@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction, Networks } from 'stellar-sdk';
+import { Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction, Networks, TimeoutInfinite } from 'stellar-sdk';
 
 import { Properties } from '../../shared/properties';
 import { blockchainNet } from '../../shared/config';
@@ -50,7 +50,7 @@ export class BlockchainServiceProvider {
          server
             .loadAccount(subAccount.publicKey())
             .then(account => {
-               var transaction = new TransactionBuilder(account)
+               var transaction = new TransactionBuilder(account, { fee: '50000', networkPassphrase:this.getNetwork() })
                   .addOperation(
                      Operation.setOptions({
                         signer: {
@@ -101,7 +101,10 @@ export class BlockchainServiceProvider {
          return server
             .loadAccount(sendingAccPk)
             .then(account => {
-               var transaction = new TransactionBuilder(account).addOperation(Operation.createAccount({ destination: receivingAccPk, startingBalance: amount.toString() })).build();
+               var transaction = new TransactionBuilder(account, { fee: '50000', networkPassphrase:this.getNetwork() })
+                  .addOperation(Operation.createAccount({ destination: receivingAccPk, startingBalance: amount.toString() }))
+                  .setTimeout(TimeoutInfinite)
+                  .build();
                transaction.sign(sendingAccPair);
 
                return server
@@ -126,6 +129,10 @@ export class BlockchainServiceProvider {
       });
    }
 
+   getNetwork() {
+      return blockchainNetType === 'live' ? Networks.PUBLIC : Networks.TESTNET;
+   }
+
    transferFunds(sendingAccSk, receivingAccPk, amount) {
       return new Promise((resolve, reject) => {
          var sendingAccPair = Keypair.fromSecret(sendingAccSk);
@@ -141,7 +148,7 @@ export class BlockchainServiceProvider {
          return server
             .loadAccount(sendingAccPk)
             .then(account => {
-               var transaction = new TransactionBuilder(account).addOperation(Operation.payment({ destination: receivingAccPk, asset: Asset.native(), amount: amount.toString() })).build();
+               var transaction = new TransactionBuilder(account, { fee: '50000', networkPassphrase:this.getNetwork() }).addOperation(Operation.payment({ destination: receivingAccPk, asset: Asset.native(), amount: amount.toString() })).build();
                transaction.sign(sendingAccPair);
 
                return server
@@ -444,7 +451,7 @@ export class BlockchainServiceProvider {
          server
             .loadAccount(sourceKeypair.publicKey())
             .then(account => {
-               var transaction = new TransactionBuilder(account)
+               var transaction = new TransactionBuilder(account, { fee: '50000', networkPassphrase:this.getNetwork() })
                   .addOperation(Operation.manageData({ name: 'Transaction Type', value: '11' }))
                   .addOperation(Operation.manageData({ name: 'Identifier', value: identifier }))
                   .addOperation(Operation.manageData({ name: 'Receiver', value: receiverPk }))
@@ -578,7 +585,7 @@ export class BlockchainServiceProvider {
       var date = new Date();
       var maxTime = Math.round((new Date(validity).getTime() + date.getTimezoneOffset() * 60000) / 1000.0);
       var sourceKeypair = Keypair.fromSecret(signerSK);
-      var opts = { timebounds: { minTime: minTime, maxTime: maxTime }, fee: '100' };
+      var opts = { timebounds: { minTime: minTime, maxTime: maxTime }, fee: '50000' ,networkPassphrase:this.getNetwork()};
 
       var transaction = new TransactionBuilder(account, opts)
          .addOperation(
