@@ -55,6 +55,7 @@ export class OtpNtfComponent {
                   NFTname: this.nftForm.get('nftName').value,
                   email: this.email,
                   otp: this.otp,
+                  CustomMsg: this.nftForm.get('message').value,
                },
             };
             if (this.showLoading) {
