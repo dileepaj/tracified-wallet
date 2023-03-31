@@ -68,6 +68,7 @@ export class MintNftPage {
    loadingState: boolean;
    email;
    otp: any;
+   CustomMsg: any;
    @ViewChild('popover') popover;
    isOpen = false;
 
@@ -90,7 +91,8 @@ export class MintNftPage {
       this.nftName = this.router.getCurrentNavigation().extras.queryParams.NFTname;
       this.email = this.router.getCurrentNavigation().extras.queryParams.email;
       this.otp = this.router.getCurrentNavigation().extras.queryParams.otp;
-      console.log(this.nftName);
+      this.CustomMsg = this.router.getCurrentNavigation().extras.queryParams.CustomMsg;
+
       if (this.result) {
          this.SVG = this.result.svg;
          this.SVGID = this.result.svgid;
@@ -316,7 +318,7 @@ export class MintNftPage {
                   NFTCreator: this.keypair.publicKey().toString(),
                   NFTName: this.nftName,
                   NFTContent: this.hash,
-                  Description: 'test',
+                  Description: this.CustomMsg,
                   Collection: 'Ruri',
                   BlockChain: 'stellar',
                   NFTStatus: 'Minted',
