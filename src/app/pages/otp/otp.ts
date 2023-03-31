@@ -54,15 +54,15 @@ export class OtpPage {
    checkOTP() {
       let otp = this.verifyForm.get('OTP').value;
       let mail = this.verifyForm.get('Email').value;
-      this.showLoading();
+      // this.showLoading();
       this.service
          .checkOTP(otp, mail)
          .then(res => {
             console.log(res);
             if (res.body.Status == 200 && res.body.Response.Status == 'Valid') {
-               if (this.showLoading) {
-                  this.dimissLoading();
-               }
+               // if (this.showLoading) {
+               //    this.dimissLoading();
+               // }
                this.presentToast('OTP verified.');
                const option: NavigationExtras = {
                   queryParams: {
@@ -77,9 +77,9 @@ export class OtpPage {
          .catch(error => {
             let err = error.error;
             console.log(err);
-            setTimeout(() => {
-               this.dimissLoading();
-            }, 100);
+            // setTimeout(() => {
+            //    this.dimissLoading();
+            // }, 100);
 
             if (err.status && err.message == 'Invalid OTP') {
                this.presentToast('Invalid OTP or Email.');
