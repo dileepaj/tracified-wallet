@@ -63,11 +63,15 @@ export class GetNftPage implements OnInit {
             if (res) {
                this.splitImage(res);
             } else {
-               this.dissmissLoading();
+               if (this.startloading) {
+                  this.dissmissLoading();
+               }
             }
          })
          .catch(error => {
-            this.dissmissLoading();
+            if (this.startloading) {
+               this.dissmissLoading();
+            }
             console.log(error);
          });
    }
@@ -78,7 +82,9 @@ export class GetNftPage implements OnInit {
          this.imgrowlist.push(list.slice(i, i + this.columCount));
          console.log('img', this.imgrowlist);
       }
-      this.dissmissLoading();
+      if (this.startloading) {
+         this.dissmissLoading();
+      }
    }
 
    async startloading() {
@@ -99,7 +105,9 @@ export class GetNftPage implements OnInit {
             console.log('get svg by hash response: ', res);
 
             this.router.navigate(['/svg-preview'], { queryParams: res });
-            this.dissmissLoading();
+            if (this.startloading) {
+               this.dissmissLoading();
+            }
             // this.Decryption = res.Response;
 
             // const svgString = this.Decryption.toString();
@@ -112,7 +120,9 @@ export class GetNftPage implements OnInit {
             // console.log(imgElement);
          },
          error => {
-            this.dissmissLoading();
+            if (this.startloading) {
+               this.dissmissLoading();
+            }
             console.log(error);
          }
       );

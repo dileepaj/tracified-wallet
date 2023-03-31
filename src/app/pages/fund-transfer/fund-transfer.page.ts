@@ -34,12 +34,8 @@ export class FundTransferPage implements OnInit {
    ) {
       this.mainAccount = this.properties.defaultAccount;
       this.getMainAccounts();
-
-
-
    }
-  ngOnInit(): void {
-  }
+   ngOnInit(): void {}
 
    ionViewDidLoad() {
       this.logger.info('Fund Transfer Page Load', this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -59,19 +55,25 @@ export class FundTransferPage implements OnInit {
                }
 
                if (effectiveBalance < this.transferAmount) {
-                  this.dissmissLoading();
+                  if (this.presentLoading) {
+                     this.dissmissLoading();
+                  }
                   this.translate.get(['ERROR', 'FALIED_TO_COPY_KEY']).subscribe(text => {
                      this.presentAlert(text['ERROR'], text['BALANCE_IS '] + effectiveBalance + text[' TRY_AGAIN_VALID_AMOUNT']);
                   });
                } else if (this.transferAmount < 2) {
-                  this.dissmissLoading();
+                  if (this.presentLoading) {
+                     this.dissmissLoading();
+                  }
                   this.translate.get(['ERROR', 'MINIMUM_TRANSFER_AMOUNT']).subscribe(text => {
                      this.presentAlert(text['ERROR'], text['MINIMUM_TRANSFER_AMOUNT']);
                   });
                } else {
-                  this.dissmissLoading();
+                  if (this.presentLoading) {
+                     this.dissmissLoading();
+                  }
 
-                  console.log("passing data ", this.transferAmount, this.mainAccount.accountName, this.mainAccount.pk, this.receiverPK, this.receiverPK);
+                  console.log('passing data ', this.transferAmount, this.mainAccount.accountName, this.mainAccount.pk, this.receiverPK, this.receiverPK);
                   this.router.navigate(['/transfer-confirm'], {
                      state: {
                         transferAmount: this.transferAmount,
@@ -84,14 +86,18 @@ export class FundTransferPage implements OnInit {
                }
             })
             .catch(err => {
-               this.dissmissLoading();
+               if (this.presentLoading) {
+                  this.dissmissLoading();
+               }
                this.translate.get(['ERROR', 'FAIL_ACC_BAL']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['FAIL_ACC_BAL']);
                });
                this.logger.error('Failure in retrieving account balance: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
       } else {
-         this.dissmissLoading();
+         if (this.presentLoading) {
+            this.dissmissLoading();
+         }
          this.translate.get(['ERROR', 'FILL_REQUIRED']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['FILL_REQUIRED']);
          });
@@ -104,7 +110,9 @@ export class FundTransferPage implements OnInit {
          this.dataService
             .getBlockchainAccounts()
             .then(accounts => {
-               this.dissmissLoading();
+               if (this.presentLoading) {
+                  this.dissmissLoading();
+               }
 
                if (accounts.length < 2) {
                   this.translate.get(['WARNING', 'CANNOT_FIND_ACC']).subscribe(text => {
@@ -117,16 +125,16 @@ export class FundTransferPage implements OnInit {
                for (var i = 0; i < Object.keys(this.userAcc).length; i++) {
                   if (this.properties.defaultAccount.accountName != this.userAcc[i].accountName) {
                      this.showaccount.push(this.userAcc[i]);
-                     console.log("account type ",typeof this.userAcc[i]);
+                     console.log('account type ', typeof this.userAcc[i]);
                   }
                }
 
-               console.log("accounts ",this.showaccount);
+               console.log('accounts ', this.showaccount);
 
                resolve();
             })
             .catch(error => {
-               if (this.isLoadingPresent) {
+               if (this.presentLoading) {
                   this.dissmissLoading();
                }
                this.translate.get(['AUTHENTICATION_FAILED', 'RETRIEVE_ACC_FAILED']).subscribe(text => {
@@ -174,9 +182,9 @@ export class FundTransferPage implements OnInit {
       });
    }
 
-
-   getType(val) { return typeof val  }
-
+   getType(val) {
+      return typeof val;
+   }
 
    async goBackAlert(title, message) {
       let alert = await this.alertCtrl.create({
@@ -206,16 +214,14 @@ export class FundTransferPage implements OnInit {
    }
 
    async presentLoading() {
-      this.isLoadingPresent = true;
       this.loading = await this.loadingCtrl.create({
          backdropDismiss: false,
          message: 'Please Wait',
       });
-      this.loading.present();
+      await this.loading.present();
    }
 
-   dissmissLoading() {
-      this.isLoadingPresent = false;
-      this.loading.dismiss();
+   async dissmissLoading() {
+      await this.loading.dismiss();
    }
 }

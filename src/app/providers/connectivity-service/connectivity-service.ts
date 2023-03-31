@@ -12,7 +12,7 @@ import { EventsService } from '../event-service/events.service';
 export class ConnectivityServiceProvider {
    public onDevice: boolean;
    toastInstance: any;
-   menuHide: boolean = false;
+   menuHide: boolean = true;
 
    constructor(
       private platform: Platform,
@@ -74,7 +74,7 @@ export class ConnectivityServiceProvider {
    }
 
    putMenuHide(status: boolean) {
-      this.menuHide = status;
+      // this.menuHide = status;
    }
 
    checkMenuHide() {
