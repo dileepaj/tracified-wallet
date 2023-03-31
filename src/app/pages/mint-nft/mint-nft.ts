@@ -35,7 +35,7 @@ export class MintNftPage {
    private Identifier = '';
    private ProductName = '';
    private NFTBlockChain = 'Stellar';
-   mail: any = 'mithilapanagoda@gmail.com';
+   // mail: any = 'mithilapanagoda@gmail.com';
    SVG = '';
    SVGID = '';
    nftName: string = '';
@@ -65,9 +65,12 @@ export class MintNftPage {
    shopID = '';
    img;
    accountType;
-
+   loadingState: boolean;
+   email;
+   otp: any;
    @ViewChild('popover') popover;
    isOpen = false;
+
    constructor(
       private alertCtrl: AlertController,
       private mappingService: MappingServiceProvider,
@@ -85,10 +88,13 @@ export class MintNftPage {
       this.result = this.router.getCurrentNavigation().extras.queryParams.result;
       this.shopID = this.router.getCurrentNavigation().extras.queryParams.ShopId;
       this.nftName = this.router.getCurrentNavigation().extras.queryParams.NFTname;
+      this.email = this.router.getCurrentNavigation().extras.queryParams.email;
+      this.otp = this.router.getCurrentNavigation().extras.queryParams.otp;
       console.log(this.nftName);
       if (this.result) {
          this.SVG = this.result.svg;
          this.SVGID = this.result.svgid;
+         this.presentLoading('Loading...');
          this.convertToBase64(this.result.svg);
       }
       // this.account = this.properties.defaultAccount;
@@ -124,6 +130,9 @@ export class MintNftPage {
       let str1 = new String('data:image/svg+xml;base64,');
       this.img = str1 + encodedData;
       this.imageSrc = this._sanitizer.bypassSecurityTrustResourceUrl(this.img);
+      setTimeout(() => {
+         this.dissmissLoading();
+      }, 100);
       // console.log(this.img);
 
       // this.apiService.updateSVG(this.SVGID, this.hash).subscribe(
@@ -166,7 +175,7 @@ export class MintNftPage {
    createNFT() {
       this.presentLoading('Checking account...');
       console.log('--------------1----------------');
-      this.storage.getBcAccounts('mithilapanagoda@gmail.com').then((res1: any) => {
+      this.storage.getBcAccounts(this.email).then((res1: any) => {
          console.log('retieved result ', res1);
          if (res1 != null) {
             this.keypair = Keypair.fromSecret(res1);
@@ -188,16 +197,22 @@ export class MintNftPage {
       console.log('Secret Key is', this.keypair.secret().toString());
       console.log('Keypair is', this.keypair);
       this.storage
-         .setBcAccounts(this.mail, this.keypair.secret().toString())
+         .setBcAccounts(this.email, this.keypair.secret().toString())
          .then(res => {
             console.log('result ', res);
             this.presentToast('Successfully set!');
             this.sponsorNewAcc();
          })
-         .catch(error => this.dissmissLoading());
+         .catch(error => {
+            if (this.loadingState) {
+               this.dissmissLoading();
+            }
+         });
    }
 
    sponsorNewAcc() {
+      this.loading.message = 'Sponsering...';
+      console.log('New Account');
       this.accountType = 'new';
       this.apiService
          .getNewIssuerPublicKey()
@@ -225,7 +240,7 @@ export class MintNftPage {
             }
          })
          .catch(error => {
-            if (this.isLoadingPresent) {
+            if (this.loadingState) {
                this.dissmissLoading();
             }
             this.logger.error('NFT reciveing issue in gateway side : ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -236,6 +251,7 @@ export class MintNftPage {
    }
 
    sponsorOldAcc() {
+      console.log('Old Account');
       this.loading.message = 'transaction...';
       this.accountType = 'old';
       this.apiService
@@ -265,7 +281,9 @@ export class MintNftPage {
             }
          })
          .catch(error => {
-            this.dissmissLoading();
+            if (this.loadingState) {
+               this.dissmissLoading();
+            }
 
             this.logger.error('NFT reciveing issue in gateway side : ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
             this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
@@ -291,8 +309,6 @@ export class MintNftPage {
                this.hash
             )
             .then(nft => {
-               console.log(nft);
-               console.log('hash123', nft.body.NFTTxnHash);
                let NFT = {
                   IssuerPublicKey: this.Issuer,
                   NFTCreator: this.keypair.publicKey().toString(),
@@ -302,8 +318,8 @@ export class MintNftPage {
                   Collection: 'Ruri',
                   BlockChain: 'stellar',
                   NFTStatus: 'Minted',
-                  OTP: 'CKHTMGA',
-                  Email: 'mithilapanagoda@gmail.com',
+                  OTP: this.otp,
+                  Email: this.email,
                   Timestamp: new Date().toISOString(),
                   TXNHash: nft.body.NFTTxnHash,
                   ShopId: this.shopID,
@@ -311,11 +327,15 @@ export class MintNftPage {
                this.apiService
                   .walletNftSave(NFT)
                   .then(res => {
-                     this.dissmissLoading();
+                     if (this.loadingState) {
+                        this.dissmissLoading();
+                     }
                      console.log(res);
                   })
                   .catch(error => {
-                     this.dissmissLoading();
+                     if (this.loadingState) {
+                        this.dissmissLoading();
+                     }
                      console.log(error);
                   });
 
@@ -334,13 +354,17 @@ export class MintNftPage {
                }
             })
             .catch(error => {
-               this.dissmissLoading();
+               if (this.loadingState) {
+                  this.dissmissLoading();
+               }
                this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
                });
             });
       } else {
-         this.dissmissLoading();
+         if (this.loadingState) {
+            this.dissmissLoading();
+         }
          this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
          });
@@ -361,10 +385,6 @@ export class MintNftPage {
          ],
       });
       await alert.present();
-   }
-
-   backButton() {
-      // this.navCtrl.setRoot(MintNftPage);
    }
 
    async transactionPasswordPopUp(accountName, curretBalance, mintingCost, changeTrustCreationCost, CollateralFee): Promise<string> {
@@ -417,16 +437,20 @@ export class MintNftPage {
    }
 
    async presentLoading(msg) {
-      this.isLoadingPresent = true;
+      console.log('loading');
       this.loading = await this.loadingCtrl.create({
          message: msg,
          backdropDismiss: false,
       });
+
       await this.loading.present();
+      this.loadingState = true;
    }
 
    async dissmissLoading() {
-      this.isLoadingPresent = false;
+      this.loadingState = false;
+      console.log('dismiss');
+
       await this.loading.dismiss();
    }
 

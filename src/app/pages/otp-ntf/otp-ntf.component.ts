@@ -24,8 +24,8 @@ export class OtpNtfComponent {
    }
    constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController, private route: ActivatedRoute) {
       this.shopId = this.router.getCurrentNavigation().extras.queryParams.ShopId;
-      this.email = this.router.getCurrentNavigation().extras.queryParams.ShopId;
-      this.otp = this.router.getCurrentNavigation().extras.queryParams.ShopId;
+      this.email = this.router.getCurrentNavigation().extras.queryParams.email;
+      this.otp = this.router.getCurrentNavigation().extras.queryParams.otp;
    }
 
    nftForm = new FormGroup({
@@ -55,14 +55,20 @@ export class OtpNtfComponent {
                   ShopId: this.shopId,
                   result: res.body.Response,
                   NFTname: this.nftForm.get('nftName').value,
+                  email: this.email,
+                  otp: this.otp,
                },
             };
-            this.dimissLoading();
+            if (this.showLoading) {
+               this.dimissLoading();
+            }
             this.router.navigate(['/mint-nft'], option);
          },
          error => {
             this.presentToast('Something wrong.');
-            this.dimissLoading();
+            if (this.showLoading) {
+               this.dimissLoading();
+            }
             console.log(error);
          }
       );
@@ -89,10 +95,10 @@ export class OtpNtfComponent {
       const loading = await this.loadingCtrl.create({
          message: 'Verifying...',
       });
-      loading.present();
+      await loading.present();
    }
 
    async dimissLoading() {
-      this.loadingCtrl.dismiss();
+      await this.loadingCtrl.dismiss();
    }
 }

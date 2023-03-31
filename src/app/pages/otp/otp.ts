@@ -14,6 +14,10 @@ import { ConnectivityServiceProvider } from 'src/app/providers/connectivity-serv
    styleUrls: ['./otp.scss'],
 })
 export class OtpPage {
+   // email = 'thinuriw@tracified.com';
+   // shopId = '7125651849414';
+   // I4XP42Q
+
    svgResult: any;
    email = '';
    shopId = '';
@@ -56,13 +60,15 @@ export class OtpPage {
          .then(res => {
             console.log(res);
             if (res.body.Status == 200 && res.body.Response.Status == 'Valid') {
-               this.dimissLoading();
+               if (this.showLoading) {
+                  this.dimissLoading();
+               }
                this.presentToast('OTP verified.');
                const option: NavigationExtras = {
                   queryParams: {
                      ShopId: this.shopId,
                      otp: otp,
-                     mail: mail,
+                     email: mail,
                   },
                };
                this.router.navigate(['/otp-nft'], option);
@@ -71,15 +77,18 @@ export class OtpPage {
          .catch(error => {
             let err = error.error;
             console.log(err);
+            setTimeout(() => {
+               this.dimissLoading();
+            }, 100);
 
             if (err.status && err.message == 'Invalid OTP') {
                this.presentToast('Invalid OTP or Email.');
-               this.dimissLoading();
+               // this.dimissLoading();
             } else if (err.status && err.message == 'NFT already Minted') {
                this.presentToast('NFT already Minted.');
-               this.dimissLoading();
+               // this.dimissLoading();
             } else {
-               this.dimissLoading();
+               // this.dimissLoading();
                this.presentToast('Something wrong.');
             }
          });

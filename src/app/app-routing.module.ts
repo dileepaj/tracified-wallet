@@ -36,7 +36,6 @@ const routes: Routes = [
    {
       path: 'fund-transfer',
       component: FundTransferPage,
-      canActivate: [AuthGuardService],
    },
    {
       path: 'transfer-confirm',
