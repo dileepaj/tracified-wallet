@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController, NavController } from '@ionic/angular';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
@@ -84,7 +84,8 @@ export class MintNftPage {
       private logger: LoggerService,
       private storage: StorageServiceProvider,
       private router: Router,
-      private toastCtrl: ToastController
+      private toastCtrl: ToastController,
+      private navController: NavController
    ) {
       this.result = this.router.getCurrentNavigation().extras.queryParams.result;
       this.shopID = this.router.getCurrentNavigation().extras.queryParams.ShopId;
@@ -214,7 +215,7 @@ export class MintNftPage {
    }
 
    sponsorNewAcc() {
-      this.loading.message = 'Sponsering...';
+      this.loading.message = 'Sponsoring...';
       console.log('New Account');
       this.accountType = 'new';
       this.apiService
@@ -255,8 +256,7 @@ export class MintNftPage {
    }
 
    sponsorOldAcc() {
-      console.log('Old Account');
-      this.loading.message = 'transaction...';
+      this.loading.message = 'Sponsoring...';
       this.accountType = 'old';
       this.apiService
          .getNewIssuerPublicKey()
@@ -334,28 +334,26 @@ export class MintNftPage {
                      if (this.loadingState) {
                         this.dissmissLoading();
                      }
-                     console.log(res);
+                     // this.navController.navigateRoot('/mint-nft');
+                     // window.history.replaceState(null, null, window.location.href);
+                     this.successful();
+
+                     // this.router.navigate(['/mint-nft'], { replaceUrl: true });
                   })
                   .catch(error => {
+                     console.log(error);
                      if (this.loadingState) {
                         this.dissmissLoading();
                      }
-                     console.log(error);
+                     this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
+                        this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
+                     });
                   });
 
                this.logger.info('NFT created', this.properties.skipConsoleLogs, this.properties.writeToFile);
-               this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
-                  this.presentToast(text[`NFT ${this.nftName} WAS MINTED`]);
-               });
-
-               if (this.accountType == 'new') {
-                  const option: NavigationExtras = {
-                     state: { keys: this.keypair },
-                  };
-                  this.router.navigate(['/get-key'], option);
-               } else {
-                  this.router.navigate(['/get-nft'], { replaceUrl: true });
-               }
+               // this.translate.get(['MINTED', `NFT ${this.nftName} WAS MINTED`]).subscribe(text => {
+               //    this.presentToast(text[`NFT ${this.nftName} WAS MINTED`]);
+               // });
             })
             .catch(error => {
                if (this.loadingState) {
@@ -386,6 +384,30 @@ export class MintNftPage {
                text: 'OK',
                handler: data => {
                   this.router.navigate(['/otp-page'], { replaceUrl: true, state: { otpForm: true } });
+               },
+            },
+         ],
+      });
+      await alert.present();
+   }
+
+   async successful() {
+      const alert = await this.alertCtrl.create({
+         header: 'Your NFT has been claimed and minted successfully.',
+         backdropDismiss: false,
+         buttons: [
+            {
+               text: 'OK',
+               role: 'confirm',
+               handler: () => {
+                  if (this.accountType == 'new') {
+                     const option: NavigationExtras = {
+                        state: { keys: this.keypair },
+                     };
+                     this.router.navigate(['/get-key'], option);
+                  } else {
+                     this.router.navigate(['/get-nft'], { replaceUrl: true });
+                  }
                },
             },
          ],

@@ -15,9 +15,10 @@ export class GetKeysPage {
    result: any;
    constructor(public router: Router, private clipboard: Clipboard, private translate: TranslateService) {
       this.result = this.router.getCurrentNavigation().extras.state.keys;
+      this.router.navigate(['/get-key'], { replaceUrl: true });
       if (this.result) {
-         this.SK = this.result.publicKey().toString();
-         this.PK = this.result.secret().toString();
+         this.PK = this.result.publicKey().toString();
+         this.SK = this.result.secret().toString();
          console.log('private key: ', this.SK);
          console.log('public key: ', this.PK);
       }
