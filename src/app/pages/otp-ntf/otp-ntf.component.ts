@@ -46,10 +46,8 @@ export class OtpNtfComponent {
             NFTname: this.nftForm.get('nftName').value,
          },
       };
-      console.log(option.queryParams);
       this.service.updateSVG(option.queryParams).then(
          res => {
-            console.log(res.body.Response);
             const option: NavigationExtras = {
                queryParams: {
                   ShopId: this.shopId,
