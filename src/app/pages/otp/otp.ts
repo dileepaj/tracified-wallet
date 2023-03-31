@@ -60,9 +60,9 @@ export class OtpPage {
          .then(res => {
             console.log(res);
             if (res.body.Status == 200 && res.body.Response.Status == 'Valid') {
-               if (this.showLoading) {
+               setTimeout(() => {
                   this.dimissLoading();
-               }
+               }, 200);
                this.presentToast('OTP verified.');
                const option: NavigationExtras = {
                   queryParams: {
@@ -79,7 +79,7 @@ export class OtpPage {
             console.log(err);
             setTimeout(() => {
                this.dimissLoading();
-            }, 100);
+            }, 200);
 
             if (err.status && err.message == 'Invalid OTP') {
                this.presentToast('Invalid OTP or Email.');
