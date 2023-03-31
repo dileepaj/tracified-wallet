@@ -354,7 +354,7 @@ export class MintNftPage {
                   };
                   this.router.navigate(['/get-key'], option);
                } else {
-                  this.router.navigate(['/otp-page'], { replaceUrl: true });
+                  this.router.navigate(['/get-nft'], { replaceUrl: true });
                }
             })
             .catch(error => {

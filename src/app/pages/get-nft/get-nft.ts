@@ -56,12 +56,13 @@ export class GetNftPage implements OnInit {
    claimNft() {
       this.apiService
          .getAllNft()
-         .then(res => {
+         .then(async res => {
             // let hash: string = this.list[0].nftcontent;
             // this.getSVG(hash);
             console.log(res);
             if (res) {
-               this.splitImage(res);
+               let reverseArray = await this.reverseArray(res);
+               this.splitImage(reverseArray);
             } else {
                if (this.startloading) {
                   this.dissmissLoading();
@@ -85,6 +86,16 @@ export class GetNftPage implements OnInit {
       if (this.startloading) {
          this.dissmissLoading();
       }
+   }
+
+   async reverseArray(arr) {
+      const length = arr.length;
+      for (let i = 0; i < length / 2; i++) {
+         const temp = arr[i];
+         arr[i] = arr[length - i - 1];
+         arr[length - i - 1] = temp;
+      }
+      return arr;
    }
 
    async startloading() {
