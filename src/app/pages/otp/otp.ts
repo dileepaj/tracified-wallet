@@ -14,9 +14,9 @@ import { ConnectivityServiceProvider } from 'src/app/providers/connectivity-serv
    styleUrls: ['./otp.scss'],
 })
 export class OtpPage {
-   // email = 'thinuriw@tracified.com';
-   // shopId = '7125651849414';
-   // I4XP42Q
+   // email = 'dennemallinft@mailinator.com';
+   // shopId = '7480022958278';
+   // W6NS5ZA
 
    svgResult: any;
    email = '';
@@ -51,18 +51,16 @@ export class OtpPage {
       }
    }
 
-   checkOTP() {
+   async checkOTP() {
       let otp = this.verifyForm.get('OTP').value;
       let mail = this.verifyForm.get('Email').value;
-      this.showLoading();
+      await this.showLoading();
       this.service
          .checkOTP(otp, mail)
-         .then(res => {
+         .then(async res => {
             console.log(res);
             if (res.body.Status == 200 && res.body.Response.Status == 'Valid') {
-               setTimeout(() => {
-                  this.dimissLoading();
-               }, 200);
+               await this.dimissLoading();
                this.presentToast('OTP verified.');
                const option: NavigationExtras = {
                   queryParams: {
@@ -74,21 +72,17 @@ export class OtpPage {
                this.router.navigate(['/otp-nft'], option);
             }
          })
-         .catch(error => {
+         .catch(async error => {
             let err = error.error;
             console.log(err);
-            setTimeout(() => {
-               this.dimissLoading();
-            }, 200);
+
+            await this.dimissLoading();
 
             if (err.status && err.message == 'Invalid OTP') {
                this.presentToast('Invalid OTP or Email.');
-               // this.dimissLoading();
             } else if (err.status && err.message == 'NFT already Minted') {
                this.presentToast('NFT already Minted.');
-               // this.dimissLoading();
             } else {
-               // this.dimissLoading();
                this.presentToast('Something wrong.');
             }
          });
