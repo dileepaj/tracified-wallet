@@ -129,7 +129,7 @@ export class StorageServiceProvider {
                      });
                } else {
                   this.logger.error('No BC accounts found.', this.properties.skipConsoleLogs, this.properties.writeToFile);
-                  reject(false);
+                  resolve(null);
                }
             })
             .catch(err => {

@@ -133,17 +133,15 @@ export class MintNftPage {
       setTimeout(() => {
          this.dissmissLoading();
       }, 100);
-      // console.log(this.img);
 
-      // this.apiService.updateSVG(this.SVGID, this.hash).subscribe(
-      //    (res: any) => {
-      //       console.log('update svg API result : ', res);
-      //       this.loadSVG(this.hash);
-      //    },
-      //    error => {
-      //       console.log(error);
-      //    }
-      // );
+      this.apiService.updatePutSVG(this.SVGID, this.hash).subscribe(
+         (res: any) => {
+            console.log('update svg API result : ', res);
+         },
+         error => {
+            console.log(error);
+         }
+      );
    }
 
    loadSVG(hash: string) {
@@ -186,7 +184,10 @@ export class MintNftPage {
             this.presentToast("You don't have an account exisiting with your username. Proceeding to creating a new one!");
             this.createNewAccount();
          }
-      });
+      }),
+         error => {
+            console.log('blockchain', error);
+         };
    }
 
    createNewAccount(): void {
@@ -231,10 +232,11 @@ export class MintNftPage {
 
                   console.log('after ', this.xdr);
                   this.blockchainService.signandsubmitXdr(this.xdr, this.keypair.secret().toString()).then((res): any => {
-                     if (this.txn != null) {
+                     console.log(res);
+                     if (res.successful) {
                         this.transactionResult = true;
+                        this.mintNFT();
                      }
-                     this.mintNFT();
                   });
                });
             }
@@ -272,7 +274,7 @@ export class MintNftPage {
                   console.log('after ', this.xdr);
                   this.blockchainService.signandsubmitXdr(this.xdr, this.keypair.secret().toString()).then((res): any => {
                      console.log(res);
-                     if (res != null) {
+                     if (res.successful) {
                         this.transactionResult = true;
                         this.mintNFT();
                      }
@@ -357,6 +359,7 @@ export class MintNftPage {
                if (this.loadingState) {
                   this.dissmissLoading();
                }
+               console.log('somthing wrong 1', error);
                this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
                });
@@ -365,6 +368,7 @@ export class MintNftPage {
          if (this.loadingState) {
             this.dissmissLoading();
          }
+         console.log('somthing wrong 2');
          this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
          });

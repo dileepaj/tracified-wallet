@@ -548,6 +548,15 @@ export class ApiServiceProvider {
       });
    }
 
+   updatePutSVG(svgid: any, hash: string) {
+      let nft = {
+         svgid: svgid,
+         hash: hash,
+      };
+      console.log('data passed for update: ', nft);
+      return this.http.put(updateSVG, nft);
+   }
+
    minNFTStellar(transactionResultSuccessful, issuerPublicKey, distributorPublickKey, asset_code, collection, Categories, NFTBlockChain, created_at, Tags, NFTURL): Promise<any> {
       return new Promise((resolve, reject) => {
          this.reqOpts = {
