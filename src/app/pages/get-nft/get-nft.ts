@@ -37,11 +37,11 @@ export class GetNftPage implements OnInit {
    // ];
    constructor(private loadCtrl: LoadingController, public apiService: ApiServiceProvider, private translate: TranslateService, private logger: LoggerService, private router: Router) {}
    ngOnInit() {
-      this.startloading();
       this.checkScreenWidth();
    }
 
-   checkScreenWidth() {
+   async checkScreenWidth() {
+      await this.startloading();
       let width = window.innerWidth;
       if (width < 768) {
          this.columCount = 3;
@@ -64,15 +64,12 @@ export class GetNftPage implements OnInit {
                let reverseArray = await this.reverseArray(res);
                this.splitImage(reverseArray);
             } else {
-               if (this.startloading) {
-                  this.dissmissLoading();
-               }
+               await this.dissmissLoading();
             }
          })
-         .catch(error => {
-            if (this.startloading) {
-               this.dissmissLoading();
-            }
+         .catch(async error => {
+            await this.dissmissLoading();
+
             console.log(error);
          });
    }
@@ -83,9 +80,6 @@ export class GetNftPage implements OnInit {
          this.imgrowlist.push(list.slice(i, i + this.columCount));
          console.log('img', this.imgrowlist);
       }
-      if (this.startloading) {
-         this.dissmissLoading();
-      }
    }
 
    async reverseArray(arr) {
@@ -95,6 +89,7 @@ export class GetNftPage implements OnInit {
          arr[i] = arr[length - i - 1];
          arr[length - i - 1] = temp;
       }
+      await this.dissmissLoading();
       return arr;
    }
 
