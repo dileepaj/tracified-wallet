@@ -30,6 +30,6 @@ export class GetKeysPage {
    }
 
    market() {
-      this.router.navigate(['/otp-page'], { replaceUrl: true });
+      this.router.navigate(['/get-nft'], { replaceUrl: true });
    }
 }
