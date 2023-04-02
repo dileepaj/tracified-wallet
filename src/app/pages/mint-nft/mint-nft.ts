@@ -204,7 +204,7 @@ export class MintNftPage {
          .setBcAccounts(this.email, this.keypair.secret().toString())
          .then(res => {
             console.log('result ', res);
-            this.presentToast('Successfully set!');
+            // this.presentToast('Successfully set!');
             this.sponsorNewAcc();
          })
          .catch(error => {
