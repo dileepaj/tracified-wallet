@@ -24,12 +24,21 @@
 
    <ion-grid>
       <ion-row *ngFor="let row of imgrowlist">
-         <ion-col style="display: flex" *ngFor="let img of row">
-            <ion-card style="margin: 0px; background-color: #2d2d2d" (click)="getSVG(img.nftcontent)">
-               <img [src]="img.Thumbnail" />
+         <ion-col [size]="colSize" style="display: flex" *ngFor="let img of row">
+            <ion-card style="margin: 0px; background-color: #2d2d2d">
+               <img [src]="img.Thumbnail" style="cursor: pointer" (click)="getSVG(img.nftcontent)" />
                <ion-card-header>
-                  <ion-card-title>{{img.nftname}}</ion-card-title>
-                  <ion-card-subtitle>{{img.collection}}</ion-card-subtitle>
+                  <ion-row style="display: flex; justify-content: space-between">
+                     <ion-col size="9">
+                        <ion-row class="header"> {{img.nftname}} </ion-row>
+                        <ion-row style="padding-top: 5px" class="subHeader"> {{img.collection}} </ion-row>
+                     </ion-col>
+                     <ion-col size="3" style="display: flex; justify-content: end; padding: 8px">
+                        <div>
+                           <ion-img (click)="goToStellar(img.txnhash)" src="../../../assets/icon/stellar.svg"></ion-img>
+                        </div>
+                     </ion-col>
+                  </ion-row>
                </ion-card-header>
             </ion-card>
          </ion-col>

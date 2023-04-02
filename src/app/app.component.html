@@ -54,7 +54,7 @@
                </ion-item>
             </ion-menu-toggle>
 
-            <ion-menu-toggle>
+            <ion-menu-toggle *ngIf="!connectivity.checkMenuHide()">
                <ion-item (click)="openPage('fundTransfer')">
                   <ion-icon name="cash" slot="start"></ion-icon>
                   <ion-label>

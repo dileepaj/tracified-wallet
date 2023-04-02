@@ -28,13 +28,16 @@ export class GetNftPage implements OnInit {
    nft: any;
    imgrowlist = [];
    columCount;
+   colSize;
    // list: any = [
-   //    'https://ionicframework.com/docs/img/demos/card-media.png',
-   //    'https://ionicframework.com/docs/img/demos/card-media.png',
-   //    'https://ionicframework.com/docs/img/demos/card-media.png',
-   //    'https://ionicframework.com/docs/img/demos/card-media.png',
-   //    'https://ionicframework.com/docs/img/demos/card-media.png',
+   //    'https://tracified.sirv.com/Spins/RURI%20Gems/7776596590790/7776596590790.jpg',
+   //    'https://tracified.sirv.com/Spins/RURI%20Gems/7776596590790/7776596590790.jpg',
+   //    'https://tracified.sirv.com/Spins/RURI%20Gems/7776596590790/7776596590790.jpg',
+   //    'https://tracified.sirv.com/Spins/RURI%20Gems/7776596590790/7776596590790.jpg',
+   //    'https://tracified.sirv.com/Spins/RURI%20Gems/7776596590790/7776596590790.jpg',
+   //    'https://tracified.sirv.com/Spins/RURI%20Gems/7776596590790/7776596590790.jpg',
    // ];
+
    constructor(private loadCtrl: LoadingController, public apiService: ApiServiceProvider, private translate: TranslateService, private logger: LoggerService, private router: Router) {}
    ngOnInit() {
       this.checkScreenWidth();
@@ -43,14 +46,22 @@ export class GetNftPage implements OnInit {
    async checkScreenWidth() {
       await this.startloading();
       let width = window.innerWidth;
-      if (width < 768) {
+      if (width < 429) {
+         this.columCount = 2;
+         this.colSize = 6;
+      } else if (429 < width && width < 768) {
          this.columCount = 3;
+         this.colSize = 4;
       } else if (768 < width && width < 1200) {
          this.columCount = 4;
+         this.colSize = 3;
       } else if (1200 < width) {
-         this.columCount = 5;
+         this.columCount = 6;
+         this.colSize = 2;
       }
       this.claimNft();
+      // let reverseArray = await this.reverseArray(this.list);
+      // this.splitImage(reverseArray);
    }
 
    claimNft() {
@@ -132,6 +143,12 @@ export class GetNftPage implements OnInit {
             console.log(error);
          }
       );
+   }
+
+   goToStellar(hash) {
+      console.log(hash);
+      let url = 'https://stellar.expert/explorer/testnet/tx/' + hash;
+      window.open(url, '_blank');
    }
 
    // getOwnNFT() {
