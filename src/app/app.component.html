@@ -90,11 +90,17 @@
                </ion-item>
             </ion-menu-toggle>
 
-            <ion-menu-toggle *ngIf="!connectivity.checkMenuHide()">
-               <ion-item (click)="openPage('logout')">
-                  <ion-icon name="power" slot="start"></ion-icon>
-                  <ion-label>
+            <ion-menu-toggle>
+               <ion-item (click)="logOut()" *ngIf="!connectivity.checkMenuHide()">
+                  <ion-icon color="danger" name="power" slot="start"></ion-icon>
+                  <ion-label *ngIf="!connectivity.checkMenuHide()">
                      {{ 'LOGOUT' | translate }}
+                  </ion-label>
+               </ion-item>
+               <ion-item (click)="logIn()" *ngIf="connectivity.checkMenuHide()">
+                  <ion-icon color="primary" name="power" slot="start"></ion-icon>
+                  <ion-label>
+                     {{ 'Log in' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>

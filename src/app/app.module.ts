@@ -40,6 +40,7 @@ import { AccountDetailsPage } from './pages/account-details/account-details/acco
 import { FundTransferPage } from './pages/fund-transfer/fund-transfer.page';
 import { TransferConfirmPage } from './pages/transfer-confirm/transfer-confirm.page';
 import { OtpNtfComponent } from './pages/otp-ntf/otp-ntf.component';
+import { ResetPasswordPage } from './pages/reset-password/reset-password';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -63,6 +64,7 @@ export function createTranslateLoader(http: HttpClient) {
       FundTransferPage,
       TransferConfirmPage,
       OtpNtfComponent,
+      ResetPasswordPage,
    ],
    imports: [
       BrowserModule,

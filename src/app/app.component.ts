@@ -20,6 +20,8 @@ import { EventsService } from './providers/event-service/events.service';
 import { DataServiceProvider } from './providers/data-service/data-service';
 import { BlockchainServiceProvider } from './providers/blockchain-service/blockchain-service';
 import { ConnectivityServiceProvider } from './providers/connectivity-service/connectivity-service';
+import { promises, resolve } from 'dns';
+import { State } from 'ionicons/dist/types/stencil-public-runtime';
 // import { BcAccountPage } from '../pages/bc-account/bc-account';
 // import { FundTransferPage } from '../pages/fund-transfer/fund-transfer';
 // import { SettingsPage } from '../pages/settings/settings';
@@ -47,7 +49,7 @@ export class AppComponent {
    user: any;
    deviceInfo = null;
    private loading;
-   pageHide: boolean = false;
+   pageHide: boolean;
 
    // @ViewChild(Nav) nav: Nav;
 
@@ -143,6 +145,76 @@ export class AppComponent {
       //    this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
       //    this.router.navigate(['/login'], { replaceUrl: true });
       // });
+      this.menuconfig();
+   }
+
+   async menuconfig() {
+      let state;
+      let responce;
+      try {
+         responce = await this.authService.authorizeLocalProfile();
+         if (responce) {
+            state = await this.checkUser();
+            this.router.navigate(['/assets'], { replaceUrl: true });
+         } else {
+            state = true;
+            this.dataService.clearLocalData();
+            this.router.navigate(['/otp-page'], { replaceUrl: true });
+         }
+      } catch (error) {
+         this.router.navigate(['/otp-page'], { replaceUrl: true });
+         // this.logger.error('Authorize local profile failed: ', error);
+         this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
+      }
+
+      this.connectivity.putMenuHide(state);
+      console.log(state);
+   }
+
+   async checkUser(): Promise<boolean> {
+      return new Promise(resolve => {
+         this.dataService
+            .retrieveDefaultAccount()
+            .then(account => {
+               this.properties.defaultAccount = account;
+               resolve(false);
+               // this.router.navigate(['/assets'], { replaceUrl: true });
+            })
+            .catch(err => {
+               this.presentAlert('Error', 'Could not retrieve transaction accounts from storage. Please login again.');
+               this.dataService.clearLocalData();
+               resolve(true);
+               // this.router.navigate(['/login'], { replaceUrl: true });
+            });
+      });
+   }
+
+   checkauth() {
+      this.authService
+         .authorizeLocalProfile()
+         .then(res => {
+            if (res) {
+               this.dataService
+                  .retrieveDefaultAccount()
+                  .then(account => {
+                     this.properties.defaultAccount = account;
+                     this.router.navigate(['/assets'], { replaceUrl: true });
+                  })
+                  .catch(err => {
+                     this.presentAlert('Error', 'Could not retrieve transaction accounts from storage. Please login again.');
+                     this.dataService.clearLocalData();
+                     this.router.navigate(['/login'], { replaceUrl: true });
+                  });
+            } else {
+               this.dataService.clearLocalData();
+               this.router.navigate(['/login'], { replaceUrl: true });
+            }
+         })
+         .catch(err => {
+            this.logger.error('Authorize local profile failed: ', err);
+            this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
+            this.router.navigate(['/login'], { replaceUrl: true });
+         });
    }
 
    initDeepLink() {
@@ -259,12 +331,16 @@ export class AppComponent {
                text: 'Yes',
                handler: () => {
                   this.storageService.clearAllLocalStores();
-                  this.router.navigate(['/login'], { replaceUrl: true });
+                  this.router.navigate(['/login']);
                },
             },
          ],
       });
       await confirm.present();
+   }
+
+   logIn() {
+      this.router.navigate(['/login']);
    }
 
    async presentAlert(title: string, message: string) {

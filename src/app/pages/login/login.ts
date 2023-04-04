@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertController, LoadingController, ModalController, Platform, ToastController, NavController, MenuController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AES, enc } from 'crypto-js';
 
 // Shared Services
 import { Properties } from '../../shared/properties';
@@ -12,11 +11,8 @@ import { Properties } from '../../shared/properties';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
-import { User } from '../../providers/user/user';
-import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 
 // Pages and Components
-import { TabsPage } from '../tabs/tabs';
 import { LoggerService } from 'src/app/providers/logger-service/logger.service';
 import { Router } from '@angular/router';
 
@@ -38,9 +34,6 @@ export class LoginPage {
    form: any;
 
    constructor(
-      private navCtrl: NavController,
-      private menuCtrl: MenuController,
-      private user: User,
       private authService: AuthServiceProvider,
       private connectivity: ConnectivityServiceProvider,
       private toastCtrl: ToastController,
@@ -50,7 +43,6 @@ export class LoginPage {
       private properties: Properties,
       private logger: LoggerService,
       private dataService: DataServiceProvider,
-      private blockchainService: BlockchainServiceProvider,
       private router: Router
    ) {
       this.form = new FormGroup({
@@ -61,14 +53,7 @@ export class LoginPage {
       this.translate.get('LOGIN_ERROR').subscribe(value => {
          this.loginErrorString = value;
       });
-   }
-
-   ionViewDidLoad() {
-      this.menuCtrl.enable(false);
-   }
-
-   ionViewWillLeave() {
-      this.menuCtrl.enable(true);
+      this.connectivity.putMenuHide(true);
    }
 
    login() {
@@ -93,6 +78,7 @@ export class LoginPage {
                               .storeBlockchainAccounts(accounts)
                               .then(() => {
                                  this.dissmissLoading();
+                                 this.connectivity.putMenuHide(false);
                                  this.router.navigate(['/assets'], { state: { navigation: 'initial' } });
                               })
                               .catch(err => {
@@ -159,7 +145,7 @@ export class LoginPage {
    }
 
    gotoForgotPasswordPage() {
-      this.router.navigate(['/reset-password'], { state: { type: 'forgotPassword' } });
+      this.router.navigate(['/psw-reset']);
    }
 
    hideShowPassword() {

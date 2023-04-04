@@ -14,6 +14,7 @@ import { AccountDetailsPage } from './pages/account-details/account-details/acco
 import { FundTransferPage } from './pages/fund-transfer/fund-transfer.page';
 import { TransferConfirmPage } from './pages/transfer-confirm/transfer-confirm.page';
 import { OtpNtfComponent } from './pages/otp-ntf/otp-ntf.component';
+import { ResetPasswordPage } from './pages/reset-password/reset-password';
 
 const routes: Routes = [
    { path: '', component: TabsPage },
@@ -21,12 +22,14 @@ const routes: Routes = [
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
+   // { path: 'otp-page', component: LoginPage },
    { path: 'mint-nft', component: MintNftPage },
    { path: 'get-key', component: GetKeysPage },
    { path: 'bc-account', component: BcAccountPage, canActivate: [AuthGuardService] },
    { path: 'add-account', component: AddAccountPage, canActivate: [AuthGuardService] },
    { path: 'svg-preview', component: PagesLoadSvgPage },
    { path: 'otp-nft', component: OtpNtfComponent },
+   { path: 'psw-reset', component: ResetPasswordPage },
 
    {
       path: 'account-details',

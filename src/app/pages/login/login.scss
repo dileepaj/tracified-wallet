@@ -1,157 +1,26 @@
-@media all and (orientation:portrait) {
-  img {
-    width: 75%;
-    height: auto;
-    margin: 0 auto;
-  }
-
-  ion-row {
-    align-items: center;
-  }
-
-  .loginbox {
-    padding-top: 10% !important;
-    max-width: 85%;
-    align-self: center;
-    padding-left: 10%;
-
-    &.loginbox-bottom {
-      padding-bottom: 10% !important;
-    }
-  }
-
-  .logo {
-    padding-top: 20% !important;
-  }
-
-  .login-button {
-    background-color: #00c853 !important;
-  }
-
-  .forgot-password {
-    padding-top: 5%;
-    width: auto;
-    margin: auto;
-    font-size: 0.9em;
-  }
-
-  ion-list {
-    margin: 0;
-  }
-
-  .view {
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
-
-  .hide-icon {
-    color: #2EBE60 !important;
-  }
-
-  .item-input-has-focus .label-md[floating],
-  .input-has-focus .label-md[floating] {
-    color: #2EBE60 !important;
-  }
-
-  .item-md.item-input .item-inner {
-    border-bottom-color: 2EBE60 !important;
-  }
-
-  .item.md {
-    padding: 0 0 0 0 !important;
-  }
-
-  .item-input-has-focus .label-md[floating],
-  .input-has-focus .label-md[floating] {
-    color: #28a745 !important;
-  }
-
-  ion-item.item-md.item-input.input-has-focus .item-inner,
-  ion-item.item-md.item-input.ng-valid.input-has-value:not(.input-has-focus) .item-inner,
-  ion-item.item-md.item-input.ng-invalid.ng-touched:not(.input-has-focus) .item-inner {
-    border-bottom-color: #28a745 !important;
-    box-shadow: none !important;
-  }
-
-  .passwordIcon {
-    zoom: 0.8;
-    padding-top: 35px;
-    z-index: 1
-  }
+ion-img {
+   width: 75%;
+   height: auto;
+   margin: 0 auto;
 }
 
-@media all and (orientation:landscape) {
-  img {
-    width: 45%;
-    height: auto;
-    margin: 0 auto;
-  }
+.logo {
+   padding-top: 20% !important;
+}
 
-  ion-row {
-    align-items: center;
-    text-align: center;
-  }
+.link {
+   padding-top: 5%;
+   width: auto;
+   margin: auto;
+   font-size: 0.9em;
+   cursor: pointer;
+}
+.link:hover {
+   color: #00c853;
+}
 
-  .loginbox {
-    padding-top: 0% !important;
-    padding-right: 16px !important;
-    max-width: 75%;
-    -webkit-align-self: center;
-    -ms-flex-item-align: center;
-    align-self: center;
-    margin: auto;
-
-    &.loginbox-bottom {
-      padding-bottom: 10% !important;
-    }
-  }
-
-  .forgot-password {
-    padding-top: 5%;
-    width: auto;
-    margin: auto;
-    font-size: 0.9em;
-  }
-
-  .logo {
-    padding-top: 5% !important;
-  }
-
-  .login-button {
-    width: 75%;
-    margin: auto;
-    font-size: 0.9em;
-    background-color: #00c853 !important;
-  }
-
-  .view {
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
-
-  .hide-icon {
-    color: #00c853 !important;
-  }
-
-  .item-input-has-focus .label-md[floating],
-  .input-has-focus .label-md[floating] {
-    color: #00c853 !important;
-  }
-
-  .item-md.item-input .item-inner {
-    border-bottom-color: #00c853 !important;
-  }
-
-  .item-input-has-focus .label-md[floating],
-  .input-has-focus .label-md[floating] {
-    color: #00c853 !important;
-  }
-
-  ion-item.item-md.item-input.input-has-focus .item-inner,
-  ion-item.item-md.item-input.ng-valid.input-has-value:not(.input-has-focus) .item-inner,
-  ion-item.item-md.item-input.ng-invalid.ng-touched:not(.input-has-focus) .item-inner {
-    border-bottom-color: #00c853 !important;
-    box-shadow: none;
-  }
-
+.passwordIcon {
+   zoom: 0.8;
+   padding-top: 35px;
+   z-index: 1;
 }
