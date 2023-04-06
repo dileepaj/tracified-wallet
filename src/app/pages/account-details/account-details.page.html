@@ -21,11 +21,7 @@
             </div>
          </ion-row>
       </ion-row>
-      <!-- <ion-row class="line-spacing">
-      <div class="button-wrapper">
-        <button class="btn-green-outline">Transfer</button>
-      </div>
-    </ion-row> -->
+
       <ion-row class="full-width line-spacing mt-1 ion-padding-top">
          <ion-row class="full-width line-spacing">
             <h4 class="secondary-font">{{'ACCOUNT_NAME' | translate}}</h4>
@@ -58,9 +54,6 @@
       </ion-row>
       <ion-row class="full-width line-spacing mt-2" *ngIf="!notDefaultAccount">
          <h4 class="primary-font">{{'ACC_MSG' | translate}}</h4>
-         <!-- <div class="button-wrapper">
-        <button ion-button class="btn-green" (click)="makeDefaultAccount()">Make default account</button>
-      </div> -->
       </ion-row>
       <ion-row class="full-width line-spacing mt-2" *ngIf="notDefaultAccount">
          <div class="button-wrapper">

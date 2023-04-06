@@ -10,7 +10,7 @@ import { TabsPage } from './pages/tabs/tabs';
 import { AuthGuardService } from './providers/auth/auth-guard.service';
 import { BcAccountPage } from './pages/bc-account/bc-account';
 import { AddAccountPage } from './pages/add-account/add-account';
-import { AccountDetailsPage } from './pages/account-details/account-details/account-details.page';
+import { AccountDetailsPage } from './pages/account-details/account-details.page';
 import { FundTransferPage } from './pages/fund-transfer/fund-transfer.page';
 import { TransferConfirmPage } from './pages/transfer-confirm/transfer-confirm.page';
 import { OtpNtfComponent } from './pages/otp-ntf/otp-ntf.component';
@@ -22,7 +22,6 @@ const routes: Routes = [
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
-   // { path: 'otp-page', component: LoginPage },
    { path: 'mint-nft', component: MintNftPage },
    { path: 'get-key', component: GetKeysPage },
    { path: 'bc-account', component: BcAccountPage, canActivate: [AuthGuardService] },
