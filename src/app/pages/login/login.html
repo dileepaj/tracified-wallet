@@ -1,33 +1,28 @@
-<ion-content class="view" scroll="false">
+<ion-content class="ion-padding">
    <ion-grid>
       <ion-row class="logo">
-         <img src="assets/imgs/logo_v1.1_dark.svg" />
+         <ion-img src="assets/imgs/logo_v1.1_dark.svg"></ion-img>
       </ion-row>
       <form [formGroup]="form">
-         <ion-row class="loginbox">
-            <ion-col size="12">
-               <ion-item>
-                  <ion-label class="login-lables" position="floating">{{'USERNAME' | translate}}</ion-label>
-                  <ion-input #userName formControlName="username" type="email" name="userName" keyNext></ion-input>
-               </ion-item>
-            </ion-col>
-         </ion-row>
-         <ion-row class="loginbox loginbox-bottom">
-            <ion-col size="12">
-               <ion-item>
-                  <ion-label position="floating">{{'PASSWORD' | translate}}</ion-label>
-                  <ion-input formControlName="password" name="password" [type]="passwordType" clearInput="false"></ion-input>
-                  <ion-icon slot="end" [name]="passwordIcon" color="secondary" class="passwordIcon" (click)="hideShowPassword()"> </ion-icon>
-               </ion-item>
-            </ion-col>
-         </ion-row>
-         <ion-row>
-            <div class="button-wrapper">
-               <ion-button class="login-button" (click)="login()" color="secondary">{{'LOGIN' | translate}}</ion-button>
-            </div>
+         <ion-item style="padding: 16px 16px 0px 16px" lines="full">
+            <ion-label position="floating">{{'USERNAME' | translate}}</ion-label>
+            <ion-input #userName formControlName="username" type="email" name="userName" keyNext></ion-input>
+         </ion-item>
+
+         <ion-item style="padding: 0px 16px 16px 16px" lines="full">
+            <ion-label position="floating">{{'PASSWORD' | translate}}</ion-label>
+            <ion-input formControlName="password" name="password" [type]="passwordType" clearInput="false"></ion-input>
+            <ion-icon slot="end" [name]="passwordIcon" color="primary" class="passwordIcon" (click)="hideShowPassword()"> </ion-icon>
+         </ion-item>
+
+         <ion-row style="display: flex; justify-content: center">
+            <ion-button (click)="login()" color="primary">{{'LOGIN' | translate}}</ion-button>
          </ion-row>
          <ion-row class="ion-justify-content-center">
-            <ion-note class="forgot-password" (click)="gotoForgotPasswordPage()">{{'FORGOTTENPASSWORD'| translate}} </ion-note>
+            <ion-note class="link" (click)="gotoForgotPasswordPage()">{{'FORGOTTENPASSWORD'| translate}} </ion-note>
+         </ion-row>
+         <ion-row class="ion-justify-content-center">
+            <ion-note class="link" routerLink="/otp-page" replaceUrl>{{'Go to Claim NFT'| translate}} </ion-note>
          </ion-row>
       </form>
    </ion-grid>

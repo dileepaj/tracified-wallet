@@ -14,10 +14,6 @@ import { ConnectivityServiceProvider } from 'src/app/providers/connectivity-serv
    styleUrls: ['./otp.scss'],
 })
 export class OtpPage {
-   // email = 'dennemallinft@mailinator.com';
-   // shopId = '7480022958278';
-   // W6NS5ZA
-
    svgResult: any;
    email = '';
    shopId = '';

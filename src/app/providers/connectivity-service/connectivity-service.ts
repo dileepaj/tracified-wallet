@@ -74,7 +74,7 @@ export class ConnectivityServiceProvider {
    }
 
    putMenuHide(status: boolean) {
-      // this.menuHide = status;
+      this.menuHide = status;
    }
 
    checkMenuHide() {
