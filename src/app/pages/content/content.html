@@ -1,0 +1,19 @@
+<ion-header>
+   <ion-toolbar>
+      <ion-buttons slot="start">
+         <ion-menu-button menu="main-menu"></ion-menu-button>
+      </ion-buttons>
+      <ion-title> {{'ABOUT' | translate}}</ion-title>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+   <div class="inner">
+      <img src="assets/imgs/logo.png " alt="Wallet logo" />
+      <p>Tracified Wallet</p>
+
+      <div *ngIf="updateAvailable" class="button-wrapper">
+         <button ion-button class="btn-green" (click)="updateVersion()">{{ 'UPDATE_VERSION' | translate }}</button>
+      </div>
+   </div>
+</ion-content>

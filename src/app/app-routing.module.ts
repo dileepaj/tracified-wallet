@@ -15,10 +15,14 @@ import { FundTransferPage } from './pages/fund-transfer/fund-transfer.page';
 import { TransferConfirmPage } from './pages/transfer-confirm/transfer-confirm.page';
 import { OtpNtfComponent } from './pages/otp-ntf/otp-ntf.component';
 import { ResetPasswordPage } from './pages/reset-password/reset-password';
+import { ContentPage } from './pages/content/content';
+import { HelpPage } from './pages/help-support/help';
+import { SettingsPage } from './pages/settings/settings';
+import { SettingFormPage } from './pages/setting-form/setting-form';
+import { TransferPage } from './pages/transfer/transfer';
 
 const routes: Routes = [
    { path: '', component: TabsPage },
-   { path: 'assets', component: TabsPage },
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
@@ -29,20 +33,32 @@ const routes: Routes = [
    { path: 'svg-preview', component: PagesLoadSvgPage },
    { path: 'otp-nft', component: OtpNtfComponent },
    { path: 'psw-reset', component: ResetPasswordPage },
+   { path: 'content', component: ContentPage },
+   { path: 'help', component: HelpPage },
+   { path: 'setting', component: SettingsPage },
+   { path: 'setting-form', component: SettingFormPage },
+   { path: 'account-details', component: AccountDetailsPage, canActivate: [AuthGuardService] },
+   { path: 'fund-transfer', component: FundTransferPage },
+   { path: 'transfer-confirm', component: TransferConfirmPage, canActivate: [AuthGuardService] },
 
    {
-      path: 'account-details',
-      component: AccountDetailsPage,
-      canActivate: [AuthGuardService],
-   },
-   {
-      path: 'fund-transfer',
-      component: FundTransferPage,
-   },
-   {
-      path: 'transfer-confirm',
-      component: TransferConfirmPage,
-      canActivate: [AuthGuardService],
+      path: 'assets',
+      component: TabsPage,
+      children: [
+         {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'transfer',
+         },
+         {
+            path: 'transfer',
+            loadChildren: () => import('./pages/transfer/transfer.module').then(m => m.TransferPageModule),
+         },
+         {
+            path: 'item',
+            loadChildren: () => import('./pages/item-sent/item-sent.module').then(m => m.ItemSentPageModule),
+         },
+      ],
    },
 
    // { path: 'bc-account', component: AddAccountPage },

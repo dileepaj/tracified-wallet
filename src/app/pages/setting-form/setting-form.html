@@ -1,0 +1,87 @@
+<ion-header>
+   <ion-toolbar>
+      <ion-buttons slot="start">
+         <ion-back-button></ion-back-button>
+      </ion-buttons>
+      <ion-title>{{'SETTINGS' | translate}}</ion-title>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+   <ion-list class="full-height" *ngIf="this.formType === 'displayName'">
+      <form class="full-height" [formGroup]="displayName" (ngSubmit)="changeName()">
+         <ion-item lines="none">
+            <ion-label class="ion-text-wrap">{{'ENTER_NAME_DESC' | translate}}</ion-label>
+         </ion-item>
+         <ion-item class="line-spacing">
+            <ion-label position="stacked"> {{'FIRST_NAME' | translate}} </ion-label>
+            <ion-input type="text" formControlName="fName"></ion-input>
+         </ion-item>
+         <ion-item>
+            <ion-label position="stacked"> {{'LAST_NAME' | translate}} </ion-label>
+            <ion-input type="text" formControlName="lName"></ion-input>
+         </ion-item>
+         <ion-row class="subButton">
+            <ion-button type="submit" [disabled]="!displayName.valid">{{'SUBMIT' | translate}}</ion-button>
+         </ion-row>
+      </form>
+   </ion-list>
+   <ion-list *ngIf="formType === 'accountPassword'">
+      <form [formGroup]="accountPassword" (ngSubmit)="changePassword()">
+         <ion-item lines="none">
+            <ion-label class="ion-text-wrap">{{'ENTER_PASS_DESC' | translate}}</ion-label>
+         </ion-item>
+         <ion-item class="line-spacing">
+            <ion-label position="stacked"> {{'CURRENT_PASSWORD' | translate}} </ion-label>
+            <ion-input type="password" formControlName="oPassword" [type]="passwordTypeO"></ion-input>
+            <ion-icon color="primary" slot="end" [name]="passwordIconO" class="passwordIcon" (click)="hideShowPassword(1)"></ion-icon>
+         </ion-item>
+         <ion-item>
+            <ion-label position="stacked"> {{'NEW_PASSWORD' | translate}} </ion-label>
+            <ion-input type="password" formControlName="nPassword" [type]="passwordTypeN"></ion-input>
+            <ion-icon color="primary" slot="end" [name]="passwordIconN" class="passwordIcon" (click)="hideShowPassword(2)"></ion-icon>
+         </ion-item>
+         <ion-item>
+            <ion-label position="stacked"> {{'CONFIRM_PASSWORD' | translate}} </ion-label>
+            <ion-input type="password" formControlName="cPassword" [type]="passwordTypeC"></ion-input>
+            <ion-icon color="primary" slot="end" [name]="passwordIconC" class="passwordIcon" (click)="hideShowPassword(3)"></ion-icon>
+         </ion-item>
+         <ion-row class="subButton">
+            <ion-button type="submit" [disabled]="!accountPassword.valid">{{'SUBMIT' | translate}}</ion-button>
+         </ion-row>
+      </form>
+   </ion-list>
+   <ion-list *ngIf="formType === 'transactionPassword'">
+      <form [formGroup]="transactionPassword" (ngSubmit)="changeTransactionPassword()">
+         <ion-item lines="none">
+            <ion-label class="ion-text-wrap">{{'ENTER_PASS_DESC' | translate}}</ion-label>
+         </ion-item>
+         <ion-item class="line-spacing">
+            <ion-label position="stacked"> {{'ACCOUNT_NAME' | translate}} </ion-label>
+            <ion-input type="text" formControlName="accName" [readonly]="true"></ion-input>
+         </ion-item>
+         <ion-item>
+            <ion-label position="stacked"> {{'PUBLIC_KEY' | translate}} </ion-label>
+            <ion-input type="text" formControlName="pubKey" [readonly]="true"></ion-input>
+         </ion-item>
+         <ion-item>
+            <ion-label position="stacked"> {{'CURRENT_PASSWORD' | translate}} </ion-label>
+            <ion-input type="password" formControlName="oPassword" [type]="passwordTypeO"></ion-input>
+            <ion-icon color="primary" slot="end" [name]="passwordIconO" class="passwordIcon" (click)="hideShowPassword(1)"></ion-icon>
+         </ion-item>
+         <ion-item>
+            <ion-label position="stacked"> {{'NEW_PASSWORD' | translate}} </ion-label>
+            <ion-input type="password" formControlName="nPassword" [type]="passwordTypeN" floating></ion-input>
+            <ion-icon color="primary" slot="end" [name]="passwordIconN" class="passwordIcon" (click)="hideShowPassword(2)"></ion-icon>
+         </ion-item>
+         <ion-item>
+            <ion-label position="stacked"> {{'CONFIRM_PASSWORD' | translate}} </ion-label>
+            <ion-input type="password" formControlName="cPassword" [type]="passwordTypeC" floating></ion-input>
+            <ion-icon color="primary" slot="end" [name]="passwordIconC" class="passwordIcon" (click)="hideShowPassword(3)"></ion-icon>
+         </ion-item>
+         <ion-row class="subButton">
+            <ion-button type="submit" [disabled]="!transactionPassword.valid">{{'SUBMIT' | translate}}</ion-button>
+         </ion-row>
+      </form>
+   </ion-list>
+</ion-content>

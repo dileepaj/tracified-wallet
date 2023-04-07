@@ -296,7 +296,7 @@ export class AppComponent {
             this.router.navigate(['/fund-transfer']);
             break;
          case 'settings':
-            //  this.nav.setRoot(SettingsPage);
+            this.router.navigate(['/setting']);
             break;
          case 'about':
             //  this.nav.setRoot(ContentPage);
@@ -305,7 +305,7 @@ export class AppComponent {
             this.logOut();
             break;
          case 'help':
-            //  this.nav.setRoot(HelpPage);
+            this.router.navigate(['/help']);
             break;
       }
    }

@@ -1,0 +1,11 @@
+.subButton {
+   display: flex;
+   justify-content: center;
+   padding-top: 10px;
+}
+
+ion-icon {
+   position: relative;
+   top: 50%;
+   transform: translateY(-50%);
+}

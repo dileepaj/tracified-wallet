@@ -41,6 +41,13 @@ import { FundTransferPage } from './pages/fund-transfer/fund-transfer.page';
 import { TransferConfirmPage } from './pages/transfer-confirm/transfer-confirm.page';
 import { OtpNtfComponent } from './pages/otp-ntf/otp-ntf.component';
 import { ResetPasswordPage } from './pages/reset-password/reset-password';
+import { ContentPage } from './pages/content/content';
+import { HelpPage } from './pages/help-support/help';
+import { SettingsPage } from './pages/settings/settings';
+import { SettingFormPage } from './pages/setting-form/setting-form';
+import { TransferPage } from './pages/transfer/transfer';
+import { ItemSentPageModule } from './pages/item-sent/item-sent.module';
+import { TransferPageModule } from './pages/transfer/transfer.module';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -65,6 +72,11 @@ export function createTranslateLoader(http: HttpClient) {
       TransferConfirmPage,
       OtpNtfComponent,
       ResetPasswordPage,
+      ContentPage,
+      HelpPage,
+      SettingsPage,
+      SettingFormPage,
+      // TransferPage,
    ],
    imports: [
       BrowserModule,
@@ -81,6 +93,8 @@ export function createTranslateLoader(http: HttpClient) {
             deps: [HttpClient],
          },
       }),
+      ItemSentPageModule,
+      TransferPageModule,
    ],
    providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

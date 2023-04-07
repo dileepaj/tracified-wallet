@@ -1,0 +1,86 @@
+<ion-header>
+   <ion-toolbar>
+      <ion-buttons slot="start">
+         <ion-menu-button menu="main-menu"></ion-menu-button>
+      </ion-buttons>
+      <ion-title>{{'SENT_ITEMS' | translate}}</ion-title>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content>
+   <!-- <div *ngIf="Citems">
+    <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar>
+  </div> -->
+
+   <ion-refresher (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content pullingIcon="refresh" pullingText="" refreshingSpinner="circles" refreshingText="Refreshing..."> </ion-refresher-content>
+   </ion-refresher>
+
+   <ion-grid no-padding>
+      <div *ngIf="cocSent.length === 0">
+         <ion-row>
+            <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+         </ion-row>
+         <ion-row>
+            <div class="full-width text-center line-spacing-small">
+               <h1 class="primary-font">{{'TRANSACTIONS' | translate}}</h1>
+            </div>
+         </ion-row>
+         <ion-row text-wrap>
+            <div class="full-width text-center">
+               <h3 class="secondary-font">{{'NO_OUTGOING_TRANSACTIONS' | translate}}</h3>
+            </div>
+         </ion-row>
+      </div>
+      <div class="padding-width" *ngIf="cocSent.length > 0">
+         <ion-row class="item-card" *ngFor="let item of cocSent; let index = index">
+            <ion-row>
+               <ion-icon name="time"></ion-icon>
+               <h5 class="primary-font margin-fix">{{item.sentDate}}</h5>
+            </ion-row>
+            <ion-row>
+               <ion-col col-9 class="padding-bottom-cancel">
+                  <h4 class="secondary-font">{{'ITEM' | translate}}</h4>
+               </ion-col>
+               <ion-col col-3 class="padding-bottom-cancel">
+                  <h4 class="secondary-font text-right-align-horizontally">{{'QUANTITY' | translate}}</h4>
+               </ion-col>
+               <ion-col col-9 class="padding-top-cancel">
+                  <h1 class="primary-font first-capital">{{item.assetCode}}</h1>
+               </ion-col>
+               <ion-col col-3 class="padding-top-cancel">
+                  <h1 class="primary-font text-right-align-horizontally">{{item.quantity}}</h1>
+               </ion-col>
+            </ion-row>
+            <ion-row>
+               <ion-col col-6 class="padding-bottom-cancel">
+                  <h4 class="secondary-font">{{ 'IDENTIFIER' | translate}}</h4>
+               </ion-col>
+               <ion-col col-6 class="padding-bottom-cancel">
+                  <h4 class="secondary-font text-right-align-horizontally">{{'RECEIVER' | translate}}</h4>
+               </ion-col>
+               <ion-col col-6 class="padding-top-cancel">
+                  <h4 class="primary-font">{{item.Identifier}}</h4>
+               </ion-col>
+               <ion-col col-6 class="padding-top-cancel">
+                  <h4 class="primary-font text-right-align-horizontally">{{item.receiver}}</h4>
+               </ion-col>
+            </ion-row>
+            <ion-row>
+               <ion-col col-7 class="padding-bottom-cancel">
+                  <h4 class="secondary-font">{{'VALID_TILL' | translate}}</h4>
+               </ion-col>
+               <ion-col col-5 class="padding-bottom-cancel">
+                  <h4 class="secondary-font text-right-align-horizontally">{{'STATUS' | translate}}</h4>
+               </ion-col>
+               <ion-col col-7 class="padding-top-cancel">
+                  <h4 class="primary-font">{{item.validTill}}</h4>
+               </ion-col>
+               <ion-col col-5 class="padding-top-cancel">
+                  <h4 class="primary-font text-right-align-horizontally first-capital">{{item.Status}}</h4>
+               </ion-col>
+            </ion-row>
+         </ion-row>
+      </div>
+   </ion-grid>
+</ion-content>
