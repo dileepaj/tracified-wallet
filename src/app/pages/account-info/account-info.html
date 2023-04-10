@@ -1,0 +1,57 @@
+<ion-header>
+   <ion-toolbar>
+      <ion-buttons slot="start">
+         <ion-back-button></ion-back-button>
+      </ion-buttons>
+      <ion-title>{{'ACCOUNT_INFO' | translate}}</ion-title>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+   <ion-grid class="cusGrid ion-padding-top">
+      <ion-row class="header">
+         <ion-label class="ion-text-wrap"
+            >Copy these keys and save them in a safe location.<br />
+            These will be required to recover your blockchain account.</ion-label
+         >
+      </ion-row>
+      <ion-row class="item-spacing underline-div" style="padding-top: 30px">
+         <ion-row class="full-width">
+            <h4 class="keyNames">Public Key</h4>
+         </ion-row>
+         <ion-row class="full-width list-spacing word-wrap">
+            <ion-col size="11" class="keyValues">
+               <h4 class="primary-font word-wrap right-padding">account.pubwdewdwddddddwdwedwdwedwedwelicKey</h4>
+            </ion-col>
+            <ion-col size="1" class="ion-justify-content-center" style="display: flex">
+               <ion-img class="image" src="../../assets/icon/copy.png" (click)="copyToClipboard(1)"></ion-img>
+            </ion-col>
+         </ion-row>
+      </ion-row>
+
+      <ion-row class="item-spacing underline-div" style="padding-top: 20px">
+         <ion-row class="full-width">
+            <h4 class="keyNames">Private Key</h4>
+         </ion-row>
+         <ion-row class="full-width list-spacing word-wrap">
+            <ion-col size="11" class="keyValues">
+               <h4 class="primary-font word-wrap right-padding">account.privdwedwedwedwedwdwedateKey</h4>
+            </ion-col>
+            <ion-col size="1" class="ion-justify-content-center" style="display: flex">
+               <ion-img class="image" src="../../assets/icon/copy.png" (click)="copyToClipboard(2)"></ion-img>
+            </ion-col>
+         </ion-row>
+      </ion-row>
+
+      <ion-row class="ion-text-wrap importText" style="margin-top: 30px">
+         <h5 class="label1 uppercase-font">IMPORTANT!</h5>
+         <h5 class="label2">Never share these keys with anyone. Store them securely</h5>
+      </ion-row>
+
+      <ion-row style="display: flex; justify-content: center; padding-top: 30px">
+         <ion-button color="primary" shape="round" (click)="continue()">
+            <b> Done</b>
+         </ion-button>
+      </ion-row>
+   </ion-grid>
+</ion-content>

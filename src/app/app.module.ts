@@ -49,6 +49,7 @@ import { ItemSentPageModule } from './pages/item-sent/item-sent.module';
 import { TransferPageModule } from './pages/transfer/transfer.module';
 import { ItemReceivedPageModule } from './pages/item-received/item-received.module';
 import { ItemDetailPage } from './pages/item-detail/item-detail';
+import { AccountInfoPage } from './pages/account-info/account-info';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -78,6 +79,7 @@ export function createTranslateLoader(http: HttpClient) {
       SettingsPage,
       SettingFormPage,
       ItemDetailPage,
+      AccountInfoPage,
    ],
    imports: [
       BrowserModule,
