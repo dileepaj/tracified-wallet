@@ -20,6 +20,8 @@ import { HelpPage } from './pages/help-support/help';
 import { SettingsPage } from './pages/settings/settings';
 import { SettingFormPage } from './pages/setting-form/setting-form';
 import { TransferPage } from './pages/transfer/transfer';
+import { ItemDetailPage } from './pages/item-detail/item-detail';
+import { AccountInfoPage } from './pages/account-info/account-info';
 
 const routes: Routes = [
    { path: '', component: TabsPage },
@@ -40,6 +42,8 @@ const routes: Routes = [
    { path: 'account-details', component: AccountDetailsPage, canActivate: [AuthGuardService] },
    { path: 'fund-transfer', component: FundTransferPage },
    { path: 'transfer-confirm', component: TransferConfirmPage, canActivate: [AuthGuardService] },
+   { path: 'item-detail', component: ItemDetailPage },
+   { path: 'account-info', component: AccountInfoPage },
 
    {
       path: 'assets',
@@ -55,8 +59,12 @@ const routes: Routes = [
             loadChildren: () => import('./pages/transfer/transfer.module').then(m => m.TransferPageModule),
          },
          {
-            path: 'item',
+            path: 'item-sent',
             loadChildren: () => import('./pages/item-sent/item-sent.module').then(m => m.ItemSentPageModule),
+         },
+         {
+            path: 'item-receive',
+            loadChildren: () => import('./pages/item-received/item-received.module').then(m => m.ItemReceivedPageModule),
          },
       ],
    },

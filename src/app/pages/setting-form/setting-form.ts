@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController, ToastController, LoadingController } from '@ionic/angular';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, MinLengthValidator } from '@angular/forms';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { Properties } from '../../shared/properties';
 // import { Logger } from 'ionic-logger-new';

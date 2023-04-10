@@ -1,0 +1,108 @@
+.header {
+   display: flex;
+   justify-content: center;
+   ion-label {
+      color: #000000;
+      font-size: 14px;
+      text-align: center;
+   }
+}
+
+.image {
+   width: 20px;
+}
+
+.keyValues {
+   background-color: #dedede;
+   border-radius: 10px;
+   padding-left: 5px;
+
+   h4 {
+      padding-left: 5px;
+   }
+}
+
+.keyNames {
+   font-weight: 600;
+   font-size: 16px;
+   color: #000000;
+}
+
+.importText {
+   display: flex;
+   text-align: center;
+   justify-content: center;
+   background: #914d4d;
+   border-radius: 10px;
+   padding: 10px 0px;
+
+   .label1 {
+      padding: 0px 100px;
+      color: #ff7373;
+      font-size: 16px;
+      font-weight: 400;
+   }
+
+   .label2 {
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-top: 5px;
+      color: white;
+      font-size: 14px;
+      font-weight: 400;
+   }
+}
+element-selector {
+   cursor: pointer;
+}
+
+ion-img {
+   cursor: pointer;
+}
+ion-row,
+ion-item,
+ion-col,
+h4 {
+   overflow-y: hidden;
+   overflow-x: hidden;
+}
+
+.cusGrid {
+   overflow-y: hidden;
+   overflow-x: hidden;
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+   .cusGrid {
+      width: 100%;
+   }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+   .cusGrid {
+      width: 60%;
+   }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+   .cusGrid {
+      width: 50%;
+   }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+   .cusGrid {
+      width: 45%;
+   }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+   .cusGrid {
+      width: 30%;
+   }
+}

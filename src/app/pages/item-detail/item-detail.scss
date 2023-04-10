@@ -1,0 +1,30 @@
+.select-searchable-label {
+   margin-top: 25px;
+   color: #999;
+}
+
+.select-searchable-value {
+   margin-top: 25px;
+}
+
+.select-searchable-icon {
+   margin-top: 12px;
+}
+
+.pinned-alert {
+   padding: 0.2em 1em;
+   background-color: #d5ecff;
+   color: #2196f3;
+   display: flex;
+   align-items: center;
+
+   ion-spinner {
+      margin-right: 5px;
+      width: 1em;
+      height: 1em;
+   }
+
+   ion-spinner * {
+      stroke: #2196f3;
+   }
+}

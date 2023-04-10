@@ -12,21 +12,21 @@
       <!-- <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar> -->
    </div>
 
-   <ion-refresher (ionRefresh)="doRefresh($event)">
+   <!-- <ion-refresher (ionRefresh)="doRefresh($event)">
       <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing..."> </ion-refresher-content>
-   </ion-refresher>
+   </ion-refresher> -->
 
-   <ion-grid no-padding class="full-height white-background">
+   <ion-grid class="full-height white-background ion-no-padding">
       <div *ngIf="currentItems.length === 0">
          <ion-row>
-            <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+            <ion-img class="notification-icon" src="../../assets/imgs/emptystatus-04.png"></ion-img>
          </ion-row>
          <ion-row>
             <div class="full-width text-center line-spacing-small">
                <h1 class="primary-font">{{'ASSETS' | translate}}</h1>
             </div>
          </ion-row>
-         <ion-row text-wrap>
+         <ion-row class="ion-text-wrap">
             <div class="full-width text-center">
                <h3 class="secondary-font">{{'NO_ASSETS' | translate}}</h3>
             </div>
@@ -35,16 +35,16 @@
       <div *ngIf="currentItems.length > 0" class="content-start padding-width">
          <ion-row class="item-card padding-width" *ngFor="let item of Searcheditems">
             <ion-row>
-               <ion-col col-8>
+               <ion-col size="8">
                   <h2 class="primary-font">{{item.asset_code}}</h2>
                </ion-col>
-               <ion-col col-4>
+               <ion-col size="4">
                   <h2 class="primary-font text-right-align-horizontally">{{item.balance}}</h2>
                </ion-col>
             </ion-row>
             <ion-row class="block">
                <div class="right-float">
-                  <button ion-button [disabled]="item.balance < 1" class="btn-green" (click)="openItem(item)">{{ 'TRANSFER' | translate }}</button>
+                  <ion-button [disabled]="item.balance < 1" class="btn-green" (click)="openItem(item)">{{ 'TRANSFER' | translate }}</ion-button>
                </div>
                <div class="clear-float"></div>
             </ion-row>

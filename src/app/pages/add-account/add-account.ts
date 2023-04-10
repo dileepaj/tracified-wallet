@@ -25,7 +25,7 @@ import { MappingServiceProvider } from '../../providers/mapping-service/mapping-
 import { Properties } from '../../shared/properties';
 // import { Logger } from 'ionic-logger-new';
 import { LoggerService } from 'src/app/providers/logger-service/logger.service';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 
 // Pages
 // import { AccountInfoPage } from '../../pages/account-info/account-info';
@@ -71,11 +71,10 @@ export class AddAccountPage {
          confirmPassword: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
       });
 
-      // this.navigation = this.navParams.get('navigation');
+      this.navigation = this.router.getCurrentNavigation().extras.state.navigation;
    }
 
    addMainAccount() {
-      //v6 plz refactor
       let password = this.form.get('password').value;
       let confirmPassword = this.form.get('confirmPassword').value;
 
@@ -123,7 +122,14 @@ export class AddAccountPage {
                                     this.translate.get(['TRANSACTION_ACCOUNT_ADDED']).subscribe(text => {
                                        this.presentToast(text['TRANSACTION_ACCOUNT_ADDED']);
                                     });
-                                    // this.navCtrl.setRoot(AccountInfoPage, { account: mainAccount, navigation: this.navigation });
+                                    const option: NavigationExtras = {
+                                       state: {
+                                          account: mainAccount,
+                                          navigation: this.navigation,
+                                       },
+                                       replaceUrl: true,
+                                    };
+                                    this.router.navigate(['/account-info'], option);
                                  } else {
                                     this.translate.get(['ERROR', 'FAILED_ADD_TRANSACTION']).subscribe(text => {
                                        this.presentAlert(text['ERROR'], text['FAILED_ADD_TRANSACTION']);
