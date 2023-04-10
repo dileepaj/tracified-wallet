@@ -3,17 +3,17 @@
       <ion-buttons slot="start">
          <ion-menu-button menu="main-menu"></ion-menu-button>
       </ion-buttons>
-      <ion-title>{{'SENT_ITEMS' | translate}}</ion-title>
+      <ion-title>{{'RECEIVED_ITEMS' | translate}}</ion-title>
    </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
    <!-- <ion-refresher (ionRefresh)="doRefresh($event)">
-      <ion-refresher-content pullingIcon="refresh" pullingText="" refreshingSpinner="circles" refreshingText="Refreshing..."> </ion-refresher-content>
+      <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles" refreshingText="Refreshing..."> </ion-refresher-content>
    </ion-refresher> -->
 
-   <ion-grid class="ion-padding">
-      <div *ngIf="cocSent.length === 0">
+   <ion-grid>
+      <div *ngIf="cocReceived.length === 0">
          <ion-row>
             <ion-img class="notification-icon" src="../../assets/imgs/emptystatus-04.png"></ion-img>
          </ion-row>
@@ -24,22 +24,22 @@
          </ion-row>
          <ion-row class="ion-text-wrap">
             <div class="full-width text-center">
-               <h3 class="secondary-font">{{'NO_OUTGOING_TRANSACTIONS' | translate}}</h3>
+               <h3 class="secondary-font">{{'NO_TRANSACTIONS' | translate}}</h3>
             </div>
          </ion-row>
       </div>
-      <div class="padding-width" *ngIf="cocSent.length > 0">
-         <ion-row class="item-card" *ngFor="let item of cocSent; let index = index">
+      <div class="padding-width" *ngIf="cocReceived.length > 0">
+         <ion-row class="item-card" *ngFor="let item of cocReceived; let index = index">
             <ion-row>
                <ion-icon name="time"></ion-icon>
                <h5 class="primary-font margin-fix">{{item.sentDate}}</h5>
             </ion-row>
             <ion-row>
                <ion-col size="9" class="padding-bottom-cancel">
-                  <h4 class="secondary-font">{{'ITEM' | translate}}</h4>
+                  <h4 class="secondary-font">Item</h4>
                </ion-col>
                <ion-col size="3" class="padding-bottom-cancel">
-                  <h4 class="secondary-font text-right-align-horizontally">{{'QUANTITY' | translate}}</h4>
+                  <h4 class="secondary-font text-right-align-horizontally">{{ 'QUANTITY' | translate }}</h4>
                </ion-col>
                <ion-col size="9" class="padding-top-cancel">
                   <h1 class="primary-font first-capital">{{item.assetCode}}</h1>
@@ -50,31 +50,37 @@
             </ion-row>
             <ion-row>
                <ion-col size="6" class="padding-bottom-cancel">
-                  <h4 class="secondary-font">{{ 'IDENTIFIER' | translate}}</h4>
+                  <h4 class="secondary-font">{{ 'IDENTIFIER' | translate }}</h4>
                </ion-col>
                <ion-col size="6" class="padding-bottom-cancel">
-                  <h4 class="secondary-font text-right-align-horizontally">{{'RECEIVER' | translate}}</h4>
+                  <h4 class="secondary-font text-right-align-horizontally">{{ 'SENDER' | translate }}</h4>
                </ion-col>
                <ion-col size="6" class="padding-top-cancel">
-                  <h4 class="primary-font">{{item.Identifier}}</h4>
+                  <h4 class="primary-font">{{item.cocOriginal.Identifier}}</h4>
                </ion-col>
                <ion-col size="6" class="padding-top-cancel">
-                  <h4 class="primary-font text-right-align-horizontally">{{item.receiver}}</h4>
+                  <h4 class="primary-font text-right-align-horizontally">{{item.sender}}</h4>
                </ion-col>
             </ion-row>
             <ion-row>
                <ion-col size="7" class="padding-bottom-cancel">
-                  <h4 class="secondary-font">{{'VALID_TILL' | translate}}</h4>
+                  <h4 class="secondary-font">{{ 'VALID_TILL' | translate }}</h4>
                </ion-col>
                <ion-col size="5" class="padding-bottom-cancel">
-                  <h4 class="secondary-font text-right-align-horizontally">{{'STATUS' | translate}}</h4>
+                  <h4 class="secondary-font text-right-align-horizontally">{{ 'STATUS' | translate}}</h4>
                </ion-col>
                <ion-col size="7" class="padding-top-cancel">
                   <h4 class="primary-font">{{item.validTill}}</h4>
                </ion-col>
                <ion-col size="5" class="padding-top-cancel">
-                  <h4 class="primary-font text-right-align-horizontally first-capital">{{item.Status}}</h4>
+                  <h4 class="primary-font text-right-align-horizontally first-capital">{{item.cocOriginal.Status}}</h4>
                </ion-col>
+            </ion-row>
+            <ion-row class="block" *ngIf="item.cocOriginal.Status === 'pending'">
+               <div class="right-float">
+                  <button class="btn-red-outline" (click)="updateCoC(item, 'reject')" ion-button>{{'REJECT' | translate}}</button>
+                  <button class="btn-green" (click)="updateCoC(item, 'accept')" ion-button>{{'ACCEPT' | translate}}</button>
+               </div>
             </ion-row>
          </ion-row>
       </div>

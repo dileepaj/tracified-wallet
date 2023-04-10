@@ -1,12 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-
 import { IonicModule } from '@ionic/angular';
-
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ItemSentPage } from './item-sent';
+import { ItemReceivedPage } from './item-received';
 import { CommonModule } from '@angular/common';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -23,10 +21,10 @@ export function createTranslateLoader(http: HttpClient) {
          },
       }),
       IonicModule,
-      RouterModule.forChild([{ path: '', component: ItemSentPage }]),
+      RouterModule.forChild([{ path: '', component: ItemReceivedPage }]),
       CommonModule,
    ],
-   declarations: [ItemSentPage],
-   exports: [ItemSentPage],
+   declarations: [ItemReceivedPage],
+   exports: [ItemReceivedPage],
 })
-export class ItemSentPageModule {}
+export class ItemReceivedPageModule {}

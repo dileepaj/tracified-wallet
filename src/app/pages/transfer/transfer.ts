@@ -2,15 +2,16 @@ import { Component } from '@angular/core';
 import { NavController, ModalController, LoadingController, AlertController } from '@ionic/angular';
 import { Server, Transaction, Networks } from 'stellar-sdk';
 import { Items } from '../../providers/items/items';
-
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
 import { blockchainNet } from '../../shared/config';
 import { blockchainNetType } from '../../shared/config';
+import { Router } from '@angular/router';
 
 @Component({
    selector: 'page-transfer',
    templateUrl: 'transfer.html',
+   styleUrls: ['./transfer.scss'],
 })
 export class TransferPage {
    key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
@@ -28,8 +29,7 @@ export class TransferPage {
    mainAccount: any;
 
    constructor(
-      private navCtrl: NavController,
-      private modalCtrl: ModalController,
+      private router: Router,
       private loadingCtrl: LoadingController,
       private itemsProvider: Items,
       private storage: StorageServiceProvider,
@@ -43,7 +43,6 @@ export class TransferPage {
       this.presentLoading();
       this.mainAccount = this.properties.defaultAccount;
       this.getBalance();
-      // this.loadReceivers();
    }
 
    doRefresh(refresher) {
@@ -53,10 +52,7 @@ export class TransferPage {
    }
 
    openItem(item) {
-      // this.navCtrl.push(ItemDetailPage, {
-      //    item: item,
-      //    currentItems: this.currentItems,
-      // });
+      this.router.navigate(['/item-detail'], { state: { item: item, currentItems: this.currentItems } });
    }
 
    setFilteredItems() {
@@ -67,11 +63,11 @@ export class TransferPage {
 
    getBalance() {
       let assets = [];
-      // if (blockchainNetType === 'live') {
-      //    Network.usePublicNetwork();
-      // } else {
-      //    Network.useTestNetwork();
-      // }
+      if (blockchainNetType === 'live') {
+         Networks.PUBLIC;
+      } else {
+         Networks.TESTNET;
+      }
       let server = new Server(blockchainNet);
       server
          .loadAccount(this.mainAccount.pk)
@@ -93,27 +89,30 @@ export class TransferPage {
          });
    }
 
-   presentLoading() {
+   async presentLoading() {
       this.isLoadingPresent = true;
-      this.loading = this.loadingCtrl.create({
+      this.loading = await this.loadingCtrl.create({
          message: 'Please Wait',
       });
-
-      this.loading.present();
+      await this.loading.present();
    }
 
-   dissmissLoading() {
+   async dissmissLoading() {
       this.isLoadingPresent = false;
-      this.loading.dismiss();
+      await this.loading.dismiss();
    }
 
-   dataError(title, message) {
-      // let alert = this.alertCtrl.create();
-      // alert.setTitle(title);
-      // alert.setMessage(message);
-      // alert.addButton({
-      //    text: 'close',
-      // });
-      // alert.present();
+   async dataError(title, message) {
+      let alert = await this.alertCtrl.create({
+         header: title,
+         message: message,
+         buttons: [
+            {
+               text: 'Close',
+               handler: data => {},
+            },
+         ],
+      });
+      await alert.present();
    }
 }
