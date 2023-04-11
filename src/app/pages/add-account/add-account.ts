@@ -62,7 +62,6 @@ export class AddAccountPage {
          confirmPassword: new FormControl('', Validators.compose([ Validators.required])),
       }, { validators: this.checkPasswords });
 
-
       this.navigation = this.router.getCurrentNavigation().extras.state?.navigation;
    }
 
