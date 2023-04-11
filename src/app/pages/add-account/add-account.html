@@ -25,6 +25,13 @@
                   <ion-input formControlName="password" [(ngModel)]="StrengthPassword" (ionChange)="checkStrength()" name="password" [type]="passwordType" clearOnEdit="false"></ion-input>
                   <ion-icon slot="end" [name]="passwordIcon" color="primary" class="passwordIcon" (click)="hideShowPassword(1)"> </ion-icon>
                </ion-item>
+               <ion-text color="danger" *ngIf="form.controls.password.invalid && (form.controls.password.dirty || form.controls.password.touched)">
+                  <span *ngIf="form.controls.password.errors.required">Password is required.</span>
+                  <span *ngIf="form.controls.password.errors.minlength">Password should be at least 6 characters long.</span>
+                  <span *ngIf="form.controls.password.errors.pattern"
+                     >Password should contain at least one uppercase letter, one lowercase letter, one number, and one special character ($@$!%*?&).</span
+                  >
+               </ion-text>
             </ion-col>
          </ion-row>
          <ion-row>
@@ -34,6 +41,9 @@
                   <ion-input formControlName="confirmPassword" name="confirmPassword" [type]="confirmPasswordType" clearOnEdit="false"></ion-input>
                   <ion-icon slot="end" [name]="confirmPasswordIcon" color="primary" class="confirmPasswordIcon" (click)="hideShowPassword(2)"> </ion-icon>
                </ion-item>
+               <ion-text  *ngIf="form.errors?.notSame">
+                  <ion-text color="danger"><span>Passwords do not match.</span> </ion-text>
+               </ion-text>
             </ion-col>
          </ion-row>
          <ion-row class="ion-padding-top">
