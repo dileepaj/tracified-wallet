@@ -1,19 +1,9 @@
 import { Component } from '@angular/core';
 import { ToastController, LoadingController, AlertController } from '@ionic/angular';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Keypair } from 'stellar-sdk';
 import { AES, enc } from 'crypto-js';
 import { TranslateService } from '@ngx-translate/core';
-
-// Network.usePublicNetwork();
-// var server = new Server(stellarNet);
-// const setup = require('hsimp-purescript');
-// const periods = require('hsimp-purescript/dictionaries/periods');
-// const top10 = require('hsimp-purescript/dictionaries/top10');
-// const patterns = require('hsimp-purescript/dictionaries/patterns');
-// const checks = require('hsimp-purescript/dictionaries/checks');
-// const namedNumbers = require('hsimp-purescript/dictionaries/named-Numbers');
-// const CharacterSets = require('hsimp-purescript/dictionaries/character-Sets');
 
 // Service Providers
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
@@ -50,6 +40,7 @@ export class AddAccountPage {
    loading;
    form: FormGroup;
    private navigation;
+   validation_messages: { password: { type: string; message: string; }[]; confirmPassword: { type: string; message: string; }[]; };
 
    constructor(
       public router: Router,
@@ -67,12 +58,18 @@ export class AddAccountPage {
       this.form = new FormGroup({
          accName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
          strength: new FormControl(''),
-         password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
-         confirmPassword: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
-      });
+         password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required ,  Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{7,}')])),
+         confirmPassword: new FormControl('', Validators.compose([ Validators.required])),
+      }, { validators: this.checkPasswords });
 
       this.navigation = this.router.getCurrentNavigation().extras.state?.navigation;
    }
+
+   checkPasswords: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+      let pass = group.get('password').value;
+      let confirmPass = group.get('confirmPassword').value;
+      return pass === confirmPass ? null : { notSame: true }
+    }
 
    addMainAccount() {
       let password = this.form.get('password').value;
