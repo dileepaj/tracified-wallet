@@ -24,7 +24,7 @@ import { ItemDetailPage } from './pages/item-detail/item-detail';
 import { AccountInfoPage } from './pages/account-info/account-info';
 
 const routes: Routes = [
-   { path: '', component: TabsPage },
+   // { path: '', component: TabsPage },
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
@@ -46,7 +46,7 @@ const routes: Routes = [
    { path: 'account-info', component: AccountInfoPage },
 
    {
-      path: 'assets',
+      path: '',
       component: TabsPage,
       children: [
          {
@@ -68,8 +68,6 @@ const routes: Routes = [
          },
       ],
    },
-
-   // { path: 'bc-account', component: AddAccountPage },
 ];
 
 @NgModule({

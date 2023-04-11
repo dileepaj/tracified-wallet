@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { Items } from '../../providers/items/items';
 import { Keypair, AccountResponse } from 'stellar-sdk';
@@ -21,7 +21,7 @@ import { Router } from '@angular/router';
    templateUrl: 'item-detail.html',
    styleUrls: ['./item-detail.scss'],
 })
-export class ItemDetailPage {
+export class ItemDetailPage implements OnInit {
    selectedItem2: any;
    itemRequired: any;
    item: any;
@@ -69,6 +69,16 @@ export class ItemDetailPage {
       this.item = this.router.getCurrentNavigation().extras.state.item;
       this.currentItems = this.router.getCurrentNavigation().extras.state.currentItems || this.currentItems.defaultItem;
    }
+   ngOnInit() {
+      if (this.mainAccount) {
+         this.getPublickeys();
+      } else {
+         this.presentToast('There is no Default account selected at the moment. Please select an account to proceed!');
+         this.router.navigate(['/bc-account'], { replaceUrl: true });
+      }
+      this.COCForm.selectedItem = this.item.asset_code;
+      this.selectedItem = this.item.asset_code;
+   }
 
    getPublickeys() {
       if (this.connectivity.onDevice) {
@@ -80,6 +90,7 @@ export class ItemDetailPage {
                if (res.status === 200) {
                   const data = res.body.accounts;
                   this.bcAccounts = data.filter(item => item.publicKey !== this.mainAccount.pk);
+                  console.log(this.bcAccounts);
                } else if (res.status === 204) {
                   this.presentToast('There are no accounts available!.');
                }
@@ -96,16 +107,7 @@ export class ItemDetailPage {
       this.COCForm.receiver = event.value['publicKey'];
    }
 
-   ionViewDidLoad() {
-      if (this.mainAccount) {
-         this.getPublickeys();
-      } else {
-         this.presentToast('There is no Default account selected at the moment. Please select an account to proceed!');
-         this.router.navigate(['/bc-account'], { replaceUrl: true });
-      }
-      this.COCForm.selectedItem = this.item.asset_code;
-      this.selectedItem = this.item.asset_code;
-   }
+   ionViewDidLoad() {}
 
    transferAsset() {
       let status = this.checkIfFormEmpty();
