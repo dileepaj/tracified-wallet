@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavController, ModalController, LoadingController, AlertController } from '@ionic/angular';
 import { Server, Transaction, Networks } from 'stellar-sdk';
 import { Items } from '../../providers/items/items';
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
    templateUrl: 'transfer.html',
    styleUrls: ['./transfer.scss'],
 })
-export class TransferPage {
+export class TransferPage implements OnInit {
    currentItems = [];
    user: any;
    loading;
@@ -34,10 +34,9 @@ export class TransferPage {
       private alertCtrl: AlertController
    ) {}
 
-   async ionViewDidEnter() {
-      await this.presentLoading();
-      this.mainAccount = await this.properties.defaultAccount;
+   ngOnInit() {
       this.getBalance();
+      console.log('getBalance started');
    }
 
    doRefresh(refresher) {
@@ -57,32 +56,39 @@ export class TransferPage {
       });
    }
 
-   getBalance() {
-      let assets = [];
-      if (blockchainNetType === 'live') {
-         Networks.PUBLIC;
-      } else {
-         Networks.TESTNET;
-      }
-      let server = new Server(blockchainNet);
-      server
-         .loadAccount(this.mainAccount.pk)
-         .then(account => {
-            account.balances.forEach((balance: any) => {
-               let bal: number = parseFloat(balance.balance);
-               assets.push({ asset_code: balance.asset_code, balance: bal.toFixed(0) });
-            });
-            assets.pop();
-            this.currentItems = assets;
-            this.Searcheditems = this.currentItems;
-            if (this.isLoadingPresent) {
+   async getBalance() {
+      await this.presentLoading();
+      this.mainAccount = await this.properties.defaultAccount;
+      try {
+         let assets = [];
+         if (blockchainNetType === 'live') {
+            Networks.PUBLIC;
+         } else {
+            Networks.TESTNET;
+         }
+         let server = new Server(blockchainNet);
+         server
+            .loadAccount(this.mainAccount.pk)
+            .then(account => {
+               account.balances.forEach((balance: any) => {
+                  let bal: number = parseFloat(balance.balance);
+                  assets.push({ asset_code: balance.asset_code, balance: bal.toFixed(0) });
+               });
+               assets.pop();
+               this.currentItems = assets;
+               this.Searcheditems = this.currentItems;
+               if (this.isLoadingPresent) {
+                  this.dissmissLoading();
+               }
+            })
+            .catch(err => {
+               console.error(err);
                this.dissmissLoading();
-            }
-         })
-         .catch(err => {
-            console.error(err);
-            this.dissmissLoading();
-         });
+            });
+      } catch (error) {
+         await this.dissmissLoading();
+         console.log(error);
+      }
    }
 
    async presentLoading() {
