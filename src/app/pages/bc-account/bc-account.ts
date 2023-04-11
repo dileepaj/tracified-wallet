@@ -28,10 +28,7 @@ export class BcAccountPage {
       public alertCtrl: AlertController,
       public dataService: DataServiceProvider
    ) {
-
       console.log('construct BcAccountPage');
-
-
    }
 
    ionViewDidEnter() {
@@ -42,7 +39,6 @@ export class BcAccountPage {
 
    goToAddAccount() {
       this.router.navigate(['add-account/']);
-      // this.navCtrl.push(AddAccountPage);
    }
 
    doRefresh(refresher) {
@@ -58,7 +54,7 @@ export class BcAccountPage {
             .then(accounts => {
                this.dissmissLoading();
                this.userAcc = accounts;
-               console.log("accounts: ", accounts);
+               console.log('accounts: ', accounts);
                resolve(accounts);
             })
             .catch(error => {

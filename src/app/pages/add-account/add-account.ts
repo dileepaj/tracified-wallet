@@ -71,7 +71,7 @@ export class AddAccountPage {
          confirmPassword: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
       });
 
-      this.navigation = this.router.getCurrentNavigation().extras.state.navigation;
+      this.navigation = this.router.getCurrentNavigation().extras.state?.navigation;
    }
 
    addMainAccount() {
