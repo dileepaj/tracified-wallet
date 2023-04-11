@@ -2,6 +2,13 @@
    box-shadow: none !important;
 }
 
+li {
+   font-size: 12px;
+}
+ul {
+   padding-left: 30px;
+}
+
 @media all and (orientation: portrait) {
    ion-row {
       align-items: center;
