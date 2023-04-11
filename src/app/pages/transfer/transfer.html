@@ -7,16 +7,14 @@
    </ion-toolbar>
 </ion-header>
 
-<ion-content>
-   <div *ngIf="currentItems[2]">
-      <!-- <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="setFilteredItems()"></ion-searchbar> -->
-   </div>
+<ion-content class="ion-padding cusContent">
+   <ion-searchbar show-clear-button="always" [(ngModel)]="searchTerm" (ionChange)="setFilteredItems($event)"></ion-searchbar>
 
    <!-- <ion-refresher (ionRefresh)="doRefresh($event)">
       <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing..."> </ion-refresher-content>
    </ion-refresher> -->
 
-   <ion-grid class="full-height white-background ion-no-padding">
+   <ion-grid>
       <div *ngIf="currentItems.length === 0">
          <ion-row>
             <ion-img class="notification-icon" src="../../assets/imgs/emptystatus-04.png"></ion-img>
@@ -42,11 +40,9 @@
                   <h2 class="primary-font text-right-align-horizontally">{{item.balance}}</h2>
                </ion-col>
             </ion-row>
-            <ion-row class="block">
-               <div class="right-float">
-                  <ion-button [disabled]="item.balance < 1" class="btn-green" (click)="openItem(item)">{{ 'TRANSFER' | translate }}</ion-button>
-               </div>
-               <div class="clear-float"></div>
+
+            <ion-row style="display: flex; justify-content: right">
+               <ion-button [disabled]="item.balance < 1" (click)="openItem(item)">{{ 'TRANSFER' | translate }}</ion-button>
             </ion-row>
          </ion-row>
       </div>

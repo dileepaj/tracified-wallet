@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 // pages
 import { GetNftPage } from './pages/get-nft/get-nft';
@@ -50,6 +51,9 @@ import { TransferPageModule } from './pages/transfer/transfer.module';
 import { ItemReceivedPageModule } from './pages/item-received/item-received.module';
 import { ItemDetailPage } from './pages/item-detail/item-detail';
 import { AccountInfoPage } from './pages/account-info/account-info';
+import { TransferPage } from './pages/transfer/transfer';
+import { ItemReceivedPage } from './pages/item-received/item-received';
+import { ItemSentPage } from './pages/item-sent/item-sent';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -80,6 +84,9 @@ export function createTranslateLoader(http: HttpClient) {
       SettingFormPage,
       ItemDetailPage,
       AccountInfoPage,
+      // TransferPage,
+      // ItemReceivedPage,
+      // ItemSentPage,
    ],
    imports: [
       BrowserModule,
@@ -99,6 +106,7 @@ export function createTranslateLoader(http: HttpClient) {
       ItemSentPageModule,
       TransferPageModule,
       ItemReceivedPageModule,
+      IonicSelectableModule,
    ],
    providers: [
       { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

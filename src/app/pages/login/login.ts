@@ -79,7 +79,7 @@ export class LoginPage {
                               .then(() => {
                                  this.dissmissLoading();
                                  this.connectivity.putMenuHide(false);
-                                 this.router.navigate(['/assets'], { state: { navigation: 'initial' } });
+                                 this.router.navigate([''], { state: { navigation: 'initial' } });
                               })
                               .catch(err => {
                                  this.dissmissLoading();

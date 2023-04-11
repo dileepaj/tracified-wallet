@@ -155,7 +155,7 @@ export class AppComponent {
          responce = await this.authService.authorizeLocalProfile();
          if (responce) {
             state = await this.checkUser();
-            this.router.navigate(['/assets'], { replaceUrl: true });
+            this.router.navigate([''], { replaceUrl: true });
          } else {
             state = true;
             this.dataService.clearLocalData();
@@ -198,7 +198,7 @@ export class AppComponent {
                   .retrieveDefaultAccount()
                   .then(account => {
                      this.properties.defaultAccount = account;
-                     this.router.navigate(['/assets'], { replaceUrl: true });
+                     this.router.navigate([''], { replaceUrl: true });
                   })
                   .catch(err => {
                      this.presentAlert('Error', 'Could not retrieve transaction accounts from storage. Please login again.');
@@ -280,7 +280,7 @@ export class AppComponent {
    openPage(page: string) {
       switch (page) {
          case 'items':
-            this.router.navigate(['/assets'], { replaceUrl: true });
+            this.router.navigate([''], { replaceUrl: true });
             break;
          case 'nft':
             console.log('hello');

@@ -14,9 +14,6 @@ import { Router } from '@angular/router';
    styleUrls: ['./transfer.scss'],
 })
 export class TransferPage {
-   key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
-   adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
-
    currentItems = [];
    user: any;
    loading;
@@ -37,11 +34,9 @@ export class TransferPage {
       private alertCtrl: AlertController
    ) {}
 
-   ionViewDidLoad() {}
-
-   ionViewDidEnter() {
-      this.presentLoading();
-      this.mainAccount = this.properties.defaultAccount;
+   async ionViewDidEnter() {
+      await this.presentLoading();
+      this.mainAccount = await this.properties.defaultAccount;
       this.getBalance();
    }
 
@@ -55,9 +50,10 @@ export class TransferPage {
       this.router.navigate(['/item-detail'], { state: { item: item, currentItems: this.currentItems } });
    }
 
-   setFilteredItems() {
+   setFilteredItems(event) {
+      let name = event.detail.value;
       this.Searcheditems = this.currentItems.filter(item => {
-         return item.asset_code.toLowerCase().includes(this.searchTerm.toLowerCase());
+         return item.asset_code.toLowerCase().includes(name.toLowerCase());
       });
    }
 
