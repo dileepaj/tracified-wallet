@@ -42,7 +42,9 @@
             </ion-row>
 
             <ion-row style="display: flex; justify-content: right">
-               <ion-button [disabled]="item.balance < 1" (click)="openItem(item)">{{ 'TRANSFER' | translate }}</ion-button>
+               <ion-item lines="none">
+                  <ion-button [disabled]="item.balance < 1" (click)="openItem(item)">{{ 'TRANSFER' | translate }}</ion-button>
+               </ion-item>
             </ion-row>
          </ion-row>
       </div>
