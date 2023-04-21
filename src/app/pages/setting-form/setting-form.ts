@@ -346,38 +346,4 @@ export class SettingFormPage {
          this.passwordIconC = this.passwordIconC === 'eye-off' ? 'eye' : 'eye-off';
       }
    }
-
-   TransactionPassword(privateKey: string) {
-      if (this.dataService.validateSecretKey(privateKey)) {
-         this.presentToast('Private key entered is correct');
-         // this.editTransaction();
-      } else {
-         this.presentToast('Private key entered is incorrect. Please try again.');
-      }
-   }
-
-   async privateKeyPopUp() {
-      let alert = await this.alertCtrl.create({
-         header: 'Private Key.',
-         inputs: [
-            {
-               name: 'privateKey',
-               placeholder: 'Enter the Private Key',
-            },
-         ],
-         buttons: [
-            {
-               text: 'Cancel',
-            },
-            {
-               text: 'Submit',
-               handler: data => {
-                  this.TransactionPassword(data.privateKey);
-               },
-            },
-         ],
-         backdropDismiss: false,
-      });
-      alert.present();
-   }
 }
