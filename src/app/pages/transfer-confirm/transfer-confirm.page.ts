@@ -50,12 +50,10 @@ export class TransferConfirmPage implements OnInit {
 
    confirm() {
       //v6 plz refactor
-      // this.presentLoading();
-      console.log('hit 1');
-
       // SECURITY: Anyone can change the HTML and pass an outside public key as the receiver. Can transfer money out of the tenant.
       this.passwordPrompt()
-         .then(password => {
+         .then(async password => {
+            await this.presentLoading();
             console.log('hit 2');
 
             this.blockchainService
@@ -113,7 +111,7 @@ export class TransferConfirmPage implements OnInit {
                                  this.router.navigate(['/fund-transfer'], { replaceUrl: true });
                               })
                               .catch(err => {
-                                 console.log('hit 8 miss',err);
+                                 console.log('hit 8 miss', err);
 
                                  this.dissmissLoading();
                                  this.logger.error('Transfer fund transaction submission failed: ' + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -143,7 +141,7 @@ export class TransferConfirmPage implements OnInit {
                });
          })
          .catch(err => {
-          console.log('hit 11 miss');
+            console.log('hit 11 miss');
             this.dissmissLoading();
          });
    }
@@ -200,10 +198,10 @@ export class TransferConfirmPage implements OnInit {
       await this.loading.present();
    }
 
-   dissmissLoading() {
+   async dissmissLoading() {
       console.log('dismiss loading');
       this.isLoadingPresent = false;
-      this.loading?.dismiss();
+      await this.loading?.dismiss();
    }
 
    async presentAlert(title, message) {

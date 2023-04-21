@@ -8,9 +8,9 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-   <!-- <ion-refresher (ionRefresh)="doRefresh($event)">
-      <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles" refreshingText="Refreshing..."> </ion-refresher-content>
-   </ion-refresher> -->
+   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+   </ion-refresher>
 
    <ion-grid>
       <div *ngIf="cocReceived.length === 0">

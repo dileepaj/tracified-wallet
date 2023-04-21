@@ -43,10 +43,6 @@ export class ItemSentPage {
       private translate: TranslateService
    ) {}
 
-   ngOnInit() {}
-
-   ionViewDidLoad() {}
-
    ionViewDidEnter() {
       this.mainAccount = this.properties.defaultAccount;
       this.getAllCoCs();
@@ -56,12 +52,17 @@ export class ItemSentPage {
       this.getAllCoCs();
       refresher.complete();
    }
+   async handleRefresh(event) {
+      await this.getAllCoCs();
+      await event.target.complete();
+   }
+
    getNetwork() {
       return blockchainNetType === 'live' ? Networks.PUBLIC : Networks.TESTNET;
    }
 
-   getAllCoCs() {
-      this.presentLoading();
+   async getAllCoCs() {
+      await this.presentLoading();
       this.cocSent = [];
       this.dataService
          .getAllSentCoCs(this.mainAccount.pk)
@@ -127,8 +128,8 @@ export class ItemSentPage {
                      this.cocSent.sort((a, b) => (a.sentOriginal < b.sentOriginal ? 1 : -1));
                      this.dissmissLoading();
                   })
-                  .catch(err => {
-                     this.dissmissLoading();
+                  .catch(async err => {
+                     await this.dissmissLoading();
                      this.translate.get(['ERROR', 'FAILED_TO_FETCH_ACCOUNT_SENT']).subscribe(text => {
                         this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_ACCOUNT_SENT']);
                      });
@@ -138,8 +139,8 @@ export class ItemSentPage {
                this.dissmissLoading();
             }
          })
-         .catch(err => {
-            this.dissmissLoading();
+         .catch(async err => {
+            await this.dissmissLoading();
             if (err.status != 400) {
                this.translate.get(['ERROR', 'FAILED_TO_FETCH_SENT']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_SENT']);

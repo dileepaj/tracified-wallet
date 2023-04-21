@@ -41,13 +41,13 @@
                   <ion-input formControlName="confirmPassword" name="confirmPassword" [type]="confirmPasswordType" clearOnEdit="false"></ion-input>
                   <ion-icon slot="end" [name]="confirmPasswordIcon" color="primary" class="confirmPasswordIcon" (click)="hideShowPassword(2)"> </ion-icon>
                </ion-item>
-               <ion-text *ngIf="form.errors?.notSame">
+               <!-- <ion-text *ngIf="form.errors?.notSame">
                   <ion-text color="danger">
                      <ul>
                         <li><span>Passwords do not match.</span></li>
                      </ul>
                   </ion-text>
-               </ion-text>
+               </ion-text> -->
             </ion-col>
          </ion-row>
          <ion-row class="ion-padding-top">

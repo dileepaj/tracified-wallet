@@ -10,9 +10,9 @@
 <ion-content class="ion-padding cusContent">
    <ion-searchbar show-clear-button="always" [(ngModel)]="searchTerm" (ionChange)="setFilteredItems($event)"></ion-searchbar>
 
-   <!-- <ion-refresher (ionRefresh)="doRefresh($event)">
-      <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing..."> </ion-refresher-content>
-   </ion-refresher> -->
+   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+   </ion-refresher>
 
    <ion-grid>
       <div *ngIf="currentItems.length === 0">

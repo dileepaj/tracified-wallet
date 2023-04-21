@@ -55,19 +55,24 @@ export class ItemReceivedPage {
       private translate: TranslateService
    ) {}
 
-   ngOnInit() {}
-
    ionViewDidEnter() {
       this.mainAccount = this.properties.defaultAccount;
       this.getAllCoCs();
+      console.log('receive');
+   }
+
+   async handleRefresh(event) {
+      this.mainAccount = this.properties.defaultAccount;
+      this.getAllCoCs();
+      await event.target.complete();
    }
 
    getNetwork() {
       return blockchainNetType === 'live' ? Networks.PUBLIC : Networks.TESTNET;
    }
 
-   getAllCoCs() {
-      this.presentLoading();
+   async getAllCoCs() {
+      await this.presentLoading();
       this.cocReceived = [];
       this.dataService
          .getAllReceivedCoCs(this.mainAccount.pk)
@@ -133,11 +138,10 @@ export class ItemReceivedPage {
                         this.cocReceived.push(cocObj);
                      });
                      this.cocReceived.sort((a, b) => (a.sentOriginal < b.sentOriginal ? 1 : -1));
-
                      this.dissmissLoading();
                   })
-                  .catch(err => {
-                     this.dissmissLoading();
+                  .catch(async err => {
+                     await this.dissmissLoading();
                      this.translate.get(['ERROR', 'FAILED_TO_FETCH_ACCOUNT']).subscribe(text => {
                         this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_ACCOUNT']);
                      });
@@ -147,8 +151,8 @@ export class ItemReceivedPage {
                this.dissmissLoading();
             }
          })
-         .catch(err => {
-            this.dissmissLoading();
+         .catch(async err => {
+            await this.dissmissLoading();
             if (err.status != 400) {
                this.translate.get(['ERROR', 'FAILED_TO_FETCH_RECEIVED']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_RECEIVED']);
@@ -168,8 +172,8 @@ export class ItemReceivedPage {
          return;
       }
       this.passwordPromptResponseWait()
-         .then(password => {
-            this.presentLoading();
+         .then(async password => {
+            await this.presentLoading();
             this.blockchainService
                .validateTransactionPassword(password, this.mainAccount.sk, this.mainAccount.pk)
                .then(decKey => {
@@ -182,8 +186,8 @@ export class ItemReceivedPage {
                   }
                   this.dataService
                      .updateCoC(coc.cocOriginal)
-                     .then(res => {
-                        this.dissmissLoading();
+                     .then(async res => {
+                        await this.dissmissLoading();
                         if (status == 'accept') {
                            this.translate.get(['SUCCESS', 'SUCCESS_ACCEPTED', 'UPDATED_RESULTS_TRANSFER']).subscribe(text => {
                               this.presentAlert(text['SUCCESS'], text['SUCCESS_ACCEPTED '] + coc.assetCode + '. ' + text['UPDATED_RESULTS_TRANSFER']);
@@ -194,17 +198,17 @@ export class ItemReceivedPage {
                            });
                         }
                      })
-                     .catch(err => {
+                     .catch(async err => {
+                        await this.dissmissLoading();
                         coc.cocOriginal.Status = 'pending';
-                        this.dissmissLoading();
                         this.translate.get(['ERROR', 'COULD_NOT_PROCEED']).subscribe(text => {
                            this.presentAlert(text['ERROR'], text['COULD_NOT_PROCEED']);
                         });
                         this.logger.error('Failed to update the CoC: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                      });
                })
-               .catch(err => {
-                  this.dissmissLoading();
+               .catch(async err => {
+                  await this.dissmissLoading();
                   this.translate.get(['ERROR', 'INVALID_PASSWORD']).subscribe(text => {
                      this.presentAlert(text['ERROR'], text['INVALID_PASSWORD']);
                   });

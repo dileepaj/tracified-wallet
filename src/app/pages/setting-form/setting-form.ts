@@ -92,9 +92,9 @@ export class SettingFormPage {
       return null;
    }
 
-   changeName() {
+   async changeName() {
       if (this.connectivityService.onDevice) {
-         this.presentLoading();
+         await this.presentLoading();
          let fName = this.displayName.get('fName').value;
          let lName = this.displayName.get('lName').value;
 
@@ -138,8 +138,8 @@ export class SettingFormPage {
    changePassword() {
       if (this.connectivityService.onDevice) {
          this.alertWaitResponse('Warning', 'Once you change the account password you will be automatically logged out from the application. Do you want to continue?')
-            .then(() => {
-               this.presentLoading();
+            .then(async () => {
+               await this.presentLoading();
                let oPassword = this.accountPassword.get('oPassword').value;
                let cPassword = this.accountPassword.get('cPassword').value;
                let nPassword = this.accountPassword.get('nPassword').value;
@@ -204,8 +204,8 @@ export class SettingFormPage {
       if (this.connectivityService.onDevice) {
          this.translate.get(['WARNING', 'CHANGE_PASSWORD_LOGGED_OUT']).subscribe(text => {
             this.alertWaitResponse(text['WARNING'], text['CHANGE_PASSWORD_LOGGED_OUT'])
-               .then(() => {
-                  this.presentLoading();
+               .then(async () => {
+                  await this.presentLoading();
                   let oPassword = this.transactionPassword.get('oPassword').value;
                   let cPassword = this.transactionPassword.get('cPassword').value;
                   let nPassword = this.transactionPassword.get('nPassword').value;

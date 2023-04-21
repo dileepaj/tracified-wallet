@@ -60,7 +60,7 @@ export class OtpPage {
                this.presentToast('OTP verified.');
                const option: NavigationExtras = {
                   queryParams: {
-                     ShopId: this.shopId,
+                     ShopId: res.body.Response.ShopID,
                      otp: otp,
                      email: mail,
                   },

@@ -47,8 +47,8 @@ export class BcAccountPage {
    }
 
    getMainAccounts() {
-      return new Promise((resolve, reject) => {
-         this.presentLoading();
+      return new Promise(async (resolve, reject) => {
+         await this.presentLoading();
          this.dataService
             .getBlockchainAccounts()
             .then(accounts => {
