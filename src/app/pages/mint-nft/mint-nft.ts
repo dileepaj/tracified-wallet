@@ -97,7 +97,7 @@ export class MintNftPage {
       if (this.result) {
          this.SVG = this.result.svg;
          this.SVGID = this.result.svgid;
-
+         this.presentLoading('Loading...');
          this.convertToBase64(this.result.svg);
       }
       // this.account = this.properties.defaultAccount;
@@ -126,7 +126,6 @@ export class MintNftPage {
     */
 
    async convertToBase64(svg: any) {
-      await this.presentLoading('Loading...');
       var encodedData = btoa(unescape(encodeURIComponent(svg)));
       console.log('converted base64: ', encodedData);
       this.hash = CryptoJS.SHA256(encodedData).toString(CryptoJS.enc.Hex);
@@ -145,32 +144,6 @@ export class MintNftPage {
             console.log(error);
          }
       );
-   }
-
-   loadSVG(hash: string) {
-      console.log('hash: ', hash);
-      this.apiService.getSVGByHash(hash).subscribe((res: any) => {
-         console.log('get svg by hash response: ', res);
-         this.Decryption = res.Response;
-         // this.dec = btoa(this.Decryption);
-         // console.log('dec content:', this.dec);
-         // var str2 = this.dec.toString();
-         // var str1 = new String('data:image/svg+xml;base64,');
-         // let t = str1 + this.dec;
-         // console.log(t);
-
-         const svgString = this.Decryption.toString();
-         console.log(svgString);
-
-         const base64String = btoa(svgString);
-
-         let imgElement = `data:image/svg+xml;base64,${base64String}`;
-         this.imageSrc = imgElement;
-         console.log(imgElement);
-         // var src = str1.concat(str2.toString());
-         // this.imageSrc = this._sanitizer.bypassSecurityTrustResourceUrl(src);
-         // console.log('this image: ', this.imageSrc);
-      });
    }
 
    async createNFT() {
