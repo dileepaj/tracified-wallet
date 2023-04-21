@@ -41,9 +41,9 @@ export class FundTransferPage implements OnInit {
       this.logger.info('Fund Transfer Page Load', this.properties.skipConsoleLogs, this.properties.writeToFile);
    }
 
-   transferFunds() {
+   async transferFunds() {
       if (this.transferAmount && this.receiverPK) {
-         this.presentLoading();
+         await this.presentLoading();
          this.blockchainService
             .accountBalanceBoth(this.mainAccount.pk)
             .then((balances: any) => {
@@ -105,8 +105,8 @@ export class FundTransferPage implements OnInit {
    }
 
    getMainAccounts() {
-      return new Promise<void>((resolve, reject) => {
-         this.presentLoading();
+      return new Promise<void>(async (resolve, reject) => {
+         await this.presentLoading();
          this.dataService
             .getBlockchainAccounts()
             .then(accounts => {

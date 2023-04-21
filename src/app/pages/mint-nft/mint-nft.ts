@@ -97,7 +97,7 @@ export class MintNftPage {
       if (this.result) {
          this.SVG = this.result.svg;
          this.SVGID = this.result.svgid;
-         this.presentLoading('Loading...');
+
          this.convertToBase64(this.result.svg);
       }
       // this.account = this.properties.defaultAccount;
@@ -125,7 +125,8 @@ export class MintNftPage {
     * create trust line with asset isser first after issuer need to trasfer the asset to distributor(minter) ,transfer part do in the gateway side
     */
 
-   convertToBase64(svg: any) {
+   async convertToBase64(svg: any) {
+      await this.presentLoading('Loading...');
       var encodedData = btoa(unescape(encodeURIComponent(svg)));
       console.log('converted base64: ', encodedData);
       this.hash = CryptoJS.SHA256(encodedData).toString(CryptoJS.enc.Hex);
@@ -133,15 +134,14 @@ export class MintNftPage {
       let str1 = new String('data:image/svg+xml;base64,');
       this.img = str1 + encodedData;
       this.imageSrc = this._sanitizer.bypassSecurityTrustResourceUrl(this.img);
-      setTimeout(() => {
-         this.dissmissLoading();
-      }, 100);
 
       this.apiService.updatePutSVG(this.SVGID, this.hash).subscribe(
-         (res: any) => {
+         async (res: any) => {
+            await this.dissmissLoading();
             console.log('update svg API result : ', res);
          },
-         error => {
+         async error => {
+            await this.dissmissLoading();
             console.log(error);
          }
       );
@@ -173,8 +173,8 @@ export class MintNftPage {
       });
    }
 
-   createNFT() {
-      this.presentLoading('Checking account...');
+   async createNFT() {
+      await this.presentLoading('Checking account...');
       console.log('--------------1----------------');
       this.storage.getBcAccounts(this.email).then((res1: any) => {
          console.log('retieved result ', res1);
@@ -207,9 +207,9 @@ export class MintNftPage {
             // this.presentToast('Successfully set!');
             this.sponsorNewAcc();
          })
-         .catch(error => {
+         .catch(async error => {
             if (this.loadingState) {
-               this.dissmissLoading();
+               await this.dissmissLoading();
             }
          });
    }
@@ -244,9 +244,9 @@ export class MintNftPage {
                });
             }
          })
-         .catch(error => {
+         .catch(async error => {
             if (this.loadingState) {
-               this.dissmissLoading();
+               await this.dissmissLoading();
             }
             this.logger.error('NFT reciveing issue in gateway side : ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
             this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
@@ -284,9 +284,9 @@ export class MintNftPage {
                });
             }
          })
-         .catch(error => {
+         .catch(async error => {
             if (this.loadingState) {
-               this.dissmissLoading();
+               await this.dissmissLoading();
             }
 
             this.logger.error('NFT reciveing issue in gateway side : ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -296,7 +296,7 @@ export class MintNftPage {
          });
    }
 
-   mintNFT() {
+   async mintNFT() {
       this.loading.message = 'NFT Minting...';
       if (this.transactionResult == true) {
          this.apiService
@@ -330,9 +330,9 @@ export class MintNftPage {
                };
                this.apiService
                   .walletNftSave(NFT)
-                  .then(res => {
+                  .then(async res => {
                      if (this.loadingState) {
-                        this.dissmissLoading();
+                        await this.dissmissLoading();
                      }
                      // this.navController.navigateRoot('/mint-nft');
                      // window.history.replaceState(null, null, window.location.href);
@@ -340,10 +340,10 @@ export class MintNftPage {
 
                      // this.router.navigate(['/mint-nft'], { replaceUrl: true });
                   })
-                  .catch(error => {
+                  .catch(async error => {
                      console.log(error);
                      if (this.loadingState) {
-                        this.dissmissLoading();
+                        await this.dissmissLoading();
                      }
                      this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
                         this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
@@ -355,9 +355,9 @@ export class MintNftPage {
                //    this.presentToast(text[`NFT ${this.nftName} WAS MINTED`]);
                // });
             })
-            .catch(error => {
+            .catch(async error => {
                if (this.loadingState) {
-                  this.dissmissLoading();
+                  await this.dissmissLoading();
                }
                console.log('somthing wrong 1', error);
                this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
@@ -366,7 +366,7 @@ export class MintNftPage {
             });
       } else {
          if (this.loadingState) {
-            this.dissmissLoading();
+            await this.dissmissLoading();
          }
          console.log('somthing wrong 2');
          this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {

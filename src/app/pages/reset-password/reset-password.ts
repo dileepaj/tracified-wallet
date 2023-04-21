@@ -61,9 +61,9 @@ export class ResetPasswordPage {
       this.menuCtrl.enable(true);
    }
 
-   resetPassword() {
+   async resetPassword() {
       if (this.connectivity.onDevice) {
-         this.presentLoading();
+         await this.presentLoading();
          this.submitAttempt = true;
          const authmodel = {
             userName: this.username,
@@ -93,9 +93,9 @@ export class ResetPasswordPage {
       }
    }
 
-   verifyEmail() {
+   async verifyEmail() {
       if (this.connectivity.onDevice) {
-         this.presentLoading();
+         await this.presentLoading();
          this.authService
             .verifyEmail(this.verifyForm.value.email)
             .then(res => {
@@ -126,9 +126,9 @@ export class ResetPasswordPage {
       }
    }
 
-   reset() {
+   async reset() {
       if (this.connectivity.onDevice) {
-         this.presentLoading();
+         await this.presentLoading();
          this.submitAttempt = true;
          let cPassword = this.resetForm.get('cPassword').value;
          let nPassword = this.resetForm.get('nPassword').value;

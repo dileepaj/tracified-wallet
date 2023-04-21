@@ -40,7 +40,7 @@ export class AddAccountPage {
    loading;
    form: FormGroup;
    private navigation;
-   validation_messages: { password: { type: string; message: string; }[]; confirmPassword: { type: string; message: string; }[]; };
+   validation_messages: { password: { type: string; message: string }[]; confirmPassword: { type: string; message: string }[] };
 
    constructor(
       public router: Router,
@@ -55,12 +55,18 @@ export class AddAccountPage {
       private mappingService: MappingServiceProvider,
       private translate: TranslateService
    ) {
-      this.form = new FormGroup({
-         accName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
-         strength: new FormControl(''),
-         password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required ,  Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{7,}')])),
-         confirmPassword: new FormControl('', Validators.compose([ Validators.required])),
-      }, { validators: this.checkPasswords });
+      this.form = new FormGroup(
+         {
+            accName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
+            strength: new FormControl(''),
+            password: new FormControl(
+               '',
+               Validators.compose([Validators.minLength(6), Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-zd$@$!%*?&].{7,}')])
+            ),
+            confirmPassword: new FormControl('', Validators.compose([Validators.required])),
+         },
+         { validators: this.checkPasswords }
+      );
 
       this.navigation = this.router.getCurrentNavigation().extras.state?.navigation;
    }
@@ -68,10 +74,10 @@ export class AddAccountPage {
    checkPasswords: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
       let pass = group.get('password').value;
       let confirmPass = group.get('confirmPassword').value;
-      return pass === confirmPass ? null : { notSame: true }
-    }
+      return pass === confirmPass ? null : { notSame: true };
+   };
 
-   addMainAccount() {
+   async addMainAccount() {
       let password = this.form.get('password').value;
       let confirmPassword = this.form.get('confirmPassword').value;
 
@@ -83,7 +89,7 @@ export class AddAccountPage {
       }
 
       if (this.connectivity.onDevice) {
-         this.presentLoading();
+         await this.presentLoading();
          this.validateAccountName(this.form.value.accName)
             .then(status => {
                if (status) {

@@ -72,7 +72,7 @@ export class ItemReceivedPage {
    }
 
    async getAllCoCs() {
-      this.presentLoading();
+      await this.presentLoading();
       this.cocReceived = [];
       this.dataService
          .getAllReceivedCoCs(this.mainAccount.pk)
@@ -172,8 +172,8 @@ export class ItemReceivedPage {
          return;
       }
       this.passwordPromptResponseWait()
-         .then(password => {
-            this.presentLoading();
+         .then(async password => {
+            await this.presentLoading();
             this.blockchainService
                .validateTransactionPassword(password, this.mainAccount.sk, this.mainAccount.pk)
                .then(decKey => {

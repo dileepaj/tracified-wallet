@@ -56,9 +56,9 @@ export class LoginPage {
       this.connectivity.putMenuHide(true);
    }
 
-   login() {
+   async login() {
       if (this.connectivity.onDevice) {
-         this.presentLoading();
+         await this.presentLoading();
          const authmodel = {
             userName: this.form.value.username,
             password: this.form.value.password,
@@ -191,7 +191,7 @@ export class LoginPage {
       this.loading.present();
    }
 
-   dissmissLoading() {
-      this.loading.dismiss();
+   async dissmissLoading() {
+      await this.loading.dismiss();
    }
 }
