@@ -15,7 +15,19 @@
       </ion-item>
       <ion-item>
          <ion-label>{{'RECEIVER' | translate}}</ion-label>
-         <ionic-selectable [(ngModel)]="selectedReceiver" [items]="bcAccounts" itemValueField="publicKey" itemTextField="name" [canSearch]="true" (onChange)="onSelectReceiver($event)">
+
+         <ionic-selectable
+            item-content
+            placeholder="Select"
+            [(ngModel)]="selectedReceiver"
+            itemValueField="publicKey"
+            itemTextField="name"
+            [items]="bcAccounts"
+            [canSearch]="true"
+            (onChange)="onSelectReceiver($event)">
+            <ng-template padding-vertical ionicSelectableItemTemplate let-acc="item" let-isAccSelected="isItemSelected">
+               <span style="font-size: 16px"> {{acc['name']}} <br /><span style="font-size: 14px">{{publickeyPrint(acc['publicKey'])}}</span> </span>
+            </ng-template>
          </ionic-selectable>
       </ion-item>
 

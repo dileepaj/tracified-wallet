@@ -419,6 +419,13 @@ export class ItemDetailPage implements OnInit {
          });
    }
 
+   publickeyPrint(key) {
+      let first = key.slice(0, 10);
+      let end = key.slice(-10);
+      let Pkey = first + '..............' + end;
+      return Pkey;
+   }
+
    async presentAlert(title, message) {
       const alert = await this.alertCtrl.create({
          header: title,
