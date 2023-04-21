@@ -113,4 +113,8 @@ export class DataServiceProvider {
    setLanguage(language) {
       this.storage.setLanguage(language);
    }
+
+   validateSecretKey(key: string) {
+      return this.blockchainService.validateSecretKey(key);
+   }
 }
