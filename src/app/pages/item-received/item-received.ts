@@ -55,18 +55,23 @@ export class ItemReceivedPage {
       private translate: TranslateService
    ) {}
 
-   ngOnInit() {}
-
    ionViewDidEnter() {
       this.mainAccount = this.properties.defaultAccount;
       this.getAllCoCs();
+      console.log('receive');
+   }
+
+   async handleRefresh(event) {
+      this.mainAccount = this.properties.defaultAccount;
+      this.getAllCoCs();
+      await event.target.complete();
    }
 
    getNetwork() {
       return blockchainNetType === 'live' ? Networks.PUBLIC : Networks.TESTNET;
    }
 
-   getAllCoCs() {
+   async getAllCoCs() {
       this.presentLoading();
       this.cocReceived = [];
       this.dataService

@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
    templateUrl: 'transfer.html',
    styleUrls: ['./transfer.scss'],
 })
-export class TransferPage implements OnInit {
+export class TransferPage {
    currentItems = [];
    user: any;
    loading;
@@ -34,15 +34,13 @@ export class TransferPage implements OnInit {
       private alertCtrl: AlertController
    ) {}
 
-   ngOnInit() {
+   ionViewDidEnter() {
       this.getBalance();
-      console.log('getBalance started');
    }
 
-   doRefresh(refresher) {
-      this.presentLoading();
-      this.getBalance();
-      refresher.complete();
+   async handleRefresh(event) {
+      await this.getBalance();
+      await event.target.complete();
    }
 
    openItem(item) {

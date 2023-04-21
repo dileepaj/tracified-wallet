@@ -43,10 +43,6 @@ export class ItemSentPage {
       private translate: TranslateService
    ) {}
 
-   ngOnInit() {}
-
-   ionViewDidLoad() {}
-
    ionViewDidEnter() {
       this.mainAccount = this.properties.defaultAccount;
       this.getAllCoCs();
@@ -56,11 +52,16 @@ export class ItemSentPage {
       this.getAllCoCs();
       refresher.complete();
    }
+   async handleRefresh(event) {
+      await this.getAllCoCs();
+      await event.target.complete();
+   }
+
    getNetwork() {
       return blockchainNetType === 'live' ? Networks.PUBLIC : Networks.TESTNET;
    }
 
-   getAllCoCs() {
+   async getAllCoCs() {
       this.presentLoading();
       this.cocSent = [];
       this.dataService
