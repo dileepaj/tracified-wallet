@@ -80,13 +80,13 @@ export class ItemDetailPage implements OnInit {
       this.selectedItem = this.item.asset_code;
    }
 
-   getPublickeys() {
+   async getPublickeys() {
       if (this.connectivity.onDevice) {
-         this.presentLoading();
+         await this.presentLoading();
          this.apiService
             .getPublicAccountsByTenant()
-            .then(res => {
-               this.dissmissLoading();
+            .then(async res => {
+               await this.dissmissLoading();
                if (res.status === 200) {
                   const data = res.body.accounts;
                   this.bcAccounts = data.filter(item => item.publicKey !== this.mainAccount.pk);
@@ -95,8 +95,8 @@ export class ItemDetailPage implements OnInit {
                   this.presentToast('There are no accounts available!.');
                }
             })
-            .catch(error => {
-               this.dissmissLoading();
+            .catch(async error => {
+               await this.dissmissLoading();
             });
       } else {
          this.presentToast('There is no internet at the moment.');
@@ -142,8 +142,8 @@ export class ItemDetailPage implements OnInit {
          return;
       }
 
-      this.passwordPrompt().then(password => {
-         this.presentLoading();
+      this.passwordPrompt().then(async password => {
+         await this.presentLoading();
          this.blockchainService
             .validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk)
             .then(decKey => {
@@ -187,56 +187,56 @@ export class ItemDetailPage implements OnInit {
                                        };
                                        this.dataService
                                           .sendCoC(coc)
-                                          .then(res => {
-                                             this.dissmissLoading();
+                                          .then(async res => {
+                                             await this.dissmissLoading();
                                              this.translate.get(['SUCCESS', 'ASSET_TRANSFER_SUCCESS']).subscribe(text => {
                                                 this.presentAlert(text['ERROR'], text['ASSET_TRANSFER_SUCCESS']);
                                              });
                                              this.router.navigate(['/transfer'], { replaceUrl: true });
                                              this.logger.info('Item transferred successfully: ' + this.item.asset_code, this.properties.skipConsoleLogs, this.properties.writeToFile);
                                           })
-                                          .catch(err => {
-                                             this.dissmissLoading();
+                                          .catch(async err => {
+                                             await this.dissmissLoading();
                                              this.translate.get(['ERROR', 'FAILED_TO_SEND_TRANSACTION']).subscribe(text => {
                                                 this.presentAlert(text['ERROR'], text['FAILED_TO_SEND_TRANSACTION']);
                                              });
                                              this.logger.error('Sending CoC to gateway failed: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                                           });
                                     })
-                                    .catch(err => {
-                                       this.dissmissLoading();
+                                    .catch(async err => {
+                                       await this.dissmissLoading();
                                        this.translate.get(['ERROR', 'FAILED_TO_BUILD_TRANSACTION']).subscribe(text => {
                                           this.presentAlert(text['ERROR'], text['FAILED_TO_BUILD_TRANSACTION']);
                                        });
                                        this.logger.error('Accept and Reject xdr build failed: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                                     });
                               })
-                              .catch(err => {
-                                 this.dissmissLoading();
+                              .catch(async err => {
+                                 await this.dissmissLoading();
                                  this.translate.get(['ERROR', 'FAILED_TO_VERIFY_ASSET']).subscribe(text => {
                                     this.presentAlert(text['ERROR'], text['FAILED_TO_VERIFY_ASSET']);
                                  });
                                  this.logger.error('Failed to get the asset issuer: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                               });
                         })
-                        .catch(err => {
-                           this.dissmissLoading();
+                        .catch(async err => {
+                           await this.dissmissLoading();
                            this.translate.get(['ERROR', 'FAILED_TO_VERIFY_TRANSC']).subscribe(text => {
                               this.presentAlert(text['ERROR'], text['FAILED_TO_VERIFY_TRANSC']);
                            });
                            this.logger.error('Verify CoC failed: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                         });
                   })
-                  .catch(err => {
-                     this.dissmissLoading();
+                  .catch(async err => {
+                     await this.dissmissLoading();
                      this.translate.get(['ERROR', 'FAILED_TO_PREPARE_TRANSACTION']).subscribe(text => {
                         this.presentAlert(text['ERROR'], text['FAILED_TO_PREPARE_TRANSACTION']);
                      });
                      this.logger.error('Preparing sub account failed: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                   });
             })
-            .catch(err => {
-               this.dissmissLoading();
+            .catch(async err => {
+               await this.dissmissLoading();
                this.translate.get(['ERROR', 'INVALID_TRANSACTION_PASSWORD']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['INVALID_TRANSACTION_PASSWORD']);
                });

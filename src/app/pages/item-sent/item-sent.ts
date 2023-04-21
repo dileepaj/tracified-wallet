@@ -62,7 +62,7 @@ export class ItemSentPage {
    }
 
    async getAllCoCs() {
-      this.presentLoading();
+      await this.presentLoading();
       this.cocSent = [];
       this.dataService
          .getAllSentCoCs(this.mainAccount.pk)
@@ -128,8 +128,8 @@ export class ItemSentPage {
                      this.cocSent.sort((a, b) => (a.sentOriginal < b.sentOriginal ? 1 : -1));
                      this.dissmissLoading();
                   })
-                  .catch(err => {
-                     this.dissmissLoading();
+                  .catch(async err => {
+                     await this.dissmissLoading();
                      this.translate.get(['ERROR', 'FAILED_TO_FETCH_ACCOUNT_SENT']).subscribe(text => {
                         this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_ACCOUNT_SENT']);
                      });
@@ -139,8 +139,8 @@ export class ItemSentPage {
                this.dissmissLoading();
             }
          })
-         .catch(err => {
-            this.dissmissLoading();
+         .catch(async err => {
+            await this.dissmissLoading();
             if (err.status != 400) {
                this.translate.get(['ERROR', 'FAILED_TO_FETCH_SENT']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_SENT']);
