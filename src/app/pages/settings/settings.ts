@@ -3,6 +3,7 @@ import { AlertController } from '@ionic/angular';
 import { Properties } from '../../shared/properties';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { DataServiceProvider } from 'src/app/providers/data-service/data-service';
 
 @Component({
    selector: 'page-settings',
@@ -10,7 +11,8 @@ import { Router } from '@angular/router';
    styleUrls: ['./settings.scss'],
 })
 export class SettingsPage {
-   constructor(public router: Router, private properties: Properties, private alertCtrl: AlertController, private translate: TranslateService) {}
+   constructor(public router: Router, private properties: Properties, private alertCtrl: AlertController, private translate: TranslateService,
+      private dataService:DataServiceProvider) {}
 
    changeDisplayImage() {
       this.translate.get(['PROFILE_PHOTO', 'CHANGING_PHOTO_UNAVAILABLE']).subscribe(text => {
@@ -71,5 +73,13 @@ export class SettingsPage {
       alert.present();
    }
 
-   privateKeyCheck(privateKey) {}
+   privateKeyCheck(privateKey) {
+      const publicKey=this.properties.defaultAccount.pk;
+      if (this.dataService.validateSecretKey(privateKey,publicKey)) {
+         this.presentAlert('key ','Private key entered is correct');
+         this.router.navigate(['/setting-form'], { state: { type: 'transactionPassword' } });
+      } else {
+         this.presentAlert('key ','Private key entered is incorrect. Please try again.');
+      }
+   }
 }

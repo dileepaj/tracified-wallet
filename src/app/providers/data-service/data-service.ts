@@ -23,6 +23,7 @@ export class DataServiceProvider {
       private authService: AuthServiceProvider
    ) {}
 
+
    getBlockchainAccounts(): Promise<any> {
       return new Promise((resolve, reject) => {
          this.apiService
@@ -76,6 +77,10 @@ export class DataServiceProvider {
 
    changeUserDetails(type, userModel): Promise<any> {
       return this.authService.changeUserSettings(type, userModel);
+   }
+
+   validateSecretKey(secretKey: string, publicKey: string) {
+      return this.blockchainService.validateSecretKey(secretKey, publicKey);
    }
 
    changeTransactionAccPassword(passwordModel) {
