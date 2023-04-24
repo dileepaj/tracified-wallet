@@ -27,7 +27,8 @@ export class SettingsPage {
    }
 
    changeTransactionPasswords() {
-      this.router.navigate(['/setting-form'], { state: { type: 'transactionPassword' } });
+      this.privateKeyPopUp();
+      // this.router.navigate(['/setting-form'], { state: { type: 'transactionPassword' } });
    }
 
    async presentAlert(title: string, message: string) {
@@ -44,4 +45,31 @@ export class SettingsPage {
 
       await alert.present();
    }
+
+   async privateKeyPopUp() {
+      let alert = await this.alertCtrl.create({
+         header: 'Private Key.',
+         inputs: [
+            {
+               name: 'privateKey',
+               placeholder: 'Enter the Private Key',
+            },
+         ],
+         buttons: [
+            {
+               text: 'Cancel',
+            },
+            {
+               text: 'Submit',
+               handler: data => {
+                  this.privateKeyCheck(data.privateKey);
+               },
+            },
+         ],
+         backdropDismiss: false,
+      });
+      alert.present();
+   }
+
+   privateKeyCheck(privateKey) {}
 }
