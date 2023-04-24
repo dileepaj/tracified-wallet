@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
+import { LoadingController } from '@ionic/angular';
+import { ApiServiceProvider } from 'src/app/providers/api-service/api-service';
 
 @Component({
    selector: 'page-pages-load-svg',
@@ -9,17 +12,53 @@ import { DomSanitizer } from '@angular/platform-browser';
    styleUrls: ['./pages-load-svg.scss'],
 })
 export class PagesLoadSvgPage {
-   result: any;
+   hash: any;
    SVG: any;
+   loading: any;
+   @ViewChild('myImage', { static: false }) myImage: ElementRef;
+   
+   constructor(private loadCtrl: LoadingController, public apiService: ApiServiceProvider, public router: Router, private _sanitizer: DomSanitizer, public http: HttpClient) {
+      this.hash = this.router.getCurrentNavigation().extras.queryParams;
+      console.log('data passed ', this.hash);
+   }
 
-   constructor(public router: Router, private _sanitizer: DomSanitizer) {
-      this.result = this.router.getCurrentNavigation().extras.queryParams;
-      console.log('data passed ', this.result.Response);
+   ngOnInit() {
+   }
 
-      let encodedData = btoa(unescape(encodeURIComponent(this.result.Response)));
-      // let hash = CryptoJS.SHA256(encodedData).toString(CryptoJS.enc.Hex);
-      let str1 = new String('data:image/svg+xml;base64,');
-      let imgBa64 = str1 + encodedData;
-      this.SVG = this._sanitizer.bypassSecurityTrustResourceUrl(imgBa64);
+   ngAfterViewInit() {
+      // set the src attribute of the image
+      this.loadSvg();
+      // this.myImage.nativeElement.src = this.SVG;
+    }
+
+   async startloading() {
+      this.loading = await this.loadCtrl.create({
+         message: 'loading...',
+      });
+      await this.loading.present();
+   }
+
+   async dissmissLoading() {
+      await this.loading.dismiss();
+   }
+
+   loadSvg() {
+      this.startloading();
+      this.apiService.getSVGByHash(this.hash).subscribe(
+         (res: any) => {
+            let svgData = (unescape(encodeURIComponent(res.Response)));
+            this.myImage.nativeElement.srcdoc = svgData;
+
+            if (this.startloading) {
+               this.dissmissLoading();
+            }
+         },
+         error => {
+            if (this.startloading) {
+               this.dissmissLoading();
+            }
+            console.log(error);
+         }
+      );
    }
 }
