@@ -36,7 +36,6 @@ export class OtpNtfComponent {
    });
 
    sendDetails() {
-      this.showLoading();
       const option: NavigationExtras = {
          queryParams: {
             email: this.email,
@@ -44,33 +43,11 @@ export class OtpNtfComponent {
             ReciverName: this.nftForm.get('recipName').value,
             CustomMsg: this.nftForm.get('message').value,
             NFTname: this.nftForm.get('nftName').value,
+
+            otp: this.otp,
          },
       };
-      this.service.updateSVG(option.queryParams).then(
-         res => {
-            const option: NavigationExtras = {
-               queryParams: {
-                  ShopId: this.shopId,
-                  result: res.body.Response,
-                  NFTname: this.nftForm.get('nftName').value,
-                  email: this.email,
-                  otp: this.otp,
-                  CustomMsg: this.nftForm.get('message').value,
-               },
-            };
-            if (this.showLoading) {
-               this.dimissLoading();
-            }
-            this.router.navigate(['/mint-nft'], option);
-         },
-         error => {
-            this.presentToast('Something wrong.');
-            if (this.showLoading) {
-               this.dimissLoading();
-            }
-            console.log(error);
-         }
-      );
+      this.router.navigate(['/mint-nft'], option);
    }
 
    onKeyPress(event: KeyboardEvent) {
@@ -88,16 +65,5 @@ export class OtpNtfComponent {
          position: 'bottom',
       });
       await toast.present();
-   }
-
-   async showLoading() {
-      const loading = await this.loadingCtrl.create({
-         message: 'Verifying...',
-      });
-      await loading.present();
-   }
-
-   async dimissLoading() {
-      await this.loadingCtrl.dismiss();
    }
 }
