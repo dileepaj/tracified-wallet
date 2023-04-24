@@ -417,9 +417,10 @@ export class ApiServiceProvider {
    }
 
    changeTranasctionPassword(params): Promise<any> {
-      let sk = encodeURI(params.sk);
-      let accName = encodeURI(params.accName);
-      let url1 = transactionPasswordChange + '?sk=' + sk + '&accountName=' + accName;
+      let payload ={
+         sk:params.sk,
+         accountName:params.accName
+      }
       let headers = {
          observe: 'response',
          headers: new HttpHeaders({
@@ -429,7 +430,7 @@ export class ApiServiceProvider {
          }),
       };
 
-      return this.putN(url1, '', headers);
+      return this.putN(transactionPasswordChange, payload, headers);
    }
 
    sendCoC(coc): Promise<any> {

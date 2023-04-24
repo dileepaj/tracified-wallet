@@ -691,4 +691,15 @@ export class BlockchainServiceProvider {
             });
       });
    }
+
+   validateSecretKey(secretKey: string, publicKey: string): boolean {
+      try {
+         let keyPair = Keypair.fromSecret(secretKey);
+         let publicK = keyPair.publicKey();
+         return publicK === publicKey;
+      } catch(e) {
+         console.error(e);
+         return false;
+      }
+   }
 }
