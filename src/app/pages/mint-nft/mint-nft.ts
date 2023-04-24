@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController, LoadingController, ToastController, NavController } from '@ionic/angular';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
@@ -71,6 +71,8 @@ export class MintNftPage {
    CustomMsg: any;
    @ViewChild('popover') popover;
    isOpen = false;
+   @ViewChild('myImage', { static: false }) myImage: ElementRef;
+   reciverName: any;
 
    constructor(
       private alertCtrl: AlertController,
@@ -87,19 +89,15 @@ export class MintNftPage {
       private toastCtrl: ToastController,
       private navController: NavController
    ) {
-      this.result = this.router.getCurrentNavigation().extras.queryParams.result;
       this.shopID = this.router.getCurrentNavigation().extras.queryParams.ShopId;
       this.nftName = this.router.getCurrentNavigation().extras.queryParams.NFTname;
       this.email = this.router.getCurrentNavigation().extras.queryParams.email;
       this.otp = this.router.getCurrentNavigation().extras.queryParams.otp;
       this.CustomMsg = this.router.getCurrentNavigation().extras.queryParams.CustomMsg;
+      this.reciverName = this.router.getCurrentNavigation().extras.queryParams.ReciverName;
 
-      if (this.result) {
-         this.SVG = this.result.svg;
-         this.SVGID = this.result.svgid;
-         this.presentLoading('Loading...');
-         this.convertToBase64(this.result.svg);
-      }
+      this.getSVG();
+
       // this.account = this.properties.defaultAccount;
       // this.blockchainService
       //    .accountBalance(this.account.pk)
@@ -114,25 +112,41 @@ export class MintNftPage {
    ionViewDidEnter() {
       this.account = this.properties.defaultAccount;
    }
-   /**
-    *
-    * @param privateKey walllet app user privatekey
-    * take private key by decrypting the walletuser's secret key using his password(take the permisstion for use their secretkey)
-    * @function mintNFT
-    * First take NFT issueing new account publickey from gateway
-    * After call the @changeTrustByDistributor and after call the @mintNFTStellar
-    * In stellar NFT same is an asset for craete an asset minter need to
-    * create trust line with asset isser first after issuer need to trasfer the asset to distributor(minter) ,transfer part do in the gateway side
-    */
+
+   async getSVG() {
+      await this.presentLoading('Generating SVG...');
+      await this.updateSVG();
+   }
+
+   async updateSVG() {
+      let data = {
+         email: this.email,
+         ShopId: this.shopID,
+         ReciverName: this.reciverName,
+         CustomMsg: this.CustomMsg,
+         NFTname: this.nftName,
+      };
+      this.apiService
+         .updateSVG(data)
+         .then(res => {
+            this.loading.message = 'Displaying SVG...';
+            this.result = res.body.Response;
+            this.SVG = this.result.svg;
+            this.SVGID = this.result.svgid;
+            this.convertToBase64(this.result.svg);
+         })
+         .catch(async error => {
+            console.log(error);
+            await this.dissmissLoading();
+         });
+   }
 
    async convertToBase64(svg: any) {
       var encodedData = btoa(unescape(encodeURIComponent(svg)));
-      console.log('converted base64: ', encodedData);
       this.hash = CryptoJS.SHA256(encodedData).toString(CryptoJS.enc.Hex);
-      console.log('converted hash: ', this.hash);
-      let str1 = new String('data:image/svg+xml;base64,');
-      this.img = str1 + encodedData;
-      this.imageSrc = this._sanitizer.bypassSecurityTrustResourceUrl(this.img);
+
+      let svgData = unescape(encodeURIComponent(svg));
+      this.myImage.nativeElement.srcdoc = svgData;
 
       this.apiService.updatePutSVG(this.SVGID, this.hash).subscribe(
          async (res: any) => {
@@ -438,7 +452,6 @@ export class MintNftPage {
    }
 
    async presentLoading(msg) {
-      console.log('loading');
       this.loading = await this.loadingCtrl.create({
          message: msg,
          backdropDismiss: false,
@@ -450,8 +463,6 @@ export class MintNftPage {
 
    async dissmissLoading() {
       this.loadingState = false;
-      console.log('dismiss');
-
       await this.loading.dismiss();
    }
 
