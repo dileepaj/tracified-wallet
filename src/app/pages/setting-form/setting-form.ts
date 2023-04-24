@@ -346,4 +346,14 @@ export class SettingFormPage {
          this.passwordIconC = this.passwordIconC === 'eye-off' ? 'eye' : 'eye-off';
       }
    }
+
+   privateKeyCheck(privateKey: string) {
+      console.log(privateKey);
+      // if (this.dataService.validateSecretKey(privateKey)) {
+      //    this.presentToast('Private key entered is correct');
+      //    this.editTransaction();
+      // } else {
+      //    this.presentToast('Private key entered is incorrect. Please try again.');
+      // }
+   }
 }
