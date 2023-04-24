@@ -102,7 +102,7 @@ export class LoginPage {
                         });
                   } else if (res.status === 205) {
                      this.dissmissLoading();
-                     this.router.navigate(['/reset-password'], {
+                     this.router.navigate(['/psw-reset'], {
                         queryParams: {
                            type: 'initial',
                            username: this.form.value.username,

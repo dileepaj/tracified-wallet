@@ -18,6 +18,7 @@ export class ResetPasswordPage {
    type: any;
    passwordTypeN: string = 'password';
    passwordTypeC: string = 'password';
+   passwordTypeO: string = 'password';
    passwordIconO: string = 'eye-off';
    passwordIconN: string = 'eye-off';
    passwordIconC: string = 'eye-off';
@@ -39,6 +40,10 @@ export class ResetPasswordPage {
       private alertCtrl: AlertController,
       private translate: TranslateService
    ) {
+      this.username = this.router.getCurrentNavigation().extras.queryParams?.username;
+      this.code = this.router.getCurrentNavigation().extras.queryParams?.code;
+      this.type = this.router.getCurrentNavigation().extras.queryParams?.type;
+
       this.verifyForm = new FormGroup({
          email: new FormControl(''),
       });
@@ -181,6 +186,9 @@ export class ResetPasswordPage {
       } else if (option == 2) {
          this.passwordTypeC = this.passwordTypeC === 'text' ? 'password' : 'text';
          this.passwordIconC = this.passwordIconC === 'eye-off' ? 'eye' : 'eye-off';
+      } else {
+         this.passwordTypeO = this.passwordTypeO === 'text' ? 'password' : 'text';
+         this.passwordIconO = this.passwordIconO === 'eye-off' ? 'eye' : 'eye-off';
       }
    }
 
