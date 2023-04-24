@@ -104,23 +104,7 @@ export class GetNftPage implements OnInit {
    }
 
    async getSVG(hash: any) {
-      this.startloading();
-      this.apiService.getSVGByHash(hash).subscribe(
-         (res: any) => {
-            console.log('get svg by hash response: ', res);
-
-            this.router.navigate(['/svg-preview'], { queryParams: res });
-            if (this.startloading) {
-               this.dissmissLoading();
-            }
-         },
-         error => {
-            if (this.startloading) {
-               this.dissmissLoading();
-            }
-            console.log(error);
-         }
-      );
+      this.router.navigate(['/svg-preview'], { queryParams: hash });
    }
 
    goToStellar(hash) {
