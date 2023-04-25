@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, ModalController, LoadingController, AlertController } from '@ionic/angular';
 import { Server, Transaction, Networks } from 'stellar-sdk';
-import { Items } from '../../providers/items/items';
-import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Properties } from '../../shared/properties';
 import { blockchainNet } from '../../shared/config';
 import { blockchainNetType } from '../../shared/config';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
    selector: 'page-transfer',
@@ -25,14 +24,7 @@ export class TransferPage {
    searchTerm: any;
    mainAccount: any;
 
-   constructor(
-      private router: Router,
-      private loadingCtrl: LoadingController,
-      private itemsProvider: Items,
-      private storage: StorageServiceProvider,
-      private properties: Properties,
-      private alertCtrl: AlertController
-   ) {}
+   constructor(private router: Router, private loadingCtrl: LoadingController, private properties: Properties, private alertCtrl: AlertController, private translate: TranslateService) {}
 
    ionViewDidEnter() {
       this.getBalance();

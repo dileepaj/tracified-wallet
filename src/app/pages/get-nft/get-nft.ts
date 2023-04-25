@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
 import { Keypair } from 'stellar-sdk';
 import { Router } from '@angular/router';
+import { Properties } from 'src/app/shared/properties';
 
 @Component({
    selector: 'page-get-nft',
@@ -30,31 +31,40 @@ export class GetNftPage implements OnInit {
    columCount;
    colSize;
 
-   constructor(private loadCtrl: LoadingController, public apiService: ApiServiceProvider, private translate: TranslateService, private logger: LoggerService, private router: Router) {}
+   constructor(
+      private properties: Properties,
+      private loadCtrl: LoadingController,
+      public apiService: ApiServiceProvider,
+      private translate: TranslateService,
+      private logger: LoggerService,
+      private router: Router
+   ) {}
    ngOnInit() {
       this.checkScreenWidth();
+      this.mainAccount = this.properties.defaultAccount;
+      console.log(this.mainAccount);
    }
 
    async checkScreenWidth() {
       await this.startloading();
       let width = window.innerWidth;
-      if (width < 429) {
+      if (width <= 430) {
          this.columCount = 2;
          this.colSize = 6;
-      } else if (429 < width && width < 768) {
-         this.columCount = 3;
-         this.colSize = 4;
-      } else if (768 < width && width < 1200) {
+      } else if (430 < width && width <= 768) {
          this.columCount = 4;
          this.colSize = 3;
-      } else if (1200 < width) {
+      } else if (768 < width && width <= 1800) {
          this.columCount = 6;
          this.colSize = 2;
+      } else if (1800 < width) {
+         this.columCount = 12;
+         this.colSize = 1;
       }
-      this.claimNft();
+      await this.claimNft();
    }
 
-   claimNft() {
+   async claimNft() {
       this.apiService
          .getAllNft()
          .then(async (res: any) => {

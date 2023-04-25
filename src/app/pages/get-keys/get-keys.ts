@@ -23,14 +23,20 @@ export class GetKeysPage {
          console.log('public key: ', this.PK);
       }
    }
-   async copyData(key) {
+   async copyData(key, num) {
       try {
          await Clipboard.write({
             string: key,
          });
-         this.translate.get(['PUBLIC_KEY_COPIED']).subscribe(text => {
-            this.presentToast(text['PUBLIC_KEY_COPIED']);
-         });
+         if (num == 1) {
+            this.translate.get(['PUBLIC_KEY_COPIED']).subscribe(text => {
+               this.presentToast(text['PUBLIC_KEY_COPIED']);
+            });
+         } else {
+            this.translate.get(['PRIVATE_KEY_COPIED']).subscribe(text => {
+               this.presentToast(text['PRIVATE_KEY_COPIED']);
+            });
+         }
       } catch (err) {
          this.translate.get(['ERROR', 'FALIED_TO_COPY_KEY']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['FALIED_TO_COPY_KEY']);
