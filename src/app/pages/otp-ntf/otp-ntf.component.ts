@@ -23,9 +23,9 @@ export class OtpNtfComponent {
       return `${maxLength - inputLength} characters remaining`;
    }
    constructor(public toastCtrl: ToastController, public router: Router, private service: ApiServiceProvider, private loadingCtrl: LoadingController, private route: ActivatedRoute) {
-      this.shopId = this.router.getCurrentNavigation().extras.queryParams.ShopId;
-      this.email = this.router.getCurrentNavigation().extras.queryParams.email;
-      this.otp = this.router.getCurrentNavigation().extras.queryParams.otp;
+      this.shopId = this.router.getCurrentNavigation().extras.state.ShopId;
+      this.email = this.router.getCurrentNavigation().extras.state.email;
+      this.otp = this.router.getCurrentNavigation().extras.state.otp;
    }
 
    nftForm = new FormGroup({
@@ -37,7 +37,7 @@ export class OtpNtfComponent {
 
    sendDetails() {
       const option: NavigationExtras = {
-         queryParams: {
+         state: {
             email: this.email,
             ShopId: this.shopId,
             ReciverName: this.nftForm.get('recipName').value,

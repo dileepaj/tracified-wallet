@@ -16,20 +16,16 @@ export class PagesLoadSvgPage {
    SVG: any;
    loading: any;
    @ViewChild('myImage', { static: false }) myImage: ElementRef;
-   
+
    constructor(private loadCtrl: LoadingController, public apiService: ApiServiceProvider, public router: Router, private _sanitizer: DomSanitizer, public http: HttpClient) {
-      this.hash = this.router.getCurrentNavigation().extras.queryParams;
-      console.log('data passed ', this.hash);
+      this.hash = this.router.getCurrentNavigation().extras.state;
    }
 
-   ngOnInit() {
-   }
+   ngOnInit() {}
 
    ngAfterViewInit() {
-      // set the src attribute of the image
       this.loadSvg();
-      // this.myImage.nativeElement.src = this.SVG;
-    }
+   }
 
    async startloading() {
       this.loading = await this.loadCtrl.create({
@@ -46,7 +42,7 @@ export class PagesLoadSvgPage {
       this.startloading();
       this.apiService.getSVGByHash(this.hash).subscribe(
          (res: any) => {
-            let svgData = (unescape(encodeURIComponent(res.Response)));
+            let svgData = unescape(encodeURIComponent(res.Response));
             this.myImage.nativeElement.srcdoc = svgData;
 
             if (this.startloading) {
