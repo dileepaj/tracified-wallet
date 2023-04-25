@@ -1,0 +1,1 @@
+Used node version - 18.15.0
