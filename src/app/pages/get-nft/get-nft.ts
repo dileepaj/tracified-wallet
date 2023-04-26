@@ -51,10 +51,10 @@ export class GetNftPage implements OnInit {
       if (width <= 430) {
          this.columCount = 2;
          this.colSize = 6;
-      } else if (430 < width && width <= 768) {
+      } else if (430 < width && width <= 820) {
          this.columCount = 4;
          this.colSize = 3;
-      } else if (768 < width && width <= 1800) {
+      } else if (820 < width && width <= 1800) {
          this.columCount = 6;
          this.colSize = 2;
       } else if (1800 < width) {
@@ -114,7 +114,7 @@ export class GetNftPage implements OnInit {
    }
 
    async getSVG(hash: any) {
-      this.router.navigate(['/svg-preview'], { queryParams: hash });
+      this.router.navigate(['/svg-preview'], { state: hash });
    }
 
    goToStellar(hash) {

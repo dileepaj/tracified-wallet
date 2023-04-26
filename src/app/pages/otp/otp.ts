@@ -59,7 +59,7 @@ export class OtpPage {
                await this.dimissLoading();
                this.presentToast('OTP verified.');
                const option: NavigationExtras = {
-                  queryParams: {
+                  state: {
                      ShopId: res.body.Response.ShopID,
                      otp: otp,
                      email: mail,

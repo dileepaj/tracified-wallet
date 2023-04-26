@@ -89,12 +89,12 @@ export class MintNftPage {
       private toastCtrl: ToastController,
       private navController: NavController
    ) {
-      this.shopID = this.router.getCurrentNavigation().extras.queryParams.ShopId;
-      this.nftName = this.router.getCurrentNavigation().extras.queryParams.NFTname;
-      this.email = this.router.getCurrentNavigation().extras.queryParams.email;
-      this.otp = this.router.getCurrentNavigation().extras.queryParams.otp;
-      this.CustomMsg = this.router.getCurrentNavigation().extras.queryParams.CustomMsg;
-      this.reciverName = this.router.getCurrentNavigation().extras.queryParams.ReciverName;
+      this.shopID = this.router.getCurrentNavigation().extras.state.ShopId;
+      this.nftName = this.router.getCurrentNavigation().extras.state.NFTname;
+      this.email = this.router.getCurrentNavigation().extras.state.email;
+      this.otp = this.router.getCurrentNavigation().extras.state.otp;
+      this.CustomMsg = this.router.getCurrentNavigation().extras.state.CustomMsg;
+      this.reciverName = this.router.getCurrentNavigation().extras.state.ReciverName;
 
       this.getSVG();
 
