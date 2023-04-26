@@ -54,8 +54,6 @@ export class TransferConfirmPage implements OnInit {
       this.passwordPrompt()
          .then(async password => {
             await this.presentLoading();
-            console.log('hit 2');
-
             this.blockchainService
                .validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk)
                .then(decKey => {

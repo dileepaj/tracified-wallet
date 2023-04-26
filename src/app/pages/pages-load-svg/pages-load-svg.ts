@@ -42,8 +42,9 @@ export class PagesLoadSvgPage {
       this.startloading();
       this.apiService.getSVGByHash(this.hash).subscribe(
          (res: any) => {
-            let svgData = unescape(encodeURIComponent(res.Response));
-            this.myImage.nativeElement.srcdoc = svgData;
+            // let svgData = unescape(encodeURIComponent(res.Response));
+            // let svg = this._sanitizer.bypassSecurityTrustResourceUrl(svgData);
+            this.myImage.nativeElement.srcdoc = res.Response;
 
             if (this.startloading) {
                this.dissmissLoading();

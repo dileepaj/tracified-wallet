@@ -58,7 +58,7 @@ export class AccountInfoPage {
       if (this.navigation === 'initial') {
          this.router.navigate([''], { replaceUrl: true });
       } else {
-         this.router.navigate(['/ bc-account'], { replaceUrl: true });
+         this.router.navigate(['/bc-account'], { replaceUrl: true });
       }
    }
 
