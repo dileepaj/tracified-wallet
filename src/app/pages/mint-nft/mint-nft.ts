@@ -145,8 +145,8 @@ export class MintNftPage {
       var encodedData = btoa(unescape(encodeURIComponent(svg)));
       this.hash = CryptoJS.SHA256(encodedData).toString(CryptoJS.enc.Hex);
 
-      let svgData = unescape(encodeURIComponent(svg));
-      this.myImage.nativeElement.srcdoc = svgData;
+      // let svgData = unescape(encodeURIComponent(svg));
+      this.myImage.nativeElement.srcdoc = svg;
 
       this.apiService.updatePutSVG(this.SVGID, this.hash).subscribe(
          async (res: any) => {
