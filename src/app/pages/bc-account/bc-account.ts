@@ -54,7 +54,6 @@ export class BcAccountPage {
             .then(accounts => {
                this.dissmissLoading();
                this.userAcc = accounts;
-               console.log('accounts: ', accounts);
                resolve(accounts);
             })
             .catch(error => {

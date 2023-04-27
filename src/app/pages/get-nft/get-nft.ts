@@ -44,7 +44,6 @@ export class GetNftPage implements OnInit {
    ngOnInit() {
       this.checkScreenWidth();
       this.mainAccount = this.properties.defaultAccount;
-      console.log(this.mainAccount);
    }
 
    async checkScreenWidth() {
@@ -70,10 +69,11 @@ export class GetNftPage implements OnInit {
                this.pubKey = res.pubKy;
                await this.claimNft();
             } else {
-               console.log('no pubKey');
+               await this.dissmissLoading();
             }
          })
-         .catch(error => {
+         .catch(async error => {
+            await this.dissmissLoading();
             console.error(error);
          });
    }
@@ -82,7 +82,6 @@ export class GetNftPage implements OnInit {
       this.apiService
          .getAllNft(this.pubKey)
          .then(async (res: any) => {
-            console.log(res);
             if (res) {
                let reverseArray = await this.reverseArray(res.Response);
                this.splitImage(reverseArray);
@@ -92,16 +91,13 @@ export class GetNftPage implements OnInit {
          })
          .catch(async error => {
             await this.dissmissLoading();
-
             console.log(error);
          });
    }
 
    async splitImage(list) {
-      console.log(this.columCount);
       for (let i = 0; i < list.length; i = i + this.columCount) {
          this.imgrowlist.push(list.slice(i, i + this.columCount));
-         console.log('img', this.imgrowlist);
       }
    }
 
@@ -132,7 +128,6 @@ export class GetNftPage implements OnInit {
    }
 
    goToStellar(hash) {
-      console.log(hash);
       let url = 'https://stellar.expert/explorer/testnet/tx/' + hash;
       window.open(url, '_blank');
    }

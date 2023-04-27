@@ -36,11 +36,9 @@ export class OtpPage {
 
       if (emailParam) {
          this.email = emailParam;
-         console.log('params email', this.email);
       }
       if (shopidParam) {
          this.shopId = shopidParam;
-         console.log('params shopId', this.shopId);
       }
       if (emailParam && shopidParam) {
          this.connectivity.putMenuHide(true);
@@ -54,7 +52,6 @@ export class OtpPage {
       this.service
          .checkOTP(otp, mail)
          .then(async res => {
-            console.log(res);
             if (res.body.Status == 200 && res.body.Response.Status == 'Valid') {
                await this.dimissLoading();
                this.presentToast('OTP verified.');
@@ -97,12 +94,10 @@ export class OtpPage {
       const loading = await this.loadingCtrl.create({
          message: 'Verifying...',
       });
-      console.log('loading');
       await loading.present();
    }
 
    async dimissLoading() {
-      console.log('dismiss');
       await this.loadingCtrl?.dismiss();
    }
 }
