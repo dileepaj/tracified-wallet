@@ -248,7 +248,6 @@ export class AppComponent {
                if (shopId) {
                   this.queryParams['shopId'] = shopId;
                }
-               console.log('page Hide');
                this.deeplink = true;
                // this.router.navigate(['/otp-page'], this.queryParams);
             } else {

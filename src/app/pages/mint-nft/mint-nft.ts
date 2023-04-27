@@ -151,7 +151,6 @@ export class MintNftPage {
       this.apiService.updatePutSVG(this.SVGID, this.hash).subscribe(
          async (res: any) => {
             await this.dissmissLoading();
-            console.log('update svg API result : ', res);
          },
          async error => {
             await this.dissmissLoading();
@@ -162,13 +161,9 @@ export class MintNftPage {
 
    async createNFT() {
       await this.presentLoading('Checking account...');
-      console.log('--------------1----------------');
       this.storage.getBcAccounts(this.email).then((res1: any) => {
-         console.log('retieved result ', res1);
          if (res1 != null) {
             this.keypair = Keypair.fromSecret(res1);
-            console.log('Public Key is', this.keypair.publicKey().toString());
-            console.log('Secret Key is', this.keypair.secret().toString());
             this.sponsorOldAcc();
          } else {
             this.presentToast("You don't have an account exisiting with your username. Proceeding to creating a new one!");
@@ -184,13 +179,9 @@ export class MintNftPage {
       this.loading.message = 'Creating a new account...';
       console.log('acc gen started');
       this.keypair = this.blockchainService.createAddress();
-      console.log('Public Key is', this.keypair.publicKey().toString());
-      console.log('Secret Key is', this.keypair.secret().toString());
-      console.log('Keypair is', this.keypair);
       this.storage
          .setBcAccounts(this.email, this.keypair.secret().toString())
          .then(res => {
-            console.log('result ', res);
             // this.presentToast('Successfully set!');
             this.sponsorNewAcc();
          })
@@ -208,21 +199,13 @@ export class MintNftPage {
       this.apiService
          .getNewIssuerPublicKey()
          .then(issuerPublcKey => {
-            console.log('Issuer: ', issuerPublcKey);
             this.Issuer = issuerPublcKey.NFTIssuerPK;
-            console.log('issuer json: ', this.Issuer);
 
             if (this.nftName != null) {
-               console.log('Entering if condtion PK : ', this.keypair.publicKey().toString());
-               console.log('Entering if condtion other data : ', this.nftName, this.Issuer);
                this.apiService.getAccountFunded(this.keypair.publicKey().toString(), this.nftName, this.Issuer).then(txn => {
-                  console.log('The transaction for account funding', txn);
-                  console.log('XDR from gateway : ', txn.XDR);
                   this.xdr = txn.XDR;
 
-                  console.log('after ', this.xdr);
                   this.blockchainService.signandsubmitXdr(this.xdr, this.keypair.secret().toString()).then((res): any => {
-                     console.log(res);
                      if (res.successful) {
                         this.transactionResult = true;
                         this.mintNFT();
@@ -248,21 +231,13 @@ export class MintNftPage {
       this.apiService
          .getNewIssuerPublicKey()
          .then(issuerPublcKey => {
-            console.log('Issuer: ', issuerPublcKey);
             this.Issuer = issuerPublcKey.NFTIssuerPK;
-            console.log('issuer json: ', this.Issuer);
 
             if (this.nftName != null) {
-               console.log('Entering if condtion PK : ', this.keypair.publicKey().toString());
-               console.log('Entering if condtion other data : ', this.nftName, this.Issuer);
                this.apiService.getTrustFunded(this.keypair.publicKey().toString(), this.nftName, this.Issuer).then(txn => {
-                  console.log('The transaction for account funding', txn);
-                  console.log('XDR from gateway : ', txn.XDR);
                   this.xdr = txn.XDR;
 
-                  console.log('after ', this.xdr);
                   this.blockchainService.signandsubmitXdr(this.xdr, this.keypair.secret().toString()).then((res): any => {
-                     console.log(res);
                      if (res.successful) {
                         this.transactionResult = true;
                         this.mintNFT();
