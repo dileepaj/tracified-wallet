@@ -61,4 +61,4 @@ export const mainAccountBalance: number = 1;
 //NFT
 export const nftbackUrl: string = nftbackend;
 export const updateSVG: string = nftbackend + '/svgmap/';
-export const claimNft: string = nftbackend + '/walletnfts';
+export const claimNft: string = nftbackend + '/walletnfts/';

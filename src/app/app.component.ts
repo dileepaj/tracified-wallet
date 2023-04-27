@@ -50,6 +50,8 @@ export class AppComponent {
    deviceInfo = null;
    private loading;
    pageHide: boolean;
+   queryParams: any;
+   deeplink: boolean;
 
    // @ViewChild(Nav) nav: Nav;
 
@@ -153,10 +155,22 @@ export class AppComponent {
       let responce;
       try {
          responce = await this.authService.authorizeLocalProfile();
-         if (responce) {
+
+         if (this.deeplink && responce) {
+            console.log('deeeplink- yes , state-yes');
             state = await this.checkUser();
-            this.router.navigate([''], { replaceUrl: true });
+            this.router.navigate(['/otp-page'], this.queryParams);
+         } else if (this.deeplink && !responce) {
+            console.log('deeeplink- yes , state-no');
+            state = true;
+            this.dataService.clearLocalData();
+            this.router.navigate(['/otp-page'], this.queryParams);
+         } else if (responce && !this.deeplink) {
+            console.log('deeeplink- no , state-yes');
+            state = await this.checkUser();
+            // this.router.navigate([''], { replaceUrl: true });
          } else {
+            console.log('deeeplink- no , state-no');
             state = true;
             this.dataService.clearLocalData();
             this.router.navigate(['/otp-page'], { replaceUrl: true });
@@ -227,18 +241,18 @@ export class AppComponent {
             const shopId = segments?.[2];
 
             if (slug === 'nft') {
-               const queryParams = {};
+               this.queryParams = {};
                if (email) {
-                  queryParams['email'] = email;
+                  this.queryParams['email'] = email;
                }
                if (shopId) {
-                  queryParams['shopId'] = shopId;
+                  this.queryParams['shopId'] = shopId;
                }
                console.log('page Hide');
-               this.pageHide = true;
-               this.router.navigate(['/otp-page'], { queryParams });
+               this.deeplink = true;
+               // this.router.navigate(['/otp-page'], this.queryParams);
             } else {
-               this.router.navigateByUrl('/');
+               this.deeplink = false;
             }
          });
       });

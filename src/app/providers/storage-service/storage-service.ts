@@ -35,6 +35,11 @@ export class StorageServiceProvider {
       storeName: 'language',
    });
 
+   public temPubKey = localforage.createInstance({
+      name: 'temPubKey',
+      storeName: 'temPubKey',
+   });
+
    constructor(private logger: LoggerService, private properties: Properties) {}
 
    clearAllLocalStores() {
@@ -186,5 +191,13 @@ export class StorageServiceProvider {
 
    public setLanguage(language) {
       this.language.setItem('language', language);
+   }
+
+   setTempPubKey(username, key) {
+      localforage.setItem(username, key);
+   }
+
+   async getTempPubKey(key) {
+      return await localforage.getItem(key);
    }
 }
