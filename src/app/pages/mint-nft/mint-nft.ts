@@ -389,7 +389,7 @@ export class MintNftPage {
                handler: () => {
                   if (this.accountType == 'new') {
                      const option: NavigationExtras = {
-                        state: { keys: this.keypair },
+                        state: { keys: this.keypair, email: this.email },
                      };
                      this.router.navigate(['/get-key'], option);
                   } else {

@@ -30,6 +30,7 @@ export class GetNftPage implements OnInit {
    imgrowlist = [];
    columCount;
    colSize;
+   pubKey: any;
 
    constructor(
       private properties: Properties,
@@ -37,7 +38,8 @@ export class GetNftPage implements OnInit {
       public apiService: ApiServiceProvider,
       private translate: TranslateService,
       private logger: LoggerService,
-      private router: Router
+      private router: Router,
+      private storage: StorageServiceProvider
    ) {}
    ngOnInit() {
       this.checkScreenWidth();
@@ -61,12 +63,24 @@ export class GetNftPage implements OnInit {
          this.columCount = 12;
          this.colSize = 1;
       }
-      await this.claimNft();
+      this.storage
+         .getTempPubKey('tempPubKey')
+         .then(async (res: any) => {
+            if (res != null) {
+               this.pubKey = res.pubKy;
+               await this.claimNft();
+            } else {
+               console.log('no pubKey');
+            }
+         })
+         .catch(error => {
+            console.error(error);
+         });
    }
 
    async claimNft() {
       this.apiService
-         .getAllNft()
+         .getAllNft(this.pubKey)
          .then(async (res: any) => {
             console.log(res);
             if (res) {

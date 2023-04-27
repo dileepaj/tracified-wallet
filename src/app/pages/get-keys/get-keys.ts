@@ -3,6 +3,7 @@ import { Clipboard } from '@capacitor/clipboard';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastController, AlertController } from '@ionic/angular';
+import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
 
 @Component({
    selector: 'page-get-keys',
@@ -13,14 +14,27 @@ export class GetKeysPage {
    PK: any = '';
    SK: any = '';
    result: any;
-   constructor(public alertCtrl: AlertController, public toastCtrl: ToastController, public router: Router, private clipboard: Clipboard, private translate: TranslateService) {
+   email: any;
+   constructor(
+      public alertCtrl: AlertController,
+      public toastCtrl: ToastController,
+      public router: Router,
+      private clipboard: Clipboard,
+      private translate: TranslateService,
+      private storage: StorageServiceProvider
+   ) {
       this.result = this.router.getCurrentNavigation().extras.state.keys;
+      this.email = this.router.getCurrentNavigation().extras.state.email;
       this.router.navigate(['/get-key'], { replaceUrl: true });
       if (this.result) {
          this.PK = this.result.publicKey().toString();
          this.SK = this.result.secret().toString();
-         console.log('private key: ', this.SK);
-         console.log('public key: ', this.PK);
+
+         let key = {
+            email: this.email,
+            pubKy: this.result.publicKey().toString(),
+         };
+         this.storage.setTempPubKey('tempPubKey', key);
       }
    }
    async copyData(key, num) {

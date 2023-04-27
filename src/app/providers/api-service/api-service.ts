@@ -616,7 +616,7 @@ export class ApiServiceProvider {
       });
    }
 
-   getAllNft() {
+   getAllNft(pk) {
       return new Promise((resolve, reject) => {
          let reqNft = {
             observe: 'response',
@@ -625,7 +625,7 @@ export class ApiServiceProvider {
                'Content-Type': 'Application/json',
             }),
          };
-         this.http.get(claimNft).subscribe(
+         this.http.get(claimNft + pk).subscribe(
             response => {
                resolve(response);
             },
