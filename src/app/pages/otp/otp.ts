@@ -70,14 +70,7 @@ export class OtpPage {
             console.log(err);
 
             await this.dimissLoading();
-
-            if (err.status && err.message == 'Invalid OTP') {
-               this.presentToast('Invalid OTP or Email.');
-            } else if (err.status && err.message == 'NFT already Minted') {
-               this.presentToast('NFT already Minted.');
-            } else {
-               this.presentToast('Something wrong.');
-            }
+            this.presentToast(err.message);
          });
    }
 
