@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'walletV6',
+  appId: 'com.tracified.app.wallet',
+  appName: 'Tracified wallet',
   webDir: 'www',
   bundledWebRuntime: false
 };
