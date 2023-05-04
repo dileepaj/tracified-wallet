@@ -186,9 +186,7 @@ export class MintNftPage {
             this.sponsorNewAcc();
          })
          .catch(async error => {
-            if (this.loadingState) {
-               await this.dissmissLoading();
-            }
+            await this.dissmissLoading();
          });
    }
 
@@ -215,9 +213,8 @@ export class MintNftPage {
             }
          })
          .catch(async error => {
-            if (this.loadingState) {
-               await this.dissmissLoading();
-            }
+            await this.dissmissLoading();
+
             this.logger.error('NFT reciveing issue in gateway side : ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
             this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
                this.presentAlert(text['ERROR'], text['TRANSFER_NFT']);
@@ -247,9 +244,7 @@ export class MintNftPage {
             }
          })
          .catch(async error => {
-            if (this.loadingState) {
-               await this.dissmissLoading();
-            }
+            await this.dissmissLoading();
 
             this.logger.error('NFT reciveing issue in gateway side : ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
             this.translate.get(['ERROR', 'TRANSFER_NFT']).subscribe(text => {
@@ -293,9 +288,8 @@ export class MintNftPage {
                this.apiService
                   .walletNftSave(NFT)
                   .then(async res => {
-                     if (this.loadingState) {
-                        await this.dissmissLoading();
-                     }
+                     await this.dissmissLoading();
+
                      // this.navController.navigateRoot('/mint-nft');
                      // window.history.replaceState(null, null, window.location.href);
                      this.successful();
@@ -304,9 +298,9 @@ export class MintNftPage {
                   })
                   .catch(async error => {
                      console.log(error);
-                     if (this.loadingState) {
-                        await this.dissmissLoading();
-                     }
+
+                     await this.dissmissLoading();
+
                      this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
                         this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
                      });
@@ -318,18 +312,16 @@ export class MintNftPage {
                // });
             })
             .catch(async error => {
-               if (this.loadingState) {
-                  await this.dissmissLoading();
-               }
+               await this.dissmissLoading();
+
                console.log('somthing wrong 1', error);
                this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
                });
             });
       } else {
-         if (this.loadingState) {
-            await this.dissmissLoading();
-         }
+         await this.dissmissLoading();
+
          console.log('somthing wrong 2');
          this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
