@@ -619,7 +619,7 @@ export class BlockchainServiceProvider {
       } else {
          Networks.TESTNET;
       }
-      const transaction = new Transaction(xdr, Networks.TESTNET);
+      const transaction = new Transaction(xdr, this.getNetwork());
       transaction.sign(keyPair);
       let signedTrans = transaction.toEnvelope().toXDR().toString('base64');
       return signedTrans;
@@ -635,7 +635,7 @@ export class BlockchainServiceProvider {
          Networks.TESTNET;
       }
       console.log('--------------------------------------------------');
-      const transaction = new Transaction(xdr, Networks.TESTNET);
+      const transaction = new Transaction(xdr, this.getNetwork());
       // Transaction transaction =Transaction.(xdr)
       console.log('transaction is: ', transaction);
       transaction.sign(keyPair);
@@ -697,7 +697,7 @@ export class BlockchainServiceProvider {
          let keyPair = Keypair.fromSecret(secretKey);
          let publicK = keyPair.publicKey();
          return publicK === publicKey;
-      } catch(e) {
+      } catch (e) {
          console.error(e);
          return false;
       }
