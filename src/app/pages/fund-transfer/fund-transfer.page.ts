@@ -46,33 +46,23 @@ export class FundTransferPage implements OnInit {
          await this.presentLoading();
          this.blockchainService
             .accountBalanceBoth(this.mainAccount.pk)
-            .then((balances: any) => {
+            .then(async (balances: any) => {
                let minBalance = 1.5 + Number(balances.assetCount) * 0.5;
                let effectiveBalance = Number(balances.balance) - minBalance;
-
+               await this.dissmissLoading();
                if (effectiveBalance < 0) {
                   effectiveBalance = 0;
                }
 
                if (effectiveBalance < this.transferAmount) {
-                  if (this.presentLoading) {
-                     this.dissmissLoading();
-                  }
                   this.translate.get(['ERROR', 'FALIED_TO_COPY_KEY']).subscribe(text => {
                      this.presentAlert(text['ERROR'], text['BALANCE_IS '] + effectiveBalance + text[' TRY_AGAIN_VALID_AMOUNT']);
                   });
                } else if (this.transferAmount < 2) {
-                  if (this.presentLoading) {
-                     this.dissmissLoading();
-                  }
                   this.translate.get(['ERROR', 'MINIMUM_TRANSFER_AMOUNT']).subscribe(text => {
                      this.presentAlert(text['ERROR'], text['MINIMUM_TRANSFER_AMOUNT']);
                   });
                } else {
-                  if (this.presentLoading) {
-                     this.dissmissLoading();
-                  }
-
                   console.log('passing data ', this.transferAmount, this.mainAccount.accountName, this.mainAccount.pk, this.receiverPK, this.receiverPK);
                   this.router.navigate(['/transfer-confirm'], {
                      state: {
@@ -85,19 +75,15 @@ export class FundTransferPage implements OnInit {
                   });
                }
             })
-            .catch(err => {
-               if (this.presentLoading) {
-                  this.dissmissLoading();
-               }
+            .catch(async err => {
+               await this.dissmissLoading();
                this.translate.get(['ERROR', 'FAIL_ACC_BAL']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['FAIL_ACC_BAL']);
                });
                this.logger.error('Failure in retrieving account balance: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
             });
       } else {
-         if (this.presentLoading) {
-            this.dissmissLoading();
-         }
+         await this.dissmissLoading();
          this.translate.get(['ERROR', 'FILL_REQUIRED']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['FILL_REQUIRED']);
          });
@@ -109,10 +95,8 @@ export class FundTransferPage implements OnInit {
          await this.presentLoading();
          this.dataService
             .getBlockchainAccounts()
-            .then(accounts => {
-               if (this.presentLoading) {
-                  this.dissmissLoading();
-               }
+            .then(async accounts => {
+               await this.dissmissLoading();
 
                if (accounts.length < 2) {
                   this.translate.get(['WARNING', 'CANNOT_FIND_ACC']).subscribe(text => {
@@ -133,10 +117,8 @@ export class FundTransferPage implements OnInit {
 
                resolve();
             })
-            .catch(error => {
-               if (this.presentLoading) {
-                  this.dissmissLoading();
-               }
+            .catch(async error => {
+               await this.dissmissLoading();
                this.translate.get(['AUTHENTICATION_FAILED', 'RETRIEVE_ACC_FAILED']).subscribe(text => {
                   this.presentAlert(text['AUTHENTICATION_FAILED'], text['RETRIEVE_ACC_FAILED']);
                });
