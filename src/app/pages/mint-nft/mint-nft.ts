@@ -161,18 +161,21 @@ export class MintNftPage {
 
    async createNFT() {
       await this.presentLoading('Checking account...');
-      this.storage.getBcAccounts(this.email).then((res1: any) => {
-         if (res1 != null) {
-            this.keypair = Keypair.fromSecret(res1);
-            this.sponsorOldAcc();
-         } else {
-            this.presentToast("You don't have an account exisiting with your username. Proceeding to creating a new one!");
-            this.createNewAccount();
-         }
-      }),
-         error => {
+      this.storage
+         .getBcAccounts(this.email)
+         .then((res1: any) => {
+            if (res1 != null) {
+               this.keypair = Keypair.fromSecret(res1);
+               this.sponsorOldAcc();
+            } else {
+               this.presentToast("You don't have an account exisiting with your username. Proceeding to creating a new one!");
+               this.createNewAccount();
+            }
+         })
+         .catch(async error => {
+            await this.dissmissLoading();
             console.log('blockchain', error);
-         };
+         });
    }
 
    createNewAccount(): void {
