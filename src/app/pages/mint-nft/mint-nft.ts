@@ -175,6 +175,7 @@ export class MintNftPage {
          .catch(async error => {
             await this.dissmissLoading();
             console.log('blockchain', error);
+            this.presentToast('Somthing Wrong, Please try again.');
          });
    }
 
@@ -203,19 +204,34 @@ export class MintNftPage {
             this.Issuer = issuerPublcKey.NFTIssuerPK;
 
             if (this.nftName != null) {
-               this.apiService.getAccountFunded(this.keypair.publicKey().toString(), this.nftName, this.Issuer).then(txn => {
-                  this.xdr = txn.XDR;
+               this.apiService
+                  .getAccountFunded(this.keypair.publicKey().toString(), this.nftName, this.Issuer)
+                  .then(txn => {
+                     this.xdr = txn.XDR;
 
-                  this.blockchainService.signandsubmitXdr(this.xdr, this.keypair.secret().toString()).then((res): any => {
-                     if (res.successful) {
-                        this.transactionResult = true;
-                        this.mintNFT();
-                     }
+                     this.blockchainService
+                        .signandsubmitXdr(this.xdr, this.keypair.secret().toString())
+                        .then((res): any => {
+                           if (res.successful) {
+                              this.transactionResult = true;
+                              this.mintNFT();
+                           }
+                        })
+                        .catch(async error => {
+                           console.log(error);
+                           await this.dissmissLoading();
+                           this.presentToast('Somthing wrong please try again.');
+                        });
+                  })
+                  .catch(async error => {
+                     console.log(error);
+                     await this.dissmissLoading();
+                     this.presentToast('Somthing wrong please try again.');
                   });
-               });
             }
          })
          .catch(async error => {
+            console.log('New Account dismiss');
             await this.dissmissLoading();
 
             this.logger.error('NFT reciveing issue in gateway side : ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);

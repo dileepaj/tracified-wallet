@@ -626,24 +626,17 @@ export class BlockchainServiceProvider {
    }
 
    signandsubmitXdr(xdr, decKey): Promise<any> {
-      console.log('XDR: ', xdr, decKey);
       let keyPair = Keypair.fromSecret(decKey);
-      console.log('kp:  ', keyPair.publicKey().toString());
       if (blockchainNetType === 'live') {
          Networks.PUBLIC;
       } else {
          Networks.TESTNET;
       }
-      console.log('--------------------------------------------------');
       const transaction = new Transaction(xdr, this.getNetwork());
       // Transaction transaction =Transaction.(xdr)
-      console.log('transaction is: ', transaction);
       transaction.sign(keyPair);
       let signedTrans = transaction.toEnvelope().toXDR().toString('base64');
-      console.log('signed txn: ', signedTrans);
       let server = new Server(blockchainNet);
-      console.log('transactio now: ', transaction);
-      // console.log('signed txn: ', txn);
       return server.submitTransaction(transaction);
 
       //return signedTrans;
