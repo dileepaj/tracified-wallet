@@ -10,6 +10,7 @@ import { StorageServiceProvider } from '../../providers/storage-service/storage-
 import { Keypair } from 'stellar-sdk';
 import { Router } from '@angular/router';
 import { Properties } from 'src/app/shared/properties';
+import { blockchainNetType } from '../../shared/config';
 
 @Component({
    selector: 'page-get-nft',
@@ -128,7 +129,12 @@ export class GetNftPage implements OnInit {
    }
 
    goToStellar(hash) {
-      let url = 'https://stellar.expert/explorer/testnet/tx/' + hash;
-      window.open(url, '_blank');
+      if (blockchainNetType === 'live') {
+         let url = 'https://stellar.expert/explorer/public/tx/' + hash;
+         window.open(url, '_blank');
+      } else {
+         let url = 'https://stellar.expert/explorer/testnet/tx/' + hash;
+         window.open(url, '_blank');
+      }
    }
 }
