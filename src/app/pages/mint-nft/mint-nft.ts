@@ -366,7 +366,7 @@ export class MintNftPage {
 
    async successful() {
       const alert = await this.alertCtrl.create({
-         header: 'Your NFT has been claimed and minted successfully.',
+         header: 'Your NFT has been minted and minted successfully.',
          backdropDismiss: false,
          buttons: [
             {

@@ -67,6 +67,7 @@ export class BlockchainServiceProvider {
                         highThreshold: 2,
                      })
                   )
+                  .setTimeout(0)
                   .build();
 
                transaction.sign(subAccount);
@@ -458,8 +459,9 @@ export class BlockchainServiceProvider {
                   .addOperation(Operation.manageData({ name: 'Identifier', value: identifier }))
                   .addOperation(Operation.manageData({ name: 'Receiver', value: receiverPk }))
                   .addOperation(Operation.manageData({ name: 'Asset', value: item }))
-                  .addOperation(Operation.manageData({ name: 'Amount', value: qty }))
+                  .addOperation(Operation.manageData({ name: 'Amount', value: qty.toString() }))
                   .addOperation(Operation.manageData({ name: 'MaxBound', value: JSON.stringify(validityPeriod) }))
+                  .setTimeout(0)
                   .build();
                transaction.sign(sourceKeypair);
                return server.submitTransaction(transaction);
@@ -517,7 +519,7 @@ export class BlockchainServiceProvider {
       var sourceKeypair = Keypair.fromSecret(signerSK);
 
       var asset = new Asset(item, issuer);
-      var opts = { timebounds: { minTime: minTime, maxTime: maxTime }, fee: '100' };
+      var opts = { timebounds: { minTime: minTime, maxTime: maxTime }, fee: '50000', networkPassphrase: this.getNetwork() };
 
       var transaction = new TransactionBuilder(account, opts);
       transaction.addOperation(Operation.manageData({ name: 'Transaction Type', value: '10', source: sourceKeypair.publicKey() }));
@@ -527,7 +529,7 @@ export class BlockchainServiceProvider {
          Operation.payment({
             destination: receiver,
             asset: asset,
-            amount: qty,
+            amount: qty.toString(),
             source: senderPublickKey,
          })
       );
