@@ -55,10 +55,10 @@
                <ion-col size="6" class="padding-bottom-cancel">
                   <h4 class="secondary-font text-right-align-horizontally">{{ 'SENDER' | translate }}</h4>
                </ion-col>
-               <ion-col size="6" class="padding-top-cancel">
+               <ion-col size="5" class="padding-top-cancel">
                   <h4 class="primary-font">{{item.cocOriginal.Identifier}}</h4>
                </ion-col>
-               <ion-col size="6" class="padding-top-cancel">
+               <ion-col size="7" class="padding-top-cancel">
                   <h4 class="primary-font text-right-align-horizontally">{{item.sender}}</h4>
                </ion-col>
             </ion-row>
@@ -78,8 +78,8 @@
             </ion-row>
             <ion-row class="block" *ngIf="item.cocOriginal.Status === 'pending'">
                <div class="right-float">
-                  <button class="btn-red-outline" (click)="updateCoC(item, 'reject')" ion-button>{{'REJECT' | translate}}</button>
-                  <button class="btn-green" (click)="updateCoC(item, 'accept')" ion-button>{{'ACCEPT' | translate}}</button>
+                  <ion-button color="danger" (click)="updateCoC(item, 'reject')">{{'REJECT' | translate}}</ion-button>
+                  <ion-button (click)="updateCoC(item, 'accept')">{{'ACCEPT' | translate}}</ion-button>
                </div>
             </ion-row>
          </ion-row>
