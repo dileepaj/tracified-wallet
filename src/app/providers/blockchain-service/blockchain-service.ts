@@ -22,7 +22,7 @@ export class BlockchainServiceProvider {
       private mappingService: MappingServiceProvider,
       private apiService: ApiServiceProvider,
       private storageService: StorageServiceProvider
-   ) {}
+   ) { }
 
    removeFoAccount(accounts) {
       let otherAccounts = [];
@@ -85,7 +85,7 @@ export class BlockchainServiceProvider {
       });
    }
 
-   validateFundTransfer(sendingAcc, amount) {}
+   validateFundTransfer(sendingAcc, amount) { }
 
    transferFundsForNewAccounts(sendingAccSk, receivingAccPk, amount): Promise<any> {
       return new Promise((resolve, reject) => {
@@ -485,24 +485,18 @@ export class BlockchainServiceProvider {
             Networks.TESTNET;
          }
          let server = new Server(blockchainNet);
-
-         if (subAccount.sequenceNo == '') {
-            console.log('No Sequence found.');
-            server
-               .loadAccount(subAccount.publicKey)
-               .then(account => {
-                  let txn = this.acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount);
-                  resolve(txn);
-               })
-               .catch(err => {
-                  this.logger.error('Failed to load the account: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                  reject(err);
-               });
-         } else {
-            let account = new Account(subAccount.publicKey, subAccount.sequenceNo);
-            let txn = this.acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount);
-            resolve(txn);
-         }
+         console.log('No Sequence found.', subAccount.publicKey);
+         server
+            .loadAccount(subAccount.publicKey)
+            .then(account => {
+               console.log('account.SequenceNo', account)
+               let txn = this.acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount);
+               resolve(txn);
+            })
+            .catch(err => {
+               this.logger.error('Failed to load the account: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+               reject(err);
+            });
       });
    }
 
@@ -534,10 +528,10 @@ export class BlockchainServiceProvider {
          })
       );
 
-      // if (!subAccount.available) {
-      //   console.log("Bumping Sequence in Accept: ", subAccount.sequenceNo);
-      //   transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }));
-      // }
+      if (!subAccount.available) {
+         console.log("Bumping Sequence in Accept: ", subAccount.sequenceNo);
+         transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }));
+      }
 
       const tx = transaction.build();
       tx.sign(sourceKeypair);
@@ -561,23 +555,17 @@ export class BlockchainServiceProvider {
          }
          let server = new Server(blockchainNet);
 
-         if (subAccount.sequenceNo == '') {
-            console.log('No Sequence found.');
-            server
-               .loadAccount(subAccount.publicKey)
-               .then(account => {
-                  let txn = this.rejectTxnBuilder(account, validity, signerSK, proofHash, receiver, subAccount);
-                  resolve(txn);
-               })
-               .catch(err => {
-                  this.logger.error('Failed to load the account: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                  reject(err);
-               });
-         } else {
-            let account = new Account(subAccount.publicKey, subAccount.sequenceNo);
-            let txn = this.rejectTxnBuilder(account, validity, signerSK, proofHash, receiver, subAccount);
-            resolve(txn);
-         }
+         console.log('No Sequence found.');
+         server
+            .loadAccount(subAccount.publicKey)
+            .then(account => {
+               let txn = this.rejectTxnBuilder(account, validity, signerSK, proofHash, receiver, subAccount);
+               resolve(txn);
+            })
+            .catch(err => {
+               this.logger.error('Failed to load the account: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+               reject(err);
+            });
       });
    }
 
@@ -601,10 +589,10 @@ export class BlockchainServiceProvider {
          )
          .addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }));
 
-      // if (!subAccount.available) {
-      //   console.log("Bumping Sequence in Reject");
-      //   transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }))
-      // }
+      if (!subAccount.available) {
+         console.log("Bumping Sequence in Reject");
+         transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }))
+      }
 
       const tx = transaction.build();
       tx.sign(sourceKeypair);
@@ -623,7 +611,7 @@ export class BlockchainServiceProvider {
       }
       const transaction = new Transaction(xdr, this.getNetwork());
       transaction.sign(keyPair);
-      let signedTrans = transaction.toEnvelope().toXDR().toString('base64');
+      let signedTrans = transaction.toEnvelope().toXDR('base64')
       return signedTrans;
    }
 
@@ -637,7 +625,7 @@ export class BlockchainServiceProvider {
       const transaction = new Transaction(xdr, this.getNetwork());
       // Transaction transaction =Transaction.(xdr)
       transaction.sign(keyPair);
-      let signedTrans = transaction.toEnvelope().toXDR().toString('base64');
+      let signedTrans = transaction.toEnvelope().toXDR('base64')
       let server = new Server(blockchainNet);
       return server.submitTransaction(transaction);
 

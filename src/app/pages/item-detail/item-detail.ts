@@ -47,6 +47,7 @@ export class ItemDetailPage implements OnInit {
    public selectedItem;
    secretKey;
    mainAccount: any;
+   tenentId: string;
 
    constructor(
       private router: Router,
@@ -68,6 +69,8 @@ export class ItemDetailPage implements OnInit {
       this.mainAccount = this.properties.defaultAccount;
       this.item = this.router.getCurrentNavigation().extras.state.item;
       this.currentItems = this.router.getCurrentNavigation().extras.state.currentItems || this.currentItems.defaultItem;
+
+      this.tenentId = this.properties.tenant;
    }
    ngOnInit() {
       if (this.mainAccount) {
@@ -184,6 +187,7 @@ export class ItemDetailPage implements OnInit {
                                           RejectXdr: xdrs[1],
                                           Identifier: this.COCForm.identifier,
                                           Status: 'pending',
+                                          TenantID: this.tenentId,
                                        };
                                        this.dataService
                                           .sendCoC(coc)
