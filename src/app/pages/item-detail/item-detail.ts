@@ -15,6 +15,7 @@ import { LoggerService } from 'src/app/providers/logger-service/logger.service';
 import { TranslateService } from '@ngx-translate/core';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { Router } from '@angular/router';
+import { formatDate } from '@angular/common';
 
 @Component({
    selector: 'page-item-detail',
@@ -48,6 +49,7 @@ export class ItemDetailPage implements OnInit {
    secretKey;
    mainAccount: any;
    tenentId: string;
+   minDate;
 
    constructor(
       private router: Router,
@@ -71,6 +73,8 @@ export class ItemDetailPage implements OnInit {
       this.currentItems = this.router.getCurrentNavigation().extras.state.currentItems || this.currentItems.defaultItem;
 
       this.tenentId = this.properties.tenant;
+      let today = new Date();
+      this.minDate = formatDate(today, 'yyyy-MM-dd', 'en');
    }
    ngOnInit() {
       if (this.mainAccount) {
