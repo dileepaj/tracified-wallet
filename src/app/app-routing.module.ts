@@ -67,7 +67,15 @@ const routes: Routes = [
             loadChildren: () => import('./pages/item-received/item-received.module').then(m => m.ItemReceivedPageModule),
          },
       ],
-   },
+   },  {
+    path: 'account-register',
+    loadChildren: () => import('./pages/account-register/account-register.module').then( m => m.AccountRegisterPageModule)
+  },
+  {
+    path: 'account-register',
+    loadChildren: () => import('./pages/account-register/account-register.module').then( m => m.AccountRegisterPageModule)
+  },
+
 ];
 
 @NgModule({

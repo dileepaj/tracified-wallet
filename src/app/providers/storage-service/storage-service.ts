@@ -200,4 +200,31 @@ export class StorageServiceProvider {
    async getTempPubKey(key) {
       return await localforage.getItem(key);
    }
+
+   getPGPAccounts(username) {
+      return new Promise((resolve, reject) => {
+        this.pgpAccounts.length().then(noOfKeys => {
+          if (noOfKeys > 0) {
+            this.pgpAccounts.getItem(username).then(accounts => {
+              let decryptedAccs = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
+              resolve(decryptedAccs);
+            }).catch((err) => {
+              this.logger.error("Storage get pgp item failed: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+              reject(err);
+            });
+          } else {
+            this.logger.error("No pgp accounts found.", this.properties.skipConsoleLogs, this.properties.writeToFile);
+            reject(false);
+          }
+        }).catch((err) => {
+          this.logger.error("Storage check length failed for pgp: " + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+          reject(err);
+        });
+      });
+    }
+
+    public pgpAccounts = localforage.createInstance({
+      name: "pgpAccounts",
+      storeName: "pgpAccounts"
+    });
 }

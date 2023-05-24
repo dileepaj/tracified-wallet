@@ -1,0 +1,42 @@
+<ion-header>
+    <ion-navbar>
+       <button ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+       </button>
+       <ion-title>Registerd Organizations</ion-title>
+    </ion-navbar>
+ </ion-header>
+ 
+ <ion-content *ngIf="isEmpty" padding>
+   <ion-refresher (ionRefresh)="doRefresh($event)">
+     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+       refreshingText="Loading..">
+     </ion-refresher-content>
+   </ion-refresher>
+    <ion-row>
+      <img class="notification-icon" src="../../assets/imgs/emptystatus-04.png" />
+    </ion-row>
+    <ion-row>
+      <div class="full-width text-center line-spacing-small">
+        <h1 class="primary-font">Empty!</h1>
+      </div>
+    </ion-row>
+    <ion-row text-wrap>
+      <div class="full-width text-center">
+        <h3 class="secondary-font">No registered organizations at the moment</h3>
+      </div>
+    </ion-row>
+  </ion-content>
+ 
+ <ion-content  *ngIf="!isEmpty" padding>
+   <ion-refresher (ionRefresh)="doRefresh($event)">
+     <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+       refreshingText="Loading..">
+     </ion-refresher-content>
+   </ion-refresher>
+   <organization *ngFor="let org of approvedOrganziations" [organization]="org" [addTestimonialPage]="addTestimonial" [isRequest]="false" [isRegistered]="isRegistered"></organization>
+   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more organizations...">
+     </ion-infinite-scroll-content>
+   </ion-infinite-scroll>
+ </ion-content>

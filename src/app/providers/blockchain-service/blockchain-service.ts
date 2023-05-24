@@ -10,6 +10,7 @@ import { LoggerService } from '../logger-service/logger.service';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { AES } from 'crypto-js';
 
 @Injectable({
    providedIn: 'root',
@@ -692,7 +693,7 @@ export class BlockchainServiceProvider {
       });
    }
 
-   validateSecretKey(secretKey: string, publicKey: string): boolean {
+   validateSecretKeys(secretKey: string, publicKey: string): boolean {
       try {
          let keyPair = Keypair.fromSecret(secretKey);
          let publicK = keyPair.publicKey();
@@ -702,4 +703,309 @@ export class BlockchainServiceProvider {
          return false;
       }
    }
+
+   validateSecretKey(secretKey: string) {
+      try {
+        let keyPair = Keypair.fromSecret(secretKey);
+        let publicK = keyPair.publicKey();
+        if (publicK === this.properties.defaultAccount.pk) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch {
+        return false;
+      }
+    }
+  
+   encryptBlockchainKey(key: string, password: string) {
+      try {
+        let encKey = AES.encrypt(key, password).toString();
+        if (encKey) {
+          return encKey;
+        } else {
+          return false;
+        }
+      } catch{
+        return false;
+      }
+    }
+
+    preparesubAccount(mainAccSk: string, receiverPk?: string, operationType?: string) {
+      console.log("-----------------sbaccounts in function")
+      return new Promise((resolve, reject) => {
+        let subPublicKeys = [];
+        this.properties.defaultAccount.subAccounts.forEach((account: any) => {
+          subPublicKeys.push(account.pk);
+        });
+        const subAccounts = {
+          "User": this.properties.defaultAccount.accountName,
+          "SubAccounts": subPublicKeys
+        };
+        console.log("accounts: ",subAccounts)
+  
+        this.subAccountsStatus(subAccounts).then((res) => {
+          console.log("ressss-------------")
+          let avaialbeAccounts = [];
+          let matchingAccount: any;
+          let statuses = res.body;
+          if (statuses) {
+            statuses.forEach((status: any) => {
+              if (status.available) {
+                avaialbeAccounts.push(status);
+              } else if (status.receiver == receiverPk) {
+                matchingAccount = status;
+              }
+            });
+            if (matchingAccount) {
+              reject("pendingTransacExist"); // if source account is in use by same receiver raise error
+            } else if (avaialbeAccounts.length > 0) {
+              this.checkIfAccountInvalidated(avaialbeAccounts[0].subAccount).then((status) => {
+                if (status) {
+                  if(avaialbeAccounts[0].expiration){
+                    this.blockchainAccountInfo(avaialbeAccounts[0].subAccount).then((accountInfo: AccountResponse) => {
+                      let subAcc = {
+                        publicKey: avaialbeAccounts[0].subAccount,
+                        available: true,
+                        sequenceNo: accountInfo.sequence
+                      };
+                      this.logger.info("Found Invalidated Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                      console.log("resolving")
+                      resolve(subAcc);
+                    }).catch((err) => {
+                      console.log("err: ",err)
+                      reject(err);
+                    });
+                  }else{
+                    let subAcc = {
+                      publicKey: avaialbeAccounts[0].subAccount,
+                      available: true,
+                      sequenceNo: avaialbeAccounts[0].sequenceNo
+                    };
+                    this.logger.info("Found Invalidated Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                    resolve(subAcc);
+                  }
+                } else {
+                  this.logger.info("Invalidate Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                  let subPair = this.getSubAccountPair(avaialbeAccounts[0].subAccount, this.properties.defaultAccount);
+                  this.invalidateSubAccountKey(subPair, this.properties.defaultAccount).then(() => {
+                    let subAcc = {
+                      publicKey: avaialbeAccounts[0].subAccount,
+                      available: true,
+                      sequenceNo: avaialbeAccounts[0].sequenceNo
+                    };
+                    console.log("--------------------seconf condition resolve")
+                    resolve(subAcc);
+                  }).catch((err) => {
+                    this.logger.info("Sub Account Invalidation failed!: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+                    console.log("--------------------seconf condition reject", err)
+                    reject(err);
+                  });
+                }
+              }).catch((err) => {
+                console.log("--------------------third condition reject")
+                reject(err);
+              });
+            } else {
+              this.logger.info("Creating New Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+              this.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
+                this.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
+                  let subAcc = {
+                    publicKey: subKeyPair.publicKey(),
+                    available: false,
+                    sequenceNo: accountInfo.sequence
+                  };
+                  console.log("--------------------third condition resolve")
+                  resolve(subAcc);
+                }).catch((err) => {
+                  console.log("--------------------fourth condition rejet")
+                  reject(err);
+                });
+              }).catch((err) => {
+                console.log("--------------------fifth condition reject")
+                reject(err);
+              });
+            }
+          } else {
+            this.logger.info("Creating New Sub Account: " + this.properties.skipConsoleLogs, this.properties.writeToFile);
+            this.createSubAccount(this.properties.defaultAccount, mainAccSk).then((subKeyPair: Keypair) => {
+              this.blockchainAccountInfo(subKeyPair.publicKey()).then((accountInfo: AccountResponse) => {
+                let subAcc = {
+                  publicKey: subKeyPair.publicKey(),
+                  available: false,
+                  sequenceNo: accountInfo.sequence
+                };
+                console.log("--------------------fourth condition resolve")
+                resolve(subAcc);
+              }).catch((err) => {
+                console.log("--------------------sixth condition reject")
+                reject(err);
+              });
+            }).catch((err) => {
+              console.log("--------------------seventh condition reject")
+              reject(err);
+            });
+          }
+        }).catch((err) => {
+          console.log("--------------------eight condition reject")
+          reject(err);
+        });
+      });
+    }
+
+    subAccountsStatus(subAccounts: any) {
+      return this.apiService.getSubAccountStatus(subAccounts);
+    }
+
+    SaveDigitalSignature(
+      /*transactionResult:string,*/
+      digitalsignature:string,
+       cyphermsg:string,
+       pgppublickeyhash:string,
+       stellarpkkey: string, 
+       stellarskkey:string
+     ) {
+      console.log("data in stellar service: ",digitalsignature,cyphermsg,pgppublickeyhash,stellarpkkey,stellarskkey)
+       return new Promise((resolve, reject) => {//buyers secret key
+        let sourceKeypair = Keypair.fromSecret(stellarskkey); 
+         if (blockchainNetType === "live") {
+           Networks.TESTNET
+         } else {
+           Networks.PUBLIC
+         }
+         
+         var opts = {
+           fee: 100,
+           timebounds: {
+             minTime: 0,
+             maxTime: 0,
+           },
+           networkPassphrase: Networks.TESTNET,
+         };
+         let server = new Server(blockchainNet);
+         server
+           .loadAccount(sourceKeypair.publicKey())
+           .then(async (account) => {
+             var transaction = new TransactionBuilder(account, opts)
+               .addOperation(
+                 Operation.manageData({
+                   name: "Cypher Message",
+                   value: cyphermsg,
+                 })
+               )
+               .addOperation(
+                 Operation.manageData({
+                   name: "Stellar Key",
+                   value: stellarpkkey,
+                 })
+               )
+               .addOperation(
+                 Operation.manageData({
+                   name: "PGP Public Key in SHA256",
+                   value: pgppublickeyhash,
+                 })
+               )
+               .addOperation(
+                Operation.manageData({
+                  name: "Digital Signature for Endorsement",
+                  value: digitalsignature,
+                })
+              )
+              //  .setTimeout(80000)
+               .build();
+               transaction.sign(sourceKeypair);
+               return server.submitTransaction(transaction);
+             })
+           .then((transactionResult) => {
+            this.logger.info("PGP Keys stored successfully");
+             resolve(transactionResult);
+           })
+           .catch((err) => {
+            console.log("bc error is :",err)
+             reject(err);
+           });
+       });
+     }
+
+     VerifyDigitalSignature(
+      /*transactionResult:string,*/
+      digitalsignature:string,
+       cyphermsg:string,
+       pgppublickeyhash:string,
+       endorseepk: string, 
+       tracifiedusersk:string,
+       status:string
+     ) {
+       return new Promise((resolve, reject) => {//buyers secret key
+        console.log("varifying data in stellar: ",digitalsignature,cyphermsg,pgppublickeyhash,endorseepk,tracifiedusersk,status)
+        let sourceKeypair = Keypair.fromSecret(tracifiedusersk); 
+         if (blockchainNetType === "live") {
+           Networks.TESTNET
+         } else {
+           Networks.PUBLIC
+         }
+         
+         var opts = {
+           fee: 100,
+           timebounds: {
+             minTime: 0,
+             maxTime: 0,
+           },
+           networkPassphrase: Networks.TESTNET,
+         };
+         let server = new Server(blockchainNet);
+         server
+           .loadAccount(sourceKeypair.publicKey())
+           .then(async (account) => {
+             var transaction = new TransactionBuilder(account, opts)
+               .addOperation(
+                 Operation.manageData({
+                   name: "Cypher Message",
+                   value: cyphermsg,
+                 })
+               )
+               .addOperation(
+                 Operation.manageData({
+                   name: "Tracified Public Key",
+                   value: sourceKeypair.publicKey(),
+                 })
+               )
+               .addOperation(
+                Operation.manageData({
+                  name: "Endorsee Public Key",
+                  value: endorseepk,
+                })
+              )
+               .addOperation(
+                 Operation.manageData({
+                   name: "PGP Public Key in SHA256",
+                   value: pgppublickeyhash,
+                 })
+               )
+               .addOperation(
+                Operation.manageData({
+                  name: "Digital Signature for Endorsement",
+                  value: digitalsignature,
+                })
+              )
+              .addOperation(
+                Operation.manageData({
+                  name: "Status of Verification",
+                  value: status,
+                })
+              )
+              //  .setTimeout(80000)
+               .build();
+               transaction.sign(sourceKeypair);
+               return server.submitTransaction(transaction);
+             })
+           .then((transactionResult) => {
+            this.logger.info("PGP Keys stored successfully");
+             resolve(transactionResult);
+           })
+           .catch((err) => {
+             reject(err);
+           });
+       });
+     }
 }

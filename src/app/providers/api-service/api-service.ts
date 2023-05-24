@@ -31,14 +31,24 @@ import {
    updateSVG,
    adminUrl,
    claimNft,
+   testimonialSent,
+   testimonialReceived,
+   testimonialAPI,
+   approvedOrganization,
+   organizationRequests,
+   allOrganization,
+   changeTransactionPasswordwithsk,
+   subAccountStatus
 } from '../../shared/config';
+import { Testimonial } from 'src/app/shared/models/testimonial';
+import { Organization } from 'src/app/shared/models/organization';
 
 @Injectable({
    providedIn: 'root',
 })
 export class ApiServiceProvider {
    reqOpts: any;
-   // url: string = 'http://localhost:8000';
+    url: string = 'http://localhost:8000';
    // baseUrlSVG: string = 'http://localhost:6081/svgmap';
    // LocalAdminURL: string = 'https://staging.admin.api.tracified.com';
    // nftbeurl = 'https://qa.api.nft.tracified.com';
@@ -636,4 +646,177 @@ export class ApiServiceProvider {
          );
       });
    }
+
+    // Testimonials
+  getTestimonialsSent(senderPK: string) {
+   let header = {
+     observe: 'response',
+     headers: new HttpHeaders({
+       'Content-Type': 'application/json'
+     })
+   }
+
+   return this.getN(testimonialSent + senderPK, header);
+ }
+
+ getTestimonialsRecieved(receiverPK: string) {
+   let header = {
+     observe: 'response',
+     headers: new HttpHeaders({
+       'Content-Type': 'application/json'
+     })
+   }
+
+   return this.getN(testimonialReceived + receiverPK, header);
+ }
+
+ updateTestimonial(payload: Testimonial): Promise<any> {
+   let headers = { 'Content-Type': 'application/json' };
+   return this.putN(testimonialAPI, payload, headers);
+ }
+
+ queryAllOrganizations(): Promise<any> {
+   let header = {
+     observe: 'response',
+     headers: new HttpHeaders({
+       'Content-Type': 'application/json'
+     })
+   }
+
+   return this.getN(approvedOrganization, header);
+ }
+
+ queryOrganizationsRequests(): Promise<any> {
+   let header = {
+     observe: 'response',
+     headers: new HttpHeaders({
+       'Content-Type': 'application/json'
+     })
+   }
+
+   return this.getN(organizationRequests, header);
+ }
+
+ getOrganization(publicKey: string): Promise<any> {
+   let header = {
+     observe: 'response',
+     headers: new HttpHeaders({
+       'Content-Type': 'application/json'
+     })
+   }
+
+   return this.getN(allOrganization + "/" + publicKey, header);
+ }
+
+ changeTransactionPasswordWithPrivateKey(updatedInfo, verify): Promise<any> {
+   let sk = encodeURIComponent(updatedInfo.sk);
+   let accName = encodeURIComponent(updatedInfo.accName);
+   let url = changeTransactionPasswordwithsk + "?sk=" + sk + "&accountName=" + accName;
+   return this.adminPut(url, updatedInfo, verify);
+}
+
+private adminPut(url, params, token): Promise<any> {
+   return new Promise((resolve, reject) => {
+       this.http
+           .put(url, "", {
+               observe: "response",
+               headers: new HttpHeaders({
+                   Accept: "application/json",
+                   "Content-Type": "Application/json",
+                   Authorization: "Bearer " + token,
+               }),
+           })
+           .timeout(25000)
+           .subscribe(
+               (response) => {
+                   this.logger.info(
+                       "adminPut success",
+                       this.properties.skipConsoleLogs,
+                       this.properties.writeToFile
+                   );
+                   console.log(response);
+                   resolve(response);
+               },
+               (error) => {
+                   this.logger.error(
+                       "adminPut error: " + JSON.stringify(error),
+                       this.properties.skipConsoleLogs,
+                       this.properties.writeToFile
+                   );
+                   reject(error);
+               }
+           );
+   });
+ }
+
+sendTestimonial(payload: Testimonial): Promise<any> {
+   let headers = { 'Content-Type': 'application/json' };
+   return this.postN(testimonialAPI, payload, headers);
+ }
+
+ getSubAccountStatus(payload): Promise<any> {
+   let headers = {
+     observe: 'response',
+     headers: new HttpHeaders({
+       'Accept': 'application/json',
+       'Content-Type': 'Application/json',
+     })
+   }
+
+   return this.postN(subAccountStatus, payload, headers);
+ }
+
+  //Organization Registration 
+  registerOrganization(payload: Organization): Promise<any> {
+   let headers = { 'Content-Type': 'application/json' };
+   console.log("inside post service: ",payload)
+   return this.postN(allOrganization, payload, headers);
+ }
+
+ GetAccountDetailsforEndorsment(stellarPublicKey:string): Promise<any>{
+   return new Promise((resolve, reject) => {
+     this.reqOpts = {
+       observe: "response",
+       headers: new HttpHeaders({
+         Accept: "application/json",
+         "Content-Type": "Application/json",
+       }),
+     };
+     this.http.get(this.url + "/pgp/getaccounts/"+stellarPublicKey).subscribe(
+       (response) => {
+         if(response==null){
+           reject("result was null")
+           this.GetAccountDetailsforEndorsment(stellarPublicKey).then(res=>{
+             console.log("------------response second: ",response)
+             resolve(response);
+           })
+         }
+         else{
+           console.log("------------response first: ",response)
+             resolve(response);
+         }
+       },
+       (error) => {
+         //reject(error);
+       }
+     );
+   });
+ }
+
+ updateOrganization(payload: Organization): Promise<any> {
+   let headers = { 'Content-Type': 'application/json' };
+   return this.putN(allOrganization, payload, headers);
+ }
+
+ 
+ queryAllOrganizationsPaginated(page: number, perPage: number): Promise<any> {
+   let header = {
+     observe: 'response',
+     headers: new HttpHeaders({
+       'Content-Type': 'application/json'
+     })
+   }
+
+   return this.getN(approvedOrganziationsPaginated + '?page=' + page + '&perPage=' + perPage, header);
+ }
 }

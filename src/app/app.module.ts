@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule, CUSTOM_ELEMENTS_SCHEMA,NO_ERRORS_SCHEMA} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -54,6 +54,20 @@ import { AccountInfoPage } from './pages/account-info/account-info';
 import { TransferPage } from './pages/transfer/transfer';
 import { ItemReceivedPage } from './pages/item-received/item-received';
 import { ItemSentPage } from './pages/item-sent/item-sent';
+import { TestimonialsReceievedPage } from './pages/testimonials/testimonials-receieved/testimonials-receieved';
+import { TestimonialsSentPage } from './pages/testimonials/testimonials-sent/testimonials-sent';
+import { TestimonialsPage } from './pages/testimonials/testimonials';
+import { TestimonialServiceProvider } from './providers/testimonial-service/testimonial-service';
+import { OrganizationsPage } from './pages/organizations/organizations';
+import { OrganizationRequestsPage } from './pages/organizations/organization-requests/organization-requests';
+import { OrganizationRegisteredPage } from './pages/organizations/organization-registered/organization-registered';
+import { AccountRegisterPage } from './pages/account-register/account-register';
+import { AddOrganizationTestimonialPage } from './pages/add-organization-testimonial/add-organization-testimonial';
+import { CodePushServiceProvider } from './providers/code-push-service/code-push-service';
+import { AccountServiceProvider } from './providers/account-service/account-service';
+import { SelectSearchablePage } from './components/search-dropdown/search-dropdown.component';
+import { ViewOrganizationComponent } from './components/view-organization/view-organization.component';
+import { TestimonialComponent } from './components/testimonial/testimonial.component';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -87,6 +101,17 @@ export function createTranslateLoader(http: HttpClient) {
       // TransferPage,
       // ItemReceivedPage,
       // ItemSentPage,
+      TestimonialsPage,
+      TestimonialsReceievedPage,
+      TestimonialsSentPage,
+      OrganizationsPage,
+      OrganizationRegisteredPage,
+      OrganizationRequestsPage,
+      SelectSearchablePage,
+      ViewOrganizationComponent,
+      TestimonialComponent,
+      AccountRegisterPage,
+      AddOrganizationTestimonialPage
    ],
    imports: [
       BrowserModule,
@@ -125,7 +150,11 @@ export function createTranslateLoader(http: HttpClient) {
       Items,
       Properties,
       Clipboard,
+      TestimonialServiceProvider,
+      CodePushServiceProvider,
+      AccountServiceProvider,
    ],
+   schemas: [CUSTOM_ELEMENTS_SCHEMA,NO_ERRORS_SCHEMA],
    bootstrap: [AppComponent],
    exports: [MintNftPage],
 })

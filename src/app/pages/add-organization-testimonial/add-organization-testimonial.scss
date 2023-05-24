@@ -1,0 +1,30 @@
+page-add-organization-testimonial {
+    .logo-container {
+        width: 100%;
+        padding: 12px 0;
+        .btn-link {
+            margin: 12px 0 0;
+        }
+    }
+    .logo-avatar {
+        object-fit: cover;
+        height: 120px;
+        width: 120px;
+        border-radius: 100%;
+        margin: auto;
+        display: block;
+    }
+    .card-image {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        margin: auto;
+        display: block;
+    }
+    .error-text {
+        color: #f44336;
+        font-size: 12px;
+        margin: 0;
+        padding: 0;
+    }
+}

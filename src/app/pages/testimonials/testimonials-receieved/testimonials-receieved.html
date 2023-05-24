@@ -1,0 +1,40 @@
+<ion-header>
+    <ion-navbar>
+       <button ion-button menuToggle>
+          <ion-icon name="menu"></ion-icon>
+       </button>
+       <ion-title>Testimonials Received</ion-title>
+    </ion-navbar>
+ </ion-header>
+ 
+ <ion-content *ngIf="isEmpty"  class="full-height white-background">
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+        refreshingText="Loading..">
+      </ion-refresher-content>
+    </ion-refresher>
+    <ion-row>
+     <img class="empty-icon" src="../../assets/imgs/emptystatus-04.png" />
+    </ion-row>
+    <ion-row>
+      <div class="full-width text-center line-spacing-small">
+        <h1 class="primary-font">Empty!</h1>
+      </div>
+    </ion-row>
+    <ion-row text-wrap>
+      <div class="full-width text-center">
+        <h3 class="secondary-font">No incoming Testimonials at the moment</h3>
+      </div>
+    </ion-row>
+  </ion-content>
+  
+ 
+ <ion-content *ngIf="!isEmpty" padding>
+    <ion-refresher (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content id="refresher" pullingIcon="refresh" pullingText="" refreshingSpinner="circles"
+        refreshingText="Loading..">
+      </ion-refresher-content>
+    </ion-refresher>
+    <testimonial *ngFor="let testimonial of testimonialsReceived" [testimonial]="testimonial"
+       [isRequest]="testimonial.Status == 'pending'" [updateCallback]="updateTestimonial"></testimonial>
+ </ion-content>

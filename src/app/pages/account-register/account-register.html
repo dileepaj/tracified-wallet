@@ -1,0 +1,101 @@
+<ion-header>
+    <ion-navbar>
+      <ion-title>Register Account</ion-title>
+    </ion-navbar>
+  </ion-header>
+  
+  <ion-content padding>
+    <form [formGroup]="formRegister" (submit)="registerOrganization()">
+      <ion-row class="formbox">
+        <div class="logo-container">
+          <img [src]="orgLogo && orgLogo !== '' ? orgLogo : '../../assets/img/bg_img.png'" class="logo-avatar" (click)="uploadImage()" />
+          <p class="btn-link" (click)="uploadImage()">Click to upload logo <span color="danger">*</span></p>
+        </div>
+        <ion-item>
+          <ion-label class="login-lables" floating>Organization Key</ion-label>
+          <ion-input formControlName="orgPublicKey" type="text" name="orgPublicKey" disabled keyNext></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label class="login-lables" floating>Name <span color="danger">*</span></ion-label>
+          <ion-input formControlName="orgName" type="text" name="orgName" keyNext></ion-input>
+        </ion-item>
+        <div *ngIf="!formRegister.get('orgName').valid && formRegister.get('orgName').touched">
+          <p class="error-text" *ngIf="formRegister.get('orgName').errors['required']">
+            Name is required
+          </p>
+          <p class="error-text" *ngIf="formRegister.get('orgName').errors['minlength']">
+            Name should be more than 4 characters
+          </p>
+          <p class="error-text" *ngIf="formRegister.get('orgName').errors['maxlength']">
+            Name should be less than 64 characters
+          </p>
+        </div>
+        <ion-item>
+          <ion-label class="login-lables" floating>Description <span color="danger">*</span></ion-label>
+          <ion-textarea formControlName="orgDescription" type="text" name="orgDescription" keyNext></ion-textarea>
+        </ion-item>
+        <div *ngIf="!formRegister.get('orgDescription').valid && formRegister.get('orgDescription').touched">
+          <p class="error-text" *ngIf="formRegister.get('orgDescription').errors['required']">
+            Description is required
+          </p>
+          <p class="error-text" *ngIf="formRegister.get('orgDescription').errors['minlength']">
+            Description should be more than 4 characters
+          </p>
+          <p class="error-text" *ngIf="formRegister.get('orgDescription').errors['maxlength']">
+            Description should be less than 64 characters
+          </p>
+        </div>
+        <ion-item>
+          <ion-label class="login-lables" floating>Email  <span color="danger">*</span></ion-label>
+          <ion-input formControlName="orgEmail" type="text" name="orgEmail" keyNext></ion-input>
+        </ion-item>
+        <div *ngIf="!formRegister.get('orgEmail').valid && formRegister.get('orgEmail').touched">
+          <p class="error-text" *ngIf="formRegister.get('orgEmail').errors['pattern']">
+            Email is not valid
+          </p>
+          <p class="error-text" *ngIf="formRegister.get('orgEmail').errors['required']">
+            Email is required
+          </p>
+          <p class="error-text" *ngIf="formRegister.get('orgEmail').errors['minlength']">
+            Email should be more than 4 characters
+          </p>
+          <p class="error-text" *ngIf="formRegister.get('orgEmail').errors['maxlength']">
+            Email should be less than 64 characters
+          </p>
+        </div>
+        <ion-item>
+          <ion-label class="login-lables" floating>Phone Number<span color="danger">*</span></ion-label>
+          <ion-input formControlName="orgPrimaryMobile" maxlength="15" type="number" name="orgPrimaryMobile" keyNext></ion-input>
+        </ion-item>
+        <div *ngIf="!formRegister.get('orgPrimaryMobile').valid && formRegister.get('orgPrimaryMobile').touched">
+          <p class="error-text" *ngIf="formRegister.get('orgPrimaryMobile').errors['required']">
+            Phone Number is required
+          </p>
+          <p class="error-text" *ngIf="formRegister.get('orgPrimaryMobile').errors['minlength']">
+            Phone Number is not valid
+          </p>
+          <p class="error-text" *ngIf="formRegister.get('orgPrimaryMobile').errors['maxlength']">
+            Phone Number is not valid
+          </p>
+        </div>
+        <ion-item>
+          <ion-label class="login-lables" floating>Secondary Phone Number (Optional)</ion-label>
+          <ion-input formControlName="orgSecondMobile" type="number" maxlength="15" name="orgSecondMobile" keyNext></ion-input>
+        </ion-item>
+        <div *ngIf="!formRegister.get('orgSecondMobile').valid && formRegister.get('orgSecondMobile').touched">
+          <p class="error-text" *ngIf="formRegister.get('orgSecondMobile').errors['minlength']">
+            Secondary Phone Number is not valid
+          </p>
+          <p class="error-text" *ngIf="formRegister.get('orgSecondMobile').errors['maxlength']">
+            Secondary Phone Number is not valid
+          </p>
+        </div>
+      </ion-row>
+      <ion-row padding-vertical>
+        <div class="button-wrapper">
+          <button type="submit" block ion-button class="login-button" >Register</button> 
+          <!-- [disabled]="!formRegister.valid || !orgLogo" -->
+        </div>
+      </ion-row>
+    </form>
+  </ion-content>

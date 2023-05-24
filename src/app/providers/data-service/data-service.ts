@@ -9,6 +9,8 @@ import { BlockchainServiceProvider } from '../../providers/blockchain-service/bl
 // Shared Services
 import { Properties } from '../../shared/properties';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
+import { Testimonial } from 'src/app/shared/models/testimonial';
+import { Organization } from 'src/app/shared/models/organization';
 
 @Injectable({
    providedIn: 'root',
@@ -79,8 +81,12 @@ export class DataServiceProvider {
       return this.authService.changeUserSettings(type, userModel);
    }
 
-   validateSecretKey(secretKey: string, publicKey: string) {
-      return this.blockchainService.validateSecretKey(secretKey, publicKey);
+   validateSecretKey(secretKey: string) {
+      return this.blockchainService.validateSecretKey(secretKey);
+   }
+
+   validateSecretKeys(secretKey: string, publicKey: string) {
+      return this.blockchainService.validateSecretKeys(secretKey, publicKey);
    }
 
    changeTransactionAccPassword(passwordModel) {
@@ -118,4 +124,62 @@ export class DataServiceProvider {
    setLanguage(language) {
       this.storage.setLanguage(language);
    }
+
+    // Testimonials
+  getTestimonialsSent(senderPK: string): Promise<any> {
+   return this.apiService.getTestimonialsSent(senderPK);
+ }
+
+ getTestimonialsReceived(receiverPK: string): Promise<any> {
+   return this.apiService.getTestimonialsRecieved(receiverPK);
+ }
+
+ updateTestimonial(payload: Testimonial): Promise<any> {
+   return this.apiService.updateTestimonial(payload);
+ }
+
+ getApprovedOrganizations(): Promise<any> {
+   return this.apiService.queryAllOrganizations();
+ }
+ 
+ getOrganizationsRequests(): Promise<any> {
+   return this.apiService.queryOrganizationsRequests();
+ }
+
+ getOrganization(publicKey: string): Promise<any> {
+   return this.apiService.getOrganization(publicKey);
+ }
+
+ sendTestimonial(payload: Testimonial): Promise<any> {
+   return this.apiService.sendTestimonial(payload);
+ }
+
+encryptKey(key: string, password: string) {
+ return this.blockchainService.encryptBlockchainKey(key, password);
+}
+
+changeTransactionPasswordWithPrivateKey(updatedInfo): Promise<any> {
+ return this.apiService.changeTransactionPasswordWithPrivateKey(
+     updatedInfo,
+     this.properties.token
+ );
+}
+
+// Organization Registraion
+registerOrganization(payload: Organization): Promise<any> {
+   return this.apiService.registerOrganization(payload);
+ }
+
+retrievePGPAccounts(): Promise<any> {
+ return this.storage.getPGPAccounts(this.properties.userName);
+}
+
+updateOrganization(payload: Organization): Promise<any> {
+   return this.apiService.updateOrganization(payload);
+ }
+
+ getApprovedOrganizationsPaginated(page: number,perPage: number): Promise<any> {
+   return this.apiService.queryAllOrganizationsPaginated(page,perPage);
+ }
+
 }

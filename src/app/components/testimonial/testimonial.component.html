@@ -1,0 +1,47 @@
+<ion-card>
+  <ion-card-content>
+     <ion-item>
+        <h1 class="card-title" item-start>
+           {{testimonial.Testimonial.Title}}&nbsp;
+        </h1>
+     </ion-item>
+
+     <div>
+        <ion-badge *ngIf="testimonial.Status == 'pending'" color="warning">PENDING</ion-badge>
+        <ion-badge *ngIf="testimonial.Status == 'rejected'" color="danger">REJECTED</ion-badge>
+        <ion-badge *ngIf="testimonial.Status == 'approved'" color="success">APPROVED</ion-badge>
+     </div>
+
+     <p margin-vertical>
+        {{testimonial.Testimonial.Description}}
+     </p>
+     <ion-row *ngIf="testimonial.Status == 'pending'">
+        Valid till : {{expiredTime}}
+     </ion-row>
+     <img class="card-image" [src]="testimonial.Testimonial.Image" />
+
+     <ion-row>
+        <ion-col col-12 padding-right>
+           <button ion-button outline block (click)="viewTestimonial()">
+              View
+           </button>
+        </ion-col>
+     </ion-row>
+
+     <ion-row *ngIf="isRequest">
+        <ion-col padding-right col-6>
+           <button (click)="updateCallback(testimonial, 'rejected')" ion-button color="danger" icon-start outline
+              block>
+              <ion-icon name="md-close-circle"></ion-icon>
+           </button>
+        </ion-col>
+        <ion-col col-6>
+           <button (click)="updateCallback(testimonial, 'accepted')" ion-button color="primary" icon-start outline
+              block>
+              <ion-icon name="ios-checkmark-circle"></ion-icon>
+           </button>
+        </ion-col>
+     </ion-row>
+
+  </ion-card-content>
+</ion-card>

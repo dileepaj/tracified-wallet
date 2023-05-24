@@ -62,3 +62,14 @@ export const mainAccountBalance: number = 1;
 export const nftbackUrl: string = nftbackend;
 export const updateSVG: string = nftbackend + '/svgmap/';
 export const claimNft: string = nftbackend + '/walletnfts/';
+export const tracSuperAcc: string = "GCXMIUX4LK5PSVWVGTWLNWAPHKGE3O7RUISAG5DJEPOKXEIUNTASXZUU";
+
+export const testimonialSent: string = gateway + '/testimonial/sender/';
+export const testimonialReceived: string = gateway + '/testimonial/reciever/';
+export const testimonialAPI: string = gateway + '/testimonial';
+export const allOrganization: string =  'http://localhost:9080/organization';
+export const approvedOrganization: string = gateway + '/approved/organization';
+export const organizationRequests: string = 'http://localhost:9080/notapproved/organization';
+export const changeTransactionPasswordwithsk: string = admin + '/api/bc/user/mainAccount/sk'; // PUT
+export const subAccountStatus: string = gateway + '/transaction/subAccountStatus'
+export const approvedOrganziationsPaginated: string = gateway + '/approved/organizationPaginated';
