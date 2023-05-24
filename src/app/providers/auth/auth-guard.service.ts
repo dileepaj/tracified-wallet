@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Properties } from 'src/app/shared/properties';
 import { AuthServiceProvider } from '../auth-service/auth-service';
@@ -9,7 +9,7 @@ import { LoggerService } from '../logger-service/logger.service';
 @Injectable({
    providedIn: 'root',
 })
-export class AuthGuardService implements CanActivate {
+export class AuthGuardService  {
    //v6 implement functional guard
    constructor(
       public authService: AuthServiceProvider,
