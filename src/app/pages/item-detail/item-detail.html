@@ -50,7 +50,7 @@
       </ion-item>
       <ion-item>
          <ion-label position="floating">{{ 'VALID_TILL' | translate}}</ion-label>
-         <ion-datetime pickerFormat="YYYY-MM-DD hh mm A" [(ngModel)]="COCForm.vaidity" displayFormat="YYYY/MM/DD hh:mm A" min="2018-11-29T06:25:48Z" max="2050"></ion-datetime>
+         <ion-datetime pickerFormat="YYYY-MM-DD hh mm A" [(ngModel)]="COCForm.vaidity" displayFormat="YYYY/MM/DD hh:mm A" min="{{minDate}}"></ion-datetime>
       </ion-item>
       <ion-item lines="none" class="ion-padding-top">
          <ion-row style="display: flex; justify-content: center">
