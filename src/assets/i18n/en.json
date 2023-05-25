@@ -197,7 +197,7 @@
 
   "FAILED_TO_FETCH_ACCOUNT": "Failed to fetch the account details for received items. Please try again.",
   "FAILED_TO_FETCH_RECEIVED": "Failed to fetch the received items. Please try again.",
-  "ACC_REJECT_PENDING_COC": "Please accept or reject pending CoC transactions before. There are currently ",
+  "ACC_REJECT_PENDING_COC": "Please accept or reject past pending transactions.",
   "PENDING_COC": " pending CoC transactions.",
   "SUCCESS_ACCEPTED": "Successfully accepted",
   "SUCCESS_REJECTED": "Successfully rejected",
