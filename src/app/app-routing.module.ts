@@ -22,9 +22,10 @@ import { SettingFormPage } from './pages/setting-form/setting-form';
 import { TransferPage } from './pages/transfer/transfer';
 import { ItemDetailPage } from './pages/item-detail/item-detail';
 import { AccountInfoPage } from './pages/account-info/account-info';
+import { RequestDeletePage } from './pages/request-delete/request-delete.page';
 
 const routes: Routes = [
-   // { path: '', component: TabsPage },
+   { path: '', component: OtpPage },
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
@@ -68,6 +69,11 @@ const routes: Routes = [
          },
       ],
    },
+  {
+    path: 'request-delete',
+    component:RequestDeletePage
+  },
+
 ];
 
 @NgModule({
