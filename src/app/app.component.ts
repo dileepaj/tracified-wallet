@@ -170,10 +170,6 @@ export class AppComponent {
             state = await this.checkUser();
             // this.router.navigate([''], { replaceUrl: true });
          } else {
-            console.log('deeeplink- no , state-no');
-            state = true;
-            this.dataService.clearLocalData();
-            this.router.navigate(['/otp-page'], { replaceUrl: true });
          }
       } catch (error) {
          this.router.navigate(['/otp-page'], { replaceUrl: true });

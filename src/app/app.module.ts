@@ -54,6 +54,7 @@ import { AccountInfoPage } from './pages/account-info/account-info';
 import { TransferPage } from './pages/transfer/transfer';
 import { ItemReceivedPage } from './pages/item-received/item-received';
 import { ItemSentPage } from './pages/item-sent/item-sent';
+import { RequestDeletePage } from './pages/request-delete/request-delete.page';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -84,6 +85,7 @@ export function createTranslateLoader(http: HttpClient) {
       SettingFormPage,
       ItemDetailPage,
       AccountInfoPage,
+      RequestDeletePage
       // TransferPage,
       // ItemReceivedPage,
       // ItemSentPage,
