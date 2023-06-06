@@ -8,6 +8,11 @@ import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { ConnectivityServiceProvider } from 'src/app/providers/connectivity-service/connectivity-service';
 
+//seed-phrase service
+import { SeedPhraseService, BlockchainType, SolKeys } from '../../providers/seedPhraseService/seedPhrase.service';
+import { Wallet } from 'ethers';
+import { Keypair as StellerKeyPair } from "stellar-base"
+import { PublicKey, Keypair as SolKeypair, } from "@solana/web3.js";
 @Component({
    selector: 'page-otp',
    templateUrl: 'otp.html',
@@ -29,7 +34,8 @@ export class OtpPage {
       private service: ApiServiceProvider,
       private loadingCtrl: LoadingController,
       private route: ActivatedRoute,
-      public connectivity: ConnectivityServiceProvider
+      public connectivity: ConnectivityServiceProvider,
+      private seedPhraseService : SeedPhraseService
    ) {
       const emailParam = this.route.snapshot.queryParamMap.get('email');
       const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
@@ -43,6 +49,7 @@ export class OtpPage {
       if (emailParam && shopidParam) {
          this.connectivity.putMenuHide(true);
       }
+      
    }
 
    async checkOTP() {
