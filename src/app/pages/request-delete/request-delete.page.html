@@ -1,0 +1,32 @@
+<ion-content>
+   <ion-grid>
+      <ion-row justify-content-center>
+         <ion-col class="ion-text-center">
+            <img class="logo" src="../../assets/img/tracified-header.png" alt="Tracified Header" />
+         </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-justify-content-center">
+         <ion-col size-md="6" size-lg="6" size="12">
+          <h1 class="topic ion-text-center">Request for Deletion</h1>
+          <p class="sub-topic ion-text-center ion-margin-top ion-margin-bottom">Enter your email address and make a request to delete your user account.</p>
+
+            <form class="ion-margin-top" [formGroup]="emailform" #emailForm="ngForm" (ngSubmit)="onRequestDelete(emailForm.value)">
+               <ion-item>
+                  <ion-label><b>Email Address</b></ion-label>
+                  <ion-input type="email" formControlName="email" [class.is-invalid]="submitted && emailform.controls.email.errors"></ion-input>
+               </ion-item>
+               <div *ngIf="submitted && emailform.controls.email.errors" class="invalid-feedback">
+                  <div *ngIf="emailform.controls.email.errors.required">Email is required</div>
+                  <div *ngIf="emailform.controls.email.errors.pattern">Email must be a valid email address</div>
+               </div>
+               <div class="alert alert-success success-messages" *ngIf="emailCheck" style="margin-top: 20px">Account deletion request sent successfully.</div>
+               <div class="alert alert-danger success-messages" *ngIf="accessDenied" style="margin-top: 20px">Sorry. There's no account available for this email.</div>
+               <div class="ion-text-center" style="margin-top: 30px">
+                  <ion-button color="danger" type="submit"> Request Now </ion-button>
+               </div>
+            </form>
+         </ion-col>
+      </ion-row>
+   </ion-grid>
+</ion-content>
