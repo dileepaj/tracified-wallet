@@ -25,7 +25,6 @@ import { AccountInfoPage } from './pages/account-info/account-info';
 import { RequestDeletePage } from './pages/request-delete/request-delete.page';
 
 const routes: Routes = [
-   { path: '', component: OtpPage },
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
