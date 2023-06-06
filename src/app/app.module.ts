@@ -85,7 +85,7 @@ export function createTranslateLoader(http: HttpClient) {
       SettingFormPage,
       ItemDetailPage,
       AccountInfoPage,
-      RequestDeletePage
+      RequestDeletePage,
       // TransferPage,
       // ItemReceivedPage,
       // ItemSentPage,
@@ -125,8 +125,7 @@ export function createTranslateLoader(http: HttpClient) {
       DataServiceProvider,
       FileSystemService,
       Items,
-      Properties,
-      Clipboard,
+      Properties
    ],
    bootstrap: [AppComponent],
    exports: [MintNftPage],
