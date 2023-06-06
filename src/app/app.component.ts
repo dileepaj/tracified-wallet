@@ -52,7 +52,6 @@ export class AppComponent {
    pageHide: boolean;
    queryParams: any;
    deeplink: boolean;
-
    // @ViewChild(Nav) nav: Nav;
 
    constructor(
@@ -156,7 +155,9 @@ export class AppComponent {
       try {
          responce = await this.authService.authorizeLocalProfile();
 
-         if (this.deeplink && responce) {
+         if (this.router.url === '/request-delete') {
+            this.router.navigate(['/request-delete']);
+         } else if (this.deeplink && responce) {
             console.log('deeeplink- yes , state-yes');
             state = await this.checkUser();
             this.router.navigate(['/otp-page'], this.queryParams);
@@ -168,8 +169,14 @@ export class AppComponent {
          } else if (responce && !this.deeplink) {
             console.log('deeeplink- no , state-yes');
             state = await this.checkUser();
-            // this.router.navigate([''], { replaceUrl: true });
+
+            if (this.router.url.indexOf('otp-page') === -1) {
+               this.router.navigate(['/tabs'], { replaceUrl: true });
+            }
          } else {
+            console.log('deeeplink- no , state-no');
+            state = true;
+            this.dataService.clearLocalData();
          }
       } catch (error) {
          this.router.navigate(['/otp-page'], { replaceUrl: true });
@@ -289,7 +296,7 @@ export class AppComponent {
    openPage(page: string) {
       switch (page) {
          case 'items':
-            this.router.navigate([''], { replaceUrl: true });
+            this.router.navigate(['/tabs'], { replaceUrl: true });
             break;
          case 'nft':
             console.log('hello');
