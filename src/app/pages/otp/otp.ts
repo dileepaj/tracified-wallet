@@ -53,19 +53,6 @@ export class OtpPage {
    }
 
    async checkOTP() {
-      // const validMnemonic = "arm thank snow ski juice check few slogan brush smoke deal type";
-      // const mnemonic = await this.seedPhraseService.generateMnemonic();
-      // const words = mnemonic.split(' ')
-      // console.log("words: ",words);
-      // const account: StellerKeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, validMnemonic) as StellerKeyPair;
-      // console.log("stellar account: ",account.publicKey());
-      
-      // const account1: Wallet = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Ethereum, 0, validMnemonic) as Wallet;
-      // console.log("ETH poly account : ",account1.address)
-
-      // const account2: SolKeys = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Solana, 0, validMnemonic) as SolKeys;
-      // console.log("Solana accounts : ",account2)
-      
       let otp = this.verifyForm.get('OTP').value;
       let mail = this.verifyForm.get('Email').value;
       await this.showLoading();
