@@ -8,6 +8,11 @@ import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { ConnectivityServiceProvider } from 'src/app/providers/connectivity-service/connectivity-service';
 
+//seed-phrase service
+import { SeedPhraseService, BlockchainType, SolKeys } from '../../providers/seedPhraseService/seedPhrase.service';
+import { Wallet } from 'ethers';
+import { Keypair as StellerKeyPair } from "stellar-base"
+import { PublicKey, Keypair as SolKeypair, } from "@solana/web3.js";
 @Component({
    selector: 'page-otp',
    templateUrl: 'otp.html',
@@ -29,7 +34,8 @@ export class OtpPage {
       private service: ApiServiceProvider,
       private loadingCtrl: LoadingController,
       private route: ActivatedRoute,
-      public connectivity: ConnectivityServiceProvider
+      public connectivity: ConnectivityServiceProvider,
+      private seedPhraseService : SeedPhraseService
    ) {
       const emailParam = this.route.snapshot.queryParamMap.get('email');
       const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
@@ -43,9 +49,23 @@ export class OtpPage {
       if (emailParam && shopidParam) {
          this.connectivity.putMenuHide(true);
       }
+      
    }
 
    async checkOTP() {
+      // const validMnemonic = "arm thank snow ski juice check few slogan brush smoke deal type";
+      // const mnemonic = await this.seedPhraseService.generateMnemonic();
+      // const words = mnemonic.split(' ')
+      // console.log("words: ",words);
+      // const account: StellerKeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, validMnemonic) as StellerKeyPair;
+      // console.log("stellar account: ",account.publicKey());
+      
+      // const account1: Wallet = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Ethereum, 0, validMnemonic) as Wallet;
+      // console.log("ETH poly account : ",account1.address)
+
+      // const account2: SolKeys = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Solana, 0, validMnemonic) as SolKeys;
+      // console.log("Solana accounts : ",account2)
+      
       let otp = this.verifyForm.get('OTP').value;
       let mail = this.verifyForm.get('Email').value;
       await this.showLoading();

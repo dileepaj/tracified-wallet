@@ -54,6 +54,7 @@ import { AccountInfoPage } from './pages/account-info/account-info';
 import { TransferPage } from './pages/transfer/transfer';
 import { ItemReceivedPage } from './pages/item-received/item-received';
 import { ItemSentPage } from './pages/item-sent/item-sent';
+import { SeedPhraseService } from './providers/seedPhraseService/seedPhrase.service';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -125,6 +126,7 @@ export function createTranslateLoader(http: HttpClient) {
       Items,
       Properties,
       Clipboard,
+      SeedPhraseService
    ],
    bootstrap: [AppComponent],
    exports: [MintNftPage],
