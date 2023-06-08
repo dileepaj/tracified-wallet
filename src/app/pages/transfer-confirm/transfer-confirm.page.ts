@@ -76,7 +76,9 @@ export class TransferConfirmPage implements OnInit {
                                  this.logger.info('Successfully transferred funds: ' + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
                                  this.logger.info('[FUND_TRANSFER][RECEIVER] ' + this.receiverPK, this.properties.skipConsoleLogs, this.properties.writeToFile);
                                  this.logger.info('[FUND_TRANSFER][AMOUNT] ' + this.transferAmount, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                                 this.presentAlert('Success', 'Successfully transferred ' + this.transferAmount + ' lumens. View account information to see the updated amount.');
+                                 this.translate.get(['SUCCESS', 'SUCCESSFULLY_TRANSFERED']).subscribe(text => {
+                                    this.presentAlert(text['SUCCESS'], text['SUCCESSFULLY_TRANSFERED']);
+                                 });
                                  this.router.navigate(['/fund-transfer'], { replaceUrl: true });
 
                                  this.transferAmount = '';
@@ -103,8 +105,8 @@ export class TransferConfirmPage implements OnInit {
                                  this.logger.info('Successfully transferred funds: ' + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
                                  this.logger.info('[FUND_TRANSFER][RECEIVER] ' + this.receiverPK, this.properties.skipConsoleLogs, this.properties.writeToFile);
                                  this.logger.info('[FUND_TRANSFER][AMOUNT] ' + this.transferAmount, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                                 this.translate.get(['SUCCESS', 'SUCCESSFULLY_TRANSFERED', 'VIEW_ACC_INFO']).subscribe(text => {
-                                    this.presentAlert(text['SUCCESS'], text['SUCCESSFULLY_TRANSFERED '] + this.transferAmount + text[' VIEW_ACC_INFO']);
+                                 this.translate.get(['SUCCESS', 'SUCCESSFULLY_TRANSFERED']).subscribe(text => {
+                                    this.presentAlert(text['SUCCESS'], text['SUCCESSFULLY_TRANSFERED']);
                                  });
                                  this.router.navigate(['/fund-transfer'], { replaceUrl: true });
                               })
@@ -130,7 +132,7 @@ export class TransferConfirmPage implements OnInit {
                      });
                })
                .catch(err => {
-                  console.log('hit 10 miss');
+                  console.log(err);
                   this.dissmissLoading();
                   this.translate.get(['ERROR', 'INVALID_TRANSACTION_PASS']).subscribe(text => {
                      this.presentAlert(text['ERROR'], text['INVALID_TRANSACTION_PASS']);
@@ -139,7 +141,7 @@ export class TransferConfirmPage implements OnInit {
                });
          })
          .catch(err => {
-            console.log('hit 11 miss');
+            console.log(err);
             this.dissmissLoading();
          });
    }
@@ -185,8 +187,6 @@ export class TransferConfirmPage implements OnInit {
    }
 
    async presentLoading() {
-      console.log('present loading');
-
       this.isLoadingPresent = true;
       this.loading = await this.loadingCtrl.create({
          backdropDismiss: false,
@@ -197,7 +197,6 @@ export class TransferConfirmPage implements OnInit {
    }
 
    async dissmissLoading() {
-      console.log('dismiss loading');
       this.isLoadingPresent = false;
       await this.loading?.dismiss();
    }

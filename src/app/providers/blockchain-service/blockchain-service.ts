@@ -151,6 +151,7 @@ export class BlockchainServiceProvider {
             .then(account => {
                var transaction = new TransactionBuilder(account, { fee: '50000', networkPassphrase: this.getNetwork() })
                   .addOperation(Operation.payment({ destination: receivingAccPk, asset: Asset.native(), amount: amount.toString() }))
+                  .setTimeout(TimeoutInfinite)
                   .build();
                transaction.sign(sendingAccPair);
 
