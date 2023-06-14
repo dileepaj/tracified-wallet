@@ -22,6 +22,7 @@ import { SettingFormPage } from './pages/setting-form/setting-form';
 import { TransferPage } from './pages/transfer/transfer';
 import { ItemDetailPage } from './pages/item-detail/item-detail';
 import { AccountInfoPage } from './pages/account-info/account-info';
+import { CreateAccountPage } from './pages/create-account/create-account.page';
 
 const routes: Routes = [
    // { path: '', component: TabsPage },
@@ -67,6 +68,10 @@ const routes: Routes = [
             loadChildren: () => import('./pages/item-received/item-received.module').then(m => m.ItemReceivedPageModule),
          },
       ],
+   },
+   {
+      path: 'create-account',
+      component: CreateAccountPage,
    },
 ];
 

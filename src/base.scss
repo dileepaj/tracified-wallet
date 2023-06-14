@@ -384,4 +384,30 @@ ion-row {
    margin-right: auto;
 }
 
+.input-label {
+   font-size: 16px !important;
+   font-weight: 600 !important;
+}
+
+.btn-border-radius {
+   border-radius: 5px !important;
+}
+
+.gray-color {
+   color: #5e5e5e;
+}
+
+.input-item {
+   --border-style: none;
+   --ion-item-background: #eaeaea !important;
+   width: 100% !important;
+   /* max-height: 48px !important; */
+   margin-top: 10px;
+   border-radius: 10px;
+
+   ion-input {
+      font-size: 16px !important;
+   }
+}
+
 /* END APP.HTML */
