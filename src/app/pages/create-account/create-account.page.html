@@ -5,13 +5,13 @@
       </ion-row>
       <ion-row>
          <ion-label class="title-label"
-            ><h1>Create Account</h1>
-            <p>Create a Tracified Wallet account to manage your blockchain assets.</p>
+            ><h1>{{"CREATE_ACCOUNT" | translate}}</h1>
+            <p>{{"CREATE_ACCOUNT_DESC" | translate}}</p>
          </ion-label>
       </ion-row>
       <form [formGroup]="form">
          <ion-row>
-            <ion-label style="margin-top: 36px" class="input-label">{{'Email Address' | translate}}</ion-label>
+            <ion-label style="margin-top: 36px" class="input-label">{{'EMAIL_ADDRESS' | translate}}</ion-label>
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
@@ -20,7 +20,7 @@
          </ion-row>
 
          <ion-row>
-            <ion-label style="margin-top: 36px" class="input-label">{{'Your Name' | translate}}</ion-label>
+            <ion-label style="margin-top: 36px" class="input-label">{{'YOUR_NAME' | translate}}</ion-label>
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
@@ -39,7 +39,7 @@
          </ion-row>
 
          <ion-row>
-            <ion-label style="margin-top: 32px" class="input-label">{{'Confirm Password' | translate}}</ion-label>
+            <ion-label style="margin-top: 32px" class="input-label">{{'CONFIRM_PASSWORD' | translate}}</ion-label>
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
@@ -49,13 +49,13 @@
          </ion-row>
 
          <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
-            <ion-button color="primary">{{'Proceed' | translate}}</ion-button>
+            <ion-button color="primary">{{'PROCEED' | translate}}</ion-button>
          </ion-row>
          <ion-row class="ion-justify-content-center">
-            <ion-label class="hint-label">Already have an account?</ion-label>
+            <ion-label class="hint-label">{{"ALREADY_HAVE_AN_ACCOUNT" | translate}}</ion-label>
          </ion-row>
          <ion-row class="ion-justify-content-center">
-            <ion-note color="primary" style="font-weight: 700; padding-top: 0px" class="link" routerLink="/otp-page" replaceUrl>{{'Sign In'| translate}} </ion-note>
+            <ion-note color="primary" style="font-weight: 700; padding-top: 0px" class="link" routerLink="/login" replaceUrl>{{'SIGN_IN'| translate}} </ion-note>
          </ion-row>
       </form>
    </ion-grid>
