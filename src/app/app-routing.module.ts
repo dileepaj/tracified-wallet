@@ -22,6 +22,7 @@ import { SettingFormPage } from './pages/setting-form/setting-form';
 import { TransferPage } from './pages/transfer/transfer';
 import { ItemDetailPage } from './pages/item-detail/item-detail';
 import { AccountInfoPage } from './pages/account-info/account-info';
+import { CreateAccountPage } from './pages/create-account/create-account.page';
 import { RequestDeletePage } from './pages/request-delete/request-delete.page';
 
 const routes: Routes = [
@@ -69,11 +70,14 @@ const routes: Routes = [
          },
       ],
    },
+   {
+      path: 'create-account',
+      component: CreateAccountPage,
+   },
   {
     path: 'request-delete',
     component:RequestDeletePage
   },
-
 ];
 
 @NgModule({
