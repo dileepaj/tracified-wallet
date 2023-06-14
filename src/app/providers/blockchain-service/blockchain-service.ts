@@ -22,7 +22,7 @@ export class BlockchainServiceProvider {
       private mappingService: MappingServiceProvider,
       private apiService: ApiServiceProvider,
       private storageService: StorageServiceProvider
-   ) { }
+   ) {}
 
    removeFoAccount(accounts) {
       let otherAccounts = [];
@@ -85,7 +85,7 @@ export class BlockchainServiceProvider {
       });
    }
 
-   validateFundTransfer(sendingAcc, amount) { }
+   validateFundTransfer(sendingAcc, amount) {}
 
    transferFundsForNewAccounts(sendingAccSk, receivingAccPk, amount): Promise<any> {
       return new Promise((resolve, reject) => {
@@ -151,6 +151,7 @@ export class BlockchainServiceProvider {
             .then(account => {
                var transaction = new TransactionBuilder(account, { fee: '50000', networkPassphrase: this.getNetwork() })
                   .addOperation(Operation.payment({ destination: receivingAccPk, asset: Asset.native(), amount: amount.toString() }))
+                  .setTimeout(TimeoutInfinite)
                   .build();
                transaction.sign(sendingAccPair);
 
@@ -364,7 +365,7 @@ export class BlockchainServiceProvider {
    }
 
    mainAccountSuffucientFunds(balance, assetCount): any {
-      let baseFee = assetCount * 0.5 + 4 + 3 + 2;
+      let baseFee = assetCount * 0.5 + 4;
       if (baseFee < balance - 0.5) {
          return true;
       } else {
@@ -401,7 +402,7 @@ export class BlockchainServiceProvider {
                            if (res.status == 200) {
                               this.properties.defaultAccount.subAccounts.push({ pk: keyPair.publicKey(), sk: keyPair.secret(), skp: keyPair.secret(), skInvalidated: false });
                               this.storageService.setDefaultAccount(this.properties.defaultAccount);
-                              this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), 10)
+                              this.transferFundsForNewAccounts(mainSk, keyPair.publicKey(), 3)
                                  .then(() => {
                                     this.invalidateSubAccountKey(keyPair, mainAccount)
                                        .then(() => {
@@ -489,7 +490,7 @@ export class BlockchainServiceProvider {
          server
             .loadAccount(subAccount.publicKey)
             .then(account => {
-               console.log('account.SequenceNo', account)
+               console.log('account.SequenceNo', account);
                let txn = this.acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount);
                resolve(txn);
             })
@@ -529,7 +530,7 @@ export class BlockchainServiceProvider {
       );
 
       if (!subAccount.available) {
-         console.log("Bumping Sequence in Accept: ", subAccount.sequenceNo);
+         console.log('Bumping Sequence in Accept: ', subAccount.sequenceNo);
          transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }));
       }
 
@@ -590,8 +591,8 @@ export class BlockchainServiceProvider {
          .addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }));
 
       if (!subAccount.available) {
-         console.log("Bumping Sequence in Reject");
-         transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }))
+         console.log('Bumping Sequence in Reject');
+         transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }));
       }
 
       const tx = transaction.build();
@@ -611,7 +612,7 @@ export class BlockchainServiceProvider {
       }
       const transaction = new Transaction(xdr, this.getNetwork());
       transaction.sign(keyPair);
-      let signedTrans = transaction.toEnvelope().toXDR('base64')
+      let signedTrans = transaction.toEnvelope().toXDR('base64');
       return signedTrans;
    }
 
@@ -625,7 +626,7 @@ export class BlockchainServiceProvider {
       const transaction = new Transaction(xdr, this.getNetwork());
       // Transaction transaction =Transaction.(xdr)
       transaction.sign(keyPair);
-      let signedTrans = transaction.toEnvelope().toXDR('base64')
+      let signedTrans = transaction.toEnvelope().toXDR('base64');
       let server = new Server(blockchainNet);
       return server.submitTransaction(transaction);
 

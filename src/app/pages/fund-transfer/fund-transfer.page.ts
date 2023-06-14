@@ -56,7 +56,7 @@ export class FundTransferPage implements OnInit {
 
                if (effectiveBalance < this.transferAmount) {
                   this.translate.get(['ERROR', 'FALIED_TO_COPY_KEY']).subscribe(text => {
-                     this.presentAlert(text['ERROR'], text['BALANCE_IS '] + effectiveBalance + text[' TRY_AGAIN_VALID_AMOUNT']);
+                     this.presentAlert(text['ERROR'], text['TRY_AGAIN_VALID_AMOUNT']);
                   });
                } else if (this.transferAmount < 2) {
                   this.translate.get(['ERROR', 'MINIMUM_TRANSFER_AMOUNT']).subscribe(text => {
@@ -73,6 +73,8 @@ export class FundTransferPage implements OnInit {
                         receiverName: this.receiverPK,
                      },
                   });
+                  this.transferAmount = null;
+                  this.receiverPK = null;
                }
             })
             .catch(async err => {
