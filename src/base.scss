@@ -411,6 +411,7 @@ ion-row {
 }
 
 .main-wrapper {
+   position: relative;
    height: 100vh;
    overflow-y: auto;
 }
@@ -442,6 +443,10 @@ ion-row {
 
 ion-button {
    text-transform: none;
+}
+
+.bottom-padding {
+   padding-bottom: 100px;
 }
 
 /* END APP.HTML */

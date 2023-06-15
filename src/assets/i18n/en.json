@@ -268,5 +268,16 @@
    "IMPORT_BC_ACC": "Import Blockchain Account",
    "IMPORT_BC_ACC_DESC": "A blockchain account is needed to manage your assets. We can create one for you or an existing account can be imported",
    "SEEDPHRASE_BUTTON": "Seed Phrase",
-   "PK_BUTTON": "Private Key"
+   "PK_BUTTON": "Private Key",
+
+   "IMPORT_BC_PK": "Import Account",
+   "IMPORT_BC_PK_DESC": "Please enter the following details to proceed",
+   "ACC_NAME": "Account Name",
+   "CREATE_BC_ACC_BUTTON": "Create Blockchain Account",
+   "SELECT_BC": "Select Blockchain",
+
+   "ETHEREUM": "Ethereum",
+   "POLYGON": "Polygon",
+   "SOLANA": "Soalna",
+   "STELLAR": "Stellar"
 }
