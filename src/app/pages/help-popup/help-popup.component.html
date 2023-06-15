@@ -1,0 +1,13 @@
+<div #helpBtn class="wrapper" (click)="presentPopover()">
+   <ion-icon name="help-circle-outline"></ion-icon>
+   <p>Help</p>
+</div>
+<div #helpPopup class="popup" *ngIf="isOpen">
+   <ion-item color="primary" class="header">
+      <ion-label>{{ 'NEED_INFO' | translate }}</ion-label>
+   </ion-item>
+   <ion-item *ngFor="let d of data" (click)="openWebpage(d.url!)">
+      <ion-label>{{ d.title! }}</ion-label>
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+   </ion-item>
+</div>

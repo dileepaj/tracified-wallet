@@ -57,6 +57,7 @@ import { ItemSentPage } from './pages/item-sent/item-sent';
 import { CreateAccountPage } from './pages/create-account/create-account.page';
 import { SeedPhraseService } from './providers/seedPhraseService/seedPhrase.service';
 import { RequestDeletePage } from './pages/request-delete/request-delete.page';
+import { HelpPopupComponent } from './pages/help-popup/help-popup.component';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -89,6 +90,7 @@ export function createTranslateLoader(http: HttpClient) {
       AccountInfoPage,
       CreateAccountPage,
       RequestDeletePage,
+      HelpPopupComponent,
       // TransferPage,
       // ItemReceivedPage,
       // ItemSentPage,
@@ -129,7 +131,7 @@ export function createTranslateLoader(http: HttpClient) {
       FileSystemService,
       Items,
       Properties,
-      SeedPhraseService
+      SeedPhraseService,
    ],
    bootstrap: [AppComponent],
    exports: [MintNftPage],

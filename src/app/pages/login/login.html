@@ -30,7 +30,9 @@
          </ion-row>
 
          <ion-row>
-            <ion-note style="width: 100%; text-align: end" class="link" (click)="gotoForgotPasswordPage()">{{'FORGOTTENPASSWORD'| translate}} </ion-note>
+            <ion-item class="fpItem">
+               <ion-note slot="end" class="link" (click)="gotoForgotPasswordPage()">{{'FORGOTTENPASSWORD'| translate}} </ion-note>
+            </ion-item>
          </ion-row>
 
          <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
