@@ -257,5 +257,6 @@
    "CREATE_ACCOUNT_DESC": "Create a Tracified Wallet account to manage your blockchain assets.",
    "YOUR_NAME": "Your Name",
    "ALREADY_HAVE_AN_ACCOUNT": "Already have an account?",
-   "PROCEED_BUTTON": "Proceed"
+   "PROCEED_BUTTON": "Proceed",
+   "NEED_INFO": "Need more information?"
 }
