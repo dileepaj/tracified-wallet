@@ -410,4 +410,38 @@ ion-row {
    }
 }
 
+.main-wrapper {
+   height: 100vh;
+   overflow-y: auto;
+}
+
+.backBtnWrapper {
+   position: absolute;
+   top: 0;
+   left: 0;
+   padding-top: 10px;
+   padding-left: 10px;
+   width: 100%;
+   ion-icon {
+      font-size: 24px;
+   }
+}
+
+.customBtn {
+   --border-style: none;
+   --box-shadow: none;
+   text-transform: none;
+   width: 100%;
+   border-radius: 5px;
+}
+
+.customWhiteBtn {
+   color: var(--ion-color-dark);
+   border: 1px solid var(--ion-color-dark);
+}
+
+ion-button {
+   text-transform: none;
+}
+
 /* END APP.HTML */

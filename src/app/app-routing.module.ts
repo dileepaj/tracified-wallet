@@ -24,9 +24,11 @@ import { ItemDetailPage } from './pages/item-detail/item-detail';
 import { AccountInfoPage } from './pages/account-info/account-info';
 import { CreateAccountPage } from './pages/create-account/create-account.page';
 import { RequestDeletePage } from './pages/request-delete/request-delete.page';
+import { CreateImportBcAccountPage } from './pages/create-import-bc-account/create-import-bc-account.page';
+import { ImportBcAccountPage } from './pages/import-bc-account/import-bc-account.page';
 
 const routes: Routes = [
-   { path: '', component:  OtpPage},
+   { path: '', component: OtpPage },
    { path: 'get-nft', component: GetNftPage },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage },
@@ -74,10 +76,18 @@ const routes: Routes = [
       path: 'create-account',
       component: CreateAccountPage,
    },
-  {
-    path: 'request-delete',
-    component:RequestDeletePage
-  },
+   {
+      path: 'request-delete',
+      component: RequestDeletePage,
+   },
+   {
+      path: 'create-import-bc-account',
+      component: CreateImportBcAccountPage,
+   },
+   {
+      path: 'import-bc-account',
+      component: ImportBcAccountPage,
+   },
 ];
 
 @NgModule({

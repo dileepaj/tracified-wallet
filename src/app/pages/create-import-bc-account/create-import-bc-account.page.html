@@ -1,0 +1,24 @@
+<ion-content [fullscreen]="true" class="ion-padding main-wrapper">
+   <ion-grid class="cusGrid">
+      <ion-row class="backBtnWrapper">
+         <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-row>
+      <ion-row class="logo">
+         <ion-img src="assets/imgs/tracified-wallet-d.svg"></ion-img>
+      </ion-row>
+
+      <ion-row>
+         <ion-label class="title-label"
+            ><h1>{{"CREATE_IMPORT_BC_ACC" | translate}}</h1>
+            <p>{{"CREATE_IMPORT_BC_ACC_DESC" | translate}}</p>
+         </ion-label>
+      </ion-row>
+      <ion-row style="display: flex; justify-content: center; margin: 50px 0px 0px 0px">
+         <ion-button color="dark" class="customBtn">{{'CREATE_BUTTON' | translate}}</ion-button>
+      </ion-row>
+      <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+         <ion-button color="white" class="customBtn customWhiteBtn">{{'IMPORT_BUTTON' | translate}}</ion-button>
+      </ion-row>
+      <app-help-popup [data]="data"></app-help-popup>
+   </ion-grid>
+</ion-content>

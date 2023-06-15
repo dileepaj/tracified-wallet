@@ -258,5 +258,15 @@
    "YOUR_NAME": "Your Name",
    "ALREADY_HAVE_AN_ACCOUNT": "Already have an account?",
    "PROCEED_BUTTON": "Proceed",
-   "NEED_INFO": "Need more information?"
+   "NEED_INFO": "Need more information?",
+
+   "CREATE_IMPORT_BC_ACC": "Create or Import Blockchain Account",
+   "CREATE_IMPORT_BC_ACC_DESC": "A blockchain account is needed to manage your assets. We can create one for you or an existing account can be imported",
+   "CREATE_BUTTON": "Create",
+   "IMPORT_BUTTON": "Import",
+
+   "IMPORT_BC_ACC": "Import Blockchain Account",
+   "IMPORT_BC_ACC_DESC": "A blockchain account is needed to manage your assets. We can create one for you or an existing account can be imported",
+   "SEEDPHRASE_BUTTON": "Seed Phrase",
+   "PK_BUTTON": "Private Key"
 }

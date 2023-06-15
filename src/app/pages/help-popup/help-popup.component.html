@@ -7,7 +7,7 @@
       <ion-label>{{ 'NEED_INFO' | translate }}</ion-label>
    </ion-item>
    <ion-item *ngFor="let d of data" (click)="openWebpage(d.url!)">
-      <ion-label>{{ d.title! }}</ion-label>
+      <ion-label class="ion-text-wrap">{{ d.title! }}</ion-label>
       <ion-icon name="chevron-forward-outline"></ion-icon>
    </ion-item>
 </div>
