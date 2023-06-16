@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
    selector: 'app-create-account',
@@ -19,7 +20,14 @@ export class CreateAccountPage implements OnInit {
    private loginErrorString: string;
    form: any;
 
-   constructor() {}
+   constructor() {
+      this.form = new FormGroup({
+         username: new FormControl('', Validators.compose([Validators.required])),
+         yourname: new FormControl('', Validators.compose([Validators.required])),
+         password: new FormControl('', Validators.compose([Validators.required])),
+         confpassword: new FormControl('', Validators.compose([Validators.required])),
+      });
+   }
    ngOnInit(): void {
       throw new Error('Method not implemented.');
    }

@@ -1,24 +1,191 @@
 <ion-content [fullscreen]="true" class="ion-padding main-wrapper">
    <ion-grid class="cusGrid bottom-padding">
       <ion-row class="backBtnWrapper">
-         <ion-icon name="arrow-back-outline"></ion-icon>
+         <ion-icon name="arrow-back-outline" (click)="goBack()"></ion-icon>
       </ion-row>
       <ion-row class="logo">
          <ion-img src="assets/imgs/tracified-wallet-d.svg"></ion-img>
       </ion-row>
 
-      <ion-row>
-         <ion-label class="title-label"
-            ><h1>{{"CREATE_IMPORT_BC_ACC" | translate}}</h1>
-            <p>{{"CREATE_IMPORT_BC_ACC_DESC" | translate}}</p>
-         </ion-label>
-      </ion-row>
-      <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
-         <ion-button color="dark" class="customBtn customWhiteBtn customDarkBtn">{{'CREATE_BUTTON' | translate}}</ion-button>
-      </ion-row>
-      <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
-         <ion-button color="white" class="customBtn customWhiteBtn">{{'IMPORT_BUTTON' | translate}}</ion-button>
-      </ion-row>
+      <!--Select create or import-->
+      <div *ngIf="tab == 0">
+         <ion-row>
+            <ion-label class="title-label"
+               ><h1>{{"CREATE_IMPORT_BC_ACC" | translate}}</h1>
+               <p>{{"CREATE_IMPORT_BC_ACC_DESC" | translate}}</p>
+            </ion-label>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center; margin: 50px 0px 10px 0px">
+            <ion-button color="dark" class="customBtn customWhiteBtn customDarkBtn" (click)="changeTab(1)">{{'CREATE_BUTTON' | translate}}</ion-button>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+            <ion-button color="white" class="customBtn customWhiteBtn" (click)="changeTab(3)">{{'IMPORT_BUTTON' | translate}}</ion-button>
+         </ion-row>
+      </div>
+
+      <!--Seed phrase generation -->
+      <div *ngIf="tab == 1">
+         <ion-row>
+            <ion-label class="title-label"
+               ><h1>{{"YOUR_SEED_PHRASE" | translate}}</h1>
+               <p>{{"YOUR_SEED_PHRASE_DESC" | translate}}</p>
+            </ion-label>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center; margin: 30px 0px 10px 0px">
+            <div class="sp-grid">
+               <div class="word" *ngFor="let word of seedPhrase; index as i">
+                  <ion-label>{{i+1}}</ion-label>
+                  <ion-label style="width: 70% !important">{{word}}</ion-label>
+               </div>
+            </div>
+         </ion-row>
+         <ion-row class="importantNotice">
+            <h3>{{"IMPORTANT" | translate}}</h3>
+            <p>{{"SEED_PHRASE_WARNING" | translate}}</p>
+         </ion-row>
+         <ion-row class="checkbox-row">
+            <ion-checkbox color="dark" labelPlacement="end"></ion-checkbox>
+            <ion-label>{{"SEED_PHRASE_CHECKBOX" | translate}}</ion-label>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center">
+            <ion-button color="primary" (click)="changeTab(2)">{{'CONTINUE_BUTTON' | translate}}</ion-button>
+         </ion-row>
+      </div>
+
+      <!--Seed phrase confirmation -->
+      <div *ngIf="tab == 2">
+         <ion-row>
+            <ion-label class="title-label"
+               ><h1>{{"CONFIRM_SEED_PHRASE" | translate}}</h1>
+               <p>{{"CONFIRM_SEED_PHRASE_DESC" | translate}}</p>
+            </ion-label>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center; margin: 30px 0px 10px 0px">
+            <div class="sp-grid">
+               <div class="word clickable-word" *ngFor="let word of shuffledSeedPhrase; index as i" [class.selected-word]="selectedSeedPhrase.includes(word)" (click)="selectWord(word)">
+                  <ion-label style="width: 100% !important; text-align: center">{{word}}</ion-label>
+                  <ion-label class="word-index" *ngIf="selectedSeedPhrase.includes(word)">{{selectedSeedPhrase.indexOf(word) + 1}}</ion-label>
+               </div>
+            </div>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center">
+            <ion-button color="primary" [disabled]="selectedSeedPhrase.length < 12" (click)="changeTab(4)">{{'CONFIRM_BUTTON' | translate}}</ion-button>
+         </ion-row>
+      </div>
+
+      <!--Import bc account -->
+      <div *ngIf="tab == 3">
+         <ion-row>
+            <ion-label class="title-label"
+               ><h1>{{"YOUR_SEED_PHRASE" | translate}}</h1>
+               <p>{{"IMPORT_SEED_PHRASE_DESC" | translate}}</p>
+            </ion-label>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center; margin: 30px 0px 10px 0px">
+            <form [formGroup]="form">
+               <div class="sp-grid">
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">1.</ion-label>
+                     <ion-input formControlName="seedPhrase1" name="seedPhrase1" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">2.</ion-label>
+                     <ion-input formControlName="seedPhrase2" name="seedPhrase2" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">3.</ion-label>
+                     <ion-input formControlName="seedPhrase3" name="seedPhrase3" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">4.</ion-label>
+                     <ion-input formControlName="seedPhrase4" name="seedPhrase4" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">5.</ion-label>
+                     <ion-input formControlName="seedPhrase5" name="seedPhrase5" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">6.</ion-label>
+                     <ion-input formControlName="seedPhrase6" name="seedPhrase6" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">7.</ion-label>
+                     <ion-input formControlName="seedPhrase7" name="seedPhrase7" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">8.</ion-label>
+                     <ion-input formControlName="seedPhrase8" name="seedPhrase8" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">9.</ion-label>
+                     <ion-input formControlName="seedPhrase9" name="seedPhrase9" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">10.</ion-label>
+                     <ion-input formControlName="seedPhrase10" name="seedPhrase10" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">11.</ion-label>
+                     <ion-input formControlName="seedPhrase11" name="seedPhrase11" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">12.</ion-label>
+                     <ion-input formControlName="seedPhrase12" name="seedPhrase12" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+               </div>
+            </form>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center">
+            <ion-button color="primary" (click)="changeTab(4)">Continue</ion-button>
+         </ion-row>
+      </div>
+
+      <!--Create blockchain account -->
+      <div *ngIf="tab == 4">
+         <ion-row>
+            <ion-label class="title-label"
+               ><h1>{{"CREATE_BC_ACC" | translate}}</h1>
+               <p>{{"CREATE_BC_ACC_DESC" | translate}}</p>
+            </ion-label>
+         </ion-row>
+         <form [formGroup]="createAccForm">
+            <ion-row>
+               <ion-label style="margin-top: 36px" class="input-label">{{'ACC_NAME' | translate}}</ion-label>
+            </ion-row>
+            <ion-row>
+               <ion-item class="input-item" lines="full">
+                  <ion-input #accName formControlName="accname" type="text" name="accName" keyNext></ion-input>
+               </ion-item>
+            </ion-row>
+
+            <ion-row>
+               <ion-label style="margin-top: 32px" class="input-label">{{'CREATE_PASSWORD' | translate}}</ion-label>
+            </ion-row>
+            <ion-row>
+               <ion-item class="input-item" lines="full">
+                  <ion-input formControlName="password" name="password" [type]="passwordType" clearInput="false"></ion-input>
+                  <ion-icon slot="end" [name]="passwordIcon" class="passwordIcon gray-color" (click)="hideShowPassword()"> </ion-icon>
+               </ion-item>
+            </ion-row>
+            <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+               <ion-button color="white" class="customBtn customWhiteBtn">{{'GENERATE_PASSWORD_BUTTON' | translate}}</ion-button>
+            </ion-row>
+
+            <ion-row>
+               <ion-label style="margin-top: 32px" class="input-label">{{'CONFIRM_PASSWORD' | translate}}</ion-label>
+            </ion-row>
+            <ion-row>
+               <ion-item class="input-item" lines="full">
+                  <ion-input formControlName="confpassword" name="confPassword" [type]="confPasswordType" clearInput="false"></ion-input>
+                  <ion-icon slot="end" [name]="confPasswordIcon" class="passwordIcon gray-color" (click)="hideShowConfPassword()"> </ion-icon>
+               </ion-item>
+            </ion-row>
+
+            <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
+               <ion-button color="primary">{{'CREATE_BC_ACC_BUTTON' | translate}}</ion-button>
+            </ion-row>
+         </form>
+      </div>
    </ion-grid>
    <app-help-popup [data]="data"></app-help-popup>
 </ion-content>

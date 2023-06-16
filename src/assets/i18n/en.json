@@ -146,7 +146,7 @@
    "DIFF_ACC": "Sign in with a different account",
 
    "DONE": "Done",
-   "IMPORTANT": "IMPORTANT",
+   "IMPORTANT": "IMPORTANT!",
    "SAFE_KEY": "Keep this in a safe place since this will be required to change the password of the account.",
 
    "ERROR": "Error",
@@ -286,5 +286,17 @@
    "CREATE_BC_ACC_DESC": "Please enter the following details to proceed",
    "GENERATE_PASSWORD_BUTTON": "Generate Password",
 
-   "HELP_BUTTON": "Help"
+   "HELP_BUTTON": "Help",
+
+   "YOUR_SEED_PHRASE": "Your Seed Phrase",
+   "YOUR_SEED_PHRASE_DESC": "Your Seed Phrase makes it easy to back up and restore your account. Write down these words in the right order.",
+   "SEED_PHRASE_WARNING": "Never share this phrase with anyone. Write it down somewhere safe. You will not be able to recover your account and its assets without this phrase.",
+   "SEED_PHRASE_CHECKBOX": "I have stored my seed phrase in the right order.",
+   "CONTINUE_BUTTON": "Continue",
+   "CONTINUE_BUTTON_2": "Continue",
+
+   "CONFIRM_SEED_PHRASE": "Confirm Seed Phrase",
+   "CONFIRM_SEED_PHRASE_DESC": "Verify that you saved your seed phrase correctly by selecting the words in the right order.",
+   "CONFIRM_BUTTON": "Confirm",
+   "IMPORT_SEED_PHRASE_DESC": "Enter your Seed Phrase to import existing blockchain account(s)."
 }
