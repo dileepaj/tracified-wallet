@@ -58,6 +58,8 @@ import { CreateAccountPage } from './pages/create-account/create-account.page';
 import { SeedPhraseService } from './providers/seedPhraseService/seedPhrase.service';
 import { RequestDeletePage } from './pages/request-delete/request-delete.page';
 import { HelpPopupComponent } from './pages/help-popup/help-popup.component';
+import { CreateImportBcAccountPage } from './pages/create-import-bc-account/create-import-bc-account.page';
+import { ImportBcAccountPage } from './pages/import-bc-account/import-bc-account.page';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -91,6 +93,8 @@ export function createTranslateLoader(http: HttpClient) {
       CreateAccountPage,
       RequestDeletePage,
       HelpPopupComponent,
+      CreateImportBcAccountPage,
+      ImportBcAccountPage,
       // TransferPage,
       // ItemReceivedPage,
       // ItemSentPage,

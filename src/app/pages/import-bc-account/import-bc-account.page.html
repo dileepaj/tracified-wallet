@@ -1,0 +1,70 @@
+<ion-content [fullscreen]="true" class="ion-padding main-wrapper">
+   <ion-grid class="cusGrid bottom-padding">
+      <ion-row class="backBtnWrapper">
+         <ion-icon name="arrow-back-outline" (click)="goBack()"></ion-icon>
+      </ion-row>
+      <ion-row class="logo">
+         <ion-img src="assets/imgs/tracified-wallet-d.svg"></ion-img>
+      </ion-row>
+      <div *ngIf="tab == 0">
+         <ion-row>
+            <ion-label class="title-label"
+               ><h1>{{"IMPORT_BC_ACC" | translate}}</h1>
+               <p>{{"IMPORT_BC_ACC_DESC" | translate}}</p>
+            </ion-label>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center; margin: 50px 0px 0px 0px">
+            <ion-button color="dark" class="customBtn customDarkBtn">{{'SEEDPHRASE_BUTTON' | translate}}</ion-button>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+            <ion-button color="dark" class="customBtn customDarkBtn" (click)="changeTab(1)">{{'PK_BUTTON' | translate}}</ion-button>
+         </ion-row>
+      </div>
+      <div *ngIf="tab == 1">
+         <ion-row>
+            <ion-label class="title-label"
+               ><h1>{{"IMPORT_BC_PK" | translate}}</h1>
+               <p>{{"IMPORT_BC_PK_DESC" | translate}}</p>
+            </ion-label>
+         </ion-row>
+         <form [formGroup]="form">
+            <ion-row>
+               <ion-label style="margin-top: 36px" class="input-label">{{'ACC_NAME' | translate}}</ion-label>
+            </ion-row>
+            <ion-row>
+               <ion-item class="input-item" lines="full">
+                  <ion-input #accName formControlName="accname" type="text" name="accName" keyNext></ion-input>
+               </ion-item>
+            </ion-row>
+
+            <ion-row>
+               <ion-label style="margin-top: 36px" class="input-label">{{'SELECT_BC' | translate}}</ion-label>
+            </ion-row>
+            <ion-row>
+               <ion-item class="input-item" lines="full">
+                  <ion-select style="width: 100%" label="Default label" placeholder="{{'SELECT_BC' | translate}}" appNoArrow>
+                     <ion-select-option value="ethereum">{{"ETHEREUM" | translate}}</ion-select-option>
+                     <ion-select-option value="polygon">{{"POLYGON" | translate}}</ion-select-option>
+                     <ion-select-option value="solana">{{"SOLANA" | translate}}</ion-select-option>
+                     <ion-select-option value="stellar">{{"STELLAR" | translate}}</ion-select-option>
+                  </ion-select>
+                  <ion-icon slot="end" name="caret-forward-outline" class="caret"></ion-icon>
+               </ion-item>
+            </ion-row>
+            <ion-row>
+               <ion-label style="margin-top: 36px" class="input-label">{{'PRIVATE_KEY' | translate}}</ion-label>
+            </ion-row>
+            <ion-row>
+               <ion-item class="input-item" lines="full">
+                  <ion-textarea #pk formControlName="pk" type="text" name="publicKey" keyNext></ion-textarea>
+               </ion-item>
+            </ion-row>
+
+            <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
+               <ion-button color="primary">{{'CREATE_BC_ACC_BUTTON' | translate}}</ion-button>
+            </ion-row>
+         </form>
+      </div>
+   </ion-grid>
+   <app-help-popup [data]="data"></app-help-popup>
+</ion-content>

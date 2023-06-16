@@ -1,8 +1,12 @@
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true" class="ion-padding main-wrapper">
    <ion-grid class="cusGrid">
+      <ion-row class="backBtnWrapper">
+         <ion-icon name="arrow-back-outline" *ngIf="false"></ion-icon>
+      </ion-row>
       <ion-row class="logo">
          <ion-img src="assets/imgs/tracified-wallet-d.svg"></ion-img>
       </ion-row>
+
       <ion-row>
          <ion-label class="title-label"
             ><h1>{{"CREATE_ACCOUNT" | translate}}</h1>
@@ -24,7 +28,7 @@
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
-               <ion-input #userName formControlName="yourname" type="text" name="yourName" keyNext></ion-input>
+               <ion-input #yourName formControlName="yourname" type="text" name="yourName" keyNext></ion-input>
             </ion-item>
          </ion-row>
 
@@ -49,7 +53,7 @@
          </ion-row>
 
          <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
-            <ion-button color="primary">{{'PROCEED' | translate}}</ion-button>
+            <ion-button color="primary">{{'PROCEED_BUTTON' | translate}}</ion-button>
          </ion-row>
          <ion-row class="ion-justify-content-center">
             <ion-label class="hint-label">{{"ALREADY_HAVE_AN_ACCOUNT" | translate}}</ion-label>
