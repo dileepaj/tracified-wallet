@@ -60,7 +60,6 @@ import { RequestDeletePage } from './pages/request-delete/request-delete.page';
 import { HelpPopupComponent } from './pages/help-popup/help-popup.component';
 import { CreateImportBcAccountPage } from './pages/create-import-bc-account/create-import-bc-account.page';
 import { ImportBcAccountPage } from './pages/import-bc-account/import-bc-account.page';
-import { ImportBcPkPage } from './pages/import-bc-pk/import-bc-pk.page';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -96,7 +95,6 @@ export function createTranslateLoader(http: HttpClient) {
       HelpPopupComponent,
       CreateImportBcAccountPage,
       ImportBcAccountPage,
-      ImportBcPkPage,
       // TransferPage,
       // ItemReceivedPage,
       // ItemSentPage,

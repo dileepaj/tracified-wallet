@@ -20,7 +20,21 @@ export class ImportBcAccountPage implements OnInit {
          url: 'https://docs.tracified.com',
       },
    ];
+
+   tab: number = 0;
+
+   form: any;
    constructor() {}
 
    ngOnInit() {}
+
+   public changeTab(tab: number) {
+      this.tab = tab;
+   }
+
+   public goBack() {
+      if (this.tab != 0) {
+         this.tab--;
+      }
+   }
 }

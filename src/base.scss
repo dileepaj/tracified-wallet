@@ -429,11 +429,14 @@ ion-row {
 }
 
 .customBtn {
-   --border-style: none;
    --box-shadow: none;
    text-transform: none;
    width: 100%;
    border-radius: 5px;
+}
+
+.customDarkBtn {
+   background-color: var(--ion-color-dark);
 }
 
 .customWhiteBtn {

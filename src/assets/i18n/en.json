@@ -279,5 +279,12 @@
    "ETHEREUM": "Ethereum",
    "POLYGON": "Polygon",
    "SOLANA": "Soalna",
-   "STELLAR": "Stellar"
+   "STELLAR": "Stellar",
+
+   "CREATE_PASSWORD": "Create Password",
+   "CREATE_BC_ACC": "Create Blockchain Account",
+   "CREATE_BC_ACC_DESC": "Please enter the following details to proceed",
+   "GENERATE_PASSWORD_BUTTON": "Generate Password",
+
+   "HELP_BUTTON": "Help"
 }
