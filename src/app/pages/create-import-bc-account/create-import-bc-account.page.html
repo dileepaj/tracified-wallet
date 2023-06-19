@@ -44,11 +44,11 @@
             <p>{{"SEED_PHRASE_WARNING" | translate}}</p>
          </ion-row>
          <ion-row class="checkbox-row">
-            <ion-checkbox color="dark" labelPlacement="end"></ion-checkbox>
+            <ion-checkbox color="dark" labelPlacement="end" #checkbox></ion-checkbox>
             <ion-label>{{"SEED_PHRASE_CHECKBOX" | translate}}</ion-label>
          </ion-row>
          <ion-row style="display: flex; justify-content: center">
-            <ion-button color="primary" (click)="changeTab(2)">{{'CONTINUE_BUTTON' | translate}}</ion-button>
+            <ion-button color="primary" [disabled]="!checkbox.checked" (click)="changeTab(2)">{{'CONTINUE_BUTTON' | translate}}</ion-button>
          </ion-row>
       </div>
 

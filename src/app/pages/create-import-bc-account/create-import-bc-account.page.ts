@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 
 @Component({
    selector: 'app-create-import-bc-account',
@@ -25,7 +26,7 @@ export class CreateImportBcAccountPage implements OnInit {
    tab: number = 0;
    prevTab: number = 0;
 
-   seedPhrase: string[] = ['ankle', 'measure', 'slender', 'equip', 'stable', 'equal', 'record', 'recall', 'arrest', 'fury', 'skirt', 'fast'];
+   seedPhrase: string[] = [];
 
    shuffledSeedPhrase: string[] = [];
 
@@ -39,7 +40,9 @@ export class CreateImportBcAccountPage implements OnInit {
    passwordIcon: string = 'eye-off';
    confPasswordIcon: string = 'eye-off';
 
-   constructor() {
+   constructor(
+      private seedPhraseService: SeedPhraseService
+   ) {
       this.form = new FormGroup({
          seedPhrase1: new FormControl('', Validators.compose([Validators.required])),
          seedPhrase2: new FormControl('', Validators.compose([Validators.required])),
@@ -63,9 +66,25 @@ export class CreateImportBcAccountPage implements OnInit {
 
    ngOnInit() {}
 
-   public changeTab(tab: number) {
+   public async changeTab(tab: number) {
+      if (tab == 1) {
+         let mnemonic = await this.seedPhraseService.generateMnemonic()
+         const words = mnemonic.split(' ')
+         this.seedPhrase = words;
+         console.log("new seed phrase : ", this.seedPhrase)
+      }
       if (tab == 2) {
          this.shuffleArray();
+      }
+      if(tab == 4){
+         let rst = this.validateSeedPhrase()
+         if(rst){
+            //save on local storage
+         }
+         else{
+            alert("invalid seedphrase")
+            return
+         }
       }
       this.prevTab = this.tab;
       this.tab = tab;
@@ -87,15 +106,15 @@ export class CreateImportBcAccountPage implements OnInit {
 
    public selectWord(word: string) {
       if (this.selectedSeedPhrase.includes(word) && this.selectedSeedPhrase.indexOf(word) == this.selectedSeedPhrase.length - 1) {
-         this.selectedSeedPhrase.pop();
+         (this.selectedSeedPhrase).pop();
       } else if (!this.selectedSeedPhrase.includes(word)) {
-         this.selectedSeedPhrase.push(word);
+         (this.selectedSeedPhrase).push(word);
       }
    }
 
    public shuffleArray() {
       let arr = [];
-      this.seedPhrase.map(s => {
+      (this.seedPhrase).map(s => {
          arr.push(s);
       });
       for (let i = arr.length - 1; i > 0; i--) {
@@ -105,6 +124,20 @@ export class CreateImportBcAccountPage implements OnInit {
          arr[j] = temp;
       }
       this.shuffledSeedPhrase = arr;
+   }
+
+   public validateSeedPhrase():Boolean{
+      let generatedSeed = this.seedPhrase.join(',')
+      let selectedSeed = this.selectedSeedPhrase.join(',')
+      //check if both arrays are equal
+      if(generatedSeed == selectedSeed){
+         //check if provided mnemonic is a valid one
+         let rst = SeedPhraseService.validateMnemonic(selectedSeed.replace(/,/g," "))
+         return rst
+      }
+      else{
+         return false
+      }
    }
 
    hideShowPassword() {
