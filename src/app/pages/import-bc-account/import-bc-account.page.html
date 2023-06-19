@@ -7,7 +7,7 @@
          <ion-img src="assets/imgs/tracified-wallet-d.svg"></ion-img>
       </ion-row>
       <div *ngIf="tab == 0">
-         <ion-row>
+         <ion-row style="display: flex; justify-content: center">
             <ion-label class="title-label"
                ><h1>{{"IMPORT_BC_ACC" | translate}}</h1>
                <p>{{"IMPORT_BC_ACC_DESC" | translate}}</p>
@@ -21,7 +21,7 @@
          </ion-row>
       </div>
       <div *ngIf="tab == 1">
-         <ion-row>
+         <ion-row style="display: flex; justify-content: center">
             <ion-label class="title-label"
                ><h1>{{"IMPORT_BC_PK" | translate}}</h1>
                <p>{{"IMPORT_BC_PK_DESC" | translate}}</p>
@@ -67,7 +67,7 @@
       </div>
       <!--Import bc account -->
       <div *ngIf="tab == 2">
-         <ion-row>
+         <ion-row style="display: flex; justify-content: center">
             <ion-label class="title-label"
                ><h1>{{"IMPORT_BC_PK" | translate}}</h1>
                <p>{{"IMPORT_SEED_PHRASE_DESC" | translate}}</p>
