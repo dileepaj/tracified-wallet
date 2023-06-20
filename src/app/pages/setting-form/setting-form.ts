@@ -11,6 +11,7 @@ import { ConnectivityServiceProvider } from '../../providers/connectivity-servic
 import { LoginPage } from '../../pages/login/login';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'page-setting-form',
@@ -292,7 +293,7 @@ export class SettingFormPage {
    async presentToast(message) {
       const toast = await this.toastCtrl.create({
          message: message,
-         duration: 2000,
+         duration: TOAST_TIMER.SHORT_TIMER,
          position: 'bottom',
       });
       await toast.present();

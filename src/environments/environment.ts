@@ -9,3 +9,9 @@ export const ENV: any = {
    NETWORK_TYPE: 'test',
    NFT_BACKEND: 'https://qa.api.nft.tracified.com',
 };
+
+export const TOAST_TIMER: any ={
+   SHORT_TIMER : 2500,
+   MID_TIMER : 3500,
+   LONG_TIMER : 4500
+}

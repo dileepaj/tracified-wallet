@@ -8,3 +8,9 @@ export const ENV: any = {
    BLOCKCHAIN_NETWORK: 'https://horizon-testnet.stellar.org',
    NETWORK_TYPE: 'test',
 };
+
+export const TOAST_TIMER: any ={
+   SHORT_TIMER : 2500,
+   MID_TIMER : 3500,
+   LONG_TIMER : 4500
+}

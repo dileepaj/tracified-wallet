@@ -13,6 +13,7 @@ import { ApiServiceProvider } from '../api-service/api-service';
 import { ConnectivityServiceProvider } from '../connectivity-service/connectivity-service';
 import { StorageServiceProvider } from '../storage-service/storage-service';
 import { MappingServiceProvider } from '../mapping-service/mapping-service';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Injectable({
    providedIn: 'root',
@@ -166,7 +167,7 @@ export class AuthServiceProvider {
    async presentToast(message) {
       const toast = await this.toastCtrl.create({
          message: message,
-         duration: 2500,
+         duration: TOAST_TIMER.SHORT_TIMER,
          position: 'bottom',
       });
       await toast.present();

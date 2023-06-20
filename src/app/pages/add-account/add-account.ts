@@ -16,6 +16,7 @@ import { Properties } from '../../shared/properties';
 // import { Logger } from 'ionic-logger-new';
 import { LoggerService } from 'src/app/providers/logger-service/logger.service';
 import { Router, NavigationExtras } from '@angular/router';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 // Pages
 // import { AccountInfoPage } from '../../pages/account-info/account-info';
@@ -266,7 +267,7 @@ export class AddAccountPage {
 
       this.toastInstance = await this.toastCtrl.create({
          message: message,
-         duration: 2000,
+         duration: TOAST_TIMER.SHORT_TIMER,
          position: 'bottom',
       });
 

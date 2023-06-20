@@ -15,6 +15,7 @@ import { StorageServiceProvider } from '../../providers/storage-service/storage-
 import { NavigationExtras, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debug } from 'console';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'page-mint-nft',
@@ -467,7 +468,7 @@ export class MintNftPage {
    async presentToast(msg) {
       const toast = await this.toastCtrl.create({
          message: msg,
-         duration: 3000,
+         duration: TOAST_TIMER.MID_TIMER,
          position: 'bottom',
       });
       await toast.present();

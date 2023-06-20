@@ -15,6 +15,7 @@ import { ConnectivityServiceProvider } from '../../providers/connectivity-servic
 // Pages and Components
 import { LoggerService } from 'src/app/providers/logger-service/logger.service';
 import { Router } from '@angular/router';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'page-login',
@@ -173,7 +174,7 @@ export class LoginPage {
 
       this.toastInstance = await this.toastCtrl.create({
          message: message,
-         duration: 2000,
+         duration: TOAST_TIMER.SHORT_TIMER,
          position: 'middle',
       });
 
