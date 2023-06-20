@@ -35,7 +35,7 @@
             <div class="sp-grid">
                <div class="word" *ngFor="let word of seedPhrase; index as i">
                   <ion-label>{{i+1}}</ion-label>
-                  <ion-label style="width: 70% !important">{{word}}</ion-label>
+                  <ion-label style="width: 70% !important">{{getWord(word)}}</ion-label>
                </div>
             </div>
          </ion-row>
@@ -63,7 +63,7 @@
          <ion-row style="display: flex; justify-content: center; margin: 30px 0px 10px 0px">
             <div class="sp-grid">
                <div class="word clickable-word" *ngFor="let word of shuffledSeedPhrase; index as i" [class.selected-word]="selectedSeedPhrase.includes(word)" (click)="selectWord(word)">
-                  <ion-label style="width: 100% !important; text-align: center">{{word}}</ion-label>
+                  <ion-label style="width: 100% !important; text-align: center">{{getWord(word)}}</ion-label>
                   <ion-label class="word-index" *ngIf="selectedSeedPhrase.includes(word)">{{selectedSeedPhrase.indexOf(word) + 1}}</ion-label>
                </div>
             </div>
