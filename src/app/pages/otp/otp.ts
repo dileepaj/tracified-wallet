@@ -13,6 +13,7 @@ import { SeedPhraseService, BlockchainType, SolKeys } from '../../providers/seed
 import { Wallet } from 'ethers';
 import { Keypair as StellerKeyPair } from "stellar-base"
 import { PublicKey, Keypair as SolKeypair, } from "@solana/web3.js";
+import { TOAST_TIMER } from 'src/environments/environment';
 @Component({
    selector: 'page-otp',
    templateUrl: 'otp.html',
@@ -84,7 +85,7 @@ export class OtpPage {
    async presentToast(msg) {
       const toast = await this.toastCtrl.create({
          message: msg,
-         duration: 2500,
+         duration: TOAST_TIMER.SHORT_TIMER,
          position: 'bottom',
       });
       await toast.present();

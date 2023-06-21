@@ -6,6 +6,7 @@ import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { LoginPage } from '../login/login';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'page-reset-password',
@@ -195,7 +196,7 @@ export class ResetPasswordPage {
    async presentToast(message) {
       const toastInstance = await this.toastCtrl.create({
          message: message,
-         duration: 3000,
+         duration: TOAST_TIMER.MID_TIMER,
          position: 'bottom',
       });
 

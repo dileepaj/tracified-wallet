@@ -16,6 +16,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BcAccountPage } from '../../pages/bc-account/bc-account';
 import { Router } from '@angular/router';
 import { formatDate } from '@angular/common';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'page-item-detail',
@@ -464,7 +465,7 @@ export class ItemDetailPage implements OnInit {
    async presentToast(message) {
       let toast = await this.toastCtrl.create({
          message: message,
-         duration: 2000,
+         duration: TOAST_TIMER.SHORT_TIMER,
          position: 'bottom',
       });
       await toast.present();

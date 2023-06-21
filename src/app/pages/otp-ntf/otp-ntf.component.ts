@@ -7,6 +7,7 @@ import { GetNftPage } from '../../pages/get-nft/get-nft';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { restrictedCharacters } from 'src/app/shared/validation';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'app-otp-ntf',
@@ -61,7 +62,7 @@ export class OtpNtfComponent {
    async presentToast(msg) {
       const toast = await this.toastCtrl.create({
          message: msg,
-         duration: 2500,
+         duration: TOAST_TIMER.SHORT_TIMER,
          position: 'bottom',
       });
       await toast.present();

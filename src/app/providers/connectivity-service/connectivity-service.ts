@@ -5,6 +5,7 @@ import { Network } from '@capacitor/network';
 import { Properties } from '../../shared/properties';
 import { LoggerService } from '../logger-service/logger.service';
 import { EventsService } from '../event-service/events.service';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Injectable({
    providedIn: 'root',
@@ -66,7 +67,7 @@ export class ConnectivityServiceProvider {
       }
       this.toastInstance = await this.toastCtrl.create({
          message: message,
-         duration: 3500,
+         duration: TOAST_TIMER.MID_TIMER,
          position: 'bottom',
       });
       const { role } = await this.toastInstance.onDidDismiss();

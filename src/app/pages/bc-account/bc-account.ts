@@ -7,6 +7,7 @@ import { ConnectivityServiceProvider } from '../../providers/connectivity-servic
 // import { FundTransferPage } from '../../pages/fund-transfer/fund-transfer';
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { Router } from '@angular/router';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'page-bc-account',
@@ -98,7 +99,7 @@ export class BcAccountPage {
    async presentToast(message) {
       let toast = await this.toastCtrl.create({
          message: message,
-         duration: 4000,
+         duration: TOAST_TIMER.LONG_TIMER,
          position: 'middle',
       });
       await toast.present();

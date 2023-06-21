@@ -10,6 +10,7 @@ import { LoggerService } from 'src/app/providers/logger-service/logger.service';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { TranslateService } from '@ngx-translate/core';
 import { blockchainNetType } from 'src/app/shared/config';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'page-item-received',
@@ -286,7 +287,7 @@ export class ItemReceivedPage {
    async presentToast(message) {
       let toast = await this.toastCtrl.create({
          message: message,
-         duration: 2500,
+         duration: TOAST_TIMER.SHORT_TIMER,
          position: 'bottom',
       });
       await toast.present();
