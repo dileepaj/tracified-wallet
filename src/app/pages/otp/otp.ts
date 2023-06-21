@@ -7,12 +7,6 @@ import { GetNftPage } from '../../pages/get-nft/get-nft';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { ConnectivityServiceProvider } from 'src/app/providers/connectivity-service/connectivity-service';
-
-//seed-phrase service
-import { SeedPhraseService, BlockchainType, SolKeys } from '../../providers/seedPhraseService/seedPhrase.service';
-import { Wallet } from 'ethers';
-import { Keypair as StellerKeyPair } from "stellar-base"
-import { PublicKey, Keypair as SolKeypair, } from "@solana/web3.js";
 import { TOAST_TIMER } from 'src/environments/environment';
 @Component({
    selector: 'page-otp',
@@ -35,8 +29,7 @@ export class OtpPage {
       private service: ApiServiceProvider,
       private loadingCtrl: LoadingController,
       private route: ActivatedRoute,
-      public connectivity: ConnectivityServiceProvider,
-      private seedPhraseService : SeedPhraseService
+      public connectivity: ConnectivityServiceProvider
    ) {
       const emailParam = this.route.snapshot.queryParamMap.get('email');
       const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
