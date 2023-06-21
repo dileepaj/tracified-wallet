@@ -7,27 +7,27 @@
          <ion-img src="assets/imgs/tracified-wallet-d.svg"></ion-img>
       </ion-row>
       <div *ngIf="tab == 0">
-         <ion-row>
+         <ion-row style="display: flex; justify-content: center">
             <ion-label class="title-label"
                ><h1>{{"IMPORT_BC_ACC" | translate}}</h1>
                <p>{{"IMPORT_BC_ACC_DESC" | translate}}</p>
             </ion-label>
          </ion-row>
          <ion-row style="display: flex; justify-content: center; margin: 50px 0px 0px 0px">
-            <ion-button color="dark" class="customBtn customDarkBtn">{{'SEEDPHRASE_BUTTON' | translate}}</ion-button>
+            <ion-button color="dark" class="customBtn customDarkBtn" (click)="changeTab(2)">{{'SEEDPHRASE_BUTTON' | translate}}</ion-button>
          </ion-row>
          <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
             <ion-button color="dark" class="customBtn customDarkBtn" (click)="changeTab(1)">{{'PK_BUTTON' | translate}}</ion-button>
          </ion-row>
       </div>
       <div *ngIf="tab == 1">
-         <ion-row>
+         <ion-row style="display: flex; justify-content: center">
             <ion-label class="title-label"
                ><h1>{{"IMPORT_BC_PK" | translate}}</h1>
                <p>{{"IMPORT_BC_PK_DESC" | translate}}</p>
             </ion-label>
          </ion-row>
-         <form [formGroup]="form">
+         <form [formGroup]="pkForm">
             <ion-row>
                <ion-label style="margin-top: 36px" class="input-label">{{'ACC_NAME' | translate}}</ion-label>
             </ion-row>
@@ -56,7 +56,7 @@
             </ion-row>
             <ion-row>
                <ion-item class="input-item" lines="full">
-                  <ion-textarea #pk formControlName="pk" type="text" name="publicKey" keyNext></ion-textarea>
+                  <ion-textarea #pk formControlName="pk" type="text" name="privateKey" keyNext></ion-textarea>
                </ion-item>
             </ion-row>
 
@@ -64,6 +64,72 @@
                <ion-button color="primary">{{'CREATE_BC_ACC_BUTTON' | translate}}</ion-button>
             </ion-row>
          </form>
+      </div>
+      <!--Import bc account -->
+      <div *ngIf="tab == 2">
+         <ion-row style="display: flex; justify-content: center">
+            <ion-label class="title-label"
+               ><h1>{{"IMPORT_BC_PK" | translate}}</h1>
+               <p>{{"IMPORT_SEED_PHRASE_DESC" | translate}}</p>
+            </ion-label>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center; margin: 30px 0px 10px 0px">
+            <form [formGroup]="spForm">
+               <div class="sp-grid">
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">1.</ion-label>
+                     <ion-input formControlName="seedPhrase1" name="seedPhrase1" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">2.</ion-label>
+                     <ion-input formControlName="seedPhrase2" name="seedPhrase2" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">3.</ion-label>
+                     <ion-input formControlName="seedPhrase3" name="seedPhrase3" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">4.</ion-label>
+                     <ion-input formControlName="seedPhrase4" name="seedPhrase4" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">5.</ion-label>
+                     <ion-input formControlName="seedPhrase5" name="seedPhrase5" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">6.</ion-label>
+                     <ion-input formControlName="seedPhrase6" name="seedPhrase6" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">7.</ion-label>
+                     <ion-input formControlName="seedPhrase7" name="seedPhrase7" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">8.</ion-label>
+                     <ion-input formControlName="seedPhrase8" name="seedPhrase8" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">9.</ion-label>
+                     <ion-input formControlName="seedPhrase9" name="seedPhrase9" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">10.</ion-label>
+                     <ion-input formControlName="seedPhrase10" name="seedPhrase10" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">11.</ion-label>
+                     <ion-input formControlName="seedPhrase11" name="seedPhrase11" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+                  <ion-item class="sp-input-item" lines="full">
+                     <ion-label slot="start">12.</ion-label>
+                     <ion-input formControlName="seedPhrase12" name="seedPhrase12" type="text" clearInput="false"></ion-input>
+                  </ion-item>
+               </div>
+            </form>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: center">
+            <ion-button color="primary">Continue</ion-button>
+         </ion-row>
       </div>
    </ion-grid>
    <app-help-popup [data]="data"></app-help-popup>

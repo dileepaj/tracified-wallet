@@ -40,7 +40,17 @@ export class StorageServiceProvider {
       storeName: 'temPubKey',
    });
 
-   constructor(private logger: LoggerService, private properties: Properties) {}
+   public deviceMnemonic = localforage.createInstance({
+      name: 'seedPhrase',
+      storeName: 'seedPhrase',
+      description: "Will be used to store the seed phrase of the device user",
+   })
+   public mnemonicProfiles = localforage.createInstance({
+      name: 'mnemonicProfiles',
+      storeName: 'mnemonicProfiles',
+      description: "Seed phrase profile storage",
+   })
+   constructor(private logger: LoggerService, private properties: Properties) { }
 
    clearAllLocalStores() {
       this.profile.clear();
@@ -191,6 +201,82 @@ export class StorageServiceProvider {
 
    public setLanguage(language) {
       this.language.setItem('language', language);
+   }
+
+   public setMnemonic(mnemonic: string) {
+      return new Promise(resolve => {
+         let encMnemonic = AES.encrypt(JSON.stringify(mnemonic), this.key).toString();
+         this.deviceMnemonic.setItem("device-mnemonic", encMnemonic).then(() => {
+            resolve(true);
+         });
+      });
+   }
+   public setMnemonicPassword(password:string){
+      return new Promise(resolve => {
+         let encPwd = AES.encrypt(JSON.stringify(password), this.key).toString();
+         this.deviceMnemonic.setItem("device-pwd", encPwd).then(() => {
+            resolve(true);
+         });
+      });
+   }
+   public validateMnemonicPassword(password:string){
+      return new Promise((resolve, reject) => {
+         let encPwd = AES.encrypt(JSON.stringify(password), this.key).toString();
+         this.deviceMnemonic
+            .getItem("device-pwd")
+            .then(pwd => {
+               if (pwd != null) {
+                  if (encPwd == pwd.toString()){
+                     resolve(true)
+                  }
+               } else {
+                  console.log('returning null');
+                  resolve(false);
+                  return;
+               }
+            })
+            .catch(err => {
+               this.logger.error('Password not set: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+               reject(err);
+            });
+      });
+   }
+   public addSeedPhraseAccount(index: string, accName: string,) {
+      return new Promise(resolve => {
+         this.mnemonicProfiles.setItem(index, accName).then(() => {
+            resolve(true);
+         });
+      });
+   }
+
+   public getAllMnemonicProfiles(): { key: string; value: any }[] {
+      const profiles: { key: string; value: any }[] = [];
+      this.mnemonicProfiles.iterate((key:string, value) => {
+        profiles.push({key, value });
+      });
+      return profiles;
+    }
+
+   public getMnemonic() {
+      return new Promise((resolve, reject) => {
+         this.deviceMnemonic
+            .getItem("device-mnemonic")
+            .then(accIndex => {
+               console.log('received accounts: ', accIndex);
+               if (accIndex != null) {
+                  let decryptedMnemonic = JSON.parse(AES.decrypt(accIndex.toString(), this.key).toString(enc.Utf8));
+                  resolve(decryptedMnemonic);
+               } else {
+                  console.log('returning null');
+                  resolve(null);
+                  return;
+               }
+            })
+            .catch(err => {
+               this.logger.error('Storage get Mnemonic failed: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
+               reject(err);
+            });
+      });
    }
 
    setTempPubKey(username, key) {

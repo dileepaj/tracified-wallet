@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
    selector: 'app-import-bc-account',
@@ -23,8 +24,29 @@ export class ImportBcAccountPage implements OnInit {
 
    tab: number = 0;
 
-   form: any;
-   constructor() {}
+   spForm: any;
+   pkForm: any;
+   constructor() {
+      this.spForm = new FormGroup({
+         seedPhrase1: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase2: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase3: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase4: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase5: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase6: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase7: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase8: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase9: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase10: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase11: new FormControl('', Validators.compose([Validators.required])),
+         seedPhrase12: new FormControl('', Validators.compose([Validators.required])),
+      });
+
+      this.pkForm = new FormGroup({
+         accname: new FormControl('', Validators.compose([Validators.required])),
+         pk: new FormControl('', Validators.compose([Validators.required])),
+      });
+   }
 
    ngOnInit() {}
 
@@ -33,8 +55,12 @@ export class ImportBcAccountPage implements OnInit {
    }
 
    public goBack() {
-      if (this.tab != 0) {
+      if (this.tab == 0) {
          this.tab--;
+      } else if (this.tab == 1) {
+         this.tab = 0;
+      } else if (this.tab == 2) {
+         this.tab = 0;
       }
    }
 }

@@ -22,7 +22,7 @@ export class HelpPopupComponent implements OnInit {
 
    @HostListener('document:click', ['$event'])
    onClick(event) {
-      if (!this.content.nativeElement.contains(event.target) && !this.helpBtn.nativeElement.contains(event.target)) {
+      if (!this.content?.nativeElement.contains(event.target) && !this.helpBtn?.nativeElement.contains(event.target)) {
          this.isOpen = false;
       }
    }
