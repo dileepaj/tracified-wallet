@@ -62,3 +62,7 @@ export const mainAccountBalance: number = 1;
 export const nftbackUrl: string = nftbackend;
 export const updateSVG: string = nftbackend + '/svgmap/';
 export const claimNft: string = nftbackend + '/walletnfts/';
+
+
+//KEY
+export const KEY:string = "hackerkaidagalbanisbaby".split('').reverse().join('');
