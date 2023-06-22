@@ -300,6 +300,11 @@
    "CONFIRM_BUTTON": "Confirm",
    "IMPORT_SEED_PHRASE_DESC": "Enter your Seed Phrase to import existing blockchain account(s).",
 
+
    "BC_ACC_CREATED": "Blockchain Account Created",
-   "BC_ACC_CREATED_DESC": "The following keys have been created for your account"
+   "BC_ACC_CREATED_DESC": "The following keys have been created for your account",
+   "PHONE_NO": "Phone Number",
+
+   "COUNTRY": "Country",
+   "SELECT_COUNTRY": "Select Country"
 }
