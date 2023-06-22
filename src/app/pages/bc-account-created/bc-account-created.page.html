@@ -1,0 +1,35 @@
+<ion-content [fullscreen]="true" class="ion-padding main-wrapper">
+   <ion-grid class="cusGrid">
+      <ion-row class="backBtnWrapper">
+         <ion-icon name="arrow-back-outline" *ngIf="false"></ion-icon>
+      </ion-row>
+      <ion-row class="logo">
+         <ion-img src="assets/imgs/tracified-wallet-d.svg"></ion-img>
+      </ion-row>
+
+      <ion-row style="display: flex; justify-content: center">
+         <ion-label class="title-label"
+            ><h1>{{"BC_ACC_CREATED" | translate}}</h1>
+            <p>{{"BC_ACC_CREATED_DESC" | translate}}</p>
+         </ion-label>
+      </ion-row>
+
+      <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
+         <div class="acc-list-wrapper">
+            <ion-item class="bc-acc-item" *ngFor="let acc of accounts">
+               <ion-img slot="start" [src]="acc.icon"></ion-img>
+               <div class="acc-info">
+                  <ion-label>{{acc.blockchain}}</ion-label>
+                  <ion-label><b>{{"(" + acc.key.substring(0, 4) + "..." + acc.key.substring(acc.key.length - 4, acc.key.length) + ")"}}</b></ion-label>
+               </div>
+               <ion-icon name="copy-outline" slot="end" (click)="writeToClipboard(acc.key)"></ion-icon>
+            </ion-item>
+         </div>
+      </ion-row>
+
+      <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
+         <ion-button color="primary">{{'CONTINUE_BUTTON' | translate}}</ion-button>
+      </ion-row>
+   </ion-grid>
+   <app-help-popup [data]="data"></app-help-popup>
+</ion-content>

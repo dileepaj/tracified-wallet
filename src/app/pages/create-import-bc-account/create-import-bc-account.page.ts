@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import {SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
+import { SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'app-create-import-bc-account',
    templateUrl: './create-import-bc-account.page.html',
    styleUrls: ['./create-import-bc-account.page.scss'],
 })
-
 export class CreateImportBcAccountPage implements OnInit {
    data: any = [
       {
@@ -44,11 +45,7 @@ export class CreateImportBcAccountPage implements OnInit {
    passwordIcon: string = 'eye-off';
    confPasswordIcon: string = 'eye-off';
    toastInstance: any;
-   constructor(
-      private seedPhraseService: SeedPhraseService,
-      private toastService: ToastController,
-      private localForageService: StorageServiceProvider
-   ) {
+   constructor(private seedPhraseService: SeedPhraseService, private toastService: ToastController, private localForageService: StorageServiceProvider, private router: Router) {
       this.form = new FormGroup({
          seedPhrase1: new FormControl('', Validators.compose([Validators.required])),
          seedPhrase2: new FormControl('', Validators.compose([Validators.required])),
@@ -70,7 +67,7 @@ export class CreateImportBcAccountPage implements OnInit {
       });
    }
 
-   ngOnInit() { }
+   ngOnInit() {}
    public async changeTab(tab: number) {
       if (tab == 1) {
          let mnemonic = await this.seedPhraseService.generateMnemonic();
@@ -83,13 +80,13 @@ export class CreateImportBcAccountPage implements OnInit {
          this.shuffleArray();
       }
       if (tab == 4) {
-         console.log(`tab:${tab} this.tab: ${this.tab} previous:${this.prevTab}`)
+         console.log(`tab:${tab} this.tab: ${this.tab} previous:${this.prevTab}`);
          if (this.tab != 3) {
             let rst = this.validateSeedPhrase();
             if (!rst) {
                this.toastInstance = await this.toastService.create({
-                  message: "Invalid seed phrase selection please try again",
-                  duration: 2000,
+                  message: 'Invalid seed phrase selection please try again',
+                  duration: TOAST_TIMER.SHORT_TIMER,
                   position: 'bottom',
                });
                await this.toastInstance.present();
@@ -184,60 +181,60 @@ export class CreateImportBcAccountPage implements OnInit {
    }
 
    public async saveSeedPhraseProfile() {
-      let accName = this.createAccForm.get("accname").value;
-      let pwd = this.createAccForm.get("password").value;
-      let confirmPwd = this.createAccForm.get("confpassword").value
+      let accName = this.createAccForm.get('accname').value;
+      let pwd = this.createAccForm.get('password').value;
+      let confirmPwd = this.createAccForm.get('confpassword').value;
       let selectedSeed = this.getWordArray(this.seedPhrase).join(',');
-      console.log("incoming seed before : ",this.seedPhrase)
-      console.log("incoming seed : ",selectedSeed)
-      console.log("input data: ", accName.toString(), pwd.toString(), confirmPwd.toString())
+      console.log('incoming seed before : ', this.seedPhrase);
+      console.log('incoming seed : ', selectedSeed);
+      console.log('input data: ', accName.toString(), pwd.toString(), confirmPwd.toString());
       if (pwd.toString() == confirmPwd.toString()) {
-         await this.localForageService.setMnemonic(selectedSeed.replace(/,/g, ' '))
-         await this.localForageService.setMnemonicPassword(pwd.toString())
-         await this.localForageService.addSeedPhraseAccount("0", accName.toString())
+         await this.localForageService.setMnemonic(selectedSeed.replace(/,/g, ' '));
+         await this.localForageService.setMnemonicPassword(pwd.toString());
+         await this.localForageService.addSeedPhraseAccount('0', accName.toString());
+         this.router.navigate(['bc-account-created']);
       } else {
          this.toastInstance = await this.toastService.create({
-            message: "Passwords do not match please try again!",
-            duration: 2000,
+            message: 'Passwords do not match please try again!',
+            duration: TOAST_TIMER.SHORT_TIMER,
             position: 'bottom',
          });
          await this.toastInstance.present();
       }
       const profiles = this.localForageService.getAllMnemonicProfiles();
-      console.log("profiles: ", profiles);
-      console.log("get: ", await this.localForageService.getMnemonic())
+      console.log('profiles: ', profiles);
+      console.log('get: ', await this.localForageService.getMnemonic());
    }
 
    public async getMnemonicfromInput() {
-      let seedPhrase1 = this.form.get("seedPhrase1").value;
-      let seedPhrase2 = this.form.get("seedPhrase2").value;
-      let seedPhrase3 = this.form.get("seedPhrase3").value;
-      let seedPhrase4 = this.form.get("seedPhrase4").value;
-      let seedPhrase5 = this.form.get("seedPhrase5").value;
-      let seedPhrase6 = this.form.get("seedPhrase6").value;
-      let seedPhrase7 = this.form.get("seedPhrase7").value;
-      let seedPhrase8 = this.form.get("seedPhrase8").value;
-      let seedPhrase9 = this.form.get("seedPhrase9").value;
-      let seedPhrase10 = this.form.get("seedPhrase10").value;
-      let seedPhrase11 = this.form.get("seedPhrase11").value;
-      let seedPhrase12 = this.form.get("seedPhrase12").value;
+      let seedPhrase1 = this.form.get('seedPhrase1').value;
+      let seedPhrase2 = this.form.get('seedPhrase2').value;
+      let seedPhrase3 = this.form.get('seedPhrase3').value;
+      let seedPhrase4 = this.form.get('seedPhrase4').value;
+      let seedPhrase5 = this.form.get('seedPhrase5').value;
+      let seedPhrase6 = this.form.get('seedPhrase6').value;
+      let seedPhrase7 = this.form.get('seedPhrase7').value;
+      let seedPhrase8 = this.form.get('seedPhrase8').value;
+      let seedPhrase9 = this.form.get('seedPhrase9').value;
+      let seedPhrase10 = this.form.get('seedPhrase10').value;
+      let seedPhrase11 = this.form.get('seedPhrase11').value;
+      let seedPhrase12 = this.form.get('seedPhrase12').value;
 
-      let userInputMnemonic = `${seedPhrase1} ${seedPhrase2} ${seedPhrase3} ${seedPhrase4} ${seedPhrase5} ${seedPhrase6} ${seedPhrase7} ${seedPhrase8} ${seedPhrase9} ${seedPhrase10} ${seedPhrase11} ${seedPhrase12}`
-      let userInputMnemonicV2=[seedPhrase1,seedPhrase2,seedPhrase3,seedPhrase4,seedPhrase5,seedPhrase6,seedPhrase7,seedPhrase8,seedPhrase9,seedPhrase10,seedPhrase11,seedPhrase12]
-      let result: boolean = SeedPhraseService.validateMnemonic(userInputMnemonic)
-      console.log("seed input : ", userInputMnemonic)
-      console.log("seed result : ", result)
+      let userInputMnemonic = `${seedPhrase1} ${seedPhrase2} ${seedPhrase3} ${seedPhrase4} ${seedPhrase5} ${seedPhrase6} ${seedPhrase7} ${seedPhrase8} ${seedPhrase9} ${seedPhrase10} ${seedPhrase11} ${seedPhrase12}`;
+      let userInputMnemonicV2 = [seedPhrase1, seedPhrase2, seedPhrase3, seedPhrase4, seedPhrase5, seedPhrase6, seedPhrase7, seedPhrase8, seedPhrase9, seedPhrase10, seedPhrase11, seedPhrase12];
+      let result: boolean = SeedPhraseService.validateMnemonic(userInputMnemonic);
+      console.log('seed input : ', userInputMnemonic);
+      console.log('seed result : ', result);
       if (result) {
-         this.createMap(userInputMnemonicV2)
+         this.createMap(userInputMnemonicV2);
          this.changeTab(4);
       } else {
          this.toastInstance = await this.toastService.create({
-            message: "Entered 12 word seed phrase is invalid please try again",
-            duration: 2000,
+            message: 'Entered 12 word seed phrase is invalid please try again',
+            duration: TOAST_TIMER.SHORT_TIMER,
             position: 'bottom',
          });
          await this.toastInstance.present();
       }
-
    }
 }
