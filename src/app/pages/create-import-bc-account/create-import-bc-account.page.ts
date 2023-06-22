@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'app-create-import-bc-account',
@@ -85,7 +86,7 @@ export class CreateImportBcAccountPage implements OnInit {
             if (!rst) {
                this.toastInstance = await this.toastService.create({
                   message: 'Invalid seed phrase selection please try again',
-                  duration: 2000,
+                  duration: TOAST_TIMER.SHORT_TIMER,
                   position: 'bottom',
                });
                await this.toastInstance.present();
@@ -195,7 +196,7 @@ export class CreateImportBcAccountPage implements OnInit {
       } else {
          this.toastInstance = await this.toastService.create({
             message: 'Passwords do not match please try again!',
-            duration: 2000,
+            duration: TOAST_TIMER.SHORT_TIMER,
             position: 'bottom',
          });
          await this.toastInstance.present();
@@ -230,7 +231,7 @@ export class CreateImportBcAccountPage implements OnInit {
       } else {
          this.toastInstance = await this.toastService.create({
             message: 'Entered 12 word seed phrase is invalid please try again',
-            duration: 2000,
+            duration: TOAST_TIMER.SHORT_TIMER,
             position: 'bottom',
          });
          await this.toastInstance.present();

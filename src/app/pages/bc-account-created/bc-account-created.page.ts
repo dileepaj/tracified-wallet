@@ -4,6 +4,7 @@ import { ToastController } from '@ionic/angular';
 import { Wallet } from 'ethers';
 import { BlockchainType, SeedPhraseService, SolKeys } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
+import { TOAST_TIMER } from 'src/environments/environment';
 import { Keypair as StellerKeyPair } from "stellar-base"
 @Component({
    selector: 'app-bc-account-created',
@@ -70,7 +71,7 @@ export class BcAccountCreatedPage implements OnInit {
             .catch(async err => {
                this.toastInstance = await this.toastService.create({
                   message: 'Something went wrong please try again : '+err,
-                  duration: 2000,
+                  duration: TOAST_TIMER.SHORT_TIMER,
                   position: 'bottom',
                });
                await this.toastInstance.present();
