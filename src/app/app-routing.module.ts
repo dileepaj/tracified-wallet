@@ -26,6 +26,7 @@ import { CreateAccountPage } from './pages/create-account/create-account.page';
 import { RequestDeletePage } from './pages/request-delete/request-delete.page';
 import { CreateImportBcAccountPage } from './pages/create-import-bc-account/create-import-bc-account.page';
 import { ImportBcAccountPage } from './pages/import-bc-account/import-bc-account.page';
+import { BcAccountCreatedPage } from './pages/bc-account-created/bc-account-created.page';
 
 const routes: Routes = [
    { path: '', component: OtpPage },
@@ -87,6 +88,10 @@ const routes: Routes = [
    {
       path: 'import-bc-account',
       component: ImportBcAccountPage,
+   },
+   {
+      path: 'bc-account-created',
+      component: BcAccountCreatedPage,
    },
 ];
 
