@@ -298,5 +298,9 @@
    "CONFIRM_SEED_PHRASE": "Confirm Seed Phrase",
    "CONFIRM_SEED_PHRASE_DESC": "Verify that you saved your seed phrase correctly by selecting the words in the right order.",
    "CONFIRM_BUTTON": "Confirm",
-   "IMPORT_SEED_PHRASE_DESC": "Enter your Seed Phrase to import existing blockchain account(s)."
+   "IMPORT_SEED_PHRASE_DESC": "Enter your Seed Phrase to import existing blockchain account(s).",
+   "PHONE_NO": "Phone Number",
+
+   "COUNTRY": "Country",
+   "SELECT_COUNTRY": "Select Country"
 }

@@ -15,6 +15,22 @@
       </ion-row>
       <form [formGroup]="form">
          <ion-row>
+            <ion-label style="margin-top: 36px" class="input-label">{{'FIRST_NAME' | translate}}</ion-label>
+         </ion-row>
+         <ion-row>
+            <ion-item class="input-item" lines="full">
+               <ion-input #firstName formControlName="firstname" type="text" name="firstName" keyNext></ion-input>
+            </ion-item>
+         </ion-row>
+         <ion-row>
+            <ion-label style="margin-top: 36px" class="input-label">{{'LAST_NAME' | translate}}</ion-label>
+         </ion-row>
+         <ion-row>
+            <ion-item class="input-item" lines="full">
+               <ion-input #lastName formControlName="lastname" type="text" name="lastName" keyNext></ion-input>
+            </ion-item>
+         </ion-row>
+         <ion-row>
             <ion-label style="margin-top: 36px" class="input-label">{{'EMAIL_ADDRESS' | translate}}</ion-label>
          </ion-row>
          <ion-row>
@@ -24,36 +40,28 @@
          </ion-row>
 
          <ion-row>
-            <ion-label style="margin-top: 36px" class="input-label">{{'YOUR_NAME' | translate}}</ion-label>
+            <ion-label style="margin-top: 36px" class="input-label">{{'COUNTRY' | translate}}</ion-label>
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
-               <ion-input #yourName formControlName="yourname" type="text" name="yourName" keyNext></ion-input>
+               <ion-select style="width: 100%" label="Default label" placeholder="{{'SELECT_COUNTRY' | translate}}" (ionChange)="selectCountry($event)" appNoArrow>
+                  <ion-select-option *ngFor="let country of countries | keyvalue" [value]="country.value">{{country.key}}</ion-select-option>
+               </ion-select>
+               <ion-icon slot="end" name="caret-forward-outline" class="caret"></ion-icon>
             </ion-item>
          </ion-row>
 
          <ion-row>
-            <ion-label style="margin-top: 32px" class="input-label">{{'PASSWORD' | translate}}</ion-label>
+            <ion-label style="margin-top: 36px" class="input-label">{{'PHONE_NO' | translate}}</ion-label>
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
-               <ion-input formControlName="password" name="password" [type]="passwordType" clearInput="false"></ion-input>
-               <ion-icon slot="end" [name]="passwordIcon" class="passwordIcon gray-color" (click)="hideShowPassword()"> </ion-icon>
-            </ion-item>
-         </ion-row>
-
-         <ion-row>
-            <ion-label style="margin-top: 32px" class="input-label">{{'CONFIRM_PASSWORD' | translate}}</ion-label>
-         </ion-row>
-         <ion-row>
-            <ion-item class="input-item" lines="full">
-               <ion-input formControlName="confpassword" name="confPassword" [type]="confPasswordType" clearInput="false"></ion-input>
-               <ion-icon slot="end" [name]="confPasswordIcon" class="passwordIcon gray-color" (click)="hideShowConfPassword()"> </ion-icon>
+               <ion-input #phoneNo formControlName="phoneno" type="tel" name="phoneNo" placeholder="ex: +94 7X XXXXXXX" keyNext></ion-input>
             </ion-item>
          </ion-row>
 
          <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
-            <ion-button color="primary" (click)="userSignUp()">{{'PROCEED_BUTTON' | translate}}</ion-button>
+            <ion-button color="primary" (click)="checkMobile()">{{'PROCEED_BUTTON' | translate}}</ion-button>
          </ion-row>
          <ion-row class="ion-justify-content-center">
             <ion-label class="hint-label">{{"ALREADY_HAVE_AN_ACCOUNT" | translate}}</ion-label>
