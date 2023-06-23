@@ -190,7 +190,7 @@ export class CreateImportBcAccountPage implements OnInit {
       console.log('input data: ', accName.toString(), pwd.toString(), confirmPwd.toString());
       if (pwd.toString() == confirmPwd.toString()) {
          await this.localForageService.setMnemonic(selectedSeed.replace(/,/g, ' '));
-         await this.localForageService.setMnemonicPassword(pwd.toString());
+         await this.localForageService.mapMnemonicProfile("0",pwd.toString());
          await this.localForageService.addSeedPhraseAccount('0', accName.toString());
          this.router.navigate(['bc-account-created']);
       } else {

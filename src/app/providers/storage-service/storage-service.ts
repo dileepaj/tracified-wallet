@@ -4,6 +4,7 @@ import * as localforage from 'localforage';
 // import { Logger } from 'ionic-logger-new';
 import { LoggerService } from '../logger-service/logger.service';
 import { Properties } from '../../shared/properties';
+import { resolve } from 'dns';
 
 @Injectable({
    providedIn: 'root',
@@ -49,6 +50,11 @@ export class StorageServiceProvider {
       name: 'mnemonicProfiles',
       storeName: 'mnemonicProfiles',
       description: "Seed phrase profile storage",
+   })
+   public mnemonicProfilesManager = localforage.createInstance({
+      name: 'mnemonicProfilesManager',
+      storeName: 'mnemonicProfilesManager',
+      description: "Stores encrypted password for mnemonic profile",
    })
    constructor(private logger: LoggerService, private properties: Properties) { }
 
@@ -211,6 +217,7 @@ export class StorageServiceProvider {
          });
       });
    }
+   //not in use
    public setMnemonicPassword(password:string){
       return new Promise(resolve => {
          let encPwd = AES.encrypt(JSON.stringify(password), this.key).toString();
@@ -219,6 +226,27 @@ export class StorageServiceProvider {
          });
       });
    }
+
+   public mapMnemonicProfile(accindex:string,password:string){
+      return new Promise(resolve => {
+         let encPwd = AES.encrypt(JSON.stringify(password), this.key).toString();
+         this.mnemonicProfilesManager.setItem(accindex, encPwd).then(() => {
+            resolve(true);
+         });
+      });
+   } 
+   
+   public getaMnemonicAccountCount(){
+      return new Promise((resolve, reject) => {
+         this.deviceMnemonic.length().then(noAccounts=>{
+            resolve(noAccounts)
+         }).catch(err=>{
+            this.logger.error('No accounts available', this.properties.skipConsoleLogs, this.properties.writeToFile);
+            reject("-1")
+         })
+      })
+   }
+
    public validateMnemonicPassword(password:string){
       return new Promise((resolve, reject) => {
          let encPwd = AES.encrypt(JSON.stringify(password), this.key).toString();
