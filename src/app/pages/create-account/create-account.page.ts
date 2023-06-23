@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { AES } from 'crypto-js';
+import { IonicSelectableComponent } from 'ionic-selectable';
 import { PhoneNumberService } from 'src/app/providers/phone-number-service/phone-number.service';
 import { UserSignUp } from 'src/app/providers/user/userSignup';
 import { KEY } from 'src/app/shared/config';
@@ -28,6 +29,7 @@ export class CreateAccountPage implements OnInit {
    form: FormGroup;
    newUser: any;
    user: any;
+   country: any;
    countries: any;
    countryCode: string;
 
@@ -37,11 +39,18 @@ export class CreateAccountPage implements OnInit {
          firstname: new FormControl('', Validators.compose([Validators.required])),
          lastname: new FormControl('', Validators.compose([Validators.required])),
          country: new FormControl('', Validators.compose([Validators.required])),
-         phoneno: new FormControl('', Validators.compose([Validators.required])),
+         phoneno: new FormControl(
+            '',
+            Validators.compose([Validators.required, Validators.pattern('(([+][(]?[0-9]{1,3}[)]?)|([(]?[0-9]{4}[)]?))s*[)]?[-s.]?[(]?[0-9]{1,3}[)]?([-s.]?[0-9]{3})([-s.]?[0-9]{3,4})')])
+         ),
+      });
+
+      this.countries = [];
+      Object.keys(COUNTRIES).map(k => {
+         this.countries.push({ name: k, code: COUNTRIES[k] });
       });
    }
    ngOnInit(): void {
-      this.countries = COUNTRIES;
       // throw new Error('Method not implemented.');
    }
 
@@ -76,7 +85,9 @@ export class CreateAccountPage implements OnInit {
       this.newUser = {
          user: this.user,
       };
+
       console.log(this.newUser);
+
       this.userSignupService.registerUser(this.newUser).subscribe(res => {
          console.log('Result : ', res);
       });
@@ -84,26 +95,23 @@ export class CreateAccountPage implements OnInit {
 
    public async checkMobile() {
       let mobile = this.form.get('phoneno').value;
-      console.log(mobile);
-      this.phoneNumberService.validatePhoneNumber(mobile).subscribe({
-         next: () => {
-            this.showToast('Phone number already exists');
-         },
-         error: (err: any) => {
-            if (err.status == 403) {
-               this.userSignUp();
-            } else {
-               this.showToast('An error occurred please try again');
-            }
-         },
-      });
-   }
 
-   public selectCountry(event: any) {
-      console.log(event.detail.value);
-      this.countryCode = event.detail.value;
-
-      this.form.controls['phoneno'].setValue(this.countryCode);
+      if (this.form.controls['phoneno'].valid) {
+         this.phoneNumberService.validatePhoneNumber(mobile).subscribe({
+            next: () => {
+               this.showToast('Phone number already exists');
+            },
+            error: (err: any) => {
+               if (err.status == 403) {
+                  this.userSignUp();
+               } else {
+                  this.showToast('An error occurred please try again');
+               }
+            },
+         });
+      } else {
+         this.showToast('Invalid phone number please try again');
+      }
    }
 
    public async showToast(message: string) {
@@ -113,5 +121,11 @@ export class CreateAccountPage implements OnInit {
          position: 'bottom',
       });
       await this.toastInstance.present();
+   }
+
+   countryChange(event: { component: IonicSelectableComponent; value: any }) {
+      this.countryCode = event.value.code;
+
+      this.form.controls['phoneno'].setValue(this.countryCode);
    }
 }
