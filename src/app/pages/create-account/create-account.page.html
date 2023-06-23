@@ -19,7 +19,7 @@
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
-               <ion-input #firstName formControlName="firstname" type="text" name="firstName" keyNext></ion-input>
+               <ion-input formControlName="firstname" type="text" keyNext></ion-input>
             </ion-item>
          </ion-row>
          <ion-row>
@@ -27,7 +27,7 @@
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
-               <ion-input #lastName formControlName="lastname" type="text" name="lastName" keyNext></ion-input>
+               <ion-input formControlName="lastname" type="text" keyNext></ion-input>
             </ion-item>
          </ion-row>
          <ion-row>
@@ -35,7 +35,7 @@
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
-               <ion-input #userName formControlName="username" type="email" name="userName" keyNext></ion-input>
+               <ion-input formControlName="username" type="email" keyNext></ion-input>
             </ion-item>
          </ion-row>
 
@@ -44,10 +44,19 @@
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
-               <ion-select style="width: 100%" label="Default label" placeholder="{{'SELECT_COUNTRY' | translate}}" (ionChange)="selectCountry($event)" appNoArrow>
-                  <ion-select-option *ngFor="let country of countries | keyvalue" [value]="country.value">{{country.key}}</ion-select-option>
-               </ion-select>
-               <ion-icon slot="end" name="caret-forward-outline" class="caret"></ion-icon>
+               <!-- <ion-label class="placeholder-label" *ngIf="!countryCode">{{'SELECT_COUNTRY' | translate}}</ion-label> -->
+               <ionic-selectable
+                  style="width: 100%"
+                  item-content
+                  placeholder="Select Country"
+                  [(ngModel)]="country"
+                  [items]="countries"
+                  itemValueField="code"
+                  itemTextField="name"
+                  [canSearch]="true"
+                  formControlName="country"
+                  (onChange)="countryChange($event)">
+               </ionic-selectable>
             </ion-item>
          </ion-row>
 
@@ -56,7 +65,7 @@
          </ion-row>
          <ion-row>
             <ion-item class="input-item" lines="full">
-               <ion-input #phoneNo formControlName="phoneno" type="tel" name="phoneNo" placeholder="ex: +94 7X XXXXXXX" keyNext></ion-input>
+               <ion-input formControlName="phoneno" type="tel" placeholder="ex: +94 7X XXXXXXX" keyNext></ion-input>
             </ion-item>
          </ion-row>
 
