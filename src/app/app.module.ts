@@ -61,6 +61,8 @@ import { HelpPopupComponent } from './pages/help-popup/help-popup.component';
 import { CreateImportBcAccountPage } from './pages/create-import-bc-account/create-import-bc-account.page';
 import { ImportBcAccountPage } from './pages/import-bc-account/import-bc-account.page';
 import { BcAccountCreatedPage } from './pages/bc-account-created/bc-account-created.page';
+import { OtpBcAccountPage } from './pages/otp-bc-account/otp-bc-account.page';
+import { RequestOtpPage } from './pages/request-otp/request-otp.page';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -97,6 +99,8 @@ export function createTranslateLoader(http: HttpClient) {
       CreateImportBcAccountPage,
       ImportBcAccountPage,
       BcAccountCreatedPage,
+      OtpBcAccountPage,
+      RequestOtpPage,
       // TransferPage,
       // ItemReceivedPage,
       // ItemSentPage,

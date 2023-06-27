@@ -27,6 +27,8 @@ import { RequestDeletePage } from './pages/request-delete/request-delete.page';
 import { CreateImportBcAccountPage } from './pages/create-import-bc-account/create-import-bc-account.page';
 import { ImportBcAccountPage } from './pages/import-bc-account/import-bc-account.page';
 import { BcAccountCreatedPage } from './pages/bc-account-created/bc-account-created.page';
+import { OtpBcAccountPage } from './pages/otp-bc-account/otp-bc-account.page';
+import { RequestOtpPage } from './pages/request-otp/request-otp.page';
 
 const routes: Routes = [
    { path: '', component: OtpPage },
@@ -92,6 +94,14 @@ const routes: Routes = [
    {
       path: 'bc-account-created',
       component: BcAccountCreatedPage,
+   },
+   {
+      path: 'otp-bc-account',
+      component: OtpBcAccountPage,
+   },
+   {
+      path: 'request-otp',
+      component: RequestOtpPage,
    },
 ];
 
