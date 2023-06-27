@@ -315,7 +315,13 @@
 
    "REQUEST_OTP": "Request OTP",
    "REQUEST_OTP_DESC": "Request a One-Time Password that will be sent to your email",
+   "REQUEST_OTP_DESC_2": "Enter the One-Time Password that has been sent to this email",
    "REQUEST_OTP_BUTTON": "Request OTP",
    "YOUR_EMAIL_ADDRESS": "Your Email Address",
-   "SELECTED_IMPORT_LABEL": "Selected Blockchain Account"
+   "SELECTED_IMPORT_LABEL": "Selected Blockchain Account",
+   "ENTER_OTP": "Enter OTP",
+   "DIDNT_RECEIVE_CODE": "Didn't receive the code?",
+   "RETRY": "Retry in",
+   "RESEND": "Resend OTP",
+   "VERIFY_BUTTON": "Verify"
 }

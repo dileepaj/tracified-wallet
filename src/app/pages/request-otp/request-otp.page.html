@@ -1,7 +1,7 @@
 <ion-header>
    <ion-toolbar>
       <ion-buttons slot="start">
-         <ion-menu-button menu="main-menu"></ion-menu-button>
+         <ion-back-button></ion-back-button>
       </ion-buttons>
       <ion-title>Mint your NFT</ion-title>
    </ion-toolbar>
@@ -36,7 +36,7 @@
          </ion-row>
 
          <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
-            <ion-button color="primary">{{'REQUEST_OTP_BUTTON' | translate}}</ion-button>
+            <ion-button color="primary" (click)="request()">{{'REQUEST_OTP_BUTTON' | translate}}</ion-button>
          </ion-row>
       </form>
    </ion-grid>

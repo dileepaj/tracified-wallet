@@ -1,13 +1,45 @@
 <ion-header>
    <ion-toolbar>
       <ion-buttons slot="start">
-         <ion-menu-button menu="main-menu"></ion-menu-button>
+         <ion-back-button></ion-back-button>
       </ion-buttons>
       <ion-title>Mint your NFT</ion-title>
    </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-pading">
+<ion-content [fullscreen]="true" class="ion-padding main-wrapper">
+   <ion-grid class="cusGrid">
+      <ion-row style="display: flex; justify-content: center">
+         <ion-label class="title-label"
+            ><h1>{{"REQUEST_OTP" | translate}}</h1>
+            <p>{{"REQUEST_OTP_DESC_2" | translate}}</p>
+         </ion-label>
+      </ion-row>
+      <form [formGroup]="verifyForm" class="formOneS">
+         <ion-row>
+            <ion-label style="margin-top: 36px" class="input-label">{{'ENTER_OTP' | translate}}</ion-label>
+         </ion-row>
+         <ion-row>
+            <ion-item class="input-item" lines="full">
+               <ion-input formControlName="OTP" fill="clear" type="text" autofocus="true"></ion-input>
+            </ion-item>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: space-between; margin: 5px 0px 10px 0px">
+            <ion-label class="link">{{'DIDNT_RECEIVE_CODE' | translate}}</ion-label>
+            <ion-label class="link underline">{{'RESEND' | translate}}</ion-label>
+         </ion-row>
+         <ion-row style="display: flex; justify-content: space-between; margin: 5px 0px 10px 0px">
+            <ion-label class="timeout">{{timeoutText? ('RETRY' | translate) : ''}} {{timeoutText}}</ion-label>
+         </ion-row>
+
+         <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
+            <ion-button color="primary">{{'VERIFY_BUTTON' | translate}}</ion-button>
+         </ion-row>
+      </form>
+   </ion-grid>
+</ion-content>
+
+<!-- <ion-content class="ion-pading">
    <form [formGroup]="verifyForm" class="formOne ion-padding-top">
       <ion-grid class="ion-padding-top cusGrid">
          <ion-row>
@@ -15,7 +47,6 @@
          </ion-row>
          <ion-row>
             <ion-input class="cusInput email" formControlName="Email" fill="clear" type="email" autofocus="true" [(ngModel)]="email"> </ion-input>
-            <!-- <ion-input class="cusInput email" formControlName="OTP" fill="clear" type="text" autofocus="true"> <ion-icon slot="end" name="pencil"></ion-icon></ion-input> -->
          </ion-row>
       </ion-grid>
       <ion-grid class="ion-padding-top cusGrid" style="padding-top: 20px">
@@ -32,4 +63,4 @@
          </ion-row>
       </ion-grid>
    </form>
-</ion-content>
+</ion-content> -->

@@ -43,14 +43,19 @@ export class StorageServiceProvider {
    public deviceMnemonic = localforage.createInstance({
       name: 'seedPhrase',
       storeName: 'seedPhrase',
-      description: "Will be used to store the seed phrase of the device user",
-   })
+      description: 'Will be used to store the seed phrase of the device user',
+   });
    public mnemonicProfiles = localforage.createInstance({
       name: 'mnemonicProfiles',
       storeName: 'mnemonicProfiles',
-      description: "Seed phrase profile storage",
-   })
-   constructor(private logger: LoggerService, private properties: Properties) { }
+      description: 'Seed phrase profile storage',
+   });
+
+   public otpTimeout = localforage.createInstance({
+      name: 'otpTimeout',
+      storeName: 'otpTimeout',
+   });
+   constructor(private logger: LoggerService, private properties: Properties) {}
 
    clearAllLocalStores() {
       this.profile.clear();
@@ -206,28 +211,28 @@ export class StorageServiceProvider {
    public setMnemonic(mnemonic: string) {
       return new Promise(resolve => {
          let encMnemonic = AES.encrypt(JSON.stringify(mnemonic), this.key).toString();
-         this.deviceMnemonic.setItem("device-mnemonic", encMnemonic).then(() => {
+         this.deviceMnemonic.setItem('device-mnemonic', encMnemonic).then(() => {
             resolve(true);
          });
       });
    }
-   public setMnemonicPassword(password:string){
+   public setMnemonicPassword(password: string) {
       return new Promise(resolve => {
          let encPwd = AES.encrypt(JSON.stringify(password), this.key).toString();
-         this.deviceMnemonic.setItem("device-pwd", encPwd).then(() => {
+         this.deviceMnemonic.setItem('device-pwd', encPwd).then(() => {
             resolve(true);
          });
       });
    }
-   public validateMnemonicPassword(password:string){
+   public validateMnemonicPassword(password: string) {
       return new Promise((resolve, reject) => {
          let encPwd = AES.encrypt(JSON.stringify(password), this.key).toString();
          this.deviceMnemonic
-            .getItem("device-pwd")
+            .getItem('device-pwd')
             .then(pwd => {
                if (pwd != null) {
-                  if (encPwd == pwd.toString()){
-                     resolve(true)
+                  if (encPwd == pwd.toString()) {
+                     resolve(true);
                   }
                } else {
                   console.log('returning null');
@@ -241,7 +246,7 @@ export class StorageServiceProvider {
             });
       });
    }
-   public addSeedPhraseAccount(index: string, accName: string,) {
+   public addSeedPhraseAccount(index: string, accName: string) {
       return new Promise(resolve => {
          this.mnemonicProfiles.setItem(index, accName).then(() => {
             resolve(true);
@@ -251,16 +256,16 @@ export class StorageServiceProvider {
 
    public getAllMnemonicProfiles(): { key: string; value: any }[] {
       const profiles: { key: string; value: any }[] = [];
-      this.mnemonicProfiles.iterate((key:string, value) => {
-        profiles.push({key, value });
+      this.mnemonicProfiles.iterate((key: string, value) => {
+         profiles.push({ key, value });
       });
       return profiles;
-    }
+   }
 
-   public getMnemonic():Promise<any> {
+   public getMnemonic(): Promise<any> {
       return new Promise((resolve, reject) => {
          this.deviceMnemonic
-            .getItem("device-mnemonic")
+            .getItem('device-mnemonic')
             .then(accIndex => {
                console.log('received accounts: ', accIndex);
                if (accIndex != null) {
@@ -285,5 +290,20 @@ export class StorageServiceProvider {
 
    async getTempPubKey(key) {
       return await localforage.getItem(key);
+   }
+
+   public async setOTPTimeout(date: Date) {
+      setTimeout(() => {
+         this.clearOTPTimeout();
+      }, 1000 * 120);
+      await this.otpTimeout.setItem('end', date);
+   }
+
+   public getOTPTimeout(): Promise<Date> {
+      return this.otpTimeout.getItem('end');
+   }
+
+   public async clearOTPTimeout() {
+      await this.otpTimeout.clear();
    }
 }

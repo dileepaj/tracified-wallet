@@ -300,7 +300,7 @@ export class AppComponent {
             break;
          case 'nft':
             console.log('hello');
-            this.router.navigate(['/otp-page']);
+            this.router.navigate(['/otp-bc-account']);
             break;
          case 'market':
             this.router.navigate(['/get-nft']);
