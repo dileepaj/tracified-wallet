@@ -254,9 +254,9 @@ export class StorageServiceProvider {
       });
    }
 
-   public getAllMnemonicProfiles(): { key: string; value: any }[] {
+   public async getAllMnemonicProfiles(): Promise<{ key: string; value: any; }[]> {
       const profiles: { key: string; value: any }[] = [];
-      this.mnemonicProfiles.iterate((key: string, value) => {
+      await this.mnemonicProfiles.iterate((key: string, value) => {
          profiles.push({ key, value });
       });
       return profiles;
