@@ -92,6 +92,10 @@ ion-img {
    color: #919191;
 }
 
+ion-select {
+   max-width: 100% !important;
+}
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
    .cusGrid {

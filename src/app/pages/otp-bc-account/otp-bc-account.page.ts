@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
+import { AlertController, ToastController } from '@ionic/angular';
 import { BlockchainType, SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
-import { Keypair as StellerKeyPair } from "stellar-base"
+import { TOAST_TIMER } from 'src/environments/environment';
+import { Keypair as StellerKeyPair } from 'stellar-base';
 @Component({
    selector: 'app-otp-bc-account',
    templateUrl: './otp-bc-account.page.html',
@@ -10,30 +12,83 @@ import { Keypair as StellerKeyPair } from "stellar-base"
 })
 export class OtpBcAccountPage implements OnInit {
    mnemonic;
-   stellarkeyPair:StellerKeyPair
+   stellarkeyPair: StellerKeyPair;
+
+   bcAccList: any[] = [];
+
+   selectedBcAcc: any;
+
    constructor(
       private router: Router,
-      private storageService:StorageServiceProvider,
-      private seedPhraseSrevice:SeedPhraseService
-   ) { }
+      private storageService: StorageServiceProvider,
+      private seedPhraseSrevice: SeedPhraseService,
+      public alertCtrl: AlertController,
+      private toastService: ToastController
+   ) {}
 
-   async ngOnInit() { 
-      await this.generateTempAccounts()
-      this.mnemonic =await this.storageService.getMnemonic();
+   async ngOnInit() {
+      await this.generateTempAccounts();
+      this.mnemonic = await this.storageService.getMnemonic();
       let rst = await this.storageService.getAllMnemonicProfiles();
-      for(const account of rst){
-         this.stellarkeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar,account.value,this.mnemonic) as StellerKeyPair
-         console.log("vals: ",this.stellarkeyPair.publicKey())
+      for (const account of rst) {
+         this.stellarkeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, account.value, this.mnemonic) as StellerKeyPair;
+         console.log('vals: ', account.key, this.stellarkeyPair.publicKey());
+         this.bcAccList.push({
+            name: account.key,
+            publicKey: this.stellarkeyPair.publicKey(),
+         });
       }
    }
 
-   onClickNext() {
-      this.router.navigate(['request-otp']);
+   async onClickNext() {
+      if (this.selectedBcAcc) {
+         const option: NavigationExtras = {
+            state: {
+               email: 'anjulaj@tracified.com',
+               bcAccount: this.selectedBcAcc,
+            },
+            queryParams: {
+               shopId: '712356790',
+            },
+         };
+         this.router.navigate(['request-otp'], option);
+      } else {
+         const toastInstance = await this.toastService.create({
+            message: 'Please select a blockchain account!',
+            duration: TOAST_TIMER.SHORT_TIMER,
+            position: 'bottom',
+         });
+         await toastInstance.present();
+      }
    }
    //!remove later
-   public async generateTempAccounts(){
-      for(let i=1;i<=10;i++){
-         await this.storageService.addSeedPhraseAccount(i.toString(),("acc"+i))
+   public async generateTempAccounts() {
+      for (let i = 1; i <= 10; i++) {
+         await this.storageService.addSeedPhraseAccount(i.toString(), 'acc' + i);
       }
+   }
+
+   public selectBcAccount(e) {
+      this.selectedBcAcc = e.detail.value;
+   }
+
+   async showPublicKey() {
+      if (this.selectedBcAcc) {
+         let alert = await this.alertCtrl.create({
+            message: this.selectedBcAcc.publicKey,
+            buttons: [
+               {
+                  text: 'Ok',
+                  role: 'confirm',
+                  handler: () => {},
+               },
+            ],
+         });
+         await alert.present();
+      }
+   }
+
+   public import() {
+      this.router.navigate(['/import-bc-account']);
    }
 }

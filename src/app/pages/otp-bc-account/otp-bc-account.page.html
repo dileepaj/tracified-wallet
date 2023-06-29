@@ -22,20 +22,19 @@
       <ion-row>
          <div class="input-wrapper">
             <ion-item class="input-item" lines="full">
-               <ion-select style="width: 100%" label="Default label" placeholder="{{'SELECT_IMPORT_LABEL' | translate}}" appNoArrow>
-                  <ion-select-option value="ethereum">{{"ETHEREUM" | translate}}</ion-select-option>
-                  <ion-select-option value="polygon">{{"POLYGON" | translate}}</ion-select-option>
-                  <ion-select-option value="solana">{{"SOLANA" | translate}}</ion-select-option>
-                  <ion-select-option value="stellar">{{"STELLAR" | translate}}</ion-select-option>
+               <ion-select style="width: 100%" label="Default label" placeholder="{{'SELECT_IMPORT_LABEL' | translate}}" (ionChange)="selectBcAccount($event)" appNoArrow>
+                  <ion-select-option *ngFor="let acc of bcAccList" [value]="acc"
+                     >{{acc.name + " (" + acc.publicKey.substring(0,4) + "..." + acc.publicKey.substring(acc.publicKey.length-4, acc.publicKey.length) + ")"}}</ion-select-option
+                  >
                </ion-select>
                <ion-icon slot="end" name="caret-forward-outline" class="caret"></ion-icon>
             </ion-item>
-            <ion-icon name="eye" color="primary"></ion-icon>
+            <ion-icon name="eye" color="primary" (click)="showPublicKey()"></ion-icon>
          </div>
       </ion-row>
 
       <ion-row style="display: flex; justify-content: start; margin: 5% 0px 10px 0px">
-         <ion-button class="btn-light-outline">{{'IMPORT_BUTTON' | translate}}<ion-icon name="add-circle-outline" slot="end"></ion-icon></ion-button>
+         <ion-button class="btn-light-outline" (click)="import()">{{'IMPORT_BUTTON' | translate}}<ion-icon name="add-circle-outline" slot="end"></ion-icon></ion-button>
       </ion-row>
 
       <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">

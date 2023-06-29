@@ -15,29 +15,28 @@
             <p>{{"REQUEST_OTP_DESC" | translate}}</p>
          </ion-label>
       </ion-row>
-      <form [formGroup]="form">
-         <ion-row>
-            <ion-label style="margin-top: 32px" class="input-label">{{'SELECTED_IMPORT_LABEL' | translate}}</ion-label>
-         </ion-row>
-         <ion-row>
-            <ion-item class="input-item" lines="full">
-               <ion-input formControlName="bcAccount" name="bcAccount" clearInput="false" [disabled]="true"></ion-input>
-               <ion-icon slot="end" name="eye" color="primary"> </ion-icon>
-            </ion-item>
-         </ion-row>
 
-         <ion-row>
-            <ion-label style="margin-top: 36px" class="input-label">{{'YOUR_EMAIL_ADDRESS' | translate}}</ion-label>
-         </ion-row>
-         <ion-row>
-            <ion-item class="input-item" lines="full">
-               <ion-input formControlName="email" type="email" name="email" [disabled]="true" keyNext></ion-input>
-            </ion-item>
-         </ion-row>
+      <ion-row>
+         <ion-label style="margin-top: 32px" class="input-label">{{'SELECTED_IMPORT_LABEL' | translate}}</ion-label>
+      </ion-row>
+      <ion-row>
+         <ion-item class="input-item" lines="full">
+            <ion-input name="bcAccount" clearInput="false" [value]="bcPkStr" [readonly]="true"></ion-input>
+            <ion-icon slot="end" name="eye" color="primary" (click)="showPublicKey()"> </ion-icon>
+         </ion-item>
+      </ion-row>
 
-         <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
-            <ion-button color="primary" (click)="request()">{{'REQUEST_OTP_BUTTON' | translate}}</ion-button>
-         </ion-row>
-      </form>
+      <ion-row>
+         <ion-label style="margin-top: 36px" class="input-label">{{'YOUR_EMAIL_ADDRESS' | translate}}</ion-label>
+      </ion-row>
+      <ion-row>
+         <ion-item class="input-item" lines="full">
+            <ion-input type="email" name="email" [value]="email" [readonly]="true"></ion-input>
+         </ion-item>
+      </ion-row>
+
+      <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
+         <ion-button color="primary" (click)="request()">{{'REQUEST_OTP_BUTTON' | translate}}</ion-button>
+      </ion-row>
    </ion-grid>
 </ion-content>
