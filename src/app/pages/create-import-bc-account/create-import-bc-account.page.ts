@@ -102,7 +102,7 @@ export class CreateImportBcAccountPage implements OnInit {
    public goBack() {
       this.selectedSeedPhrase = [];
       if (this.tab == 0) {
-         this.tab = 0;
+         this.router.navigate(['/login']);
       } else if (this.tab == 1) {
          this.tab = 0;
       } else if (this.tab == 2) {

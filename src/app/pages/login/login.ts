@@ -16,6 +16,7 @@ import { ConnectivityServiceProvider } from '../../providers/connectivity-servic
 import { LoggerService } from 'src/app/providers/logger-service/logger.service';
 import { Router } from '@angular/router';
 import { TOAST_TIMER } from 'src/environments/environment';
+import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
 
 @Component({
    selector: 'page-login',
@@ -44,7 +45,8 @@ export class LoginPage {
       private properties: Properties,
       private logger: LoggerService,
       private dataService: DataServiceProvider,
-      private router: Router
+      private router: Router,
+      private storageService: StorageServiceProvider
    ) {
       this.form = new FormGroup({
          username: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
@@ -68,8 +70,16 @@ export class LoginPage {
          this.authService
             .validateUser(authmodel)
             .then(
-               res => {
+               async res => {
                   if (res.status === 200) {
+                     await this.storageService.getMnemonic().then(data => {
+                        console.log("data: ",data)
+                        if (data == null) {
+                           this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
+                        } else {
+                           this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
+                        }
+                     });
                      this.dataService
                         .getBlockchainAccounts()
                         .then(accounts => {
@@ -80,7 +90,7 @@ export class LoginPage {
                               .then(() => {
                                  this.dissmissLoading();
                                  this.connectivity.putMenuHide(false);
-                                 this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
+                                 // this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
                               })
                               .catch(err => {
                                  this.dissmissLoading();
@@ -93,7 +103,13 @@ export class LoginPage {
                         .catch(err => {
                            this.dissmissLoading();
                            if (err.status == 406) {
-                              this.router.navigate(['/add-account'], { state: { navigation: 'initial' } });
+                              // this.storageService.getMnemonic().then(data => {
+                              //    if (!data) {
+                              //       this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
+                              //    } else {
+                              //       this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
+                              //    }
+                              // });
                            } else {
                               this.translate.get(['ERROR', 'FAILED_TO_FETCH_TRANS']).subscribe(text => {
                                  this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_TRANS']);
