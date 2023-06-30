@@ -1,0 +1,25 @@
+<ion-header [translucent]="true">
+   <ion-toolbar>
+      <ion-buttons slot="start">
+         <ion-menu-button menu="main-menu"></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Mint your NFT</ion-title>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding main-wrapper">
+   <ion-grid class="cusGrid">
+      <ion-row style="display: flex; justify-content: center">
+         <ion-label class="title-label"
+            ><h1>{{"CONGRATS" | translate}}</h1>
+            <p>{{"CONGRATS_DESC" | translate}}</p>
+         </ion-label>
+      </ion-row>
+      <ion-row class="img ion-justify-content-center">
+         <ion-img src="assets/imgs/mint-completed.png"></ion-img>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+         <ion-button color="primary">{{"VIEW_ITMS_BUTTON" | translate}}</ion-button>
+      </ion-row>
+   </ion-grid>
+</ion-content>

@@ -323,5 +323,8 @@
    "DIDNT_RECEIVE_CODE": "Didn't receive the code?",
    "RETRY": "Retry in",
    "RESEND": "Resend OTP",
-   "VERIFY_BUTTON": "Verify"
+   "VERIFY_BUTTON": "Verify",
+   "CONGRATS": "Congratulations",
+   "CONGRATS_DESC": "Your NFT has been minted successfully",
+   "VIEW_ITMS_BUTTON": "View Your Items"
 }

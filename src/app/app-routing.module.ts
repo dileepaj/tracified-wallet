@@ -29,6 +29,7 @@ import { ImportBcAccountPage } from './pages/import-bc-account/import-bc-account
 import { BcAccountCreatedPage } from './pages/bc-account-created/bc-account-created.page';
 import { OtpBcAccountPage } from './pages/otp-bc-account/otp-bc-account.page';
 import { RequestOtpPage } from './pages/request-otp/request-otp.page';
+import { MintCompletedPage } from './pages/mint-completed/mint-completed.page';
 
 const routes: Routes = [
    { path: '', component: OtpPage },
@@ -102,6 +103,10 @@ const routes: Routes = [
    {
       path: 'request-otp',
       component: RequestOtpPage,
+   },
+   {
+      path: 'mint-completed',
+      component: MintCompletedPage,
    },
 ];
 
