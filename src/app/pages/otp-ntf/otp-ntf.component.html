@@ -10,8 +10,14 @@
 <ion-content class="ion-pading">
    <form [formGroup]="nftForm" class="formTwo ion-padding-top">
       <ion-grid class="cusGrid">
+         <ion-row style="display: flex; justify-content: center">
+            <ion-label class="title-label"
+               ><h1>{{ 'CLAIM_NFT' | translate }}</h1>
+               <p>{{ 'CLAIM_NFT_DESC' | translate }}</p>
+            </ion-label>
+         </ion-row>
          <ion-row>
-            <ion-label class="headerTwo ion-text-wrap">NFT Name</ion-label>
+            <ion-label class="headerTwo ion-text-wrap input-label">NFT Name</ion-label>
          </ion-row>
          <ion-row>
             <ion-item lines="none" id="custom-item" counter="true" [counterFormatter]="customCounterFormatter" class="ion-no-padding cusItem">
@@ -22,7 +28,7 @@
 
       <ion-grid class="cusGrid">
          <ion-row>
-            <ion-label class="headerTwo ion-text-wrap">Recipient's Name</ion-label>
+            <ion-label class="headerTwo ion-text-wrap input-label">Recipient's Name</ion-label>
          </ion-row>
          <ion-row>
             <ion-item lines="none" id="custom-item" counter="true" [counterFormatter]="customCounterFormatter" class="ion-no-padding cusItem">
@@ -33,7 +39,7 @@
 
       <ion-grid class="cusGrid">
          <ion-row>
-            <ion-label class="headerTwo ion-text-wrap">Message</ion-label>
+            <ion-label class="headerTwo ion-text-wrap input-label">Message</ion-label>
          </ion-row>
          <ion-row>
             <ion-item lines="none" id="custom-item" counter="true" [counterFormatter]="customCounterFormatter" class="ion-no-padding cusItem">
