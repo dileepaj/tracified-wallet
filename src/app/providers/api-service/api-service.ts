@@ -183,6 +183,21 @@ export class ApiServiceProvider {
          );
       });
    }
+   requestOTP(email:string,shopID:string){
+      let headers = {
+         observe: 'response',
+         headers: new HttpHeaders({
+            Accept: 'application/json',
+            'Content-Type': 'Application/json',
+            Authorization: 'Bearer ' + this.properties.token,
+         }),
+      };
+      let OTP = {
+         email: email,
+         productID: shopID,
+      };
+      return this.postN(nftbackUrl + '/otpgen', OTP, headers);
+   }
 
    checkOTP(otp: any, mail: any): Promise<any> {
       let headers = {

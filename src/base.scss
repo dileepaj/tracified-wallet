@@ -475,4 +475,15 @@ ion-button {
    }
 }
 
+.btn-light-outline {
+   --background: #fff;
+   --color: #000;
+
+   --border-radius: 5px;
+   --border-color: #000;
+   --border-style: solid;
+   --border-width: 1px;
+   --box-shadow: none;
+}
+
 /* END APP.HTML */

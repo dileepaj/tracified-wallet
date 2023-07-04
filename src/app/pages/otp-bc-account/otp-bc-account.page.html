@@ -1,0 +1,44 @@
+<ion-header>
+   <ion-toolbar>
+      <ion-buttons slot="start">
+         <ion-menu-button menu="main-menu"></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Mint your NFT</ion-title>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding main-wrapper">
+   <ion-grid class="cusGrid">
+      <ion-row style="display: flex; justify-content: center">
+         <ion-label class="title-label"
+            ><h1>{{"SELECT_IMPORT_BC_ACC" | translate}}</h1>
+            <p>{{"SELECT_IMPORT_BC_ACC_DESC" | translate}}</p>
+         </ion-label>
+      </ion-row>
+
+      <ion-row>
+         <ion-label style="margin-top: 36px" class="input-label">{{'SELECT_IMPORT_LABEL' | translate}}</ion-label>
+      </ion-row>
+      <ion-row>
+         <div class="input-wrapper">
+            <ion-item class="input-item" lines="full">
+               <ion-select style="width: 100%" label="Default label" placeholder="{{'SELECT_IMPORT_LABEL' | translate}}" (ionChange)="selectBcAccount($event)" [(ngModel)]="selectedBcAcc" appNoArrow>
+                  <ion-select-option *ngFor="let acc of bcAccList" [value]="acc"
+                     >{{acc.name + " (" + acc.publicKey.substring(0,4) + "..." + acc.publicKey.substring(acc.publicKey.length-4, acc.publicKey.length) + ")"}}</ion-select-option
+                  >
+               </ion-select>
+               <ion-icon slot="end" name="caret-forward-outline" class="caret"></ion-icon>
+            </ion-item>
+            <ion-icon name="eye" color="primary" (click)="showPublicKey()"></ion-icon>
+         </div>
+      </ion-row>
+
+      <ion-row style="display: flex; justify-content: start; margin: 5% 0px 10px 0px">
+         <ion-button class="btn-light-outline" (click)="import()">{{'IMPORT_BUTTON' | translate}}<ion-icon name="add-circle-outline" slot="end"></ion-icon></ion-button>
+      </ion-row>
+
+      <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
+         <ion-button color="primary" (click)="onClickNext()">{{'NEXT_BUTTON' | translate}}</ion-button>
+      </ion-row>
+   </ion-grid>
+</ion-content>

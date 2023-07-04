@@ -8,6 +8,7 @@ import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { ConnectivityServiceProvider } from 'src/app/providers/connectivity-service/connectivity-service';
 import { TOAST_TIMER } from 'src/environments/environment';
+import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
 @Component({
    selector: 'page-otp',
    templateUrl: 'otp.html',
@@ -17,6 +18,9 @@ export class OtpPage {
    svgResult: any;
    email = '';
    shopId = '';
+   otpEndTime: Date;
+   timer: any;
+   timeoutText: string = '';
 
    verifyForm = new FormGroup({
       OTP: new FormControl('', Validators.required),
@@ -29,7 +33,8 @@ export class OtpPage {
       private service: ApiServiceProvider,
       private loadingCtrl: LoadingController,
       private route: ActivatedRoute,
-      public connectivity: ConnectivityServiceProvider
+      public connectivity: ConnectivityServiceProvider,
+      private storageService: StorageServiceProvider
    ) {
       const emailParam = this.route.snapshot.queryParamMap.get('email');
       const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
@@ -40,10 +45,16 @@ export class OtpPage {
       if (shopidParam) {
          this.shopId = shopidParam;
       }
-      if (emailParam && shopidParam) {
-         this.connectivity.putMenuHide(true);
-      }
-      
+
+      //this.storageService.clearOTPTimeout();
+
+      this.storageService.getOTPTimeout().then(end => {
+         this.otpEndTime = new Date(end);
+         this.showRemaining();
+         this.timer = setInterval(() => {
+            this.showRemaining();
+         }, 1000);
+      });
    }
 
    async checkOTP() {
@@ -93,5 +104,20 @@ export class OtpPage {
 
    async dimissLoading() {
       await this.loadingCtrl?.dismiss();
+   }
+
+   public showRemaining() {
+      let now = new Date();
+      let distance = this.otpEndTime.valueOf() - now.valueOf();
+      if (distance < 0) {
+         clearInterval(this.timer);
+         console.log('EXPIRED!');
+         this.timeoutText = '';
+
+         return;
+      }
+      var seconds = Math.floor(distance / 1000);
+
+      this.timeoutText = seconds + 's';
    }
 }

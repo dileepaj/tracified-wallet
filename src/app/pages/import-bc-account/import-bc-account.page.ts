@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
    selector: 'app-import-bc-account',
@@ -26,7 +27,7 @@ export class ImportBcAccountPage implements OnInit {
 
    spForm: any;
    pkForm: any;
-   constructor() {
+   constructor(private router: Router) {
       this.spForm = new FormGroup({
          seedPhrase1: new FormControl('', Validators.compose([Validators.required])),
          seedPhrase2: new FormControl('', Validators.compose([Validators.required])),
@@ -56,7 +57,7 @@ export class ImportBcAccountPage implements OnInit {
 
    public goBack() {
       if (this.tab == 0) {
-         this.tab--;
+         this.router.navigate(['/otp-bc-account']);
       } else if (this.tab == 1) {
          this.tab = 0;
       } else if (this.tab == 2) {

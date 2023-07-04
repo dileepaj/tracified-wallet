@@ -27,28 +27,31 @@ import { RequestDeletePage } from './pages/request-delete/request-delete.page';
 import { CreateImportBcAccountPage } from './pages/create-import-bc-account/create-import-bc-account.page';
 import { ImportBcAccountPage } from './pages/import-bc-account/import-bc-account.page';
 import { BcAccountCreatedPage } from './pages/bc-account-created/bc-account-created.page';
+import { OtpBcAccountPage } from './pages/otp-bc-account/otp-bc-account.page';
+import { RequestOtpPage } from './pages/request-otp/request-otp.page';
+import { MintCompletedPage } from './pages/mint-completed/mint-completed.page';
 
 const routes: Routes = [
-   { path: '', component: OtpPage },
-   { path: 'get-nft', component: GetNftPage },
+   { path: '', component: OtpPage, canActivate: [AuthGuardService] },
+   { path: 'get-nft', component: GetNftPage, canActivate: [AuthGuardService] },
    { path: 'login', component: LoginPage },
-   { path: 'otp-page', component: OtpPage },
-   { path: 'mint-nft', component: MintNftPage },
-   { path: 'get-key', component: GetKeysPage },
+   { path: 'otp-page', component: OtpPage, canActivate: [AuthGuardService] },
+   { path: 'mint-nft', component: MintNftPage, canActivate: [AuthGuardService] },
+   { path: 'get-key', component: GetKeysPage, canActivate: [AuthGuardService] },
    { path: 'bc-account', component: BcAccountPage, canActivate: [AuthGuardService] },
    { path: 'add-account', component: AddAccountPage, canActivate: [AuthGuardService] },
-   { path: 'svg-preview', component: PagesLoadSvgPage },
-   { path: 'otp-nft', component: OtpNtfComponent },
-   { path: 'psw-reset', component: ResetPasswordPage },
-   { path: 'content', component: ContentPage },
-   { path: 'help', component: HelpPage },
-   { path: 'setting', component: SettingsPage },
-   { path: 'setting-form', component: SettingFormPage },
+   { path: 'svg-preview', component: PagesLoadSvgPage, canActivate: [AuthGuardService] },
+   { path: 'otp-nft', component: OtpNtfComponent, canActivate: [AuthGuardService] },
+   { path: 'psw-reset', component: ResetPasswordPage, canActivate: [AuthGuardService] },
+   { path: 'content', component: ContentPage, canActivate: [AuthGuardService] },
+   { path: 'help', component: HelpPage, canActivate: [AuthGuardService] },
+   { path: 'setting', component: SettingsPage, canActivate: [AuthGuardService] },
+   { path: 'setting-form', component: SettingFormPage, canActivate: [AuthGuardService] },
    { path: 'account-details', component: AccountDetailsPage, canActivate: [AuthGuardService] },
-   { path: 'fund-transfer', component: FundTransferPage },
+   { path: 'fund-transfer', component: FundTransferPage, canActivate: [AuthGuardService] },
    { path: 'transfer-confirm', component: TransferConfirmPage, canActivate: [AuthGuardService] },
-   { path: 'item-detail', component: ItemDetailPage },
-   { path: 'account-info', component: AccountInfoPage },
+   { path: 'item-detail', component: ItemDetailPage, canActivate: [AuthGuardService] },
+   { path: 'account-info', component: AccountInfoPage, canActivate: [AuthGuardService] },
 
    {
       path: 'tabs',
@@ -92,6 +95,18 @@ const routes: Routes = [
    {
       path: 'bc-account-created',
       component: BcAccountCreatedPage,
+   },
+   {
+      path: 'otp-bc-account',
+      component: OtpBcAccountPage,
+   },
+   {
+      path: 'request-otp',
+      component: RequestOtpPage,
+   },
+   {
+      path: 'mint-completed',
+      component: MintCompletedPage,
    },
 ];
 

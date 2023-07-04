@@ -213,6 +213,7 @@
    "FAILED_TO_LOGIN": "Failed to log into your account.",
    "ACCOUNT_BLOCKED": "Your account is blocked. Please contact an Admin.",
    "NO_INTERNET_MOMENT": "There is no internet at the moment.",
+   "FAILED_TO_FETch_SEED_PHRASE": "Failed to fetch seed phrase.",
 
    "SUCCESS_CHANGED_PASSWORD": "You have successfully changed your password. Please use the new password and log back again.",
    "COULD_NOT_RESET": "Could not reset the password. Something went wrong.",
@@ -300,11 +301,34 @@
    "CONFIRM_BUTTON": "Confirm",
    "IMPORT_SEED_PHRASE_DESC": "Enter your Seed Phrase to import existing blockchain account(s).",
 
-
    "BC_ACC_CREATED": "Blockchain Account Created",
    "BC_ACC_CREATED_DESC": "The following keys have been created for your account",
    "PHONE_NO": "Phone Number",
 
    "COUNTRY": "Country",
-   "SELECT_COUNTRY": "Select Country"
+   "SELECT_COUNTRY": "Select Country",
+
+   "SELECT_IMPORT_BC_ACC": "Select or Import Blockchain Account",
+   "SELECT_IMPORT_BC_ACC_DESC": "Select an existing blockchain account in your Tracified Wallet or import a new one.",
+   "SELECT_IMPORT_LABEL": "Select Blockchain Account",
+
+   "NEXT_BUTTON": "Next",
+
+   "REQUEST_OTP": "Request OTP",
+   "REQUEST_OTP_DESC": "Request a One-Time Password that will be sent to your email",
+   "REQUEST_OTP_DESC_2": "Enter the One-Time Password that has been sent to this email",
+   "REQUEST_OTP_BUTTON": "Request OTP",
+   "YOUR_EMAIL_ADDRESS": "Your Email Address",
+   "SELECTED_IMPORT_LABEL": "Selected Blockchain Account",
+   "ENTER_OTP": "Enter OTP",
+   "DIDNT_RECEIVE_CODE": "Didn't receive the code?",
+   "RETRY": "Retry in",
+   "RESEND": "Resend OTP",
+   "VERIFY_BUTTON": "Verify",
+   "CONGRATS": "Congratulations",
+   "CONGRATS_DESC": "Your NFT has been minted successfully",
+   "VIEW_ITMS_BUTTON": "View Your Items",
+
+   "CLAIM_NFT": "Claim your NFT",
+   "CLAIM_NFT_DESC": "Enter the following details which will be added to your NFT"
 }

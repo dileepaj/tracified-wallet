@@ -150,7 +150,6 @@ export class AppComponent {
    }
 
    async menuconfig() {
-      let state;
       let responce;
       try {
          responce = await this.authService.authorizeLocalProfile();
@@ -159,23 +158,19 @@ export class AppComponent {
             this.router.navigate(['/request-delete']);
          } else if (this.deeplink && responce) {
             console.log('deeeplink- yes , state-yes');
-            state = await this.checkUser();
             this.router.navigate(['/otp-page'], this.queryParams);
          } else if (this.deeplink && !responce) {
             console.log('deeeplink- yes , state-no');
-            state = true;
             this.dataService.clearLocalData();
             this.router.navigate(['/otp-page'], this.queryParams);
          } else if (responce && !this.deeplink) {
             console.log('deeeplink- no , state-yes');
-            state = await this.checkUser();
 
             if (this.router.url.indexOf('otp-page') === -1) {
                this.router.navigate(['/tabs'], { replaceUrl: true });
             }
          } else {
             console.log('deeeplink- no , state-no');
-            state = true;
             this.dataService.clearLocalData();
          }
       } catch (error) {
@@ -183,9 +178,6 @@ export class AppComponent {
          // this.logger.error('Authorize local profile failed: ', error);
          this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
       }
-
-      this.connectivity.putMenuHide(state);
-      console.log(state);
    }
 
    async checkUser(): Promise<boolean> {
@@ -300,7 +292,7 @@ export class AppComponent {
             break;
          case 'nft':
             console.log('hello');
-            this.router.navigate(['/otp-page']);
+            this.router.navigate(['/otp-bc-account']);
             break;
          case 'market':
             this.router.navigate(['/get-nft']);
@@ -353,10 +345,6 @@ export class AppComponent {
          ],
       });
       await confirm.present();
-   }
-
-   logIn() {
-      this.router.navigate(['/login']);
    }
 
    async presentAlert(title: string, message: string) {

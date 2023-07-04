@@ -70,6 +70,7 @@ export class MintNftPage {
    email;
    otp: any;
    CustomMsg: any;
+   thumbnail: string;
    @ViewChild('popover') popover;
    isOpen = false;
    @ViewChild('myImage', { static: false }) myImage: ElementRef;
@@ -134,6 +135,7 @@ export class MintNftPage {
             this.result = res.body.Response;
             this.SVG = this.result.svg;
             this.SVGID = this.result.svgid;
+            this.thumbnail = this.result.thumbnail;
             this.convertToBase64(this.result.svg);
          })
          .catch(async error => {
@@ -304,6 +306,7 @@ export class MintNftPage {
                   Timestamp: new Date().toISOString(),
                   TXNHash: nft.body.NFTTxnHash,
                   ShopId: this.shopID,
+                  Thumbnail: this.thumbnail,
                };
                this.apiService
                   .walletNftSave(NFT)
