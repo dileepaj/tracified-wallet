@@ -32,7 +32,7 @@ import { RequestOtpPage } from './pages/request-otp/request-otp.page';
 import { MintCompletedPage } from './pages/mint-completed/mint-completed.page';
 
 const routes: Routes = [
-   { path: '', component: GetKeysPage, canActivate: [AuthGuardService] },
+   { path: '', component: GetNftPage, canActivate: [AuthGuardService] },
    { path: 'get-nft', component: GetNftPage, canActivate: [AuthGuardService] },
    { path: 'login', component: LoginPage },
    { path: 'otp-page', component: OtpPage, canActivate: [AuthGuardService] },
@@ -99,6 +99,7 @@ const routes: Routes = [
    {
       path: 'otp-bc-account',
       component: OtpBcAccountPage,
+      canActivate: [AuthGuardService],
    },
    {
       path: 'request-otp',
