@@ -24,8 +24,8 @@ export class AuthGuardService implements CanActivate {
       try {
          const res = await this.authService.authorizeLocalProfile();
          if (res) {
-            const account = await this.dataService.retrieveDefaultAccount();
-            this.properties.defaultAccount = account;
+            // const account = await this.dataService.retrieveDefaultAccount();
+            // this.properties.defaultAccount = account;
             return true;
          } else {
             this.dataService.clearLocalData();
