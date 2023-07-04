@@ -45,9 +45,6 @@ export class OtpPage {
       if (shopidParam) {
          this.shopId = shopidParam;
       }
-      if (emailParam && shopidParam) {
-         this.connectivity.putMenuHide(true);
-      }
 
       //this.storageService.clearOTPTimeout();
 

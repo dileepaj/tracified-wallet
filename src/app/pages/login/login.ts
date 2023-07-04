@@ -56,7 +56,6 @@ export class LoginPage {
       this.translate.get('LOGIN_ERROR').subscribe(value => {
          this.loginErrorString = value;
       });
-      this.connectivity.putMenuHide(true);
    }
 
    async login() {
@@ -70,53 +69,62 @@ export class LoginPage {
          this.authService
             .validateUser(authmodel)
             .then(
-               async res => {
+               res => {
                   if (res.status === 200) {
-                     await this.storageService.getMnemonic().then(data => {
-                        console.log("data: ",data)
-                        if (data == null) {
-                           this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
-                        } else {
-                           this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
-                        }
-                     });
-                     this.dataService
-                        .getBlockchainAccounts()
-                        .then(accounts => {
-                           this.properties.defaultAccount = accounts[0];
-                           this.dataService.setDefaultAccount(accounts[0]);
-                           this.dataService
-                              .storeBlockchainAccounts(accounts)
-                              .then(() => {
-                                 this.dissmissLoading();
-                                 this.connectivity.putMenuHide(false);
-                                 // this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
-                              })
-                              .catch(err => {
-                                 this.dissmissLoading();
-                                 this.translate.get(['ERROR', 'FAILED_TO_STORE_TRANS_ACC']).subscribe(text => {
-                                    this.presentAlert(text['ERROR'], text['FAILED_TO_STORE_TRANS_ACC']);
-                                 });
-                                 this.logger.error('Storing BC accounts error: ' + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
-                              });
-                        })
-                        .catch(err => {
-                           this.dissmissLoading();
-                           if (err.status == 406) {
-                              // this.storageService.getMnemonic().then(data => {
-                              //    if (!data) {
-                              //       this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
-                              //    } else {
-                              //       this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
-                              //    }
-                              // });
+                     this.storageService
+                        .getMnemonic()
+                        .then(data => {
+                           console.log('data: ', data);
+                           if (data == null) {
+                              this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
                            } else {
-                              this.translate.get(['ERROR', 'FAILED_TO_FETCH_TRANS']).subscribe(text => {
-                                 this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_TRANS']);
-                              });
+                              this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
                            }
-                           this.logger.error('Get Blockchain accounts error: ' + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                           this.dissmissLoading();
+                        })
+                        .catch(error => {
+                           this.dissmissLoading();
+                           this.translate.get(['ERROR', 'FAILED_TO_FETch_SEED_PHRASE']).subscribe(text => {
+                              this.presentAlert(text['ERROR'], text['FAILED_TO_FETch_SEED_PHRASE']);
+                           });
+                           this.logger.error('seed phrase fetching from local storage error: ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
                         });
+                     // this.dataService
+                     //    .getBlockchainAccounts()
+                     //    .then(accounts => {
+                     //       this.properties.defaultAccount = accounts[0];
+                     //       this.dataService.setDefaultAccount(accounts[0]);
+                     //       this.dataService
+                     //          .storeBlockchainAccounts(accounts)
+                     //          .then(() => {
+                     //             this.dissmissLoading();
+                     //             // this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
+                     //          })
+                     //          .catch(err => {
+                     //             this.dissmissLoading();
+                     //             this.translate.get(['ERROR', 'FAILED_TO_STORE_TRANS_ACC']).subscribe(text => {
+                     //                this.presentAlert(text['ERROR'], text['FAILED_TO_STORE_TRANS_ACC']);
+                     //             });
+                     //             this.logger.error('Storing BC accounts error: ' + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                     //          });
+                     //    })
+                     //    .catch(err => {
+                     //       this.dissmissLoading();
+                     //       if (err.status == 406) {
+                     //          // this.storageService.getMnemonic().then(data => {
+                     //          //    if (!data) {
+                     //          //       this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
+                     //          //    } else {
+                     //          //       this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
+                     //          //    }
+                     //          // });
+                     //       } else {
+                     //          this.translate.get(['ERROR', 'FAILED_TO_FETCH_TRANS']).subscribe(text => {
+                     //             this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_TRANS']);
+                     //          });
+                     //       }
+                     // this.logger.error('Get Blockchain accounts error: ' + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                     //    });
                   } else if (res.status === 205) {
                      this.dissmissLoading();
                      this.router.navigate(['/psw-reset'], {

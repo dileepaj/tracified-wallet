@@ -213,6 +213,7 @@
    "FAILED_TO_LOGIN": "Failed to log into your account.",
    "ACCOUNT_BLOCKED": "Your account is blocked. Please contact an Admin.",
    "NO_INTERNET_MOMENT": "There is no internet at the moment.",
+   "FAILED_TO_FETch_SEED_PHRASE": "Failed to fetch seed phrase.",
 
    "SUCCESS_CHANGED_PASSWORD": "You have successfully changed your password. Please use the new password and log back again.",
    "COULD_NOT_RESET": "Could not reset the password. Something went wrong.",

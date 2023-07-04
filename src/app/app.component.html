@@ -2,10 +2,7 @@
    <ion-menu menuId="main-menu" content-id="main" auto-hide="false" swipeGesture="false">
       <ion-header>
          <ion-toolbar>
-            <div *ngIf="connectivity.checkMenuHide()" class="ion-text-center ion-padding">
-               <ion-img style="height: 70px" src="../assets/imgs/tracified-wallet .png" alt="Profile Picture"></ion-img>
-            </div>
-            <div *ngIf="!connectivity.checkMenuHide()" class="ion-text-center ion-padding">
+            <div class="ion-text-center ion-padding">
                <div class="profile-image-holder">
                   <ion-img class="profile-image" src="../assets/imgs/user.png" alt="Profile Picture"></ion-img>
                </div>
@@ -18,7 +15,7 @@
 
       <ion-content>
          <ion-list>
-            <ion-menu-toggle *ngIf="!connectivity.checkMenuHide()">
+            <ion-menu-toggle>
                <ion-item (click)="openPage('items')">
                   <ion-icon name="clipboard" slot="start"></ion-icon>
                   <ion-label>
@@ -45,7 +42,7 @@
                </ion-item>
             </ion-menu-toggle>
 
-            <ion-menu-toggle *ngIf="!connectivity.checkMenuHide()">
+            <ion-menu-toggle>
                <ion-item (click)="openPage('accounts')">
                   <ion-icon name="people" slot="start"></ion-icon>
                   <ion-label>
@@ -54,7 +51,7 @@
                </ion-item>
             </ion-menu-toggle>
 
-            <ion-menu-toggle *ngIf="!connectivity.checkMenuHide()">
+            <ion-menu-toggle>
                <ion-item (click)="openPage('fundTransfer')">
                   <ion-icon name="cash" slot="start"></ion-icon>
                   <ion-label>
@@ -63,7 +60,7 @@
                </ion-item>
             </ion-menu-toggle>
 
-            <ion-menu-toggle *ngIf="!connectivity.checkMenuHide()">
+            <ion-menu-toggle>
                <ion-item (click)="openPage('settings')">
                   <ion-icon name="settings" slot="start"></ion-icon>
                   <ion-label>
@@ -72,7 +69,7 @@
                </ion-item>
             </ion-menu-toggle>
             <!-- V6 commented -->
-            <!-- <ion-menu-toggle *ngIf="!connectivity.checkMenuHide()">
+            <!-- <ion-menu-toggle >
                <ion-item (click)="openPage('about')">
                   <ion-icon name="information" slot="start"></ion-icon>
                   <ion-label>
@@ -81,7 +78,7 @@
                </ion-item>
             </ion-menu-toggle> -->
 
-            <ion-menu-toggle *ngIf="!connectivity.checkMenuHide()">
+            <ion-menu-toggle>
                <ion-item (click)="openPage('help')">
                   <ion-icon name="help" slot="start"></ion-icon>
                   <ion-label>
@@ -91,22 +88,16 @@
             </ion-menu-toggle>
 
             <ion-menu-toggle>
-               <ion-item (click)="logOut()" *ngIf="!connectivity.checkMenuHide()">
+               <ion-item (click)="logOut()">
                   <ion-icon color="danger" name="power" slot="start"></ion-icon>
-                  <ion-label *ngIf="!connectivity.checkMenuHide()">
-                     {{ 'LOGOUT' | translate }}
-                  </ion-label>
-               </ion-item>
-               <ion-item (click)="logIn()" *ngIf="connectivity.checkMenuHide()">
-                  <ion-icon color="primary" name="power" slot="start"></ion-icon>
                   <ion-label>
-                     {{ 'Log in' | translate }}
+                     {{ 'LOGOUT' | translate }}
                   </ion-label>
                </ion-item>
             </ion-menu-toggle>
          </ion-list>
       </ion-content>
-      <ion-footer *ngIf="!connectivity.checkMenuHide()">
+      <ion-footer>
          <ion-row>
             <ion-col size="4">
                <ion-button fill="clear" (click)="languageChange('english')" class="primary-font capitalize-font">
