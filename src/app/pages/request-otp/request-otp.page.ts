@@ -45,27 +45,31 @@ export class RequestOtpPage implements OnInit {
    }
 
    public request() {
+      this.storageService.getOTPTimeout().then(async end => {
+         if (end) {
+            let now = new Date();
+            let distance = new Date(end).valueOf() - now.valueOf();
+            if (distance < 0) {
+               this.requestOtp();
+            }
+         } else {
+            this.requestOtp();
+         }
+      });
+   }
+
+   public requestOtp() {
       this.apiService
          .requestOTP(this.email, this.shopId)
-         .then(res => {
-            this.storageService.getOTPTimeout().then(async end => {
-               if (end) {
-                  let now = new Date();
-                  let distance = new Date(end).valueOf() - now.valueOf();
-                  if (distance < 0) {
-                     await this.setTimeout();
-                  }
-               } else {
-                  await this.setTimeout();
-               }
-               const option: NavigationExtras = {
-                  queryParams: {
-                     shopId: this.shopId,
-                     email: this.email,
-                  },
-               };
-               this.router.navigate(['/otp-page'], option);
-            });
+         .then(async res => {
+            await this.setTimeout();
+            const option: NavigationExtras = {
+               queryParams: {
+                  shopId: this.shopId,
+                  email: this.email,
+               },
+            };
+            this.router.navigate(['/otp-page'], option);
          })
          .catch(error => {
             console.log(error);
@@ -75,7 +79,7 @@ export class RequestOtpPage implements OnInit {
 
    public async setTimeout() {
       //add time difference
-      let newTime = new Date().getTime() + 1 * 60 * 2;
+      let newTime = new Date().getTime() + 1000 * 60 * 2;
 
       let newDate = new Date(newTime);
 
