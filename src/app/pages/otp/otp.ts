@@ -53,10 +53,9 @@ export class OtpPage {
 
    async checkOTP() {
       let otp = this.verifyForm.get('OTP').value;
-      let mail = this.verifyForm.get('Email').value;
       await this.showLoading();
       this.service
-         .checkOTP(otp, mail)
+         .checkOTP(otp, this.email)
          .then(async res => {
             if (res.body.Status == 200 && res.body.Response.Status == 'Valid') {
                await this.dimissLoading();
@@ -65,7 +64,7 @@ export class OtpPage {
                   state: {
                      ShopId: res.body.Response.ShopID,
                      otp: otp,
-                     email: mail,
+                     email: this.email,
                   },
                };
                this.router.navigate(['/otp-nft'], option);
