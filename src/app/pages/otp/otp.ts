@@ -113,7 +113,7 @@ export class OtpPage {
 
    public async setTimeout() {
       //add time difference
-      let newTime = new Date().getTime() + 1 * 60 * 2;
+      let newTime = new Date().getTime() + 1000 * 60 * 2;
 
       let newDate = new Date(newTime);
 
