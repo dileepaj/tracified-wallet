@@ -32,7 +32,7 @@ export class AppComponent {
    private loading;
    pageHide: boolean;
    queryParams: any;
-   deeplink: boolean;
+   deeplink: boolean = false;
    // @ViewChild(Nav) nav: Nav;
 
    constructor(
@@ -58,7 +58,11 @@ export class AppComponent {
       private zone: NgZone,
       public connectivity: ConnectivityServiceProvider
    ) {
-      this.initDeepLink();
+      if (this.authService.authorizeLocalProfile()) {
+         this.initDeepLink();
+      } else {
+         this.router.navigate(['/login']);
+      }
 
       // platform.ready().then(() => {
       //    // this.statusBar.styleLightContent();
@@ -127,36 +131,18 @@ export class AppComponent {
       //    this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
       //    this.router.navigate(['/login'], { replaceUrl: true });
       // });
-      // this.menuconfig();
    }
 
    async menuconfig() {
-      let responce;
       try {
-         responce = await this.authService.authorizeLocalProfile();
-
          if (this.router.url === '/request-delete') {
             this.router.navigate(['/request-delete']);
-         } else if (this.deeplink && responce) {
-            console.log('deeeplink- yes , state-yes');
-            this.router.navigate(['/otp-page'], this.queryParams);
-         } else if (this.deeplink && !responce) {
-            console.log('deeeplink- yes , state-no');
-            this.dataService.clearLocalData();
-            this.router.navigate(['/otp-page'], this.queryParams);
-         } else if (responce && !this.deeplink) {
-            console.log('deeeplink- no , state-yes');
-
-            if (this.router.url.indexOf('otp-page') === -1) {
-               this.router.navigate(['/tabs'], { replaceUrl: true });
-            }
-         } else {
-            console.log('deeeplink- no , state-no');
-            this.dataService.clearLocalData();
+         } else if (this.deeplink) {
+            console.log('deeeplink- yes');
+            this.router.navigate(['/otp-bc-account'], this.queryParams);
          }
       } catch (error) {
-         this.router.navigate(['/otp-page'], { replaceUrl: true });
-         // this.logger.error('Authorize local profile failed: ', error);
+         this.router.navigate(['/login'], { replaceUrl: true });
          this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
       }
    }
@@ -222,13 +208,14 @@ export class AppComponent {
                   this.queryParams['shopId'] = shopId;
                }
                this.deeplink = true;
-               this.router.navigate(['/otp-bc-account'], this.queryParams);
+               // this.router.navigate(['/otp-bc-account'], this.queryParams);
             } else {
                this.deeplink = false;
+               // this.router.navigate(['/tabs']);
             }
          });
       });
-      this.router.navigate(['/tabs']);
+      this.menuconfig();
    }
 
    deviceDetails() {
