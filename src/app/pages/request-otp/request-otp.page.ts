@@ -21,9 +21,7 @@ export class RequestOtpPage implements OnInit {
    bcPkStr: string;
 
    constructor(private router: Router, private storageService: StorageServiceProvider, private apiService: ApiServiceProvider, public alertCtrl: AlertController) {
-      this.email = this.router.getCurrentNavigation().extras.state.email;
       this.bcAccount = this.router.getCurrentNavigation().extras.state.bcAccount;
-      console.log(this.email, this.bcAccount);
 
       this.bcPkStr = `${this.bcAccount.name} (${this.bcAccount.publicKey.substring(0, 4)}...${this.bcAccount.publicKey.substring(
          this.bcAccount.publicKey.length - 4,
@@ -32,10 +30,14 @@ export class RequestOtpPage implements OnInit {
    }
 
    ngOnInit() {
-      this.storageService.getLocalProfile().then(res => {
+      /* this.storageService.getLocalProfile().then(res => {
          let email = this.email;
          email = AES.decrypt(res, KEY).toString(enc.Utf8);
          console.log('logged in user email : ', email);
+      }); */
+
+      this.storageService.profile.key(0).then(d => {
+         this.email = d;
       });
    }
 
