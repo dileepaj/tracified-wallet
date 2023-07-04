@@ -42,7 +42,6 @@ export class OtpBcAccountPage implements OnInit {
 
    async ngOnInit() {
       this.presentLoading();
-      await this.generateTempAccounts();
       this.mnemonic = await this.storageService.getMnemonic();
       let rst = await this.storageService.getAllMnemonicProfiles();
       for (const account of rst) {
@@ -81,12 +80,6 @@ export class OtpBcAccountPage implements OnInit {
             position: 'bottom',
          });
          await toastInstance.present();
-      }
-   }
-   //!remove later
-   public async generateTempAccounts() {
-      for (let i = 1; i <= 10; i++) {
-         await this.storageService.addSeedPhraseAccount(i.toString(), 'acc' + i);
       }
    }
 

@@ -16,6 +16,8 @@ import { NavigationExtras, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debug } from 'console';
 import { TOAST_TIMER } from 'src/environments/environment';
+import { BlockchainType, SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
+import { Keypair as StellerKeyPair } from 'stellar-base';
 
 @Component({
    selector: 'page-mint-nft',
@@ -75,6 +77,7 @@ export class MintNftPage {
    isOpen = false;
    @ViewChild('myImage', { static: false }) myImage: ElementRef;
    reciverName: any;
+   mnemonic: any;
 
    constructor(
       private alertCtrl: AlertController,
@@ -163,22 +166,18 @@ export class MintNftPage {
    }
 
    async createNFT() {
-      await this.presentLoading('Checking account...');
+      await this.presentLoading('Loading...');
+
       this.storage
-         .getBcAccounts(this.email)
-         .then((res1: any) => {
-            if (res1 != null) {
-               this.keypair = Keypair.fromSecret(res1);
-               this.sponsorOldAcc();
-            } else {
-               this.presentToast("You don't have an account exisiting with your username. Proceeding to creating a new one!");
-               this.createNewAccount();
-            }
+         .getMnemonic()
+         .then(data => {
+            console.log('data: ', data);
+            this.mnemonic = data;
+            this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, this.mnemonic) as StellerKeyPair;
+            this.sponsorOldAcc();
          })
-         .catch(async error => {
-            await this.dissmissLoading();
-            console.log('blockchain', error);
-            this.presentToast('Somthing Wrong, Please try again.');
+         .catch(error => {
+            this.presentToast("You don't have an account.");
          });
    }
 

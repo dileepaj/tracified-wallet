@@ -257,7 +257,6 @@ export class AppComponent {
             this.router.navigate(['/tabs'], { replaceUrl: true });
             break;
          case 'nft':
-            console.log('hello');
             this.router.navigate(['/otp-bc-account']);
             break;
          case 'market':
