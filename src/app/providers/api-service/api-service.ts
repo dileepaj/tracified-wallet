@@ -183,7 +183,7 @@ export class ApiServiceProvider {
          );
       });
    }
-   requestOTP(email:string,shopID:string){
+   requestOTP(email: string, shopID: string) {
       let headers = {
          observe: 'response',
          headers: new HttpHeaders({
@@ -214,6 +214,18 @@ export class ApiServiceProvider {
          Otp: otp,
       };
       return this.postN(nftbackUrl + '/validateOTP/', OTP, headers);
+   }
+
+   reSendOtp(data: any): Promise<any> {
+      let headers = {
+         observe: 'response',
+         headers: new HttpHeaders({
+            Accept: 'application/json',
+            'Content-Type': 'Application/json',
+            Authorization: 'Bearer ' + this.properties.token,
+         }),
+      };
+      return this.putN(nftbackUrl + '/resendOTP/', data, headers);
    }
 
    walletNftSave(payload: any): Promise<any> {
@@ -432,10 +444,10 @@ export class ApiServiceProvider {
    }
 
    changeTranasctionPassword(params): Promise<any> {
-      let payload ={
-         sk:params.sk,
-         accountName:params.accName
-      }
+      let payload = {
+         sk: params.sk,
+         accountName: params.accName,
+      };
       let headers = {
          observe: 'response',
          headers: new HttpHeaders({

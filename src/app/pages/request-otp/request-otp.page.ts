@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { NavigationExtras, Router } from '@angular/router';
+import { AlertController, ToastController } from '@ionic/angular';
 import { AES, enc } from 'crypto-js';
 import { ApiServiceProvider } from 'src/app/providers/api-service/api-service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
 import { KEY } from 'src/app/shared/config';
+import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
    selector: 'app-request-otp',
@@ -19,9 +20,11 @@ export class RequestOtpPage implements OnInit {
    email: string;
    bcAccount: any;
    bcPkStr: string;
+   shopId: string;
 
-   constructor(private router: Router, private storageService: StorageServiceProvider, private apiService: ApiServiceProvider, public alertCtrl: AlertController) {
+   constructor(private router: Router, private storageService: StorageServiceProvider, private apiService: ApiServiceProvider, public alertCtrl: AlertController, public toastCtrl: ToastController) {
       this.bcAccount = this.router.getCurrentNavigation().extras.state.bcAccount;
+      this.shopId = this.router.getCurrentNavigation().extras.queryParams.shopId;
 
       this.bcPkStr = `${this.bcAccount.name} (${this.bcAccount.publicKey.substring(0, 4)}...${this.bcAccount.publicKey.substring(
          this.bcAccount.publicKey.length - 4,
@@ -41,29 +44,38 @@ export class RequestOtpPage implements OnInit {
       });
    }
 
-   public async request() {
-      let email = this.email;
-      await this.storageService.getOTPTimeout().then(async end => {
-         console.log('end : ', end);
-         if (end) {
-            let now = new Date();
-            let distance = new Date(end).valueOf() - now.valueOf();
-            if (distance < 0) {
-               await this.setTimeout();
-            }
-         } else {
-            await this.setTimeout();
-         }
-      });
-      // this.apiService.requestOTP(email,this.#productID).then(res=>{
-      //    console.log("result: ",res);
-      // })
-      this.router.navigate(['/otp-page']);
+   public request() {
+      this.apiService
+         .requestOTP(this.email, this.shopId)
+         .then(res => {
+            this.storageService.getOTPTimeout().then(async end => {
+               if (end) {
+                  let now = new Date();
+                  let distance = new Date(end).valueOf() - now.valueOf();
+                  if (distance < 0) {
+                     await this.setTimeout();
+                  }
+               } else {
+                  await this.setTimeout();
+               }
+               const option: NavigationExtras = {
+                  queryParams: {
+                     shopId: this.shopId,
+                     email: this.email,
+                  },
+               };
+               this.router.navigate(['/otp-page'], option);
+            });
+         })
+         .catch(error => {
+            console.log(error);
+            this.presentToast(error.error.message);
+         });
    }
 
    public async setTimeout() {
       //add time difference
-      let newTime = new Date().getTime() + 1000 * 60 * 2;
+      let newTime = new Date().getTime() + 1 * 60 * 2;
 
       let newDate = new Date(newTime);
 
@@ -84,5 +96,14 @@ export class RequestOtpPage implements OnInit {
          });
          await alert.present();
       }
+   }
+
+   async presentToast(msg) {
+      const toast = await this.toastCtrl.create({
+         message: msg,
+         duration: TOAST_TIMER.SHORT_TIMER,
+         position: 'bottom',
+      });
+      await toast.present();
    }
 }

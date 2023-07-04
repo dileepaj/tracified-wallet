@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { BlockchainType, SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
@@ -21,6 +21,7 @@ export class OtpBcAccountPage implements OnInit {
    toastInstance: any;
 
    loading: any;
+   shopId: any;
 
    constructor(
       private router: Router,
@@ -28,8 +29,16 @@ export class OtpBcAccountPage implements OnInit {
       private seedPhraseSrevice: SeedPhraseService,
       public alertCtrl: AlertController,
       private toastService: ToastController,
-      private loadingCtrl: LoadingController
-   ) {}
+      private loadingCtrl: LoadingController,
+      private route: ActivatedRoute
+   ) {
+      // this.shopId = this.router.getCurrentNavigation().extras.state.shopId;
+      const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
+
+      if (shopidParam) {
+         this.shopId = shopidParam;
+      }
+   }
 
    async ngOnInit() {
       this.presentLoading();
@@ -61,7 +70,7 @@ export class OtpBcAccountPage implements OnInit {
                bcAccount: this.selectedBcAcc,
             },
             queryParams: {
-               shopId: '712356790',
+               shopId: this.shopId,
             },
          };
          this.router.navigate(['request-otp'], option);
