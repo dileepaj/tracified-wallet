@@ -8,7 +8,7 @@
       </ion-row>
 
       <!--Select create or import-->
-      <div *ngIf="tab == 0">
+      <div *ngIf="tab === 0">
          <ion-row style="display: flex; justify-content: center">
             <ion-label class="title-label"
                ><h1>{{"CREATE_IMPORT_BC_ACC" | translate}}</h1>
@@ -24,7 +24,7 @@
       </div>
 
       <!--Seed phrase generation -->
-      <div *ngIf="tab == 1">
+      <div *ngIf="tab === 1">
          <ion-row style="display: flex; justify-content: center">
             <ion-label class="title-label"
                ><h1>{{"YOUR_SEED_PHRASE" | translate}}</h1>
@@ -53,7 +53,7 @@
       </div>
 
       <!--Seed phrase confirmation -->
-      <div *ngIf="tab == 2">
+      <div *ngIf="tab === 2">
          <ion-row style="display: flex; justify-content: center">
             <ion-label class="title-label"
                ><h1>{{"CONFIRM_SEED_PHRASE" | translate}}</h1>
@@ -74,7 +74,7 @@
       </div>
 
       <!--Import bc account -->
-      <div *ngIf="tab == 3">
+      <div *ngIf="tab === 3">
          <ion-row style="display: flex; justify-content: center">
             <ion-label class="title-label"
                ><h1>{{"YOUR_SEED_PHRASE" | translate}}</h1>
@@ -141,7 +141,7 @@
       </div>
 
       <!--Create blockchain account -->
-      <div *ngIf="tab == 4">
+      <div *ngIf="tab === 4">
          <ion-row style="display: flex; justify-content: center">
             <ion-label class="title-label"
                ><h1>{{"CREATE_BC_ACC" | translate}}</h1>
@@ -167,9 +167,9 @@
                   <ion-icon slot="end" [name]="passwordIcon" class="passwordIcon gray-color" (click)="hideShowPassword()"> </ion-icon>
                </ion-item>
             </ion-row>
-            <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+            <!-- <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
                <ion-button color="white" class="customBtn customWhiteBtn">{{'GENERATE_PASSWORD_BUTTON' | translate}}</ion-button>
-            </ion-row>
+            </ion-row> -->
 
             <ion-row>
                <ion-label style="margin-top: 32px" class="input-label">{{'CONFIRM_PASSWORD' | translate}}</ion-label>
