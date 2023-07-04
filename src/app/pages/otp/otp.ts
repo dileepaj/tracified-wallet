@@ -9,6 +9,7 @@ import { FormControl, FormGroup, RequiredValidator, Validators } from '@angular/
 import { ConnectivityServiceProvider } from 'src/app/providers/connectivity-service/connectivity-service';
 import { TOAST_TIMER } from 'src/environments/environment';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
+
 @Component({
    selector: 'page-otp',
    templateUrl: 'otp.html',
@@ -32,19 +33,11 @@ export class OtpPage {
       public router: Router,
       private service: ApiServiceProvider,
       private loadingCtrl: LoadingController,
-      private route: ActivatedRoute,
       public connectivity: ConnectivityServiceProvider,
       private storageService: StorageServiceProvider
    ) {
-      const emailParam = this.route.snapshot.queryParamMap.get('email');
-      const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
-
-      if (emailParam) {
-         this.email = emailParam;
-      }
-      if (shopidParam) {
-         this.shopId = shopidParam;
-      }
+      this.email = this.router.getCurrentNavigation().extras.queryParams.email;
+      this.shopId = this.router.getCurrentNavigation().extras.queryParams.shopId;
 
       //this.storageService.clearOTPTimeout();
 
@@ -83,6 +76,21 @@ export class OtpPage {
 
             await this.dimissLoading();
             this.presentToast(err.message);
+         });
+   }
+
+   resendOtp() {
+      let payload = {
+         email: this.email,
+         productID: this.shopId,
+      };
+      this.service
+         .reSendOtp(payload)
+         .then((res: any) => {
+            console.log(res);
+         })
+         .catch(error => {
+            console.log(error);
          });
    }
 

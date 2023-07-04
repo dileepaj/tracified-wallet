@@ -218,19 +218,17 @@ export class AppComponent {
 
             if (slug === 'nft') {
                this.queryParams = {};
-               if (email) {
-                  this.queryParams['email'] = email;
-               }
                if (shopId) {
                   this.queryParams['shopId'] = shopId;
                }
                this.deeplink = true;
-               // this.router.navigate(['/otp-page'], this.queryParams);
+               this.router.navigate(['/otp-bc-account'], this.queryParams);
             } else {
                this.deeplink = false;
             }
          });
       });
+      this.router.navigate(['/tabs']);
    }
 
    deviceDetails() {
