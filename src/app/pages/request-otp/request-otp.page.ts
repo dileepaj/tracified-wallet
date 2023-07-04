@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 import { AES, enc } from 'crypto-js';
 import { ApiServiceProvider } from 'src/app/providers/api-service/api-service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
@@ -21,8 +21,16 @@ export class RequestOtpPage implements OnInit {
    bcAccount: any;
    bcPkStr: string;
    shopId: string;
+   loading: any;
 
-   constructor(private router: Router, private storageService: StorageServiceProvider, private apiService: ApiServiceProvider, public alertCtrl: AlertController, public toastCtrl: ToastController) {
+   constructor(
+      private router: Router,
+      private loadingCtrl: LoadingController,
+      private storageService: StorageServiceProvider,
+      private apiService: ApiServiceProvider,
+      public alertCtrl: AlertController,
+      public toastCtrl: ToastController
+   ) {
       this.bcAccount = this.router.getCurrentNavigation().extras.state.bcAccount;
       this.shopId = this.router.getCurrentNavigation().extras.queryParams.shopId;
 
@@ -45,6 +53,7 @@ export class RequestOtpPage implements OnInit {
    }
 
    public request() {
+      this.presentLoading();
       this.storageService.getOTPTimeout().then(async end => {
          if (end) {
             let now = new Date();
@@ -69,10 +78,12 @@ export class RequestOtpPage implements OnInit {
                   email: this.email,
                },
             };
+            this.dissmissLoading();
             this.router.navigate(['/otp-page'], option);
          })
          .catch(error => {
             console.log(error);
+            this.dissmissLoading();
             this.presentToast(error.error.message);
          });
    }
@@ -109,5 +120,17 @@ export class RequestOtpPage implements OnInit {
          position: 'bottom',
       });
       await toast.present();
+   }
+
+   async presentLoading() {
+      this.loading = await this.loadingCtrl.create({
+         backdropDismiss: false,
+         message: 'Please Wait',
+      });
+      this.loading.present();
+   }
+
+   async dissmissLoading() {
+      await this.loading.dismiss();
    }
 }
