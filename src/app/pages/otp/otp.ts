@@ -22,6 +22,7 @@ export class OtpPage {
    otpEndTime: Date;
    timer: any;
    timeoutText: string = '';
+   resendEnabled: boolean = false;
 
    verifyForm = new FormGroup({
       OTP: new FormControl('', Validators.required),
@@ -80,18 +81,25 @@ export class OtpPage {
    }
 
    resendOtp() {
-      let payload = {
-         email: this.email,
-         productID: this.shopId,
-      };
-      this.service
-         .reSendOtp(payload)
-         .then((res: any) => {
-            console.log(res);
-         })
-         .catch(error => {
-            console.log(error);
-         });
+      if (this.resendEnabled) {
+         let payload = {
+            email: this.email,
+            productID: this.shopId,
+         };
+         this.service
+            .reSendOtp(payload)
+            .then((res: any) => {
+               this.resendEnabled = false;
+               this.setTimeout();
+               this.timer = setInterval(() => {
+                  this.showRemaining();
+               }, 1000);
+               console.log(res);
+            })
+            .catch(error => {
+               console.log(error);
+            });
+      }
    }
 
    async presentToast(msg) {
@@ -101,6 +109,15 @@ export class OtpPage {
          position: 'bottom',
       });
       await toast.present();
+   }
+
+   public async setTimeout() {
+      //add time difference
+      let newTime = new Date().getTime() + 1 * 60 * 2;
+
+      let newDate = new Date(newTime);
+
+      await this.storageService.setOTPTimeout(newDate);
    }
 
    async showLoading() {
@@ -120,6 +137,7 @@ export class OtpPage {
       if (distance < 0) {
          clearInterval(this.timer);
          console.log('EXPIRED!');
+         this.resendEnabled = true;
          this.timeoutText = '';
 
          return;
