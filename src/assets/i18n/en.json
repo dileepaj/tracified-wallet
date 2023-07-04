@@ -327,5 +327,8 @@
    "VERIFY_BUTTON": "Verify",
    "CONGRATS": "Congratulations",
    "CONGRATS_DESC": "Your NFT has been minted successfully",
-   "VIEW_ITMS_BUTTON": "View Your Items"
+   "VIEW_ITMS_BUTTON": "View Your Items",
+
+   "CLAIM_NFT": "Claim your NFT",
+   "CLAIM_NFT_DESC": "Enter the following details which will be added to your NFT"
 }
