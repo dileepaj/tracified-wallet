@@ -41,7 +41,7 @@ export class OtpBcAccountPage implements OnInit {
    }
 
    async ngOnInit() {
-      this.presentLoading();
+      // this.presentLoading();
       this.mnemonic = await this.storageService.getMnemonic();
       let rst = await this.storageService.getAllMnemonicProfiles();
       for (const account of rst) {
@@ -58,8 +58,7 @@ export class OtpBcAccountPage implements OnInit {
             this.selectedBcAcc = bcAccount;
          }
       }
-
-      this.dissmissLoading();
+      // this.dissmissLoading();
    }
 
    async onClickNext() {
