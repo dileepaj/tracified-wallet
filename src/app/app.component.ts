@@ -6,12 +6,9 @@ import { Config, Platform, AlertController, LoadingController } from '@ionic/ang
 import { Router } from '@angular/router';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 
-// import { Device } from '@ionic-native/device/ngx';
 import { DeviceDetectorService } from 'ngx-device-detector';
-
 import { Properties } from '../app/shared/properties';
 import { AuthServiceProvider } from './providers/auth-service/auth-service';
-
 import { StorageServiceProvider } from './providers/storage-service/storage-service';
 // import { Logger } from 'ionic-logger-new';
 import { LoggerService } from './providers/logger-service/logger.service';
@@ -20,22 +17,6 @@ import { EventsService } from './providers/event-service/events.service';
 import { DataServiceProvider } from './providers/data-service/data-service';
 import { BlockchainServiceProvider } from './providers/blockchain-service/blockchain-service';
 import { ConnectivityServiceProvider } from './providers/connectivity-service/connectivity-service';
-import { promises, resolve } from 'dns';
-import { State } from 'ionicons/dist/types/stencil-public-runtime';
-// import { BcAccountPage } from '../pages/bc-account/bc-account';
-// import { FundTransferPage } from '../pages/fund-transfer/fund-transfer';
-// import { SettingsPage } from '../pages/settings/settings';
-// import { ContentPage } from '../pages/content/content';
-// import { CodePushServiceProvider } from '../providers/code-push-service/code-push-service';
-// import { CodePush, ILocalPackage, IRemotePackage } from '@ionic-native/code-push';
-// import { MintNftPage } from '../pages/mint-nft/mint-nft';
-// import { OtpPage } from '../pages/otp/otp';
-// import { GetKeysPage } from '../pages/get-keys/get-keys';
-// import { GetNftPage } from '../pages/get-nft/get-nft';
-// import { TabsPage } from '../pages/tabs/tabs';
-// import { HelpPage } from '../pages/help-support/help';
-// import { LoginPage } from '../pages/login/login';
-
 @Component({
    selector: 'app-root',
    templateUrl: 'app.component.html',
@@ -79,45 +60,45 @@ export class AppComponent {
    ) {
       this.initDeepLink();
 
-      platform.ready().then(() => {
-         // this.statusBar.styleLightContent();
-         // this.splashScreen.hide();
-         // this.codepushService.notifyApplicationReady().then(() => {
-         //   this.codepushService.checkForUpdate().then((remotePackage: IRemotePackage) => {
-         //     if (remotePackage.isMandatory) {
-         //       this.presentUpdating();
-         //       this.codepushService.doUpdate(remotePackage).then(() => {
-         //         this.splashScreen.show();
-         //         this.dismissLoading();
-         //       }).catch(() => {
-         //         this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
-         //         this.dismissLoading();
-         //       });
-         //     } else {
-         //       this.waitResponseAlert("Updates Avaialable", "There is a pending application update. Would you like to install it right now?", "Yes", "No").then(() => {
-         //         this.codepushService.doUpdate(remotePackage).then(() => {
-         //           this.splashScreen.show();
-         //           this.dismissLoading();
-         //         }).catch(() => {
-         //           this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
-         //           this.dismissLoading();
-         //         });
-         //       });
-         //     }
-         //   });
-         // });
-         this.properties.skipConsoleLogs = false;
-         this.properties.writeToFile = true;
-         // this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
-      });
-      this.initTranslate();
-      this.deviceDetails();
-      this.events.subscribe('dislayName', name => {
-         this.user = name;
-      });
-      this.events.subscribe('company', company => {
-         this.company = company;
-      });
+      // platform.ready().then(() => {
+      //    // this.statusBar.styleLightContent();
+      //    // this.splashScreen.hide();
+      //    // this.codepushService.notifyApplicationReady().then(() => {
+      //    //   this.codepushService.checkForUpdate().then((remotePackage: IRemotePackage) => {
+      //    //     if (remotePackage.isMandatory) {
+      //    //       this.presentUpdating();
+      //    //       this.codepushService.doUpdate(remotePackage).then(() => {
+      //    //         this.splashScreen.show();
+      //    //         this.dismissLoading();
+      //    //       }).catch(() => {
+      //    //         this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
+      //    //         this.dismissLoading();
+      //    //       });
+      //    //     } else {
+      //    //       this.waitResponseAlert("Updates Avaialable", "There is a pending application update. Would you like to install it right now?", "Yes", "No").then(() => {
+      //    //         this.codepushService.doUpdate(remotePackage).then(() => {
+      //    //           this.splashScreen.show();
+      //    //           this.dismissLoading();
+      //    //         }).catch(() => {
+      //    //           this.presentAlert("Error", "Failed to install the application. Please re open the application to try again.");
+      //    //           this.dismissLoading();
+      //    //         });
+      //    //       });
+      //    //     }
+      //    //   });
+      //    // });
+      //    this.properties.skipConsoleLogs = false;
+      //    this.properties.writeToFile = true;
+      //    // this.logger.init(fileSystem).then((status) => this.logger.debug('[Logger] init: ' + status));
+      // });
+      // this.initTranslate();
+      // this.deviceDetails();
+      // this.events.subscribe('dislayName', name => {
+      //    this.user = name;
+      // });
+      // this.events.subscribe('company', company => {
+      //    this.company = company;
+      // });
 
       //v6 plz remove and move to activate
 
@@ -146,7 +127,7 @@ export class AppComponent {
       //    this.presentAlert('Error', 'Failed to authorize the user. Please login again.');
       //    this.router.navigate(['/login'], { replaceUrl: true });
       // });
-      this.menuconfig();
+      // this.menuconfig();
    }
 
    async menuconfig() {
