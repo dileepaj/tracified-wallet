@@ -136,7 +136,7 @@
             </form>
          </ion-row>
          <ion-row style="display: flex; justify-content: center">
-            <ion-button color="primary" (click)="this.getMnemonicfromInput()">Continue</ion-button>
+            <ion-button color="primary" [disabled]="!form.valid" (click)="this.getMnemonicfromInput()">Continue</ion-button>
          </ion-row>
       </div>
 
@@ -182,10 +182,10 @@
             </ion-row>
 
             <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
-               <ion-button color="primary" (click)="saveSeedPhraseProfile()">{{'CREATE_BC_ACC_BUTTON' | translate}}</ion-button>
+               <ion-button color="primary" [disabled]="!createAccForm.valid" (click)="saveSeedPhraseProfile()">{{'CREATE_BC_ACC_BUTTON' | translate}}</ion-button>
             </ion-row>
          </form>
       </div>
    </ion-grid>
-   <app-help-popup [data]="data"></app-help-popup>
+   <!-- <app-help-popup [data]="data"></app-help-popup> -->
 </ion-content>

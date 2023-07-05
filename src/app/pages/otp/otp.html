@@ -26,10 +26,9 @@
          </ion-row>
          <ion-row style="display: flex; justify-content: space-between; margin: 5px 0px 10px 0px">
             <ion-label class="link">{{'DIDNT_RECEIVE_CODE' | translate}}</ion-label>
-            <ion-label class="link underline" (click)="resendOtp()">{{'RESEND' | translate}}</ion-label>
          </ion-row>
          <ion-row style="display: flex; justify-content: space-between; margin: 5px 0px 10px 0px">
-            <ion-label class="timeout">{{timeoutText? ('RETRY' | translate) : ''}} {{timeoutText}}</ion-label>
+            <ion-label class="link underline" (click)="resendOtp()" [class.timeout]="!timeoutText">{{timeoutText? ('RETRY' | translate) : ('RESEND' | translate)}} {{timeoutText}}</ion-label>
          </ion-row>
          <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
             <ion-button [disabled]="!verifyForm.valid" (click)="checkOTP()" color="primary">{{'VERIFY_BUTTON' | translate}}</ion-button>

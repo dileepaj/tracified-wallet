@@ -53,13 +53,20 @@ export class RequestOtpPage implements OnInit {
    }
 
    public request() {
-      this.presentLoading();
       this.storageService.getOTPTimeout().then(async end => {
          if (end) {
             let now = new Date();
             let distance = new Date(end).valueOf() - now.valueOf();
             if (distance < 0) {
                this.requestOtp();
+            } else {
+               const option: NavigationExtras = {
+                  queryParams: {
+                     shopId: this.shopId,
+                     email: this.email,
+                  },
+               };
+               this.router.navigate(['/otp-page'], option);
             }
          } else {
             this.requestOtp();
@@ -68,6 +75,7 @@ export class RequestOtpPage implements OnInit {
    }
 
    public requestOtp() {
+      this.presentLoading();
       this.apiService
          .requestOTP(this.email, this.shopId)
          .then(async res => {
@@ -81,7 +89,7 @@ export class RequestOtpPage implements OnInit {
             this.dissmissLoading();
             this.router.navigate(['/otp-page'], option);
          })
-         .catch(error => {
+         .catch(async error => {
             console.log(error);
             this.dissmissLoading();
             this.presentToast(error.error.message);

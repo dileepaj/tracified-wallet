@@ -314,7 +314,8 @@ export class MintNftPage {
 
                      // this.navController.navigateRoot('/mint-nft');
                      // window.history.replaceState(null, null, window.location.href);
-                     this.successful();
+                     //this.successful();
+                     this.router.navigate(['/mint-completed'], { replaceUrl: true });
 
                      // this.router.navigate(['/mint-nft'], { replaceUrl: true });
                   })
