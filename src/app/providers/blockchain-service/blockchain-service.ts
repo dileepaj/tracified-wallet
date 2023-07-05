@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction, Networks, TimeoutInfinite } from 'stellar-sdk';
 
@@ -10,11 +10,13 @@ import { LoggerService } from '../logger-service/logger.service';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { StorageServiceProvider } from '../../providers/storage-service/storage-service';
+import { ENV } from 'src/environments/environment';
 
 @Injectable({
    providedIn: 'root',
 })
 export class BlockchainServiceProvider {
+   reqOpts: { observe: string; headers: any; };
    constructor(
       public http: HttpClient,
       private logger: LoggerService,
@@ -685,5 +687,25 @@ export class BlockchainServiceProvider {
          console.error(e);
          return false;
       }
+   }
+
+   checkBCAccountStatus(publicKey:string){
+      return new Promise((resolve, reject) => {
+         this.reqOpts = {
+            observe: 'response',
+            headers: new HttpHeaders({
+               Accept: 'application/json',
+               'Content-Type': 'Application/json',
+            }),
+         };
+         this.http.get(`${ENV.BLOCKCHAIN_NETWORK}/accounts/${publicKey}`).subscribe(
+            response => {
+               resolve(response);
+            },
+            error => {
+               reject(error);
+            }
+         );
+      });
    }
 }
