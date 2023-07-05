@@ -174,7 +174,7 @@ export class MintNftPage {
             console.log('data: ', data);
             this.mnemonic = data;
             this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, this.mnemonic) as StellerKeyPair;
-            this.sponsorOldAcc();
+            this.sponsorNewAcc();
          })
          .catch(error => {
             this.presentToast("You don't have an account.");
