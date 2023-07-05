@@ -92,6 +92,9 @@ export class RequestOtpPage implements OnInit {
          .catch(async error => {
             console.log(error);
             this.dissmissLoading();
+            if (error.error.message === 'OTP already validated' || error.error.message === 'OTP for this email already exists') {
+               this.router.navigate(['/otp-page']);
+            }
             this.presentToast(error.error.message);
          });
    }
