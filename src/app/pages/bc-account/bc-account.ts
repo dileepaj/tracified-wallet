@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController, ToastController, LoadingController } from '@ionic/angular';
 // import { AddAccountPage } from '../add-account/add-account';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
@@ -8,15 +8,19 @@ import { ConnectivityServiceProvider } from '../../providers/connectivity-servic
 import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { Router } from '@angular/router';
 import { TOAST_TIMER } from 'src/environments/environment';
+import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
+import { BlockchainType, SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
+import { Keypair as StellerKeyPair } from 'stellar-base';
+import { Properties } from 'src/app/shared/properties';
 
 @Component({
    selector: 'page-bc-account',
    templateUrl: 'bc-account.html',
    styleUrls: ['./bc-account.scss'],
 })
-export class BcAccountPage {
+export class BcAccountPage implements OnInit {
    loading;
-   userAcc;
+   userAcc = [];
    isLoadingPresent: boolean;
 
    constructor(
@@ -27,9 +31,25 @@ export class BcAccountPage {
       public toastCtrl: ToastController,
       private loadingCtrl: LoadingController,
       public alertCtrl: AlertController,
-      public dataService: DataServiceProvider
+      public dataService: DataServiceProvider,
+      private storageService: StorageServiceProvider,
+      private properties: Properties
    ) {
       console.log('construct BcAccountPage');
+   }
+   async ngOnInit() {
+      let mnemonic = await this.storageService.getMnemonic();
+      let rst = await this.storageService.getAllMnemonicProfiles();
+      for (const account of rst) {
+         let stellarkeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, account.value, mnemonic) as StellerKeyPair;
+         let index = {
+            FO: false,
+            accountName: account.key,
+            pk: stellarkeyPair.publicKey().toString(),
+            sk: stellarkeyPair.secret().toString(),
+         };
+         this.userAcc.push(index);
+      }
    }
 
    ionViewDidEnter() {
@@ -54,8 +74,8 @@ export class BcAccountPage {
             .getBlockchainAccounts()
             .then(accounts => {
                this.dissmissLoading();
-               this.userAcc = accounts;
-               resolve(accounts);
+               this.userAcc.concat(accounts);
+               resolve(this.userAcc);
             })
             .catch(error => {
                if (this.isLoadingPresent) {
