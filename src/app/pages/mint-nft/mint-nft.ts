@@ -174,9 +174,26 @@ export class MintNftPage {
             console.log('data: ', data);
             this.mnemonic = data;
             this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, this.mnemonic) as StellerKeyPair;
-            this.sponsorNewAcc();
+
+            this.blockchainService
+               .checkBCAccountStatus(this.keypair.publicKey().toString())
+               .then(res => {
+                  console.log('sponsering old acc');
+                  this.sponsorOldAcc();
+               })
+               .catch(error => {
+                  console.log(error);
+                  if (error.status === 404) {
+                     console.log('sponsering new acc');
+                     this.sponsorNewAcc();
+                  } else {
+                     this.dissmissLoading();
+                     this.presentToast('Invalid Publick Key.');
+                  }
+               });
          })
          .catch(error => {
+            this.dissmissLoading();
             this.presentToast("You don't have an account.");
          });
    }
