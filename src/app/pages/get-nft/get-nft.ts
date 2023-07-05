@@ -11,7 +11,8 @@ import { Keypair } from 'stellar-sdk';
 import { Router } from '@angular/router';
 import { Properties } from 'src/app/shared/properties';
 import { blockchainNetType } from '../../shared/config';
-
+import { BlockchainType, SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
+import { Keypair as StellerKeyPair } from 'stellar-base';
 @Component({
    selector: 'page-get-nft',
    templateUrl: 'get-nft.html',
@@ -32,6 +33,7 @@ export class GetNftPage implements OnInit {
    columCount;
    colSize;
    pubKey: any;
+   mnemonic: any;
 
    constructor(
       private properties: Properties,
@@ -63,25 +65,39 @@ export class GetNftPage implements OnInit {
          this.columCount = 12;
          this.colSize = 1;
       }
+
       this.storage
-         .getTempPubKey('tempPubKey')
-         .then(async (res: any) => {
-            if (res != null) {
-               this.pubKey = res.pubKy;
-               await this.claimNft();
-            } else {
-               await this.dissmissLoading();
-            }
+         .getMnemonic()
+         .then(data => {
+            console.log('data: ', data);
+            this.mnemonic = data;
+            this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, this.mnemonic) as StellerKeyPair;
+            this.claimNft(this.keypair.publicKey().toString());
          })
-         .catch(async error => {
-            await this.dissmissLoading();
-            console.error(error);
+         .catch(error => {
+            console.log(error);
+            // this.presentToast("You don't have an account.");
          });
+
+      // this.storage
+      //    .getTempPubKey('tempPubKey')
+      //    .then(async (res: any) => {
+      //       if (res != null) {
+      //          this.pubKey = res.pubKy;
+      //          await this.claimNft();
+      //       } else {
+      //          await this.dissmissLoading();
+      //       }
+      //    })
+      //    .catch(async error => {
+      //       await this.dissmissLoading();
+      //       console.error(error);
+      //    });
    }
 
-   async claimNft() {
+   async claimNft(pk) {
       this.apiService
-         .getAllNft(this.pubKey)
+         .getAllNft(pk)
          .then(async (res: any) => {
             if (res) {
                let reverseArray = await this.reverseArray(res.Response);
