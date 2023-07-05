@@ -26,7 +26,6 @@ export class OtpPage {
 
    verifyForm = new FormGroup({
       OTP: new FormControl('', Validators.required),
-      Email: new FormControl('', Validators.email),
    });
 
    constructor(
