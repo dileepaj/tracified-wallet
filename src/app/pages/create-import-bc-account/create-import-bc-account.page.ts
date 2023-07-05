@@ -61,7 +61,7 @@ export class CreateImportBcAccountPage implements OnInit {
          seedPhrase12: new FormControl('', Validators.compose([Validators.required])),
       });
       this.createAccForm = new FormGroup({
-         accname: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
+         accname: new FormControl('', Validators.compose([Validators.required])),
          password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
          confpassword: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
       });

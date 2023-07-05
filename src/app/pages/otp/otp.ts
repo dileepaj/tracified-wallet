@@ -52,7 +52,7 @@ export class OtpPage {
 
    async checkOTP() {
       let otp = this.verifyForm.get('OTP').value;
-      await this.showLoading();
+      await this.showLoading('Verifying...');
       this.service
          .checkOTP(otp, this.email)
          .then(async res => {
@@ -78,24 +78,26 @@ export class OtpPage {
          });
    }
 
-   resendOtp() {
+   async resendOtp() {
       if (this.resendEnabled) {
+         this.showLoading('Please Wait');
          let payload = {
             email: this.email,
             productID: this.shopId,
          };
          this.service
             .reSendOtp(payload)
-            .then((res: any) => {
+            .then(async (res: any) => {
                this.resendEnabled = false;
-               this.setTimeout();
+               await this.setTimeout();
                this.timer = setInterval(() => {
                   this.showRemaining();
                }, 1000);
-               console.log(res);
+               this.dimissLoading();
             })
-            .catch(error => {
-               console.log(error);
+            .catch(async error => {
+               this.dimissLoading();
+               this.presentToast('An error occurred please try again');
             });
       }
    }
@@ -115,12 +117,14 @@ export class OtpPage {
 
       let newDate = new Date(newTime);
 
+      this.otpEndTime = newDate;
+
       await this.storageService.setOTPTimeout(newDate);
    }
 
-   async showLoading() {
+   async showLoading(msg: string) {
       const loading = await this.loadingCtrl.create({
-         message: 'Verifying...',
+         message: msg,
       });
       await loading.present();
    }
@@ -134,7 +138,6 @@ export class OtpPage {
       let distance = this.otpEndTime.valueOf() - now.valueOf();
       if (distance < 0) {
          clearInterval(this.timer);
-         console.log('EXPIRED!');
          this.resendEnabled = true;
          this.timeoutText = '';
 

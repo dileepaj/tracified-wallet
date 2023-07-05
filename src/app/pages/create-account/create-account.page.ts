@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { AES } from 'crypto-js';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import { PhoneNumberService } from 'src/app/providers/phone-number-service/phone-number.service';
@@ -33,7 +34,13 @@ export class CreateAccountPage implements OnInit {
    countries: any;
    countryCode: string;
 
-   constructor(private userSignupService: UserSignUp, private phoneNumberService: PhoneNumberService, private toastService: ToastController) {
+   constructor(
+      private loadingCtrl: LoadingController,
+      private userSignupService: UserSignUp,
+      private phoneNumberService: PhoneNumberService,
+      private toastService: ToastController,
+      private router: Router
+   ) {
       this.form = new FormGroup({
          username: new FormControl('', Validators.compose([Validators.required])),
          firstname: new FormControl('', Validators.compose([Validators.required])),
@@ -88,28 +95,40 @@ export class CreateAccountPage implements OnInit {
 
       console.log(this.newUser);
 
-      this.userSignupService.registerUser(this.newUser).subscribe(res => {
-         console.log('Result : ', res);
+      this.userSignupService.registerUser(this.newUser).subscribe({
+         next: () => {
+            this.dimissLoading();
+            this.showToast('Successful');
+            this.router.navigate(['login'], { state: { navigation: 'initial' } });
+         },
+         error: (err: any) => {
+            this.dimissLoading();
+            this.showToast('An error occurred please try again');
+         },
       });
    }
 
    public async checkMobile() {
+      this.showLoading();
       let mobile = this.form.get('phoneno').value;
 
       if (this.form.controls['phoneno'].valid) {
          this.phoneNumberService.validatePhoneNumber(mobile).subscribe({
             next: () => {
+               this.dimissLoading();
                this.showToast('Phone number already exists');
             },
             error: (err: any) => {
                if (err.status == 403) {
                   this.userSignUp();
                } else {
+                  this.dimissLoading();
                   this.showToast('An error occurred please try again');
                }
             },
          });
       } else {
+         this.dimissLoading();
          this.showToast('Invalid phone number please try again');
       }
    }
@@ -127,5 +146,16 @@ export class CreateAccountPage implements OnInit {
       this.countryCode = event.value.code;
 
       this.form.controls['phoneno'].setValue(this.countryCode);
+   }
+
+   async showLoading() {
+      const loading = await this.loadingCtrl.create({
+         message: 'Please Wait',
+      });
+      await loading.present();
+   }
+
+   async dimissLoading() {
+      await this.loadingCtrl?.dismiss();
    }
 }
