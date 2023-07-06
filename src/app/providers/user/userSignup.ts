@@ -10,7 +10,7 @@ import { Injectable } from "@angular/core";
     providedIn: 'root',
 })
 export class UserSignUp {
-    public url: string = `${ENV.API_ADMIN}/api/walletUser`
+    public url: string = `${ENV.API_ADMIN}/external/walletUser`
     reqOpts: any;
     constructor(
         public http: HttpClient,
