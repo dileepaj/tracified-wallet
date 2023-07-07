@@ -99,7 +99,7 @@ const routes: Routes = [
    {
       path: 'otp-bc-account',
       component: OtpBcAccountPage,
-      canActivate: [AuthGuardService],
+      // canActivate: [AuthGuardService],
    },
    {
       path: 'request-otp',

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AuthServiceProvider } from 'src/app/providers/auth-service/auth-service';
 import { BlockchainType, SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
 import { TOAST_TIMER } from 'src/environments/environment';
@@ -30,8 +31,31 @@ export class OtpBcAccountPage implements OnInit {
       public alertCtrl: AlertController,
       private toastService: ToastController,
       private loadingCtrl: LoadingController,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private authService: AuthServiceProvider
    ) {
+      let shopId = this.route.snapshot.queryParamMap.get('shopId');
+      let gemName = this.route.snapshot.queryParamMap.get('gemName');
+
+      if (shopId && gemName) {
+         this.authService.authorizeLocalProfile().then(auth => {
+            if (!auth) {
+               this.authService.setAppLinkParam(shopId, gemName);
+               this.router.navigate(['/login'], { replaceUrl: true });
+            } else {
+               this.storageService.getMnemonic().then(data => {
+                  if (data == null) {
+                     this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
+                  } else {
+                     this.authService.setAppLinkParam(null, null);
+                  }
+               });
+            }
+         });
+      } else {
+         this.router.navigate(['tabs'], { replaceUrl: true });
+      }
+
       // this.shopId = this.router.getCurrentNavigation().extras.state.shopId;
       const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
 
