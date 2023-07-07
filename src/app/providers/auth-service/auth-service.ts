@@ -14,6 +14,8 @@ import { ConnectivityServiceProvider } from '../connectivity-service/connectivit
 import { StorageServiceProvider } from '../storage-service/storage-service';
 import { MappingServiceProvider } from '../mapping-service/mapping-service';
 import { TOAST_TIMER } from 'src/environments/environment';
+import { resolve } from 'dns';
+import { rejects } from 'assert';
 
 @Injectable({
    providedIn: 'root',
@@ -21,6 +23,8 @@ import { TOAST_TIMER } from 'src/environments/environment';
 export class AuthServiceProvider {
    key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
    adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
+   shopId: any = '';
+   gemName: any = '';
 
    constructor(
       public http: HttpClient,
@@ -293,6 +297,20 @@ export class AuthServiceProvider {
       return new Promise(resolve => {
          const decoded = jwt.decode(token, { complete: true });
          resolve(decoded);
+      });
+   }
+
+   setAppLinkParam(shopId, gemName) {
+      this.shopId = shopId;
+      this.gemName = gemName;
+   }
+
+   getAppLindParam(): Promise<any> {
+      console.log(this.shopId);
+      return new Promise((resolve, rejects) => {
+         if (this.shopId && this.gemName) {
+            resolve({ shopId: this.shopId, gemName: this.gemName });
+         } else rejects(null);
       });
    }
 }
