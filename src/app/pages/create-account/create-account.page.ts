@@ -103,7 +103,11 @@ export class CreateAccountPage implements OnInit {
          },
          error: (err: any) => {
             this.dimissLoading();
-            this.showToast('An error occurred please try again');
+            if ((err.error = 'User already exist')) {
+               this.showToast('An user account already exists for this email');
+            } else {
+               this.showToast(err.error);
+            }
          },
       });
    }
