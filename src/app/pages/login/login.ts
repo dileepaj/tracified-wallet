@@ -69,9 +69,14 @@ export class LoginPage {
          this.authService
             .validateUser(authmodel)
             .then(
-               res => {
+               async res => {
                   if (res.status === 200) {
-                     this.storageService
+                     this.storageService.clearMnemonic(authmodel.userName).then(()=>{
+                        this.dissmissLoading();
+                        this.logger.info('cleared device storage', this.properties.skipConsoleLogs, this.properties.writeToFile);
+                        this.router.navigate(['/create-import-bc-account'], { queryParams: { navigation: 'initial' } });
+                     }).catch(error=>{
+                        this.storageService
                         .getMnemonic()
                         .then(data => {
                            console.log('data: ', data);
@@ -89,6 +94,9 @@ export class LoginPage {
                            });
                            this.logger.error('seed phrase fetching from local storage error: ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
                         });
+                        
+                     })
+                     
                      // this.dataService
                      //    .getBlockchainAccounts()
                      //    .then(accounts => {

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
+import { Properties } from 'src/app/shared/properties';
 import { TOAST_TIMER } from 'src/environments/environment';
 
 @Component({
@@ -45,7 +46,7 @@ export class CreateImportBcAccountPage implements OnInit {
    passwordIcon: string = 'eye-off';
    confPasswordIcon: string = 'eye-off';
    toastInstance: any;
-   constructor(private seedPhraseService: SeedPhraseService, private toastService: ToastController, private localForageService: StorageServiceProvider, private router: Router) {
+   constructor(private seedPhraseService: SeedPhraseService, private toastService: ToastController, private localForageService: StorageServiceProvider, private router: Router,private properties : Properties,private activeRoute : ActivatedRoute) {
       this.form = new FormGroup({
          seedPhrase1: new FormControl('', Validators.compose([Validators.required])),
          seedPhrase2: new FormControl('', Validators.compose([Validators.required])),
@@ -67,7 +68,15 @@ export class CreateImportBcAccountPage implements OnInit {
       });
    }
 
-   ngOnInit() {}
+   ngOnInit() {
+      let sub = this.activeRoute.queryParams.subscribe(params => {
+         let oldId = params['navigation'];
+         console.log("oldID: ",oldId)
+         if( oldId === 'initial'){
+            this.tab=0;
+         }
+      });
+   }
    public async changeTab(tab: number) {
       if (tab == 1) {
          let mnemonic = await this.seedPhraseService.generateMnemonic();
@@ -189,7 +198,7 @@ export class CreateImportBcAccountPage implements OnInit {
       console.log('incoming seed : ', selectedSeed);
       console.log('input data: ', accName.toString(), pwd.toString(), confirmPwd.toString());
       if (pwd.toString() == confirmPwd.toString()) {
-         await this.localForageService.setMnemonic(selectedSeed.replace(/,/g, ' '));
+         await this.localForageService.setMnemonic(selectedSeed.replace(/,/g, ' '),this.properties.userName);
          await this.localForageService.setMnemonicPassword(pwd.toString());
          await this.localForageService.addSeedPhraseAccount('0', accName.toString());
          this.router.navigate(['bc-account-created']);
@@ -207,18 +216,18 @@ export class CreateImportBcAccountPage implements OnInit {
    }
 
    public async getMnemonicfromInput() {
-      let seedPhrase1 = this.form.get('seedPhrase1').value;
-      let seedPhrase2 = this.form.get('seedPhrase2').value;
-      let seedPhrase3 = this.form.get('seedPhrase3').value;
-      let seedPhrase4 = this.form.get('seedPhrase4').value;
-      let seedPhrase5 = this.form.get('seedPhrase5').value;
-      let seedPhrase6 = this.form.get('seedPhrase6').value;
-      let seedPhrase7 = this.form.get('seedPhrase7').value;
-      let seedPhrase8 = this.form.get('seedPhrase8').value;
-      let seedPhrase9 = this.form.get('seedPhrase9').value;
-      let seedPhrase10 = this.form.get('seedPhrase10').value;
-      let seedPhrase11 = this.form.get('seedPhrase11').value;
-      let seedPhrase12 = this.form.get('seedPhrase12').value;
+      let seedPhrase1 = this.form.get('seedPhrase1').value.trim();
+      let seedPhrase2 = this.form.get('seedPhrase2').value.trim();
+      let seedPhrase3 = this.form.get('seedPhrase3').value.trim();
+      let seedPhrase4 = this.form.get('seedPhrase4').value.trim();
+      let seedPhrase5 = this.form.get('seedPhrase5').value.trim();
+      let seedPhrase6 = this.form.get('seedPhrase6').value.trim();
+      let seedPhrase7 = this.form.get('seedPhrase7').value.trim();
+      let seedPhrase8 = this.form.get('seedPhrase8').value.trim();
+      let seedPhrase9 = this.form.get('seedPhrase9').value.trim();
+      let seedPhrase10 = this.form.get('seedPhrase10').value.trim();
+      let seedPhrase11 = this.form.get('seedPhrase11').value.trim();
+      let seedPhrase12 = this.form.get('seedPhrase12').value.trim();
 
       let userInputMnemonic = `${seedPhrase1} ${seedPhrase2} ${seedPhrase3} ${seedPhrase4} ${seedPhrase5} ${seedPhrase6} ${seedPhrase7} ${seedPhrase8} ${seedPhrase9} ${seedPhrase10} ${seedPhrase11} ${seedPhrase12}`;
       let userInputMnemonicV2 = [seedPhrase1, seedPhrase2, seedPhrase3, seedPhrase4, seedPhrase5, seedPhrase6, seedPhrase7, seedPhrase8, seedPhrase9, seedPhrase10, seedPhrase11, seedPhrase12];
