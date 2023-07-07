@@ -208,11 +208,13 @@ export class StorageServiceProvider {
       this.language.setItem('language', language);
    }
 
-   public setMnemonic(mnemonic: string) {
+   public setMnemonic(mnemonic: string,email:string) {
       return new Promise(resolve => {
          let encMnemonic = AES.encrypt(JSON.stringify(mnemonic), this.key).toString();
          this.deviceMnemonic.setItem('device-mnemonic', encMnemonic).then(() => {
-            resolve(true);
+            this.deviceMnemonic.setItem('device-mnemonic-email',email).then(()=>{
+               resolve(true);
+            });
          });
       });
    }
@@ -282,6 +284,28 @@ export class StorageServiceProvider {
                reject(err);
             });
       });
+   }
+
+   public clearMnemonic(email:string):Promise<any> {
+      return new Promise((resolve, reject) => {
+         this.deviceMnemonic.getItem('device-mnemonic-email').then((data)=>{
+            if (email != data.toString()){
+               this.mnemonicProfiles.clear().then(() => {
+                  this.deviceMnemonic.clear().then(()=>{
+                     //triggers when a different user logs in. As a result of this mnemonic is cleared from device
+                     resolve(true);
+                  })
+               });
+            }else{
+               //triggers when the same user logs in
+               reject(null)
+            }
+         }).catch(()=>{
+            //triggers when the device has no seed phrase set
+            reject(null);
+         })
+      });
+      
    }
 
    setTempPubKey(username, key) {
