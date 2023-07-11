@@ -8,8 +8,8 @@
 
       <ion-row class="ion-justify-content-center">
          <ion-col size-md="6" size-lg="6" size="12">
-          <h1 class="topic ion-text-center">Request for Deletion</h1>
-          <p class="sub-topic ion-text-center ion-margin-top ion-margin-bottom">Enter your email address and make a request to delete your user account.</p>
+            <h1 class="topic ion-text-center">Request for Deletion</h1>
+            <p class="sub-topic ion-text-center ion-margin-top ion-margin-bottom">Enter your email address and make a request to delete your user account.</p>
 
             <form class="ion-margin-top" [formGroup]="emailform" #emailForm="ngForm" (ngSubmit)="onRequestDelete(emailForm.value)">
                <ion-item>
@@ -23,7 +23,7 @@
                <div class="alert alert-success success-messages" *ngIf="emailCheck" style="margin-top: 20px">Account deletion request sent successfully.</div>
                <div class="alert alert-danger success-messages" *ngIf="accessDenied" style="margin-top: 20px">Sorry. There's no account available for this email.</div>
                <div class="ion-text-center" style="margin-top: 30px">
-                  <ion-button color="danger" type="submit"> Request Now </ion-button>
+                  <ion-button color="primary" type="submit"> Request Now </ion-button>
                </div>
             </form>
          </ion-col>
