@@ -58,12 +58,15 @@ export class AppComponent {
       private zone: NgZone,
       public connectivity: ConnectivityServiceProvider
    ) {
-      if (this.authService.authorizeLocalProfile()) {
-         this.menuconfig();
-         this.initDeepLink();
-      } else {
-         this.router.navigate(['/login']);
-      }
+      this.authService.authorizeLocalProfile().then(res => {
+         console.log('Auth', res);
+         if (res) {
+            this.menuconfig();
+            this.initDeepLink();
+         } else {
+            this.router.navigate(['/login']);
+         }
+      });
 
       // platform.ready().then(() => {
       //    // this.statusBar.styleLightContent();
@@ -135,13 +138,13 @@ export class AppComponent {
    }
 
    async menuconfig() {
-         if (this.router.url === '/request-delete') {
-            this.router.navigate(['/request-delete']);
-         } 
-         // else if (this.deeplink) {
-         //    console.log('deeeplink- yes');
-         //    this.router.navigate(['/otp-bc-account'], this.queryParams);
-         // }
+      if (this.router.url === '/request-delete') {
+         this.router.navigate(['/request-delete']);
+      }
+      // else if (this.deeplink) {
+      //    console.log('deeeplink- yes');
+      //    this.router.navigate(['/otp-bc-account'], this.queryParams);
+      // }
    }
 
    async checkUser(): Promise<boolean> {
@@ -212,7 +215,6 @@ export class AppComponent {
             }
          });
       });
-
    }
 
    deviceDetails() {
