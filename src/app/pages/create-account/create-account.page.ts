@@ -9,7 +9,7 @@ import { UserSignUp } from 'src/app/providers/user/userSignup';
 import { KEY } from 'src/app/shared/config';
 import { USER_SETTING } from 'src/app/shared/userSignUpSetting';
 import { COUNTRIES } from 'src/assets/countries-json';
-
+const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 @Component({
    selector: 'app-create-account',
    templateUrl: './create-account.page.html',
@@ -42,7 +42,7 @@ export class CreateAccountPage implements OnInit {
       private router: Router
    ) {
       this.form = new FormGroup({
-         username: new FormControl('', Validators.compose([Validators.required])),
+         username: new FormControl('', Validators.compose([Validators.required,Validators.email,Validators.pattern(emailRegex)])),
          firstname: new FormControl('', Validators.compose([Validators.required])),
          lastname: new FormControl('', Validators.compose([Validators.required])),
          country: new FormControl('', Validators.compose([Validators.required])),
