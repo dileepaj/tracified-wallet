@@ -9,13 +9,15 @@ import { UserSignUp } from 'src/app/providers/user/userSignup';
 import { KEY } from 'src/app/shared/config';
 import { USER_SETTING } from 'src/app/shared/userSignUpSetting';
 import { COUNTRIES } from 'src/assets/countries-json';
-
+const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 @Component({
    selector: 'app-create-account',
    templateUrl: './create-account.page.html',
    styleUrls: ['./create-account.page.scss'],
 })
+
 export class CreateAccountPage implements OnInit {
+   isFocused: boolean = false;
    key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
    adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
 
@@ -42,7 +44,7 @@ export class CreateAccountPage implements OnInit {
       private router: Router
    ) {
       this.form = new FormGroup({
-         username: new FormControl('', Validators.compose([Validators.required])),
+         username: new FormControl('', Validators.compose([Validators.required,Validators.email,Validators.pattern(emailRegex)])),
          firstname: new FormControl('', Validators.compose([Validators.required])),
          lastname: new FormControl('', Validators.compose([Validators.required])),
          country: new FormControl('', Validators.compose([Validators.required])),
@@ -72,10 +74,16 @@ export class CreateAccountPage implements OnInit {
    }
 
    public userSignUp() {
+      alert("test")
       let username = this.form.get('username').value;
       let firstName = this.form.get('firstname').value;
       let lastName = this.form.get('lastname').value;
       let mobile = this.form.get('phoneno').value;
+      let country = this.form.get('country').value;
+      if(emailRegex.test(username)){
+         this.showToast("Email is not valid.")
+         return;
+      }
       this.user = {
          firstName,
          lastName,
