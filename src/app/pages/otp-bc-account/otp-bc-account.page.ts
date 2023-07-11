@@ -37,6 +37,10 @@ export class OtpBcAccountPage implements OnInit {
       let shopId = this.route.snapshot.queryParamMap.get('shopId');
       let gemName = this.route.snapshot.queryParamMap.get('gemName');
 
+      let appLinkShopID = this.router.getCurrentNavigation().extras.queryParams?.AppshopId;
+      let appGemName = this.router.getCurrentNavigation().extras.queryParams?.AppgemName;
+
+      console.log('appLinkShopID', appLinkShopID);
       if (shopId && gemName) {
          this.authService.authorizeLocalProfile().then(auth => {
             if (!auth) {
@@ -48,19 +52,29 @@ export class OtpBcAccountPage implements OnInit {
                      this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
                   } else {
                      this.authService.setAppLinkParam(null, null);
+                     this.shopId = shopId;
+                  }
+               });
+            }
+         });
+      } else if (appLinkShopID && appGemName) {
+         this.authService.authorizeLocalProfile().then(auth => {
+            if (!auth) {
+               this.authService.setAppLinkParam(appLinkShopID, appGemName);
+               this.router.navigate(['/login'], { replaceUrl: true });
+            } else {
+               this.storageService.getMnemonic().then(data => {
+                  if (data == null) {
+                     this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
+                  } else {
+                     this.authService.setAppLinkParam(null, null);
+                     this.shopId = appLinkShopID;
                   }
                });
             }
          });
       } else {
          this.router.navigate(['tabs'], { replaceUrl: true });
-      }
-
-      // this.shopId = this.router.getCurrentNavigation().extras.state.shopId;
-      const shopidParam = this.route.snapshot.queryParamMap.get('shopId');
-
-      if (shopidParam) {
-         this.shopId = shopidParam;
       }
    }
 
