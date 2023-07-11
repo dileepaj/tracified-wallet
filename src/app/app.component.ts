@@ -3,7 +3,7 @@ import { Component, NgZone, ViewChild } from '@angular/core';
 // import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { Config, Platform, AlertController, LoadingController } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -62,11 +62,11 @@ export class AppComponent {
          console.log('Auth', res);
          if (res) {
             this.menuconfig();
-            this.initDeepLink();
          } else {
             this.router.navigate(['/login']);
          }
       });
+      this.initDeepLink();
 
       // platform.ready().then(() => {
       //    // this.statusBar.styleLightContent();
@@ -196,19 +196,25 @@ export class AppComponent {
    initDeepLink() {
       console.log('initDeepLink');
       App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
+         console.log('appurlopen', event);
          this.zone.run(() => {
             const segments = event.url.split('://')[1].split('/');
             const slug = segments?.[0];
-            const email = segments?.[1];
+            const gemName = segments?.[1];
             const shopId = segments?.[2];
 
             if (slug === 'nft') {
                this.queryParams = {};
                if (shopId) {
-                  this.queryParams['shopId'] = shopId;
+                  const option: NavigationExtras = {
+                     queryParams: {
+                        AppshopId: shopId,
+                        AppgemName: gemName,
+                     },
+                  };
+                  this.deeplink = true;
+                  this.router.navigate(['/otp-bc-account'], option);
                }
-               this.deeplink = true;
-               this.router.navigate(['/otp-bc-account'], this.queryParams);
             } else {
                this.deeplink = false;
                this.router.navigate(['/tabs']);
