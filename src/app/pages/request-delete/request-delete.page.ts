@@ -38,13 +38,19 @@ export class RequestDeletePage implements OnInit {
          return;
       }
 
-      this.api.post('sign/walletAppAccountDeletion', requestemail).subscribe(
-         response => {
+      this.api
+         .accountDelete(requestemail)
+         .then(res => {
+            console.log(res);
+            if (res.status === 200) {
+               this.emailCheck = true;
+               this.accessDenied = false;
+            }
+         })
+         .catch(error => {
+            console.log(error);
+            this.emailCheck = false;
             this.accessDenied = true;
-         },
-         err => {
-            this.accessDenied = true;
-         }
-      );
+         });
    }
 }

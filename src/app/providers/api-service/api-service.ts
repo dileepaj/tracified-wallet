@@ -663,4 +663,28 @@ export class ApiServiceProvider {
          );
       });
    }
+
+   //account delete request
+   accountDelete(payload): Promise<any> {
+      return new Promise((resolve, reject) => {
+         this.reqOpts = {
+            observe: 'response',
+            headers: new HttpHeaders({
+               Accept: 'application/json',
+               'Content-Type': 'Application/json',
+            }),
+         };
+         this.http.post(adminUrl + '/' + 'sign/walletAppAccountDeletion', payload, this.reqOpts).subscribe(
+            response => {
+               // console.log(response);
+
+               resolve(response);
+            },
+            error => {
+               console.log(error);
+               reject(error);
+            }
+         );
+      });
+   }
 }
