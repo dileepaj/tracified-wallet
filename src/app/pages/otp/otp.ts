@@ -36,8 +36,8 @@ export class OtpPage {
       public connectivity: ConnectivityServiceProvider,
       private storageService: StorageServiceProvider
    ) {
-      this.email = this.router.getCurrentNavigation().extras.queryParams?.email;
-      this.shopId = this.router.getCurrentNavigation().extras.queryParams?.shopId;
+      this.email = this.router.getCurrentNavigation().extras.queryParams.email;
+      this.shopId = this.router.getCurrentNavigation().extras.queryParams.shopId;
 
       //this.storageService.clearOTPTimeout();
 
