@@ -75,17 +75,17 @@ export class RequestOtpPage implements OnInit {
    }
 
    public requestOtp() {
+      const option: NavigationExtras = {
+         queryParams: {
+            shopId: this.shopId,
+            email: this.email,
+         },
+      };
       this.presentLoading();
       this.apiService
          .requestOTP(this.email, this.shopId)
          .then(async res => {
             await this.setTimeout();
-            const option: NavigationExtras = {
-               queryParams: {
-                  shopId: this.shopId,
-                  email: this.email,
-               },
-            };
             this.dissmissLoading();
             this.router.navigate(['/otp-page'], option);
          })
@@ -93,7 +93,7 @@ export class RequestOtpPage implements OnInit {
             console.log(error);
             this.dissmissLoading();
             if (error.error.message === 'OTP already validated' || error.error.message === 'OTP for this email already exists') {
-               this.router.navigate(['/otp-page']);
+               this.router.navigate(['/otp-page'], option);
             }
             this.presentToast(error.error.message);
          });
