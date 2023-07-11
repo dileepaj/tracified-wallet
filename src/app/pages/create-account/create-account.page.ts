@@ -15,9 +15,7 @@ const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    templateUrl: './create-account.page.html',
    styleUrls: ['./create-account.page.scss'],
 })
-
 export class CreateAccountPage implements OnInit {
-   isFocused: boolean = false;
    key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
    adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
 
@@ -74,16 +72,10 @@ export class CreateAccountPage implements OnInit {
    }
 
    public userSignUp() {
-      alert("test")
       let username = this.form.get('username').value;
       let firstName = this.form.get('firstname').value;
       let lastName = this.form.get('lastname').value;
       let mobile = this.form.get('phoneno').value;
-      let country = this.form.get('country').value;
-      if(emailRegex.test(username)){
-         this.showToast("Email is not valid.")
-         return;
-      }
       this.user = {
          firstName,
          lastName,

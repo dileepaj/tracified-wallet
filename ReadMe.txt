@@ -1,11 +1,11 @@
 Used node version - 18.15.0
 
 
-** IMPORTAN **
+** IMPORTANT **
 
 For Android APP Link - Need to add these lines to AndroidManifest.xml
 
-  <activity
+  <activity>
 
           <intent-filter>
             <action android:name="android.intent.action.VIEW" />
