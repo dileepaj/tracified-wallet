@@ -398,7 +398,8 @@ ion-row {
 }
 
 .input-item {
-   --border-style: none;
+   /* --border-style: none; */
+   --border-color: #eaeaea;
    --ion-item-background: #eaeaea !important;
    width: 100% !important;
    /* max-height: 48px !important; */
@@ -408,6 +409,10 @@ ion-row {
    ion-input {
       font-size: 16px !important;
    }
+}
+
+.disable-border {
+   --border-style: none;
 }
 
 .main-wrapper {

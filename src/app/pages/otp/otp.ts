@@ -74,7 +74,20 @@ export class OtpPage {
             console.log(err);
 
             await this.dimissLoading();
-            this.presentToast(err.message);
+
+            if (err.message === 'NFT already minted') {
+               this.presentToast(err.message);
+               this.router.navigate(['/get-nft'], { replaceUrl: true });
+            } else if (err.message === 'OTP already validated' || err.message === 'OTP for this email already exists') {
+               const option: NavigationExtras = {
+                  state: {
+                     ShopId: this.shopId,
+                     otp: otp,
+                     email: this.email,
+                  },
+               };
+               this.router.navigate(['/otp-nft'], option);
+            }
          });
    }
 

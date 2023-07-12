@@ -239,13 +239,13 @@ export class MintNftPage {
                         .catch(async error => {
                            console.log(error);
                            await this.dissmissLoading();
-                           this.presentToast('Somthing wrong please try again.');
+                           this.presentToast('Something wrong please try again.');
                         });
                   })
                   .catch(async error => {
                      console.log(error);
                      await this.dissmissLoading();
-                     this.presentToast('Somthing wrong please try again.');
+                     this.presentToast('Something wrong please try again.');
                   });
             }
          })
@@ -272,12 +272,21 @@ export class MintNftPage {
                this.apiService.getTrustFunded(this.keypair.publicKey().toString(), this.nftName, this.Issuer).then(txn => {
                   this.xdr = txn.XDR;
 
-                  this.blockchainService.signandsubmitXdr(this.xdr, this.keypair.secret().toString()).then((res): any => {
-                     if (res.successful) {
-                        this.transactionResult = true;
-                        this.mintNFT();
-                     }
-                  });
+                  this.blockchainService
+                     .signandsubmitXdr(this.xdr, this.keypair.secret().toString())
+                     .then((res): any => {
+                        if (res.successful) {
+                           this.transactionResult = true;
+                           this.mintNFT();
+                        }
+                     })
+                     .catch(async error => {
+                        console.log(error);
+                        await this.dissmissLoading();
+                        this.presentToast('Something wrong please try again.');
+
+                        this.router.navigate(['/get-nft'], { replaceUrl: true });
+                     });
                });
             }
          })

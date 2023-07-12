@@ -47,6 +47,7 @@ export class OtpNtfComponent {
 
             otp: this.otp,
          },
+         replaceUrl: true,
       };
       this.router.navigate(['/mint-nft'], option);
    }
