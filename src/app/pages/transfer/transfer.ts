@@ -77,7 +77,6 @@ export class TransferPage {
             });
       } catch (error) {
          await this.dissmissLoading();
-         console.log(error);
       }
    }
 

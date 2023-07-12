@@ -56,7 +56,6 @@ export class BcAccountCreatedPage implements OnInit {
          await this.forageService
             .getMnemonic()
             .then(mnemonic => {
-               console.log('mnemonic : ', mnemonic);
                this.stellarkeypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, mnemonic) as StellerKeyPair;
 
                this.ethPolyKeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Ethereum, 0, mnemonic) as Wallet;
@@ -64,9 +63,7 @@ export class BcAccountCreatedPage implements OnInit {
                this.solana = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Solana, 0, mnemonic) as SolKeys;
 
                //debug
-               console.log(`[STELLAR] pk: ${this.stellarkeypair.publicKey()} sk ${this.stellarkeypair.secret()}`);
-               console.log(`[ETH/POLY] pk: ${this.ethPolyKeyPair.address} sk ${this.stellarkeypair.rawSecretKey}`);
-               console.log(`[SOLANA] PK: ${this.solana.publicKey}  SK:${this.solana.secretKey.toString()}`);
+
                //end debug
             })
             .catch(async err => {

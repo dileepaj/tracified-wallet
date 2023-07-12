@@ -71,32 +71,33 @@ export class LoginPage {
             .then(
                async res => {
                   if (res.status === 200) {
-                     this.storageService.clearMnemonic(authmodel.userName).then(()=>{
-                        this.dissmissLoading();
-                        this.logger.info('cleared device storage', this.properties.skipConsoleLogs, this.properties.writeToFile);
-                        this.router.navigate(['/create-import-bc-account'], { queryParams: { navigation: 'initial' } });
-                     }).catch(error=>{
-                        this.storageService
-                        .getMnemonic()
-                        .then(data => {
-                           console.log('data: ', data);
-                           if (data == null) {
-                              this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
-                           } else {
-                              this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
-                           }
+                     this.storageService
+                        .clearMnemonic(authmodel.userName)
+                        .then(() => {
                            this.dissmissLoading();
+                           this.logger.info('cleared device storage', this.properties.skipConsoleLogs, this.properties.writeToFile);
+                           this.router.navigate(['/create-import-bc-account'], { queryParams: { navigation: 'initial' } });
                         })
                         .catch(error => {
-                           this.dissmissLoading();
-                           this.translate.get(['ERROR', 'FAILED_TO_FETch_SEED_PHRASE']).subscribe(text => {
-                              this.presentAlert(text['ERROR'], text['FAILED_TO_FETch_SEED_PHRASE']);
-                           });
-                           this.logger.error('seed phrase fetching from local storage error: ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                           this.storageService
+                              .getMnemonic()
+                              .then(data => {
+                                 if (data == null) {
+                                    this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
+                                 } else {
+                                    this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
+                                 }
+                                 this.dissmissLoading();
+                              })
+                              .catch(error => {
+                                 this.dissmissLoading();
+                                 this.translate.get(['ERROR', 'FAILED_TO_FETch_SEED_PHRASE']).subscribe(text => {
+                                    this.presentAlert(text['ERROR'], text['FAILED_TO_FETch_SEED_PHRASE']);
+                                 });
+                                 this.logger.error('seed phrase fetching from local storage error: ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
+                              });
                         });
-                        
-                     })
-                     
+
                      // this.dataService
                      //    .getBlockchainAccounts()
                      //    .then(accounts => {

@@ -69,13 +69,11 @@ export class GetNftPage implements OnInit {
       this.storage
          .getMnemonic()
          .then(data => {
-            console.log('data: ', data);
             this.mnemonic = data;
             this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, this.mnemonic) as StellerKeyPair;
             this.claimNft(this.keypair.publicKey().toString());
          })
          .catch(error => {
-            console.log(error);
             // this.presentToast("You don't have an account.");
          });
 
@@ -108,7 +106,6 @@ export class GetNftPage implements OnInit {
          })
          .catch(async error => {
             await this.dissmissLoading();
-            console.log(error);
          });
    }
 

@@ -34,9 +34,7 @@ export class BcAccountPage implements OnInit {
       public dataService: DataServiceProvider,
       private storageService: StorageServiceProvider,
       private properties: Properties
-   ) {
-      console.log('construct BcAccountPage');
-   }
+   ) {}
    async ngOnInit() {
       let mnemonic = await this.storageService.getMnemonic();
       let rst = await this.storageService.getAllMnemonicProfiles();
@@ -54,7 +52,7 @@ export class BcAccountPage implements OnInit {
 
    ionViewDidEnter() {
       //v6 load rename to enter as load is not getting called : check
-      console.log('ionViewDidLoad BcAccountPage');
+
       this.getMainAccounts();
    }
 
@@ -82,7 +80,7 @@ export class BcAccountPage implements OnInit {
                   this.dissmissLoading();
                }
                this.userError('Authentication Failed', 'Retrieving blockchain accounts failed.');
-               console.log(error);
+
                reject();
             });
       });

@@ -10,10 +10,8 @@ import { helpCoC, helpCreatBCHAcc, helpIntro, helpSignIn, helpUserDetails } from
 export class HelpPage {
    constructor(private platform: Platform) {
       if (this.platform.is('capacitor')) {
-         console.log(this.platform.platforms());
       }
       const platforms = this.platform.platforms();
-      console.log('Current platforms:', platforms);
    }
 
    openHelp(i: Number) {

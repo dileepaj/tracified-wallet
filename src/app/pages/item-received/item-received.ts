@@ -57,7 +57,6 @@ export class ItemReceivedPage {
    ionViewDidEnter() {
       this.mainAccount = this.properties.defaultAccount;
       this.getAllCoCs();
-      console.log('receive');
    }
 
    async handleRefresh(event) {
@@ -163,7 +162,7 @@ export class ItemReceivedPage {
 
    updateCoC(coc, status) {
       let count = this.pendingCoCCount(coc.sentOriginal, this.cocReceived);
-      console.log(count);
+
       if (count > 0) {
          this.translate.get(['ERROR', 'ACC_REJECT_PENDING_COC']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['ACC_REJECT_PENDING_COC']);

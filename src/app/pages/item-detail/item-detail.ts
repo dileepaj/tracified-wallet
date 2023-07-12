@@ -98,7 +98,6 @@ export class ItemDetailPage implements OnInit {
                if (res.status === 200) {
                   const data = res.body.accounts;
                   this.bcAccounts = data.filter(item => item.publicKey !== this.mainAccount.pk);
-                  console.log(this.bcAccounts);
                } else if (res.status === 204) {
                   this.presentToast('There are no accounts available!.');
                }
@@ -158,7 +157,6 @@ export class ItemDetailPage implements OnInit {
                this.secretKey = decKey;
                this.preparesubAccount(this.secretKey)
                   .then((subAcc: any) => {
-                     console.log('Returned Sub Account: ', subAcc);
                      let subPair = this.blockchainService.getSubAccountPair(subAcc.publicKey, this.properties.defaultAccount);
                      this.blockchainService
                         .verifyCoC(this.secretKey, this.COCForm.identifier, this.COCForm.receiver, this.COCForm.selectedItem, this.COCForm.qty, this.COCForm.vaidity)
@@ -181,8 +179,6 @@ export class ItemDetailPage implements OnInit {
                                     this.blockchainService.rejectTransactionXdr(this.COCForm.receiver, this.COCForm.vaidity, transactionHash, subAcc, this.secretKey),
                                  ])
                                     .then((xdrs: any) => {
-                                       console.log('Accept XDR sequence: ', xdrs[0].seqNum);
-                                       console.log('Reject XDR sequence: ', xdrs[1].seqNum);
                                        const coc = {
                                           Sender: this.properties.defaultAccount.pk,
                                           Receiver: this.COCForm.receiver,
@@ -276,7 +272,6 @@ export class ItemDetailPage implements OnInit {
                      if (data.password) {
                         resolve(data.password);
                      } else {
-                        console.log('Empty Password');
                      }
                   },
                },
@@ -307,7 +302,6 @@ export class ItemDetailPage implements OnInit {
          this.dataService
             .subAccountsStatus(subAccounts)
             .then(res => {
-               console.log('All Sub Accounts: ', res);
                let avaialbeAccounts = [];
                let matchingAccount;
                let statuses = res.body;
@@ -358,7 +352,6 @@ export class ItemDetailPage implements OnInit {
                            reject(err);
                         });
                   } else {
-                     console.log('New Account');
                      this.blockchainService
                         .createSubAccount(this.properties.defaultAccount, mainAccSk)
                         .then((subKeyPair: Keypair) => {
@@ -381,7 +374,6 @@ export class ItemDetailPage implements OnInit {
                         });
                   }
                } else {
-                  console.log('New Account');
                   this.blockchainService
                      .createSubAccount(this.properties.defaultAccount, mainAccSk)
                      .then((subKeyPair: Keypair) => {

@@ -89,12 +89,11 @@ export class ApiServiceProvider {
 
    getSVGByHash(Hash: string) {
       //request to get collection name according to user public key
-      console.log('inside get svg service: ', Hash);
+
       return this.http.get(`${updateSVG}/${Hash}`);
    }
 
    getAccountFunded(publickey, nftName, issuer): Promise<any> {
-      console.log('data passed:', publickey, nftName, issuer);
       return new Promise((resolve, reject) => {
          this.reqOpts = {
             observe: 'response',
@@ -116,7 +115,6 @@ export class ApiServiceProvider {
    }
 
    getTrustFunded(publickey, nftName, issuer): Promise<any> {
-      console.log('data passed olddddd:', publickey, nftName, issuer);
       return new Promise((resolve, reject) => {
          this.reqOpts = {
             observe: 'response',
@@ -149,12 +147,11 @@ export class ApiServiceProvider {
          };
          this.http.put(adminUrl + '/api/bc/user/subAccount', body, this.reqOpts).subscribe(
             response => {
-               // console.log(response);
+               //
 
                resolve(response);
             },
             error => {
-               console.log(error);
                reject(error);
             }
          );
@@ -172,12 +169,11 @@ export class ApiServiceProvider {
          };
          this.http.post(gatewayUrl + '/transaction/coc/subAccountStatus', body, this.reqOpts).subscribe(
             response => {
-               // console.log(response);
+               //
 
                resolve(response);
             },
             error => {
-               console.log(error);
                reject(error);
             }
          );
@@ -208,7 +204,7 @@ export class ApiServiceProvider {
             Authorization: 'Bearer ' + this.properties.token,
          }),
       };
-      console.log('Inside service');
+
       let OTP = {
          Email: mail,
          Otp: otp,
@@ -237,7 +233,7 @@ export class ApiServiceProvider {
             Authorization: 'Bearer ' + this.properties.token,
          }),
       };
-      console.log('Inside service');
+
       return this.postN(nftbackUrl + '/walletnft/save', payload, headers);
    }
 
@@ -246,11 +242,9 @@ export class ApiServiceProvider {
       return new Promise((resolve, reject) => {
          this.http.post(verifyEmail, confirm, reqOpts).subscribe(
             response => {
-               console.log(response);
                resolve(response);
             },
             error => {
-               console.log(error);
                reject(error);
             }
          );
@@ -262,11 +256,9 @@ export class ApiServiceProvider {
       return new Promise((resolve, reject) => {
          this.http.post(resetPassword, confirm, reqOpts).subscribe(
             response => {
-               console.log(response);
                resolve(response);
             },
             error => {
-               console.log(error);
                reject(error);
             }
          );
@@ -562,14 +554,12 @@ export class ApiServiceProvider {
                'Content-Type': 'Application/json',
             }),
          };
-         console.log('inside the service');
 
          this.http.post(updateSVG, data, this.reqOpts).subscribe(
             response => {
                resolve(response);
             },
             error => {
-               console.log(error);
                reject(error);
             }
          );
@@ -581,7 +571,7 @@ export class ApiServiceProvider {
          svgid: svgid,
          hash: hash,
       };
-      console.log('data passed for update: ', nft);
+
       return this.http.put(updateSVG, nft);
    }
 
@@ -594,7 +584,7 @@ export class ApiServiceProvider {
                'Content-Type': 'Application/json',
             }),
          };
-         console.log('inside the service');
+
          let NFTModel = {
             DistributorPublickKey: distributorPublickKey,
             IssuerPublicKey: issuerPublicKey,
@@ -617,7 +607,6 @@ export class ApiServiceProvider {
                resolve(response);
             },
             error => {
-               console.log(error);
                reject(error);
             }
          );
@@ -676,12 +665,11 @@ export class ApiServiceProvider {
          };
          this.http.post(adminUrl + '/' + 'sign/walletAppAccountDeletion', payload, this.reqOpts).subscribe(
             response => {
-               // console.log(response);
+               //
 
                resolve(response);
             },
             error => {
-               console.log(error);
                reject(error);
             }
          );

@@ -44,9 +44,7 @@ export class TransferConfirmPage implements OnInit {
 
    ngOnInit(): void {}
 
-   ionViewDidLoad() {
-      console.log('ionViewDidLoad TransferConfirmPage');
-   }
+   ionViewDidLoad() {}
 
    confirm() {
       //v6 plz refactor
@@ -57,21 +55,13 @@ export class TransferConfirmPage implements OnInit {
             this.blockchainService
                .validateTransactionPassword(password, this.properties.defaultAccount.sk, this.properties.defaultAccount.pk)
                .then(decKey => {
-                  console.log('hit 3');
-
                   this.blockchainService
                      .checkAccountValidity(this.receiverPK)
                      .then(status => {
-                        console.log('hit 4');
-
                         if (status) {
-                           console.log('hit 5');
-
                            this.blockchainService
                               .transferFunds(decKey, this.receiverPK, this.transferAmount)
                               .then(status => {
-                                 console.log('hit 6 miss');
-
                                  this.dissmissLoading();
                                  this.logger.info('Successfully transferred funds: ' + JSON.stringify(status), this.properties.skipConsoleLogs, this.properties.writeToFile);
                                  this.logger.info('[FUND_TRANSFER][RECEIVER] ' + this.receiverPK, this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -85,8 +75,6 @@ export class TransferConfirmPage implements OnInit {
                                  this.receiverPK = '';
                               })
                               .catch(err => {
-                                 console.log('hit 7 miss');
-
                                  this.dissmissLoading();
                                  this.logger.error('Transfer fund transaction submission failed: ' + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
                                  this.translate.get(['ERROR', 'FAILED_TO_TRANSFER']).subscribe(text => {
@@ -97,8 +85,6 @@ export class TransferConfirmPage implements OnInit {
                            this.blockchainService
                               .transferFundsForNewAccounts(decKey, this.receiverPK, this.transferAmount)
                               .then(() => {
-                                 console.log('hit 7 miss');
-
                                  this.transferAmount = '';
                                  this.receiverPK = '';
                                  this.dissmissLoading();
@@ -111,8 +97,6 @@ export class TransferConfirmPage implements OnInit {
                                  this.router.navigate(['/fund-transfer'], { replaceUrl: true });
                               })
                               .catch(err => {
-                                 console.log('hit 8 miss', err);
-
                                  this.dissmissLoading();
                                  this.logger.error('Transfer fund transaction submission failed: ' + JSON.stringify(err), this.properties.skipConsoleLogs, this.properties.writeToFile);
                                  this.translate.get(['ERROR', 'FAILED_TO_TRANSFER']).subscribe(text => {
@@ -122,8 +106,6 @@ export class TransferConfirmPage implements OnInit {
                         }
                      })
                      .catch(err => {
-                        console.log('hit 9 miss');
-
                         this.dissmissLoading();
                         this.translate.get(['ERROR', 'FAILED_TO_IDENTIFY_RECEIVER']).subscribe(text => {
                            this.presentAlert(text['ERROR'], text['FAILED_TO_IDENTIFY_RECEIVER']);
@@ -132,7 +114,6 @@ export class TransferConfirmPage implements OnInit {
                      });
                })
                .catch(err => {
-                  console.log(err);
                   this.dissmissLoading();
                   this.translate.get(['ERROR', 'INVALID_TRANSACTION_PASS']).subscribe(text => {
                      this.presentAlert(text['ERROR'], text['INVALID_TRANSACTION_PASS']);
@@ -141,7 +122,6 @@ export class TransferConfirmPage implements OnInit {
                });
          })
          .catch(err => {
-            console.log(err);
             this.dissmissLoading();
          });
    }
@@ -171,7 +151,6 @@ export class TransferConfirmPage implements OnInit {
                      if (data.password) {
                         resolve(data.password);
                      } else {
-                        console.log('Empty Password');
                      }
                   },
                },

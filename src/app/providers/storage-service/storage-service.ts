@@ -127,18 +127,14 @@ export class StorageServiceProvider {
          this.blockchainAccounts
             .length()
             .then(noOfKeys => {
-               console.log('no keys: ', noOfKeys);
-               console.log('bc account: ', this.blockchainAccounts.length());
                if (noOfKeys > 0) {
                   this.blockchainAccounts
                      .getItem(username)
                      .then(accounts => {
-                        console.log('recived accounts: ', accounts);
                         if (accounts != null) {
                            let decryptedAccs = JSON.parse(AES.decrypt(accounts.toString(), this.key).toString(enc.Utf8));
                            resolve(decryptedAccs);
                         } else {
-                           console.log('returning null');
                            resolve(null);
                            return;
                         }
@@ -208,11 +204,11 @@ export class StorageServiceProvider {
       this.language.setItem('language', language);
    }
 
-   public setMnemonic(mnemonic: string,email:string) {
+   public setMnemonic(mnemonic: string, email: string) {
       return new Promise(resolve => {
          let encMnemonic = AES.encrypt(JSON.stringify(mnemonic), this.key).toString();
          this.deviceMnemonic.setItem('device-mnemonic', encMnemonic).then(() => {
-            this.deviceMnemonic.setItem('device-mnemonic-email',email).then(()=>{
+            this.deviceMnemonic.setItem('device-mnemonic-email', email).then(() => {
                resolve(true);
             });
          });
@@ -237,7 +233,6 @@ export class StorageServiceProvider {
                      resolve(true);
                   }
                } else {
-                  console.log('returning null');
                   resolve(false);
                   return;
                }
@@ -256,7 +251,7 @@ export class StorageServiceProvider {
       });
    }
 
-   public async getAllMnemonicProfiles(): Promise<{ key: string; value: any; }[]> {
+   public async getAllMnemonicProfiles(): Promise<{ key: string; value: any }[]> {
       const profiles: { key: string; value: any }[] = [];
       await this.mnemonicProfiles.iterate((key: string, value) => {
          profiles.push({ key, value });
@@ -269,12 +264,10 @@ export class StorageServiceProvider {
          this.deviceMnemonic
             .getItem('device-mnemonic')
             .then(accIndex => {
-               console.log('received accounts: ', accIndex);
                if (accIndex != null) {
                   let decryptedMnemonic = JSON.parse(AES.decrypt(accIndex.toString(), this.key).toString(enc.Utf8));
                   resolve(decryptedMnemonic);
                } else {
-                  console.log('returning null');
                   resolve(null);
                   return;
                }
@@ -286,26 +279,28 @@ export class StorageServiceProvider {
       });
    }
 
-   public clearMnemonic(email:string):Promise<any> {
+   public clearMnemonic(email: string): Promise<any> {
       return new Promise((resolve, reject) => {
-         this.deviceMnemonic.getItem('device-mnemonic-email').then((data)=>{
-            if (email != data.toString()){
-               this.mnemonicProfiles.clear().then(() => {
-                  this.deviceMnemonic.clear().then(()=>{
-                     //triggers when a different user logs in. As a result of this mnemonic is cleared from device
-                     resolve(true);
-                  })
-               });
-            }else{
-               //triggers when the same user logs in
-               reject(null)
-            }
-         }).catch(()=>{
-            //triggers when the device has no seed phrase set
-            reject(null);
-         })
+         this.deviceMnemonic
+            .getItem('device-mnemonic-email')
+            .then(data => {
+               if (email != data.toString()) {
+                  this.mnemonicProfiles.clear().then(() => {
+                     this.deviceMnemonic.clear().then(() => {
+                        //triggers when a different user logs in. As a result of this mnemonic is cleared from device
+                        resolve(true);
+                     });
+                  });
+               } else {
+                  //triggers when the same user logs in
+                  reject(null);
+               }
+            })
+            .catch(() => {
+               //triggers when the device has no seed phrase set
+               reject(null);
+            });
       });
-      
    }
 
    setTempPubKey(username, key) {
