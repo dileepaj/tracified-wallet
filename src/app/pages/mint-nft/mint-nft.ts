@@ -142,7 +142,6 @@ export class MintNftPage {
             this.convertToBase64(this.result.svg);
          })
          .catch(async error => {
-            console.log(error);
             await this.dissmissLoading();
          });
    }
@@ -160,7 +159,6 @@ export class MintNftPage {
          },
          async error => {
             await this.dissmissLoading();
-            console.log(error);
          }
       );
    }
@@ -171,20 +169,16 @@ export class MintNftPage {
       this.storage
          .getMnemonic()
          .then(data => {
-            console.log('data: ', data);
             this.mnemonic = data;
             this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, this.mnemonic) as StellerKeyPair;
 
             this.blockchainService
                .checkBCAccountStatus(this.keypair.publicKey().toString())
                .then(res => {
-                  console.log('sponsering old acc');
                   this.sponsorOldAcc();
                })
                .catch(error => {
-                  console.log(error);
                   if (error.status === 404) {
-                     console.log('sponsering new acc');
                      this.sponsorNewAcc();
                   } else {
                      this.dissmissLoading();
@@ -200,7 +194,7 @@ export class MintNftPage {
 
    createNewAccount(): void {
       this.loading.message = 'Creating a new account...';
-      console.log('acc gen started');
+
       this.keypair = this.blockchainService.createAddress();
       this.storage
          .setBcAccounts(this.email, this.keypair.secret().toString())
@@ -215,7 +209,7 @@ export class MintNftPage {
 
    sponsorNewAcc() {
       this.loading.message = 'Sponsoring...';
-      console.log('New Account');
+
       this.accountType = 'new';
       this.apiService
          .getNewIssuerPublicKey()
@@ -237,20 +231,17 @@ export class MintNftPage {
                            }
                         })
                         .catch(async error => {
-                           console.log(error);
                            await this.dissmissLoading();
                            this.presentToast('Something wrong please try again.');
                         });
                   })
                   .catch(async error => {
-                     console.log(error);
                      await this.dissmissLoading();
                      this.presentToast('Something wrong please try again.');
                   });
             }
          })
          .catch(async error => {
-            console.log('New Account dismiss');
             await this.dissmissLoading();
 
             this.logger.error('NFT reciveing issue in gateway side : ' + JSON.stringify(error), this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -281,7 +272,6 @@ export class MintNftPage {
                         }
                      })
                      .catch(async error => {
-                        console.log(error);
                         await this.dissmissLoading();
                         this.presentToast('Something wrong please try again.');
 
@@ -346,8 +336,6 @@ export class MintNftPage {
                      // this.router.navigate(['/mint-nft'], { replaceUrl: true });
                   })
                   .catch(async error => {
-                     console.log(error);
-
                      await this.dissmissLoading();
 
                      this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
@@ -363,7 +351,6 @@ export class MintNftPage {
             .catch(async error => {
                await this.dissmissLoading();
 
-               console.log('somthing wrong 1', error);
                this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
                });
@@ -371,7 +358,6 @@ export class MintNftPage {
       } else {
          await this.dissmissLoading();
 
-         console.log('somthing wrong 2');
          this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
          });

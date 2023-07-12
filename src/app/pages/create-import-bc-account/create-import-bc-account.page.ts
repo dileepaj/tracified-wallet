@@ -78,7 +78,7 @@ export class CreateImportBcAccountPage implements OnInit {
    ngOnInit() {
       let sub = this.activeRoute.queryParams.subscribe(params => {
          let oldId = params['navigation'];
-         console.log('oldID: ', oldId);
+
          if (oldId === 'initial') {
             this.tab = 0;
          }
@@ -90,13 +90,11 @@ export class CreateImportBcAccountPage implements OnInit {
          const words = mnemonic.split(' ');
          this.createMap(words);
          this.selectedSeedPhrase = [];
-         console.log('new seed phrase : ', this.seedPhrase);
       }
       if (tab == 2) {
          this.shuffleArray();
       }
       if (tab == 4) {
-         console.log(`tab:${tab} this.tab: ${this.tab} previous:${this.prevTab}`);
          if (this.tab != 3) {
             let rst = this.validateSeedPhrase();
             if (!rst) {
@@ -201,9 +199,7 @@ export class CreateImportBcAccountPage implements OnInit {
       let pwd = this.createAccForm.get('password').value;
       let confirmPwd = this.createAccForm.get('confpassword').value;
       let selectedSeed = this.getWordArray(this.seedPhrase).join(',');
-      console.log('incoming seed before : ', this.seedPhrase);
-      console.log('incoming seed : ', selectedSeed);
-      console.log('input data: ', accName.toString(), pwd.toString(), confirmPwd.toString());
+
       if (pwd.toString() == confirmPwd.toString()) {
          await this.localForageService.setMnemonic(selectedSeed.replace(/,/g, ' '), this.properties.userName);
          await this.localForageService.setMnemonicPassword(pwd.toString());
@@ -218,8 +214,6 @@ export class CreateImportBcAccountPage implements OnInit {
          await this.toastInstance.present();
       }
       const profiles = this.localForageService.getAllMnemonicProfiles();
-      console.log('profiles: ', profiles);
-      console.log('get: ', await this.localForageService.getMnemonic());
    }
 
    public async getMnemonicfromInput() {
@@ -239,8 +233,7 @@ export class CreateImportBcAccountPage implements OnInit {
       let userInputMnemonic = `${seedPhrase1} ${seedPhrase2} ${seedPhrase3} ${seedPhrase4} ${seedPhrase5} ${seedPhrase6} ${seedPhrase7} ${seedPhrase8} ${seedPhrase9} ${seedPhrase10} ${seedPhrase11} ${seedPhrase12}`;
       let userInputMnemonicV2 = [seedPhrase1, seedPhrase2, seedPhrase3, seedPhrase4, seedPhrase5, seedPhrase6, seedPhrase7, seedPhrase8, seedPhrase9, seedPhrase10, seedPhrase11, seedPhrase12];
       let result: boolean = SeedPhraseService.validateMnemonic(userInputMnemonic);
-      console.log('seed input : ', userInputMnemonic);
-      console.log('seed result : ', result);
+
       if (result) {
          this.createMap(userInputMnemonicV2);
          this.changeTab(4);

@@ -349,7 +349,6 @@ export class SettingFormPage {
    }
 
    privateKeyCheck(privateKey: string) {
-      console.log(privateKey);
       // if (this.dataService.validateSecretKey(privateKey)) {
       //    this.presentToast('Private key entered is correct');
       //    this.editTransaction();

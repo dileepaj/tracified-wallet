@@ -63,7 +63,6 @@ export class FundTransferPage implements OnInit {
                      this.presentAlert(text['ERROR'], text['MINIMUM_TRANSFER_AMOUNT']);
                   });
                } else {
-                  console.log('passing data ', this.transferAmount, this.mainAccount.accountName, this.mainAccount.pk, this.receiverPK, this.receiverPK);
                   this.router.navigate(['/transfer-confirm'], {
                      state: {
                         transferAmount: this.transferAmount,
@@ -111,11 +110,8 @@ export class FundTransferPage implements OnInit {
                for (var i = 0; i < Object.keys(this.userAcc).length; i++) {
                   if (this.properties.defaultAccount.accountName != this.userAcc[i].accountName) {
                      this.showaccount.push(this.userAcc[i]);
-                     console.log('account type ', typeof this.userAcc[i]);
                   }
                }
-
-               console.log('accounts ', this.showaccount);
 
                resolve();
             })
@@ -155,7 +151,6 @@ export class FundTransferPage implements OnInit {
                      if (data.password) {
                         resolve(data.password);
                      } else {
-                        console.log('Empty Password');
                      }
                   },
                },

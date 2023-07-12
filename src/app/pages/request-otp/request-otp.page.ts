@@ -44,7 +44,7 @@ export class RequestOtpPage implements OnInit {
       /* this.storageService.getLocalProfile().then(res => {
          let email = this.email;
          email = AES.decrypt(res, KEY).toString(enc.Utf8);
-         console.log('logged in user email : ', email);
+         
       }); */
 
       this.storageService.profile.key(0).then(d => {
@@ -90,7 +90,6 @@ export class RequestOtpPage implements OnInit {
             this.router.navigate(['/otp-page'], option);
          })
          .catch(async error => {
-            console.log(error);
             this.dissmissLoading();
             if (error.error.message === 'OTP already validated' || error.error.message === 'OTP for this email already exists') {
                this.router.navigate(['/otp-page'], option);

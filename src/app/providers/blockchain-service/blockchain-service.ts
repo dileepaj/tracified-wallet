@@ -16,7 +16,7 @@ import { ENV } from 'src/environments/environment';
    providedIn: 'root',
 })
 export class BlockchainServiceProvider {
-   reqOpts: { observe: string; headers: any; };
+   reqOpts: { observe: string; headers: any };
    constructor(
       public http: HttpClient,
       private logger: LoggerService,
@@ -488,11 +488,10 @@ export class BlockchainServiceProvider {
             Networks.TESTNET;
          }
          let server = new Server(blockchainNet);
-         console.log('No Sequence found.', subAccount.publicKey);
+
          server
             .loadAccount(subAccount.publicKey)
             .then(account => {
-               console.log('account.SequenceNo', account);
                let txn = this.acceptTxnBuilder(account, validity, signerSK, item, issuer, identifier, proofHash, receiver, qty, subAccount);
                resolve(txn);
             })
@@ -532,7 +531,6 @@ export class BlockchainServiceProvider {
       );
 
       if (!subAccount.available) {
-         console.log('Bumping Sequence in Accept: ', subAccount.sequenceNo);
          transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }));
       }
 
@@ -558,7 +556,6 @@ export class BlockchainServiceProvider {
          }
          let server = new Server(blockchainNet);
 
-         console.log('No Sequence found.');
          server
             .loadAccount(subAccount.publicKey)
             .then(account => {
@@ -593,7 +590,6 @@ export class BlockchainServiceProvider {
          .addOperation(Operation.manageData({ name: 'proofHash', value: proofHash }));
 
       if (!subAccount.available) {
-         console.log('Bumping Sequence in Reject');
          transaction.addOperation(Operation.bumpSequence({ bumpTo: subAccount.sequenceNo, source: subAccount.publicKey }));
       }
 
@@ -689,7 +685,7 @@ export class BlockchainServiceProvider {
       }
    }
 
-   checkBCAccountStatus(publicKey:string){
+   checkBCAccountStatus(publicKey: string) {
       return new Promise((resolve, reject) => {
          this.reqOpts = {
             observe: 'response',

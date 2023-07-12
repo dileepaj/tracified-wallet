@@ -76,11 +76,10 @@ export class ResetPasswordPage {
             password: this.code,
             newPassword: this.forgotform.value.password,
          };
-         console.log(authmodel);
 
          this.authService.validateUser(authmodel).then(res => {
             this.dissmissLoading();
-            console.log(res);
+
             if (res.status === 200) {
                this.translate.get(['SUCCESS_CHANGED_PASSWORD']).subscribe(text => {
                   this.presentToast(text['SUCCESS_CHANGED_PASSWORD']);

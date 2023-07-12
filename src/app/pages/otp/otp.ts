@@ -71,7 +71,6 @@ export class OtpPage {
          })
          .catch(async error => {
             let err = error.error;
-            console.log(err);
 
             await this.dimissLoading();
 

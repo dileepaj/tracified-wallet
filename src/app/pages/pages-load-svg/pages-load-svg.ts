@@ -54,7 +54,6 @@ export class PagesLoadSvgPage {
             if (this.startloading) {
                this.dissmissLoading();
             }
-            console.log(error);
          }
       );
    }

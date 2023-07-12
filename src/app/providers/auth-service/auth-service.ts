@@ -91,7 +91,6 @@ export class AuthServiceProvider {
                   }),
                })
                .then(res => {
-                  console.log(res);
                   if (res.status === 200) {
                      resolve(res);
                   } else {
@@ -99,7 +98,6 @@ export class AuthServiceProvider {
                   }
                })
                .catch(error => {
-                  console.log(error);
                   reject(error);
                });
          }
@@ -124,7 +122,6 @@ export class AuthServiceProvider {
                   }),
                })
                .then(res => {
-                  console.log(res);
                   if (res.status === 200) {
                      resolve(res);
                   } else {
@@ -132,7 +129,6 @@ export class AuthServiceProvider {
                   }
                })
                .catch(error => {
-                  console.log(error);
                   reject(error);
                });
          }
@@ -306,7 +302,6 @@ export class AuthServiceProvider {
    }
 
    getAppLindParam(): Promise<any> {
-      console.log(this.shopId);
       return new Promise((resolve, rejects) => {
          if (this.shopId && this.gemName) {
             resolve({ shopId: this.shopId, gemName: this.gemName });

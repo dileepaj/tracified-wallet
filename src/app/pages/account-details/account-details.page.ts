@@ -54,12 +54,10 @@ export class AccountDetailsPage implements OnInit {
             this.keyDecrypted = true;
             this.privateKey = secretKey.toString();
          } else {
-            console.log('Password incorrect.');
             const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
             this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
          }
       } catch (err) {
-         console.log('Error: ', err);
          const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
          this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
       }

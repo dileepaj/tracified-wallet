@@ -59,7 +59,6 @@ export class AppComponent {
       public connectivity: ConnectivityServiceProvider
    ) {
       this.authService.authorizeLocalProfile().then(res => {
-         console.log('Auth', res);
          if (res) {
             this.menuconfig();
          } else {
@@ -142,7 +141,7 @@ export class AppComponent {
          this.router.navigate(['/request-delete']);
       }
       // else if (this.deeplink) {
-      //    console.log('deeeplink- yes');
+      //
       //    this.router.navigate(['/otp-bc-account'], this.queryParams);
       // }
    }
@@ -194,9 +193,7 @@ export class AppComponent {
    }
 
    initDeepLink() {
-      console.log('initDeepLink');
       App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
-         console.log('appurlopen', event);
          this.zone.run(() => {
             const segments = event.url.split('://')[1].split('/');
             const slug = segments?.[0];

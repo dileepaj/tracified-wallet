@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { share } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -46,9 +45,7 @@ export class User {
                this._loggedIn(res);
             }
          },
-         err => {
-            console.log('ERROR', err);
-         }
+         err => {}
       );
 
       return seq;

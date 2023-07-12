@@ -93,8 +93,6 @@ export class CreateAccountPage implements OnInit {
          user: this.user,
       };
 
-      console.log(this.newUser);
-
       this.userSignupService.registerUser(this.newUser).subscribe({
          next: () => {
             this.dimissLoading();

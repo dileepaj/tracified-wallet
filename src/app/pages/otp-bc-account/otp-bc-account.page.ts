@@ -40,7 +40,6 @@ export class OtpBcAccountPage implements OnInit {
       let appLinkShopID = this.router.getCurrentNavigation().extras.queryParams?.AppshopId;
       let appGemName = this.router.getCurrentNavigation().extras.queryParams?.AppgemName;
 
-      console.log('appLinkShopID', appLinkShopID);
       if (shopId && gemName) {
          this.authService.authorizeLocalProfile().then(auth => {
             if (!auth) {
@@ -84,7 +83,6 @@ export class OtpBcAccountPage implements OnInit {
       let rst = await this.storageService.getAllMnemonicProfiles();
       for (const account of rst) {
          this.stellarkeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, account.value, this.mnemonic) as StellerKeyPair;
-         console.log('vals: ', account.key, this.stellarkeyPair.publicKey());
 
          const bcAccount = {
             name: account.key,
