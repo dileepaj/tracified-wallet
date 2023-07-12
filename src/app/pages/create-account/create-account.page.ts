@@ -42,7 +42,7 @@ export class CreateAccountPage implements OnInit {
       private router: Router
    ) {
       this.form = new FormGroup({
-         username: new FormControl('', Validators.compose([Validators.required,Validators.email,Validators.pattern(emailRegex)])),
+         username: new FormControl('', Validators.compose([Validators.required, Validators.email, Validators.pattern(emailRegex)])),
          firstname: new FormControl('', Validators.compose([Validators.required])),
          lastname: new FormControl('', Validators.compose([Validators.required])),
          country: new FormControl('', Validators.compose([Validators.required])),

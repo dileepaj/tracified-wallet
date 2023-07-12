@@ -56,6 +56,7 @@ const routes: Routes = [
    {
       path: 'tabs',
       component: TabsPage,
+      canActivate: [AuthGuardService],
       children: [
          {
             path: '',

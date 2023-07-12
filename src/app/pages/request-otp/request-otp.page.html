@@ -20,7 +20,7 @@
          <ion-label style="margin-top: 32px" class="input-label">{{'SELECTED_IMPORT_LABEL' | translate}}</ion-label>
       </ion-row>
       <ion-row>
-         <ion-item class="input-item" lines="full">
+         <ion-item class="input-item disable-border" lines="full">
             <ion-input name="bcAccount" clearInput="false" [value]="bcPkStr" [readonly]="true"></ion-input>
             <ion-icon slot="end" name="eye" color="primary" (click)="showPublicKey()"> </ion-icon>
          </ion-item>
@@ -30,7 +30,7 @@
          <ion-label style="margin-top: 36px" class="input-label">{{'YOUR_EMAIL_ADDRESS' | translate}}</ion-label>
       </ion-row>
       <ion-row>
-         <ion-item class="input-item" lines="full">
+         <ion-item class="input-item disable-border" lines="full">
             <ion-input type="email" name="email" [value]="email" [readonly]="true"></ion-input>
          </ion-item>
       </ion-row>

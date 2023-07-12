@@ -46,7 +46,14 @@ export class CreateImportBcAccountPage implements OnInit {
    passwordIcon: string = 'eye-off';
    confPasswordIcon: string = 'eye-off';
    toastInstance: any;
-   constructor(private seedPhraseService: SeedPhraseService, private toastService: ToastController, private localForageService: StorageServiceProvider, private router: Router,private properties : Properties,private activeRoute : ActivatedRoute) {
+   constructor(
+      private seedPhraseService: SeedPhraseService,
+      private toastService: ToastController,
+      private localForageService: StorageServiceProvider,
+      private router: Router,
+      private properties: Properties,
+      private activeRoute: ActivatedRoute
+   ) {
       this.form = new FormGroup({
          seedPhrase1: new FormControl('', Validators.compose([Validators.required])),
          seedPhrase2: new FormControl('', Validators.compose([Validators.required])),
@@ -71,9 +78,9 @@ export class CreateImportBcAccountPage implements OnInit {
    ngOnInit() {
       let sub = this.activeRoute.queryParams.subscribe(params => {
          let oldId = params['navigation'];
-         console.log("oldID: ",oldId)
-         if( oldId === 'initial'){
-            this.tab=0;
+         console.log('oldID: ', oldId);
+         if (oldId === 'initial') {
+            this.tab = 0;
          }
       });
    }
@@ -198,7 +205,7 @@ export class CreateImportBcAccountPage implements OnInit {
       console.log('incoming seed : ', selectedSeed);
       console.log('input data: ', accName.toString(), pwd.toString(), confirmPwd.toString());
       if (pwd.toString() == confirmPwd.toString()) {
-         await this.localForageService.setMnemonic(selectedSeed.replace(/,/g, ' '),this.properties.userName);
+         await this.localForageService.setMnemonic(selectedSeed.replace(/,/g, ' '), this.properties.userName);
          await this.localForageService.setMnemonicPassword(pwd.toString());
          await this.localForageService.addSeedPhraseAccount('0', accName.toString());
          this.router.navigate(['bc-account-created']);

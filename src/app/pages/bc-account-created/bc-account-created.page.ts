@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Clipboard } from '@capacitor/clipboard';
-import { ToastController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { Wallet } from 'ethers';
 import { BlockchainType, SeedPhraseService, SolKeys } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
@@ -34,10 +34,13 @@ export class BcAccountCreatedPage implements OnInit {
    seedPhrase: Promise<unknown>;
    accounts: any[];
    toastInstance: any;
+   loading: any;
+   disableBtn: boolean = true;
 
-   constructor(private forageService: StorageServiceProvider, private toastService: ToastController, private router: Router) {}
+   constructor(private forageService: StorageServiceProvider, private toastService: ToastController, private router: Router, private loadingCtrl: LoadingController) {}
 
    ngOnInit() {
+      this.disableBtn = true;
       this.getBCAccounts();
    }
 
@@ -48,6 +51,7 @@ export class BcAccountCreatedPage implements OnInit {
    }
 
    public async getBCAccounts() {
+      await this.presentLoading();
       if (this.seedPhrase !== null) {
          await this.forageService
             .getMnemonic()
@@ -96,9 +100,24 @@ export class BcAccountCreatedPage implements OnInit {
             icon: '../../../assets/icon/solana.svg',
          },
       ];
+
+      await this.dissmissLoading();
+      this.disableBtn = false;
    }
 
    public continue() {
       this.router.navigate(['/tabs'], { state: { navigation: 'initial' } });
+   }
+
+   async presentLoading() {
+      this.loading = await this.loadingCtrl.create({
+         backdropDismiss: false,
+         message: 'Please Wait',
+      });
+      this.loading.present();
+   }
+
+   async dissmissLoading() {
+      await this.loading.dismiss();
    }
 }
