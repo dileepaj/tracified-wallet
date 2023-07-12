@@ -25,8 +25,8 @@
    <ion-grid>
       <ion-row *ngFor="let row of imgrowlist">
          <ion-col [size]="colSize" style="display: flex" *ngFor="let img of row">
-            <ion-card style="margin: 0px; background-color: #2d2d2d">
-               <img [src]="img.Thumbnail" style="cursor: pointer" (click)="getSVG(img.nftcontent)" />
+            <ion-card style="margin: 0px; background-color: #2d2d2d; height: 200px">
+               <img [src]="img.thumbnail" style="cursor: pointer; height: 140px" (click)="getSVG(img.nftcontent)" />
                <ion-card-header>
                   <ion-row style="display: flex; justify-content: space-between">
                      <ion-col size="9">
