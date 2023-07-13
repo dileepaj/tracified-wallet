@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable, timeout } from "rxjs";
 import { LoggerService } from "../logger-service/logger.service";
 import { Properties } from "src/app/shared/properties";
-import { USER_SETTING } from "src/app/shared/userSignUpSetting";
+import { USER_SETTING } from 'src/environments/environment';
 import { ENV } from "src/environments/environment";
 import { Injectable } from "@angular/core";
 
