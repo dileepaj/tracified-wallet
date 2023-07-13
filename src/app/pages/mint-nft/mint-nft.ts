@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertController, LoadingController, ToastController, NavController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController, NavController, Platform } from '@ionic/angular';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { BlockchainServiceProvider } from '../../providers/blockchain-service/blockchain-service';
 import { MappingServiceProvider } from '../../providers/mapping-service/mapping-service';
@@ -18,6 +18,7 @@ import { debug } from 'console';
 import { TOAST_TIMER } from 'src/environments/environment';
 import { BlockchainType, SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { Keypair as StellerKeyPair } from 'stellar-base';
+import { Subscription } from 'rxjs';
 
 @Component({
    selector: 'page-mint-nft',
@@ -78,6 +79,8 @@ export class MintNftPage {
    @ViewChild('myImage', { static: false }) myImage: ElementRef;
    reciverName: any;
    mnemonic: any;
+   subscription: any = new Subscription();
+   disableBackButton: boolean = false;
 
    constructor(
       private alertCtrl: AlertController,
@@ -92,7 +95,8 @@ export class MintNftPage {
       private storage: StorageServiceProvider,
       private router: Router,
       private toastCtrl: ToastController,
-      private navController: NavController
+      private navController: NavController,
+      private platform: Platform
    ) {
       this.shopID = this.router.getCurrentNavigation().extras.state.ShopId;
       this.nftName = this.router.getCurrentNavigation().extras.state.NFTname;
@@ -116,6 +120,17 @@ export class MintNftPage {
 
    ionViewDidEnter() {
       this.account = this.properties.defaultAccount;
+      this.subscription.add(
+         this.platform.backButton.subscribeWithPriority(9999, processNextHandler => {
+            if (!this.disableBackButton) {
+               processNextHandler();
+            }
+         })
+      );
+   }
+
+   ionViewWillLeave() {
+      this.subscription.unsubscribe();
    }
 
    async getSVG() {
@@ -458,12 +473,13 @@ export class MintNftPage {
          message: msg,
          backdropDismiss: false,
       });
-
+      this.disableBackButton = true;
       await this.loading.present();
       this.loadingState = true;
    }
 
    async dissmissLoading() {
+      this.disableBackButton = false;
       this.loadingState = false;
       await this.loading.dismiss();
    }
