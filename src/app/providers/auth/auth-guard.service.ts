@@ -5,6 +5,7 @@ import { Properties } from 'src/app/shared/properties';
 import { AuthServiceProvider } from '../auth-service/auth-service';
 import { DataServiceProvider } from '../data-service/data-service';
 import { LoggerService } from '../logger-service/logger.service';
+import { StorageServiceProvider } from '../storage-service/storage-service';
 
 @Injectable({
    providedIn: 'root',
@@ -17,13 +18,15 @@ export class AuthGuardService implements CanActivate {
       private dataService: DataServiceProvider,
       private properties: Properties,
       private logger: LoggerService,
-      private alertCtrl: AlertController
+      private alertCtrl: AlertController,
+      private storageService:StorageServiceProvider
    ) {}
 
    async canActivate(): Promise<boolean> {
       try {
          const res = await this.authService.authorizeLocalProfile();
-         if (res) {
+         const seed = await this.storageService.getMnemonic();
+         if (res && seed != null) {
             // const account = await this.dataService.retrieveDefaultAccount();
             // this.properties.defaultAccount = account;
             return true;
