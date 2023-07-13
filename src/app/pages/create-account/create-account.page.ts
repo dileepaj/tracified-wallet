@@ -7,7 +7,7 @@ import { IonicSelectableComponent } from 'ionic-selectable';
 import { PhoneNumberService } from 'src/app/providers/phone-number-service/phone-number.service';
 import { UserSignUp } from 'src/app/providers/user/userSignup';
 import { KEY } from 'src/app/shared/config';
-import { USER_SETTING } from 'src/app/shared/userSignUpSetting';
+import { USER_SETTING } from 'src/environments/environment';
 import { COUNTRIES } from 'src/assets/countries-json';
 const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 @Component({

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { USER_SETTING } from 'src/app/shared/userSignUpSetting';
+import { USER_SETTING } from 'src/environments/environment';
 import { ENV } from 'src/environments/environment';
 
 @Injectable({
