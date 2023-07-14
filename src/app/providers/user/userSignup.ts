@@ -18,15 +18,6 @@ export class UserSignUp {
         private logger: LoggerService
     ) { }
     public registerUser(user: any): Observable<any> {
-        this.reqOpts = {
-            observe: 'response',
-            headers: new HttpHeaders({
-                Accept: 'application/json',
-                'Content-Type': 'Application/json',
-                Authorization: 'Bearer ' + USER_SETTING.BEARER_TOKEN,
-                
-            }),
-        };
-        return this.http.post(this.url, user, this.reqOpts)
+        return this.http.post(this.url, user)
     }
 }

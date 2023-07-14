@@ -13,16 +13,7 @@ export class PhoneNumberService {
 
    public validatePhoneNumber(phoneNo: string): Observable<any> {
       let url: string = `${ENV.API_ADMIN}/sign/checkmobile/`;
-      this.reqOpts = {
-         observe: 'response',
-         headers: new HttpHeaders({
-            Accept: 'application/json',
-            'Content-Type': 'Application/json',
-            Authorization: 'Bearer ' + USER_SETTING.BEARER_TOKEN,
-         }),
-      };
-
       url += phoneNo;
-      return this.http.get(url, this.reqOpts);
+      return this.http.get(url);
    }
 }
