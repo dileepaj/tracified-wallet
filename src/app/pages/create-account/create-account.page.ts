@@ -77,15 +77,16 @@ export class CreateAccountPage implements OnInit {
       let lastName = this.form.get('lastname').value;
       let mobile = this.form.get('phoneno').value;
       this.user = {
-         firstName,
-         lastName,
+         firstName:firstName,
+         lastName:lastName,
          email: AES.encrypt(username, KEY).toString(),
          tenantId: USER_SETTING.TENANT_ID,
+         tenantEmail:USER_SETTING.TENANT_EMAIL,
          mobileNo: mobile,
          permissions: USER_SETTING.PERMISSION,
          stages: USER_SETTING.STAGES,
          username: AES.encrypt(username, KEY).toString(),
-         type: USER_SETTING.TYPE,
+         type:USER_SETTING.TYPE,
          stagePermission: USER_SETTING.STAGE_PERMISSION,
       };
 
