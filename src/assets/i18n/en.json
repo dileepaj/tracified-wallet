@@ -330,5 +330,13 @@
    "VIEW_ITMS_BUTTON": "View Your Items",
 
    "CLAIM_NFT": "Claim your NFT",
-   "CLAIM_NFT_DESC": "Enter the following details which will be added to your NFT"
+   "CLAIM_NFT_DESC": "Enter the following details which will be added to your NFT",
+
+   "PROFILE": "Profile",
+   "IMPORTED": "Imported",
+   "DEFAULT": "Default",
+   "SET_DEFAULT": "Set Default",
+   "VIEW_KEYS": "View Keys",
+
+   "ENTER_PWD": "Enter Password"
 }
