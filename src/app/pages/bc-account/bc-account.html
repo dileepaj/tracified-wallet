@@ -28,8 +28,99 @@
       </ion-row>
    </div>
 
-   <ion-card class="ion-text-wrap" *ngFor="let account of userAcc" (click)="viewAccount(account)">
-      <ion-item lines="none">
+   <div class="bc-card" *ngFor="let acc of userAcc; index as i">
+      <ion-row>
+         <ion-col size="8" style="row-gap: 10px">
+            <div class="col-line">
+               <label class="profile-txt">{{ 'PROFILE' | translate}}{{i+1}}</label>
+               <label class="imported-label">{{ 'IMPORTED' | translate}}</label>
+            </div>
+            <div class="col-line">
+               <ion-img class="bc-icon" src="../../../assets/icon/stellar-2.svg"></ion-img>
+               <label class="secondary-text gray">{{ 'PUBLIC_KEY' | translate}}</label>
+            </div>
+            <div class="col-line">
+               <label class="secondary-text bold">{{acc.pk.substring(0, 4) + "..." + acc.pk.substring(acc.pk.length - 4, acc.pk.length)}}</label>
+               <ion-icon name="copy-outline" class="copy-icon" color="primary"></ion-icon>
+            </div>
+         </ion-col>
+         <ion-col size="4">
+            <ion-button class="btn" color="dark" id="open-modal-1">{{'VIEW_KEYS' | translate}}</ion-button>
+
+            <!--modal-->
+            <ion-modal class="modal-1" #modal1 trigger="open-modal-1">
+               <ng-template>
+                  <ion-content>
+                     <ion-toolbar>
+                        <ion-title>{{'VIEW_KEYS' | translate}}</ion-title>
+                        <ion-buttons slot="end">
+                           <ion-button color="dark" (click)="modal1.dismiss()"><ion-icon slot="icon-only" name="close"></ion-icon></ion-button>
+                        </ion-buttons>
+                     </ion-toolbar>
+                     <form [formGroup]="form" class="modal-content">
+                        <ion-row>
+                           <ion-label style="margin-top: 10px" class="input-label">{{'ENTER_PWD' | translate}}</ion-label>
+                        </ion-row>
+                        <ion-row>
+                           <ion-item class="input-item" lines="full">
+                              <ion-input formControlName="password" name="password" [type]="passwordType" clearInput="false"></ion-input>
+                              <ion-icon slot="end" [name]="passwordIcon" class="passwordIcon gray-color" (click)="hideShowPassword()"> </ion-icon>
+                           </ion-item>
+                        </ion-row>
+                        <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+                           <ion-button class="btn" color="dark" [disabled]="!form.valid" (click)="decryptSecretKey(acc)">{{'CONFIRM' | translate}}</ion-button>
+                        </ion-row>
+                     </form>
+                  </ion-content>
+               </ng-template>
+            </ion-modal>
+
+            <!--modal-->
+            <ion-modal class="modal-2" #modal2 trigger="open-modal-2" [isOpen]="modal2Open" (willDismiss)="onWillDismiss($event)">
+               <ng-template>
+                  <ion-content>
+                     <ion-toolbar>
+                        <ion-title>{{'VIEW_KEYS' | translate}}</ion-title>
+                        <ion-buttons slot="end">
+                           <ion-button color="dark" (click)="modal2.dismiss()"><ion-icon slot="icon-only" name="close"></ion-icon></ion-button>
+                        </ion-buttons>
+                     </ion-toolbar>
+                     <div class="modal-content">
+                        <ion-row style="display: flex; justify-content: center; margin: 5px 0px 5px 0px; column-gap: 10px">
+                           <ion-img style="width: 15px" src="../../../assets/icon/stellar-2.svg"></ion-img>
+                           <label class="secondary-text">{{ 'STELLAR' | translate}}</label>
+                        </ion-row>
+                        <ion-row>
+                           <ion-label style="margin-top: 10px" class="input-label">{{'PRIVATE_KEY' | translate}}</ion-label>
+                        </ion-row>
+                        <ion-row><div class="key-container">{{acc.sk}}</div></ion-row>
+                        <ion-row>
+                           <ion-label style="margin-top: 10px" class="input-label">{{'PUBLIC_KEY' | translate}}</ion-label>
+                        </ion-row>
+                        <ion-row><div class="key-container">{{acc.pk}}</div></ion-row>
+                        <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+                           <ion-button class="btn" color="dark" (click)="modal2.dismiss()">{{'DONE_BUTTON' | translate}}</ion-button>
+                        </ion-row>
+                     </div>
+                  </ion-content>
+               </ng-template>
+            </ion-modal>
+
+            <ion-button class="default-btn" color="primary" fill="clear" *ngIf="i == 0">{{'DEFAULT' | translate}}</ion-button>
+            <ion-button color="dark" fill="clear" *ngIf="i != 0">{{'SET_DEFAULT' | translate}}</ion-button>
+         </ion-col>
+      </ion-row>
+   </div>
+
+   <!-- <ion-card class="ion-no-padding bc-card" *ngFor="let account of userAcc; index as i" (click)="viewAccount(account)">
+      <ion-item class="ion-no-padding">
+         <ion-row>
+            <ion-col>
+               <label class="profile-txt">{{ 'PROFILE' | translate}}{{i+1}}</label>
+            </ion-col>
+         </ion-row>
+      </ion-item>
+       <ion-item lines="none">
          <ion-row>
             <ion-col size="4">
                <h5 class="label">{{ 'NAME' | translate}}:</h5>
@@ -49,7 +140,7 @@
             </ion-col>
          </ion-row>
       </ion-item>
-   </ion-card>
+   </ion-card> -->
 </ion-content>
 
 <!-- <ion-footer>

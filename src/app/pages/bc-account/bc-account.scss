@@ -7,6 +7,49 @@
    width: 25vh;
 }
 
+.bc-card {
+   margin: 0px !important;
+   padding: 10px 15px 10px 15px !important;
+   border-radius: 15px;
+   background: #fff;
+   box-shadow: 4px 4px 11px 0px rgba(0, 0, 0, 0.2);
+
+   ion-row {
+      align-items: center;
+   }
+   ion-col {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0px;
+   }
+}
+
+.bc-icon {
+   width: 12px;
+   filter: invert(53%) sepia(10%) saturate(5%) hue-rotate(331deg) brightness(93%) contrast(89%);
+}
+
+.col-line {
+   display: flex;
+   flex-direction: row;
+   column-gap: 10px;
+   row-gap: 10px;
+}
+
+.secondary-text {
+   font-size: 16px;
+   color: #000;
+   font-weight: 500;
+}
+
+.gray {
+   color: #808080;
+}
+
+.bold {
+   font-weight: 600;
+}
+
 ion-card {
    padding: 7px 2px 1px 7px;
    font-size: 14.4px !important;
@@ -27,4 +70,99 @@ ion-card {
 
 ion-app.md [padding] .scroll-content {
    padding: 10px !important;
+}
+
+.profile-txt {
+   color: #000;
+
+   font-size: 20px;
+   font-weight: 600;
+   line-height: normal;
+}
+
+.btn {
+   --box-shadow: none !important;
+}
+
+.default-btn {
+   --background: transparent;
+   --background-hover: transparent !important;
+   --ripple-color: transparent;
+   font-weight: 700;
+}
+
+.copy-icon {
+   font-size: 16px;
+}
+
+.imported-label {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   color: #adadad;
+   font-size: 12px;
+   font-style: normal;
+   font-weight: 500;
+   line-height: normal;
+   border-radius: 5px;
+   text-align: center;
+   padding: 2px 5px 2px 5px;
+   border: 1px solid #adadad;
+}
+
+.modal-1 {
+   align-items: start;
+   padding: 70px 15px 0px 15px;
+   --height: 220px !important;
+   --border-radius: 16px;
+}
+
+.modal-2 {
+   align-items: start;
+   padding: 70px 15px 0px 15px;
+   --height: 400px !important;
+   --border-radius: 16px;
+}
+
+ion-modal::part(backdrop) {
+   background: rgba(0, 0, 0, 0.8);
+   opacity: 0.699999988079071;
+}
+
+ion-modal ion-toolbar {
+   --background: #fff;
+   --color: #343a40;
+}
+
+ion-toolbar ion-button {
+   --color: #343a40 !important;
+}
+
+ion-toolbar ion-title {
+   position: absolute;
+   top: 15px;
+   left: 0;
+   right: 0;
+   text-align: center;
+}
+
+.modal-content {
+   padding: 0px 20px 0px 20px;
+}
+
+.key-container {
+   background: #eaeaea !important;
+   width: 100% !important;
+   /* max-height: 48px !important; */
+   margin-top: 10px;
+   border-radius: 10px;
+   padding: 10px;
+   height: fit-content;
+   color: #000;
+   font-size: 16px;
+   font-style: normal;
+   font-weight: 600;
+   line-height: normal;
+   word-break: break-all;
 }
