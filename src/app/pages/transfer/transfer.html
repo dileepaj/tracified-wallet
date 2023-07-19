@@ -15,7 +15,7 @@
    </ion-refresher>
 
    <ion-grid>
-      <div *ngIf="currentItems.length === 0">
+      <div *ngIf="currentItems.length > 0">
          <ion-row>
             <ion-img class="notification-icon" src="../../assets/imgs/emptystatus-04.png"></ion-img>
          </ion-row>
@@ -30,7 +30,112 @@
             </div>
          </ion-row>
       </div>
-      <div *ngIf="currentItems.length > 0" class="content-start padding-width">
+
+      <div class="content-start">
+         <div class="switch-wrapper cont-wrapper">
+            <div class="switch">
+               <input id="language-toggle" class="check-toggle check-toggle-round-flat" type="checkbox" (change)="changeTab($event)" [(ngModel)]="itemsTabOpened" />
+               <label for="language-toggle"></label>
+               <span class="on">NFTs</span>
+               <span class="off">Items</span>
+            </div>
+         </div>
+
+         <!--nfts-->
+         <div *ngIf="!itemsTabOpened">
+            <div *ngIf="currentNfts.length === 0">
+               <ion-row>
+                  <ion-img class="notification-icon" src="../../assets/imgs/emptystatus-04.png"></ion-img>
+               </ion-row>
+               <ion-row>
+                  <div class="full-width text-center line-spacing-small">
+                     <h1 class="primary-font">{{'NFTS' | translate}}</h1>
+                  </div>
+               </ion-row>
+               <ion-row class="ion-text-wrap">
+                  <div class="full-width text-center">
+                     <h3 class="secondary-font">{{'NO_NFTS' | translate}}</h3>
+                  </div>
+               </ion-row>
+            </div>
+            <ion-grid>
+               <ion-row *ngFor="let row of nftRowlist">
+                  <ion-col [size]="itemColSize" style="display: flex" *ngFor="let item of row">
+                     <div class="card item-card">
+                        <div class="card-icon">
+                           <label class="tag">
+                              <img src="../../../assets/icon/stellar-xlm-white.svg" />
+                              NFT
+                           </label>
+                           <img class="nft-svg" [src]="item.thumbnail" />
+                        </div>
+                        <div class="card-footer">
+                           <div class="card-info">
+                              <label class="card-title">{{item.nftname}}</label>
+                              <label class="card-subtitle">{{item.collection}}</label>
+                           </div>
+                           <div class="card-actions">
+                              <div class="ion-activatable ripple-parent card-action" (click)="getSVG(item.nftcontent)">
+                                 <ion-ripple-effect></ion-ripple-effect>
+                                 <ion-icon slot="icon-only" name="eye"></ion-icon>
+                              </div>
+                              <div class="ion-activatable ripple-parent card-action">
+                                 <ion-ripple-effect></ion-ripple-effect>
+                                 <ion-icon slot="icon-only" name="send"></ion-icon>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </ion-col>
+               </ion-row>
+            </ion-grid>
+         </div>
+
+         <!--items-->
+         <div *ngIf="itemsTabOpened">
+            <div *ngIf="currentItems.length === 0">
+               <ion-row>
+                  <ion-img class="notification-icon" src="../../assets/imgs/emptystatus-04.png"></ion-img>
+               </ion-row>
+               <ion-row>
+                  <div class="full-width text-center line-spacing-small">
+                     <h1 class="primary-font">{{'ASSETS' | translate}}</h1>
+                  </div>
+               </ion-row>
+               <ion-row class="ion-text-wrap">
+                  <div class="full-width text-center">
+                     <h3 class="secondary-font">{{'NO_ASSETS' | translate}}</h3>
+                  </div>
+               </ion-row>
+            </div>
+            <ion-grid *ngIf="currentItems.length > 0">
+               <ion-row *ngFor="let row of itemRowlist">
+                  <ion-col [size]="itemColSize" style="display: flex" *ngFor="let item of row">
+                     <div class="card item-card">
+                        <div class="card-icon">
+                           <label class="tag">Item</label>
+                           <img src="../../../assets/imgs/item-icon.svg" />
+                        </div>
+                        <div class="card-footer">
+                           <div class="card-info">
+                              <label class="card-title">{{item.asset_code}}</label>
+                              <label class="card-subtitle">Quantity: {{item.balance}}</label>
+                           </div>
+                           <div class="card-actions">
+                              <div class="ion-activatable ripple-parent card-action">
+                                 <ion-ripple-effect></ion-ripple-effect>
+                                 <ion-icon slot="icon-only" name="send"></ion-icon>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </ion-col>
+               </ion-row>
+            </ion-grid>
+         </div>
+      </div>
+
+      <!-- <div *ngIf="currentItems.length > 0" class="content-start padding-width">
          <ion-row class="item-card padding-width" *ngFor="let item of Searcheditems">
             <ion-row>
                <ion-col size="8">
@@ -47,6 +152,6 @@
                </ion-item>
             </ion-row>
          </ion-row>
-      </div>
+      </div> -->
    </ion-grid>
 </ion-content>

@@ -330,5 +330,8 @@
    "VIEW_ITMS_BUTTON": "View Your Items",
 
    "CLAIM_NFT": "Claim your NFT",
-   "CLAIM_NFT_DESC": "Enter the following details which will be added to your NFT"
+   "CLAIM_NFT_DESC": "Enter the following details which will be added to your NFT",
+
+   "NFTS": "Minted NFTs",
+   "NO_NFTS": "You do not have any minted NFTs."
 }
