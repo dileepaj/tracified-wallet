@@ -338,5 +338,8 @@
    "SET_DEFAULT": "Set Default",
    "VIEW_KEYS": "View Keys",
 
-   "ENTER_PWD": "Enter Password"
+   "ENTER_PWD": "Enter Password",
+
+   "NFTS": "Minted NFTs",
+   "NO_NFTS": "You do not have any minted NFTs."
 }
