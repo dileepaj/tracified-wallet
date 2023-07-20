@@ -203,7 +203,7 @@ export class CreateImportBcAccountPage implements OnInit {
       if (pwd.toString() == confirmPwd.toString()) {
          await this.localForageService.setMnemonic(selectedSeed.replace(/,/g, ' '), this.properties.userName);
          await this.localForageService.setMnemonicPassword(pwd.toString());
-         await this.localForageService.addSeedPhraseAccount('0', accName.toString());
+         await this.localForageService.addSeedPhraseAccount('0', accName.toString(),pwd.toString());
          this.router.navigate(['bc-account-created']);
       } else {
          this.toastInstance = await this.toastService.create({
