@@ -341,5 +341,6 @@
    "ENTER_PWD": "Enter Password",
 
    "NFTS": "Minted NFTs",
-   "NO_NFTS": "You do not have any minted NFTs."
+   "NO_NFTS": "You do not have any minted NFTs.",
+   "FAILED_ADD_ACCOUNTS": "Failed to add account please try again"
 }

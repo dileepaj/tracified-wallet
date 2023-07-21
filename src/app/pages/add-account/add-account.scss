@@ -1,71 +1,199 @@
-.item-md.item-input.ng-invalid.ng-touched:not(.input-has-focus):not(.item-input-has-focus) .item-inner {
-   box-shadow: none !important;
+// @import url('../../../base.scss');
+
+ion-img {
+   width: 75%;
+   height: auto;
+   margin: 0 auto;
 }
 
-li {
-   font-size: 12px;
-}
-ul {
-   padding-left: 30px;
+.logo {
+   padding-top: 15px !important;
 }
 
-@media all and (orientation: portrait) {
-   ion-row {
-      align-items: center;
+.link {
+   padding-top: 10px;
+   width: auto;
+   margin: auto;
+   font-size: 16px;
+   cursor: pointer;
+}
+.link:hover {
+   color: #00c853;
+}
+
+.passwordIcon {
+   zoom: 0.8;
+   padding-top: 0px;
+   z-index: 1;
+}
+
+.hint-label {
+   font-size: 16px;
+   font-weight: 400;
+}
+
+.title-label {
+   margin-top: 40px;
+   text-align: center;
+   h1 {
+      font-size: 32px;
+      font-weight: 300;
    }
-   .formbox {
-      padding-top: 5% !important;
-      padding-bottom: 10% !important;
-      max-width: 90%;
-      align-self: center;
-      padding-left: 8%;
+   p {
+      margin-top: 6px;
+      font-size: 16px;
+      font-weight: 400;
+   }
+}
+
+.item-grid {
+   width: 100%;
+}
+
+.sp-grid {
+   width: 100%;
+   max-width: 500px;
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+   grid-template-rows: repeat(6, 1fr);
+   grid-column-gap: 20px;
+   grid-row-gap: 15px;
+   grid-auto-flow: column;
+   place-items: center;
+   margin-bottom: 50px;
+   /* column-gap: 10px;
+   row-gap: 10px; */
+
+   .word {
+      position: relative;
+      width: calc(100%);
+      height: 30px;
+      background: #cef8e6 !important;
+      border-radius: 8px;
+      font-size: 17px;
+      font-weight: 600;
+      color: #5e5e5e;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      column-gap: 15%;
+      padding: 5px 10px 5px 10px;
+
+      ion-label:first-child {
+         color: #8f8f8f;
+      }
    }
 
-   .note {
-      padding-top: 5%;
-      width: auto;
-      margin: auto;
-      font-size: 0.9em;
-   }
-   .desc {
-      color: dimgrey;
-      font-size: 1.5rem;
-      padding-top: 5%;
-      padding-left: 5%;
+   .selected-word {
+      position: relative;
+      background: var(--ion-color-primary) !important;
+      ion-label:first-child {
+         color: #fff;
+      }
+      ion-label {
+         color: #fff;
+      }
+      .word-index {
+         position: absolute;
+         top: -10px;
+         right: -10px;
+         background-color: #000;
+         font-weight: 400;
+         font-size: 14px;
+         padding: 5px 10px 5px 10px;
+
+         border-radius: 5px;
+      }
    }
 
-   ion-list {
-      margin: 0;
+   .clickable-word {
+      cursor: pointer;
    }
-   .view {
-      background-size: cover;
-      background-repeat: no-repeat;
+}
+
+.importantNotice {
+   border: 1px solid var(--ion-color-danger);
+   border-radius: 10px;
+   text-align: center;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   padding: 10px 15px 10px 15px;
+   margin-bottom: 40px;
+
+   h3 {
+      text-align: center;
+      color: var(--ion-color-danger);
+      margin-bottom: 10px;
    }
-   .hide-icon {
-      color: #00c853 !important;
+   p {
+      font-size: 16px;
+      font-weight: 400;
    }
-   .item-input-has-focus .label-md[floating],
-   .input-has-focus .label-md[floating] {
-      color: #00c853 !important;
+}
+
+ion-checkbox {
+   --size: 20px;
+   --checkmark-color: var(--ion-color-dark);
+   --background-checked: var(--ion-color-white);
+}
+
+ion-checkbox::part(container) {
+   border: 2px solid var(--ion-color-dark);
+}
+
+.checkbox-row {
+   display: flex;
+   flex-direction: row;
+   flex-wrap: nowrap;
+   column-gap: 0px;
+   align-items: center;
+   justify-content: center;
+   font-size: 16px;
+   font-weight: 600;
+   column-gap: 10px;
+   margin-bottom: 30px;
+
+   ion-checkbox {
+      width: 20px;
    }
 
-   .item.md {
-      padding: 0 0 0 0 !important;
+   ion-label {
+      max-width: calc(100% - 40px);
    }
-   .item-input-has-focus .label-md[floating],
-   .input-has-focus .label-md[floating] {
-      color: #00c853 !important;
-   }
+}
 
-   .passwordIcon {
-      zoom: 0.8;
-      padding-top: 35px;
-      z-index: 1;
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+   .cusGrid {
+      width: 90%;
    }
+}
 
-   .confirmPasswordIcon {
-      zoom: 0.8;
-      padding-top: 35px;
-      z-index: 1;
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+   .cusGrid {
+      width: 60%;
+   }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+   .cusGrid {
+      width: 50%;
+   }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+   .cusGrid {
+      width: 40%;
+   }
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+   .cusGrid {
+      width: 30%;
    }
 }
