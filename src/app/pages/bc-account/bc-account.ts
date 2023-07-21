@@ -22,7 +22,6 @@ import { TranslateService } from '@ngx-translate/core';
    styleUrls: ['./bc-account.scss'],
 })
 export class BcAccountPage implements OnInit {
-   @ViewChild(IonModal) modal: IonModal;
    loading;
    userAcc = [];
    isLoadingPresent: boolean;
@@ -34,6 +33,8 @@ export class BcAccountPage implements OnInit {
    public keyDecrypted: boolean = false;
    selectedAcc: any;
    modal2Open: boolean = false;
+   pks: any[] = [];
+   modals: any[] = [];
 
    constructor(
       public router: Router,
@@ -53,26 +54,12 @@ export class BcAccountPage implements OnInit {
          password: new FormControl('', Validators.compose([Validators.required])),
       });
    }
-   async ngOnInit() {
-      let mnemonic = await this.storageService.getMnemonic();
-      let rst = await this.storageService.getAllMnemonicProfiles();
-      for (const account of rst) {
-         let stellarkeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, account.value, mnemonic) as StellerKeyPair;
-         let index = {
-            FO: false,
-            accountName: account.key,
-            pk: stellarkeyPair.publicKey().toString(),
-            sk: stellarkeyPair.secret().toString(),
-         };
-         this.userAcc.push(index);
-      }
-      console.log('userAcc', this.userAcc);
-   }
+   async ngOnInit() {}
 
    ionViewDidEnter() {
       //v6 load rename to enter as load is not getting called : check
-
-      this.getMainAccounts();
+      this.getAccountsFromStorage();
+      //this.getMainAccounts();
    }
 
    goToAddAccount() {
@@ -103,6 +90,35 @@ export class BcAccountPage implements OnInit {
                reject();
             });
       });
+   }
+
+   async getAccountsFromStorage() {
+      await this.presentLoading();
+      this.modals = [];
+      let mnemonic = await this.storageService.getMnemonic();
+      let rst = await this.storageService.getAllMnemonicProfiles();
+      let i = 0;
+      for (const account of rst) {
+         let stellarkeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, account.value, mnemonic) as StellerKeyPair;
+         let index = {
+            FO: false,
+            accountName: account.key,
+            pk: stellarkeyPair.publicKey().toString(),
+            sk: stellarkeyPair.secret().toString(),
+         };
+         if (!this.pks.includes(index.pk)) {
+            this.userAcc.push(index);
+            this.pks.push(index.pk);
+         }
+         this.modals[i] = {
+            pwdVerified: false,
+            pk: '',
+            sk: '',
+         };
+         i++;
+      }
+      this.dissmissLoading();
+      console.log('userAcc', this.userAcc);
    }
 
    async userError(title, message) {
@@ -151,7 +167,7 @@ export class BcAccountPage implements OnInit {
       this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
    }
 
-   async decryptSecretKey(account: any) {
+   async decryptSecretKey(account: any, index: number) {
       const password = this.form.get('password').value;
       try {
          const secretKey = await this.mappingService.decryptSecret(account.sk, password);
@@ -159,8 +175,10 @@ export class BcAccountPage implements OnInit {
          if (pair.publicKey() === account.pk) {
             this.keyDecrypted = true;
             this.privateKey = secretKey.toString();
-            await this.modal.dismiss();
-            this.modal2Open = true;
+
+            this.modals[index].pk = account.pk;
+            this.modals[index].sk = account.sk;
+            this.modals[index].pwdVerified = true;
          } else {
             const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
             this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
@@ -187,8 +205,13 @@ export class BcAccountPage implements OnInit {
       alert.present();
    }
 
-   public onWillDismiss(event: any) {
+   public onWillDismiss(index: number) {
       console.log('called');
-      this.modal2Open = false;
+      this.modals[index].pwdVerified = false;
+      this.modals[index].pk = '';
+      this.modals[index].sk = '';
+      this.form.get('password').setValue('');
+      this.passwordType = 'password';
+      this.passwordIcon = 'eye-off';
    }
 }

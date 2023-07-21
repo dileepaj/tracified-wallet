@@ -55,7 +55,7 @@ export class StorageServiceProvider {
       name: 'mnemonicProfilesPassword',
       storeName: 'mnemonicProfilesPassword',
       description: 'Seed phrase profile storage password',
-   })
+   });
 
    public otpTimeout = localforage.createInstance({
       name: 'otpTimeout',
@@ -249,42 +249,56 @@ export class StorageServiceProvider {
             });
       });
    }
-   public addSeedPhraseAccount(index: string, accName: string,password:string) {
-      return new Promise((resolve,reject) => {
-         this.mnemonicProfiles.setItem(index, accName).then(() => {
-            this.addSeedPhraseAccountPassword(index,password).then(()=>{
-               resolve(true)
-            }).catch(passwordSetError=>{reject(passwordSetError)})
-           
-         }).catch(accountNameSetError=>{reject(accountNameSetError)})
+   public addSeedPhraseAccount(index: string, accName: string, password: string) {
+      console.log(index, accName, password);
+      return new Promise((resolve, reject) => {
+         this.mnemonicProfiles
+            .setItem(index, accName)
+            .then(() => {
+               this.addSeedPhraseAccountPassword(index, password)
+                  .then(() => {
+                     resolve(true);
+                  })
+                  .catch(passwordSetError => {
+                     reject(passwordSetError);
+                  });
+            })
+            .catch(accountNameSetError => {
+               reject(accountNameSetError);
+            });
       });
    }
 
-   private addSeedPhraseAccountPassword(index:string,password:string){
-      return new Promise((resolve,rejects)=>{
-         let encryptedPassword = AES.encrypt(JSON.stringify(password),this.key).toString();
-         this.ProfilesPassword.setItem(index,encryptedPassword).then(()=>{
-            resolve(true);
-         }).catch(pwdSetErr=>{
-            rejects(pwdSetErr)
-         })
-      })
+   private addSeedPhraseAccountPassword(index: string, password: string) {
+      return new Promise((resolve, rejects) => {
+         let encryptedPassword = AES.encrypt(JSON.stringify(password), this.key).toString();
+         this.ProfilesPassword.setItem(index, encryptedPassword)
+            .then(() => {
+               resolve(true);
+            })
+            .catch(pwdSetErr => {
+               rejects(pwdSetErr);
+            });
+      });
    }
 
-   public validateSeedPhraseAccount(index:string,username:string,password:string){
-      return new Promise((resolve,reject )=>{
-         this.mnemonicProfiles.getItem(index).then((accName=>{
-            this.ProfilesPassword.getItem(index).then((Storepassword=>{
-               let encPwd = AES.encrypt(JSON.stringify(password), this.key).toString();
-               if(username == accName && encPwd == Storepassword){
-                  resolve(true);
-                  return
-               }
-            }))
-         })).catch(err=>{
-            reject(null);
-         })
-      })
+   public validateSeedPhraseAccount(index: string, username: string, password: string) {
+      return new Promise((resolve, reject) => {
+         this.mnemonicProfiles
+            .getItem(index)
+            .then(accName => {
+               this.ProfilesPassword.getItem(index).then(Storepassword => {
+                  let encPwd = AES.encrypt(JSON.stringify(password), this.key).toString();
+                  if (username == accName && encPwd == Storepassword) {
+                     resolve(true);
+                     return;
+                  }
+               });
+            })
+            .catch(err => {
+               reject(null);
+            });
+      });
    }
 
    public async getAllMnemonicProfiles(): Promise<{ key: string; value: any }[]> {

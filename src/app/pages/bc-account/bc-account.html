@@ -45,10 +45,10 @@
             </div>
          </ion-col>
          <ion-col size="4">
-            <ion-button class="btn" color="dark" id="open-modal-1">{{'VIEW_KEYS' | translate}}</ion-button>
+            <ion-button class="btn" color="dark" [id]="'open-modal-'+ i.toString()">{{'VIEW_KEYS' | translate}} </ion-button>
 
             <!--modal-->
-            <ion-modal class="modal-1" #modal1 trigger="open-modal-1">
+            <ion-modal [class.modal-1]="!modals[i].pwdVerified" [class.modal-2]="modals[i].pwdVerified" #modal1 [trigger]="'open-modal-'+ i.toString()" (didDismiss)="onWillDismiss(i)">
                <ng-template>
                   <ion-content>
                      <ion-toolbar>
@@ -57,7 +57,7 @@
                            <ion-button color="dark" (click)="modal1.dismiss()"><ion-icon slot="icon-only" name="close"></ion-icon></ion-button>
                         </ion-buttons>
                      </ion-toolbar>
-                     <form [formGroup]="form" class="modal-content">
+                     <form [formGroup]="form" class="modal-content" *ngIf="!modals[i].pwdVerified">
                         <ion-row>
                            <ion-label style="margin-top: 10px" class="input-label">{{'ENTER_PWD' | translate}}</ion-label>
                         </ion-row>
@@ -68,24 +68,10 @@
                            </ion-item>
                         </ion-row>
                         <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
-                           <ion-button class="btn" color="dark" [disabled]="!form.valid" (click)="decryptSecretKey(acc)">{{'CONFIRM' | translate}}</ion-button>
+                           <ion-button class="btn" color="dark" [disabled]="!form.valid" (click)="decryptSecretKey(acc, i)">{{'CONFIRM' | translate}}</ion-button>
                         </ion-row>
                      </form>
-                  </ion-content>
-               </ng-template>
-            </ion-modal>
-
-            <!--modal-->
-            <ion-modal class="modal-2" #modal2 trigger="open-modal-2" [isOpen]="modal2Open" (willDismiss)="onWillDismiss($event)">
-               <ng-template>
-                  <ion-content>
-                     <ion-toolbar>
-                        <ion-title>{{'VIEW_KEYS' | translate}}</ion-title>
-                        <ion-buttons slot="end">
-                           <ion-button color="dark" (click)="modal2.dismiss()"><ion-icon slot="icon-only" name="close"></ion-icon></ion-button>
-                        </ion-buttons>
-                     </ion-toolbar>
-                     <div class="modal-content">
+                     <div class="modal-content" *ngIf="modals[i].pwdVerified">
                         <ion-row style="display: flex; justify-content: center; margin: 5px 0px 5px 0px; column-gap: 10px">
                            <ion-img style="width: 15px" src="../../../assets/icon/stellar-2.svg"></ion-img>
                            <label class="secondary-text">{{ 'STELLAR' | translate}}</label>
@@ -93,21 +79,21 @@
                         <ion-row>
                            <ion-label style="margin-top: 10px" class="input-label">{{'PRIVATE_KEY' | translate}}</ion-label>
                         </ion-row>
-                        <ion-row><div class="key-container">{{acc.sk}}</div></ion-row>
+                        <ion-row><div class="key-container">{{this.modals[i].sk}}</div></ion-row>
                         <ion-row>
                            <ion-label style="margin-top: 10px" class="input-label">{{'PUBLIC_KEY' | translate}}</ion-label>
                         </ion-row>
-                        <ion-row><div class="key-container">{{acc.pk}}</div></ion-row>
+                        <ion-row><div class="key-container">{{this.modals[i].pk}}</div></ion-row>
                         <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
-                           <ion-button class="btn" color="dark" (click)="modal2.dismiss()">{{'DONE_BUTTON' | translate}}</ion-button>
+                           <ion-button class="btn" color="dark" (click)="modal1.dismiss()">{{'DONE_BUTTON' | translate}}</ion-button>
                         </ion-row>
                      </div>
                   </ion-content>
                </ng-template>
             </ion-modal>
 
-            <ion-button class="default-btn" color="primary" fill="clear" *ngIf="i == 0">{{'DEFAULT' | translate}}</ion-button>
-            <ion-button color="dark" fill="clear" *ngIf="i != 0">{{'SET_DEFAULT' | translate}}</ion-button>
+            <label class="default-btn" *ngIf="i == 0">{{'DEFAULT' | translate}}</label>
+            <ion-button class="btn" color="dark" fill="clear" *ngIf="i != 0">{{'SET_DEFAULT' | translate}}</ion-button>
          </ion-col>
       </ion-row>
    </div>
@@ -143,10 +129,10 @@
    </ion-card> -->
 </ion-content>
 
-<!-- <ion-footer>
+<ion-footer>
    <ion-fab position="fixed" vertical="bottom" horizontal="end">
       <ion-fab-button color="primary" ion-fab (click)="goToAddAccount()">
          <ion-icon name="add"></ion-icon>
       </ion-fab-button>
    </ion-fab>
-</ion-footer> -->
+</ion-footer>

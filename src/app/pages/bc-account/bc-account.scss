@@ -8,7 +8,7 @@
 }
 
 .bc-card {
-   margin: 0px !important;
+   margin: 0px 0px 25px 0px !important;
    padding: 10px 15px 10px 15px !important;
    border-radius: 15px;
    background: #fff;
@@ -82,13 +82,27 @@ ion-app.md [padding] .scroll-content {
 
 .btn {
    --box-shadow: none !important;
+   width: 100px;
+   align-self: flex-end;
 }
 
 .default-btn {
-   --background: transparent;
    --background-hover: transparent !important;
    --ripple-color: transparent;
    font-weight: 700;
+   width: 100px;
+   height: 36px;
+   font-size: 14px;
+   text-align: center;
+   align-self: flex-end;
+   color: var(--ion-color-primary);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.default-btn:hover {
+   --background: transparent !important;
 }
 
 .copy-icon {
@@ -121,7 +135,7 @@ ion-app.md [padding] .scroll-content {
 .modal-2 {
    align-items: start;
    padding: 70px 15px 0px 15px;
-   --height: 400px !important;
+   --height: 370px !important;
    --border-radius: 16px;
 }
 

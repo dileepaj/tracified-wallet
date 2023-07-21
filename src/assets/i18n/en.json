@@ -338,5 +338,7 @@
    "SET_DEFAULT": "Set Default",
    "VIEW_KEYS": "View Keys",
 
-   "ENTER_PWD": "Enter Password"
+   "ENTER_PWD": "Enter Password",
+
+   "FAILED_ADD_ACCOUNTS": "Failed to add account please try again"
 }

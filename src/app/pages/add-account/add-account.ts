@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ToastController, LoadingController, AlertController } from '@ionic/angular';
+import { ToastController, LoadingController, AlertController, ModalController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Keypair } from 'stellar-sdk';
 import { AES, enc } from 'crypto-js';
@@ -17,6 +17,7 @@ import { Properties } from '../../shared/properties';
 import { LoggerService } from 'src/app/providers/logger-service/logger.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { TOAST_TIMER } from 'src/environments/environment';
+import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
 
 // Pages
 // import { AccountInfoPage } from '../../pages/account-info/account-info';
@@ -54,16 +55,15 @@ export class AddAccountPage {
       private logger: LoggerService,
       private dataService: DataServiceProvider,
       private mappingService: MappingServiceProvider,
-      private translate: TranslateService
+      private translate: TranslateService,
+      private storageService: StorageServiceProvider,
+      private modalCtrl: ModalController
    ) {
       this.form = new FormGroup(
          {
             accName: new FormControl('', Validators.compose([Validators.minLength(4), Validators.required])),
             strength: new FormControl(''),
-            password: new FormControl(
-               '',
-               Validators.compose([Validators.minLength(6), Validators.required, Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-zd$@$!%*?&].{7,}')])
-            ),
+            password: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
             confirmPassword: new FormControl('', Validators.compose([Validators.required])),
          },
          { validators: this.checkPasswords }
@@ -71,6 +71,8 @@ export class AddAccountPage {
 
       this.navigation = this.router.getCurrentNavigation().extras.state?.navigation;
    }
+
+   ionViewDidEnter() {}
 
    checkPasswords: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
       let pass = group.get('password').value;
@@ -81,6 +83,12 @@ export class AddAccountPage {
    async addMainAccount() {
       let password = this.form.get('password').value;
       let confirmPassword = this.form.get('confirmPassword').value;
+      let accName = this.form.get('accName').value;
+      let index = 0;
+
+      await this.storageService.getAllMnemonicProfiles().then(res => {
+         index = res.length;
+      });
 
       if (password != confirmPassword) {
          this.translate.get(['ERROR', 'PASSWORD_DONOT_MATCH']).subscribe(text => {
@@ -89,116 +97,22 @@ export class AddAccountPage {
          return;
       }
 
-      if (this.connectivity.onDevice) {
-         await this.presentLoading();
-         this.validateAccountName(this.form.value.accName)
-            .then(status => {
-               if (status) {
-                  let mainPair = this.createKeyPair();
-
-                  this.mappingService
-                     .encyrptSecret(mainPair.secret(), this.form.value.password)
-                     .then(encMainSecretKey => {
-                        const mainAccount = {
-                           accName: this.form.value.accName,
-                           publicKey: mainPair.publicKey(),
-                           privateKey: mainPair.secret(),
-                        };
-                        const account = {
-                           account: {
-                              mainAccount: {
-                                 accountName: this.form.value.accName,
-                                 pk: mainPair.publicKey(),
-                                 sk: encMainSecretKey,
-                                 skp: mainPair.secret(),
-                                 FO: false,
-                                 subAccounts: [],
-                              },
-                           },
-                        };
-
-                        this.dataService
-                           .addTransactionAccount(account)
-                           .then(
-                              res => {
-                                 this.dissmissLoading();
-                                 if (res.status === 200) {
-                                    this.translate.get(['TRANSACTION_ACCOUNT_ADDED']).subscribe(text => {
-                                       this.presentToast(text['TRANSACTION_ACCOUNT_ADDED']);
-                                    });
-                                    const option: NavigationExtras = {
-                                       state: {
-                                          account: mainAccount,
-                                          navigation: this.navigation,
-                                       },
-                                       replaceUrl: true,
-                                    };
-                                    this.router.navigate(['/account-info'], option);
-                                 } else {
-                                    this.translate.get(['ERROR', 'FAILED_ADD_TRANSACTION']).subscribe(text => {
-                                       this.presentAlert(text['ERROR'], text['FAILED_ADD_TRANSACTION']);
-                                    });
-                                 }
-                              },
-                              err => {
-                                 this.dissmissLoading();
-                                 if (err.status == 403) {
-                                    this.translate.get(['AUTHENTICATION_FAILED', 'ACC_BLOCKED']).subscribe(text => {
-                                       this.presentAlert(text['AUTHENTICATION_FAILED'], text['ACC_BLOCKED']);
-                                    });
-                                 } else {
-                                    this.translate.get(['ERROR', 'FAILED_ADD_TRANSACTION']).subscribe(text => {
-                                       this.presentAlert(text['ERROR'], text['FAILED_ADD_TRANSACTION']);
-                                    });
-                                 }
-                              }
-                           )
-                           .catch(error => {
-                              this.dissmissLoading();
-                              this.translate.get(['ERROR', 'FAILED_ADD_TRANSACTION']).subscribe(text => {
-                                 this.presentAlert(text['ERROR'], text['FAILED_ADD_TRANSACTION']);
-                              });
-                              this.logger.error('Failed to add transaction account: ' + error, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                           });
-                     })
-                     .catch(err => {
-                        this.dissmissLoading();
-                        this.logger.error('Encrypting private key failed: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                     });
-               } else {
-                  this.dissmissLoading();
-                  this.translate.get(['ERROR', 'ACC_NAME_EXISTS']).subscribe(text => {
-                     this.presentAlert(text['ERROR'], text['ACC_NAME_EXISTS']);
-                  });
-               }
-            })
-            .catch(error => {
-               if (this.isLoadingPresent) {
-                  this.dissmissLoading();
-                  this.translate.get(['NOT_VALIDATE_ACC_NAME']).subscribe(text => {
-                     this.presentToast(text['NOT_VALIDATE_ACC_NAME']);
-                  });
-               }
+      this.storageService
+         .addSeedPhraseAccount(index.toString(), accName, password)
+         .then(res => {
+            if (res) {
+               this.router.navigate(['bc-account-created'], { queryParams: { index, redirect: true } });
+            } else {
+               this.translate.get(['ERROR', 'FAILED_ADD_ACCOUNTS']).subscribe(text => {
+                  this.presentAlert(text['ERROR'], text['FAILED_ADD_ACCOUNTS']);
+               });
+            }
+         })
+         .catch(() => {
+            this.translate.get(['ERROR', 'FAILED_ADD_ACCOUNTS']).subscribe(text => {
+               this.presentAlert(text['ERROR'], text['FAILED_ADD_ACCOUNTS']);
             });
-      } else {
-         this.translate.get(['NO_CONNECTION']).subscribe(text => {
-            this.presentToast(text['NO_CONNECTION']);
          });
-      }
-   }
-
-   async validateAccountName(accName) {
-      try {
-         const res = await this.apiService.validateMainAccountN(accName);
-         if (res.status === 200 && res.body.status === false) {
-            return true;
-         } else {
-            return false;
-         }
-      } catch (error) {
-         this.logger.error(`Account name validation failed: ${JSON.stringify(error)}`, this.properties.skipConsoleLogs, this.properties.writeToFile);
-         throw error;
-      }
    }
 
    checkStrength() {
@@ -286,5 +200,9 @@ export class AddAccountPage {
    async dissmissLoading() {
       this.isLoadingPresent = false;
       await this.loading.dismiss();
+   }
+
+   public goBack() {
+      this.router.navigate(['/bc-account']);
    }
 }
