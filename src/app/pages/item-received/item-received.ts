@@ -37,6 +37,7 @@ export class ItemReceivedPage {
    isLoadingPresent: boolean;
    items = [];
    mainAccount: any;
+   list: any = [];
 
    cocReceived = new Array();
 
@@ -56,7 +57,28 @@ export class ItemReceivedPage {
 
    ionViewDidEnter() {
       this.mainAccount = this.properties.defaultAccount;
-      this.getAllCoCs();
+      //this.getAllCoCs();
+      const item = {
+         assetCode: 'Mango',
+         quantity: 10,
+         Identifier: 'Test',
+         receiver: 'John Doe',
+         validTill: '7/29/2022, 12:36 PM',
+         Status: 'Expired',
+         sentDate: '4/27/2022 12:37:38 PM',
+         type: 'item',
+      };
+
+      const nft = {
+         nftname: 'NFT',
+         type: 'nft',
+         date: '4/27/2022 12:37:38 PM',
+         receiver: '38445X3FKSJBS38445X3FKSJBS38445X3FKSJBS38445X3FKSJBS',
+         hash: 'string',
+         status: 'Request Received',
+      };
+      this.list.push(item);
+      this.list.push(nft);
    }
 
    async handleRefresh(event) {
@@ -299,5 +321,19 @@ export class ItemReceivedPage {
          buttons: ['OK'],
       });
       alert.present();
+   }
+
+   async showPublicKey(key: string) {
+      let alert = await this.alertCtrl.create({
+         message: key,
+         buttons: [
+            {
+               text: 'Ok',
+               role: 'confirm',
+               handler: () => {},
+            },
+         ],
+      });
+      await alert.present();
    }
 }

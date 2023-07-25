@@ -11,6 +11,26 @@ import { DataServiceProvider } from '../../providers/data-service/data-service';
 import { TranslateService } from '@ngx-translate/core';
 import { blockchainNetType } from 'src/app/shared/config';
 
+interface Item {
+   assetCode: string;
+   quantity: number;
+   type: string;
+   sentDate: string;
+   receiver: string;
+   Identifier: string;
+   validTill: string;
+   Status: string;
+}
+
+interface NFT {
+   nftname: string;
+   type: string;
+   date: string;
+   receiver: string;
+   hash: string;
+   status: string;
+}
+
 @Component({
    selector: 'page-item-sent',
    templateUrl: 'item-sent.html',
@@ -30,6 +50,8 @@ export class ItemSentPage {
    mainAccount: any;
    cocSent = new Array();
 
+   list: any = [];
+
    constructor(
       public navCtrl: NavController,
       public apiService: ApiServiceProvider,
@@ -45,7 +67,29 @@ export class ItemSentPage {
 
    ionViewDidEnter() {
       this.mainAccount = this.properties.defaultAccount;
-      this.getAllCoCs();
+      const item: Item = {
+         assetCode: 'Mango',
+         quantity: 10,
+         Identifier: 'Test',
+         receiver: 'John Doe',
+         validTill: '7/29/2022, 12:36 PM',
+         Status: 'Expired',
+         sentDate: '4/27/2022 12:37:38 PM',
+         type: 'item',
+      };
+
+      const nft: NFT = {
+         nftname: 'NFT',
+         type: 'nft',
+         date: '4/27/2022 12:37:38 PM',
+         receiver: '38445X3FKSJBS38445X3FKSJBS38445X3FKSJBS38445X3FKSJBS',
+         hash: 'string',
+         status: 'Sent',
+      };
+      this.list.push(item);
+      this.list.push(nft);
+      this.cocSent.push(item);
+      //this.getAllCoCs();
    }
 
    doRefresh(refresher) {
@@ -171,5 +215,19 @@ export class ItemSentPage {
          buttons: ['OK'],
       });
       alert.present();
+   }
+
+   async showPublicKey(key: string) {
+      let alert = await this.alertCtrl.create({
+         message: key,
+         buttons: [
+            {
+               text: 'Ok',
+               role: 'confirm',
+               handler: () => {},
+            },
+         ],
+      });
+      await alert.present();
    }
 }

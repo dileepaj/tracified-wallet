@@ -333,5 +333,8 @@
    "CLAIM_NFT_DESC": "Enter the following details which will be added to your NFT",
 
    "NFTS": "Minted NFTs",
-   "NO_NFTS": "You do not have any minted NFTs."
+   "NO_NFTS": "You do not have any minted NFTs.",
+   "SEND_NFT": "Send NFT",
+   "ACCEPT_REQ": "Accept Request",
+   "REJECT_REQ": "Reject"
 }
