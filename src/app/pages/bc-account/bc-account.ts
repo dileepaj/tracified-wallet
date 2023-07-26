@@ -170,19 +170,28 @@ export class BcAccountPage implements OnInit {
    async decryptSecretKey(account: any, index: number) {
       const password = this.form.get('password').value;
       try {
-         const secretKey = await this.mappingService.decryptSecret(account.sk, password);
-         const pair = Keypair.fromSecret(secretKey.toString());
-         if (pair.publicKey() === account.pk) {
-            this.keyDecrypted = true;
-            this.privateKey = secretKey.toString();
+         /* const secretKey = await this.mappingService.decryptSecret(account.sk, password);
+         const pair = Keypair.fromSecret(secretKey.toString()); */
+         await this.storageService
+            .validateSeedPhraseAccount(index.toString(), account.accountName, password)
+            .then(async valid => {
+               console.log('valid?', valid);
 
-            this.modals[index].pk = account.pk;
-            this.modals[index].sk = account.sk;
-            this.modals[index].pwdVerified = true;
-         } else {
-            const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
-            this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
-         }
+               if (valid) {
+                  this.keyDecrypted = true;
+                  //this.privateKey = secretKey.toString();
+
+                  this.modals[index].pk = account.pk;
+                  this.modals[index].sk = account.sk;
+                  this.modals[index].pwdVerified = true;
+               } else {
+                  const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
+                  this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+               }
+            })
+            .catch(err => {
+               console.log('error', err);
+            });
       } catch (err) {
          const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
          this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
