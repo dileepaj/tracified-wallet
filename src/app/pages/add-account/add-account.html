@@ -1,4 +1,63 @@
-<ion-header>
+<ion-content [fullscreen]="true" class="ion-padding main-wrapper">
+   <ion-grid class="cusGrid bottom-padding">
+      <ion-row class="backBtnWrapper">
+         <ion-icon name="arrow-back-outline" (click)="goBack()"></ion-icon>
+      </ion-row>
+      <ion-row class="logo">
+         <ion-img src="assets/imgs/tracified-wallet-d.svg"></ion-img>
+      </ion-row>
+
+      <!--Create blockchain account -->
+      <div>
+         <ion-row style="display: flex; justify-content: center">
+            <ion-label class="title-label"
+               ><h1>{{"CREATE_BC_ACC" | translate}}</h1>
+               <p>{{"CREATE_BC_ACC_DESC" | translate}}</p>
+            </ion-label>
+         </ion-row>
+         <form [formGroup]="form">
+            <ion-row>
+               <ion-label style="margin-top: 36px" class="input-label">{{'ACC_NAME' | translate}}</ion-label>
+            </ion-row>
+            <ion-row>
+               <ion-item class="input-item" lines="full">
+                  <ion-input #accName formControlName="accName" type="text" name="accName" keyNext></ion-input>
+               </ion-item>
+            </ion-row>
+
+            <ion-row>
+               <ion-label style="margin-top: 32px" class="input-label">{{'CREATE_PASSWORD' | translate}}</ion-label>
+            </ion-row>
+            <ion-row>
+               <ion-item class="input-item" lines="full">
+                  <ion-input formControlName="password" name="password" [type]="passwordType" clearInput="false"></ion-input>
+                  <ion-icon slot="end" [name]="passwordIcon" class="passwordIcon gray-color" (click)="hideShowPassword(1)"> </ion-icon>
+               </ion-item>
+            </ion-row>
+            <!-- <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+               <ion-button color="white" class="customBtn customWhiteBtn">{{'GENERATE_PASSWORD_BUTTON' | translate}}</ion-button>
+            </ion-row> -->
+
+            <ion-row>
+               <ion-label style="margin-top: 32px" class="input-label">{{'CONFIRM_PASSWORD' | translate}}</ion-label>
+            </ion-row>
+            <ion-row>
+               <ion-item class="input-item" lines="full">
+                  <ion-input formControlName="confirmPassword" name="confirmPassword" [type]="confirmPasswordType" clearInput="false"></ion-input>
+                  <ion-icon slot="end" [name]="confirmPasswordIcon" class="passwordIcon gray-color" (click)="hideShowPassword(2)"> </ion-icon>
+               </ion-item>
+            </ion-row>
+
+            <ion-row style="display: flex; justify-content: center; margin: 10% 0px 10px 0px">
+               <ion-button color="primary" [disabled]="!form.valid" (click)="addMainAccount()">{{'CREATE_BC_ACC_BUTTON' | translate}}</ion-button>
+            </ion-row>
+         </form>
+      </div>
+   </ion-grid>
+   <!-- <app-help-popup [data]="data"></app-help-popup> -->
+</ion-content>
+
+<!-- <ion-header>
    <ion-toolbar>
       <ion-buttons slot="start">
          <ion-back-button></ion-back-button>
@@ -41,13 +100,7 @@
                   <ion-input formControlName="confirmPassword" name="confirmPassword" [type]="confirmPasswordType" clearOnEdit="false"></ion-input>
                   <ion-icon slot="end" [name]="confirmPasswordIcon" color="primary" class="confirmPasswordIcon" (click)="hideShowPassword(2)"> </ion-icon>
                </ion-item>
-               <!-- <ion-text *ngIf="form.errors?.notSame">
-                  <ion-text color="danger">
-                     <ul>
-                        <li><span>Passwords do not match.</span></li>
-                     </ul>
-                  </ion-text>
-               </ion-text> -->
+               
             </ion-col>
          </ion-row>
          <ion-row class="ion-padding-top">
@@ -60,3 +113,4 @@
       </form>
    </ion-grid>
 </ion-content>
+ -->
