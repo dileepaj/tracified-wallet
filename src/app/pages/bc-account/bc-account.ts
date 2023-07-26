@@ -175,8 +175,6 @@ export class BcAccountPage implements OnInit {
          await this.storageService
             .validateSeedPhraseAccount(index.toString(), account.accountName, password)
             .then(async valid => {
-               console.log('valid?', valid);
-
                if (valid) {
                   this.keyDecrypted = true;
                   //this.privateKey = secretKey.toString();
@@ -189,8 +187,9 @@ export class BcAccountPage implements OnInit {
                   this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
                }
             })
-            .catch(err => {
-               console.log('error', err);
+            .catch(async err => {
+               const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
+               this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
             });
       } catch (err) {
          const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
