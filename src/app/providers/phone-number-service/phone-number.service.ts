@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { USER_SETTING } from 'src/app/shared/userSignUpSetting';
+import { USER_SETTING } from 'src/environments/environment';
 import { ENV } from 'src/environments/environment';
 
 @Injectable({
@@ -13,16 +13,7 @@ export class PhoneNumberService {
 
    public validatePhoneNumber(phoneNo: string): Observable<any> {
       let url: string = `${ENV.API_ADMIN}/sign/checkmobile/`;
-      this.reqOpts = {
-         observe: 'response',
-         headers: new HttpHeaders({
-            Accept: 'application/json',
-            'Content-Type': 'Application/json',
-            Authorization: 'Bearer ' + USER_SETTING.BEARER_TOKEN,
-         }),
-      };
-
       url += phoneNo;
-      return this.http.get(url, this.reqOpts);
+      return this.http.get(url);
    }
 }

@@ -7,7 +7,7 @@ import { IonicSelectableComponent } from 'ionic-selectable';
 import { PhoneNumberService } from 'src/app/providers/phone-number-service/phone-number.service';
 import { UserSignUp } from 'src/app/providers/user/userSignup';
 import { KEY } from 'src/app/shared/config';
-import { USER_SETTING } from 'src/app/shared/userSignUpSetting';
+import { USER_SETTING } from 'src/environments/environment';
 import { COUNTRIES } from 'src/assets/countries-json';
 const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 @Component({
@@ -77,15 +77,16 @@ export class CreateAccountPage implements OnInit {
       let lastName = this.form.get('lastname').value;
       let mobile = this.form.get('phoneno').value;
       this.user = {
-         firstName,
-         lastName,
+         firstName:firstName,
+         lastName:lastName,
          email: AES.encrypt(username, KEY).toString(),
          tenantId: USER_SETTING.TENANT_ID,
+         tenantEmail:USER_SETTING.TENANT_EMAIL,
          mobileNo: mobile,
          permissions: USER_SETTING.PERMISSION,
          stages: USER_SETTING.STAGES,
          username: AES.encrypt(username, KEY).toString(),
-         type: USER_SETTING.TYPE,
+         type:USER_SETTING.TYPE,
          stagePermission: USER_SETTING.STAGE_PERMISSION,
       };
 
