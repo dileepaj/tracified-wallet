@@ -59,6 +59,7 @@ export class OtpPage {
             if (res.body.Status == 200 && res.body.Response.Status == 'Valid') {
                await this.dimissLoading();
                this.presentToast('OTP verified.');
+               await this.storageService.clearOTPTimeout();
                const option: NavigationExtras = {
                   state: {
                      ShopId: res.body.Response.ShopID,
