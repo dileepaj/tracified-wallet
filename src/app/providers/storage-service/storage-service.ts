@@ -277,7 +277,7 @@ export class StorageServiceProvider {
                resolve(true);
             })
             .catch(pwdSetErr => {
-               rejects(pwdSetErr);
+               rejects(pwdSetErr);  
             });
       });
    }
@@ -289,8 +289,8 @@ export class StorageServiceProvider {
             .getItem(index)
             .then(accName => {
                this.ProfilesPassword.getItem(index).then(Storepassword => {
-                  let encPwd = AES.encrypt(JSON.stringify(password), this.key).toString();
-                  if (username == accName && encPwd == Storepassword) {
+                  let decryptedPassword =JSON.parse(AES.decrypt(Storepassword.toString(), this.key).toString(enc.Utf8))
+                  if (username == accName && password == decryptedPassword) {
                      resolve(true);
                      return;
                   } else {
