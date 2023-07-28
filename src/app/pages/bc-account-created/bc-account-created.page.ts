@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Clipboard } from '@capacitor/clipboard';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { Wallet } from 'ethers';
@@ -36,12 +36,30 @@ export class BcAccountCreatedPage implements OnInit {
    toastInstance: any;
    loading: any;
    disableBtn: boolean = true;
+   index: number = 0;
+   redirectToAccs: any = false;
 
-   constructor(private forageService: StorageServiceProvider, private toastService: ToastController, private router: Router, private loadingCtrl: LoadingController) {}
+   constructor(
+      private activeRoute: ActivatedRoute,
+      private forageService: StorageServiceProvider,
+      private toastService: ToastController,
+      private router: Router,
+      private loadingCtrl: LoadingController
+   ) {}
 
    ngOnInit() {
       this.disableBtn = true;
-      this.getBCAccounts();
+      let sub = this.activeRoute.queryParams.subscribe(params => {
+         let index = params['index'];
+         let redirect = params['redirect'];
+
+         if (index && redirect) {
+            this.index = index;
+            this.redirectToAccs = redirect;
+         }
+
+         this.getBCAccounts();
+      });
    }
 
    public async writeToClipboard(text: string) {
@@ -51,16 +69,17 @@ export class BcAccountCreatedPage implements OnInit {
    }
 
    public async getBCAccounts() {
+      console.log('index & redirectTo', this.index, this.redirectToAccs);
       await this.presentLoading();
       if (this.seedPhrase !== null) {
          await this.forageService
             .getMnemonic()
             .then(mnemonic => {
-               this.stellarkeypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, mnemonic) as StellerKeyPair;
+               this.stellarkeypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, this.index, mnemonic) as StellerKeyPair;
 
-               this.ethPolyKeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Ethereum, 0, mnemonic) as Wallet;
+               this.ethPolyKeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Ethereum, this.index, mnemonic) as Wallet;
 
-               this.solana = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Solana, 0, mnemonic) as SolKeys;
+               this.solana = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Solana, this.index, mnemonic) as SolKeys;
 
                //debug
 
@@ -103,7 +122,11 @@ export class BcAccountCreatedPage implements OnInit {
    }
 
    public continue() {
-      this.router.navigate(['/tabs'], { state: { navigation: 'initial' } });
+      if (this.redirectToAccs) {
+         this.router.navigate(['/bc-account'], { state: { navigation: 'initial' } });
+      } else {
+         this.router.navigate(['/tabs'], { state: { navigation: 'initial' } });
+      }
    }
 
    async presentLoading() {

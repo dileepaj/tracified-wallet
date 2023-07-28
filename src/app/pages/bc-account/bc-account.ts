@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertController, ModalController, ToastController, LoadingController } from '@ionic/angular';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AlertController, ModalController, ToastController, LoadingController, IonModal } from '@ionic/angular';
 // import { AddAccountPage } from '../add-account/add-account';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
 import { ConnectivityServiceProvider } from '../../providers/connectivity-service/connectivity-service';
@@ -12,7 +12,10 @@ import { StorageServiceProvider } from 'src/app/providers/storage-service/storag
 import { BlockchainType, SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { Keypair as StellerKeyPair } from 'stellar-base';
 import { Properties } from 'src/app/shared/properties';
-
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Keypair } from 'stellar-sdk';
+import { MappingServiceProvider } from 'src/app/providers/mapping-service/mapping-service';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
    selector: 'page-bc-account',
    templateUrl: 'bc-account.html',
@@ -22,6 +25,16 @@ export class BcAccountPage implements OnInit {
    loading;
    userAcc = [];
    isLoadingPresent: boolean;
+   passwordType: string = 'password';
+   passwordIcon: string = 'eye-off';
+   form: FormGroup;
+   public account;
+   public privateKey: string;
+   public keyDecrypted: boolean = false;
+   selectedAcc: any;
+   modal2Open: boolean = false;
+   pks: any[] = [];
+   modals: any[] = [];
 
    constructor(
       public router: Router,
@@ -33,27 +46,20 @@ export class BcAccountPage implements OnInit {
       public alertCtrl: AlertController,
       public dataService: DataServiceProvider,
       private storageService: StorageServiceProvider,
-      private properties: Properties
-   ) {}
-   async ngOnInit() {
-      let mnemonic = await this.storageService.getMnemonic();
-      let rst = await this.storageService.getAllMnemonicProfiles();
-      for (const account of rst) {
-         let stellarkeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, account.value, mnemonic) as StellerKeyPair;
-         let index = {
-            FO: false,
-            accountName: account.key,
-            pk: stellarkeyPair.publicKey().toString(),
-            sk: stellarkeyPair.secret().toString(),
-         };
-         this.userAcc.push(index);
-      }
+      private properties: Properties,
+      private translate: TranslateService,
+      private mappingService: MappingServiceProvider
+   ) {
+      this.form = new FormGroup({
+         password: new FormControl('', Validators.compose([Validators.required])),
+      });
    }
+   async ngOnInit() {}
 
    ionViewDidEnter() {
       //v6 load rename to enter as load is not getting called : check
-
-      this.getMainAccounts();
+      this.getAccountsFromStorage();
+      //this.getMainAccounts();
    }
 
    goToAddAccount() {
@@ -84,6 +90,35 @@ export class BcAccountPage implements OnInit {
                reject();
             });
       });
+   }
+
+   async getAccountsFromStorage() {
+      await this.presentLoading();
+      this.modals = [];
+      let mnemonic = await this.storageService.getMnemonic();
+      let rst = await this.storageService.getAllMnemonicProfiles();
+      let i = 0;
+      for (const account of rst) {
+         let stellarkeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, account.value, mnemonic) as StellerKeyPair;
+         let index = {
+            FO: false,
+            accountName: account.key,
+            pk: stellarkeyPair.publicKey().toString(),
+            sk: stellarkeyPair.secret().toString(),
+         };
+         if (!this.pks.includes(index.pk)) {
+            this.userAcc.push(index);
+            this.pks.push(index.pk);
+         }
+         this.modals[i] = {
+            pwdVerified: false,
+            pk: '',
+            sk: '',
+         };
+         i++;
+      }
+      this.dissmissLoading();
+      console.log('userAcc', this.userAcc);
    }
 
    async userError(title, message) {
@@ -125,5 +160,66 @@ export class BcAccountPage implements OnInit {
 
    viewAccount(account) {
       this.router.navigate(['/account-details'], { state: { account: account } });
+   }
+
+   hideShowPassword() {
+      this.passwordType = this.passwordType === 'text' ? 'password' : 'text';
+      this.passwordIcon = this.passwordIcon === 'eye-off' ? 'eye' : 'eye-off';
+   }
+
+   async decryptSecretKey(account: any, index: number) {
+      const password = this.form.get('password').value;
+      try {
+         /* const secretKey = await this.mappingService.decryptSecret(account.sk, password);
+         const pair = Keypair.fromSecret(secretKey.toString()); */
+         await this.storageService
+            .validateSeedPhraseAccount(index.toString(), account.accountName, password)
+            .then(async valid => {
+               if (valid) {
+                  this.keyDecrypted = true;
+                  //this.privateKey = secretKey.toString();
+
+                  this.modals[index].pk = account.pk;
+                  this.modals[index].sk = account.sk;
+                  this.modals[index].pwdVerified = true;
+               } else {
+                  const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
+                  this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+               }
+            })
+            .catch(async err => {
+               const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
+               this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+            });
+      } catch (err) {
+         const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
+         this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+      }
+      this.form.get('password').setValue('');
+   }
+
+   async presentAlert(title: string, message: string) {
+      let alert = await this.alertCtrl.create({
+         header: title,
+         message: message,
+         buttons: [
+            {
+               text: 'OK',
+               handler: data => {},
+            },
+         ],
+      });
+
+      alert.present();
+   }
+
+   public onWillDismiss(index: number) {
+      console.log('called');
+      this.modals[index].pwdVerified = false;
+      this.modals[index].pk = '';
+      this.modals[index].sk = '';
+      this.form.get('password').setValue('');
+      this.passwordType = 'password';
+      this.passwordIcon = 'eye-off';
    }
 }

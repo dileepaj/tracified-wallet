@@ -336,5 +336,14 @@
    "NO_NFTS": "You do not have any minted NFTs.",
    "SEND_NFT": "Send NFT",
    "ACCEPT_REQ": "Accept Request",
-   "REJECT_REQ": "Reject"
+   "REJECT_REQ": "Reject",
+   "PROFILE": "Profile",
+   "IMPORTED": "Imported",
+   "DEFAULT": "Default",
+   "SET_DEFAULT": "Set Default",
+   "VIEW_KEYS": "View Keys",
+
+   "ENTER_PWD": "Enter Password",
+
+   "FAILED_ADD_ACCOUNTS": "Failed to add account please try again"
 }

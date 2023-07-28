@@ -34,16 +34,16 @@ export class OtpBcAccountPage implements OnInit {
       private route: ActivatedRoute,
       private authService: AuthServiceProvider
    ) {
-      let shopId = this.route.snapshot.queryParamMap.get('shopId');
+      this.shopId = this.route.snapshot.queryParamMap.get('shopId');
       let gemName = this.route.snapshot.queryParamMap.get('gemName');
 
       let appLinkShopID = this.router.getCurrentNavigation().extras.queryParams?.AppshopId;
       let appGemName = this.router.getCurrentNavigation().extras.queryParams?.AppgemName;
 
-      if (shopId && gemName) {
+      if (this.shopId && gemName) {
          this.authService.authorizeLocalProfile().then(auth => {
             if (!auth) {
-               this.authService.setAppLinkParam(shopId, gemName);
+               this.authService.setAppLinkParam(this.shopId, gemName);
                this.router.navigate(['/login'], { replaceUrl: true });
             } else {
                this.storageService.getMnemonic().then(data => {
@@ -51,7 +51,6 @@ export class OtpBcAccountPage implements OnInit {
                      this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
                   } else {
                      this.authService.setAppLinkParam(null, null);
-                     this.shopId = shopId;
                   }
                });
             }
