@@ -13,6 +13,10 @@ import { HttpClient } from "@angular/common/http";
     providedIn: 'root',
 })
 export class NFTServiceProvider {
+    private readonly baseURLNFTBackend = ENV.NFT_BACKEND;
+    private readonly nftStateURL = this.baseURLNFTBackend + '/walletnft/state'
+    private readonly nftTxnState = this.baseURLNFTBackend + '/walletnft/txns'
+    private readonly NFTGetURLBase = this.baseURLNFTBackend + '/walletnft'
     stellarKey: StellarKeyPair;
     constructor(
         private storageService: StorageServiceProvider,
@@ -95,28 +99,85 @@ export class NFTServiceProvider {
                 console.log(`Something went wrong : ${error}`)
             })
     }
+    /**
+     * Saves the NFT state to the server.
+     * @param nft The NFT object to be saved.
+     * @returns An Observable that resolves with the server response.
+     */
+    public SaveNFTState(nft: NFT): Observable<any> {
+        return this.http.post(this.nftStateURL, nft)
+    }
 
-    public SaveNFTState(nft:NFT):Observable<any>{
-        //TODO:add URL and error handling
-        const url =``
-        return new Observable((observable)=>{
-            this.http.post(url,nft)
-        });
+    /**
+     * Saves the NFT transaction state to the server.
+     *
+     * @param nft The NFT object to be saved.
+     * @returns An Observable that resolves with the server response.
+     */
+    public SaveNFTTXNState(nft: NFT): Observable<any> {
+        return this.http.post(this.nftTxnState, nft);
     }
-    public SaveNFTTXNState(nft:NFT):Observable<any>{
-        //TODO:add URL and error handling
-        const url =``
-        return new Observable((observable)=>{
-            this.http.post(url,nft);
-        });
+
+    /**
+     * Updates the NFT state with the given issuer public key and NFT status.
+     * @param issuerPublicKey The issuer's public key.
+     * @param nftStatus The new status of the NFT.
+     * @returns An Observable that resolves with the server response.
+     */
+    public UpdateNFTState(issuerPublicKey: string, nftStatus: NFTStatus): Observable<any> {
+        let nftState = new NFTState(issuerPublicKey, nftStatus);
+        return this.http.post(this.nftStateURL, nftState);
+
     }
-    public UpdateNFTState(issuerPublicKey:string,nftStatus:NFTStatus){
-        //TODO:add URL and error handling
-        const url =``
-        let nftState = new NFTState(issuerPublicKey,nftStatus);
-        return new Observable((observable)=>{
-            this.http.post(url,nftState);
-        });
+
+    /**
+     * Retrieves NFTs based on the specified state and filters.
+     * @param blockchain The blockchain to query.
+     * @param state The NFT status to filter by.
+     * @param ownerPublicKey The owner's public key to filter by.
+     * @param requestedPage The requested page number.
+     * @param pageSize The number of items per page.
+     * @returns An Observable that resolves with the server response containing the filtered NFTs.
+     */
+    public getNFTbyState(blockchain: String, state: NFTStatus, ownerPublicKey: String, requestedPage: number, pageSize: number) {
+        const url = `${this.NFTGetURLBase}?blockchain=${blockchain}&nftstatus=${state}&currentowner=${ownerPublicKey}&pagesize=${pageSize}&requestedPage=${requestedPage}`
+        return this.http.get(url);
     }
-    //TODO:implement the GET API Calls
+
+    /**
+     * Retrieves pending NFT requests filtered by the specified user public key.
+     * @param blockchain The blockchain to query.
+     * @param state The NFT status to filter by.
+     * @param ownerPublicKey The owner's public key to filter by.
+     * @param requestedPage The requested page number.
+     * @param pageSize The number of items per page.
+     * @returns An Observable that resolves with the server response containing the filtered NFT requests.
+     */
+    public getPendingNFTRequestFilterByUser(blockchain: String, state: NFTStatus, ownerPublicKey: String, requestedPage: number, pageSize: number) {
+        const url = `${this.NFTGetURLBase}/requested?blockchain=${blockchain}&nftstatus=${state}&currentowner=${ownerPublicKey}&pagesize=${pageSize}&requestedPage=${requestedPage}`
+        return this.http.get(url);
+    }
+
+    /**
+     * Retrieves NFT transaction state based on the specified issuer public key.
+     *
+     * @param issuerPublicKey The issuer's public key to filter by.
+     * @returns An Observable that resolves with the server response containing the NFT transaction state.
+     */
+    public getNFTTXNStatebyIssuerPublicKey(issuerPublicKey: String): Observable<any> {
+        const url = `nftstate/txns/${issuerPublicKey}`
+        return this.http.get(url);
+    }
+
+    /**
+     * Deletes NFT and transfers NFT request based on the specified issuer public key.
+     *
+     * @param issuerPublicKey The issuer's public key to filter by.
+     * @returns An Observable that resolves with the server response.
+     */
+    public DeleteNFTTransferNFTRequestbyIssuerPublicKey(issuerPublicKey: String): Observable<any> {
+        const url = `walletnft/state/${issuerPublicKey}`
+        return this.http.delete(url);
+    }
+
 }
