@@ -16,6 +16,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Keypair } from 'stellar-sdk';
 import { MappingServiceProvider } from 'src/app/providers/mapping-service/mapping-service';
 import { TranslateService } from '@ngx-translate/core';
+import { Clipboard } from '@capacitor/clipboard';
 @Component({
    selector: 'page-bc-account',
    templateUrl: 'bc-account.html',
@@ -35,6 +36,7 @@ export class BcAccountPage implements OnInit {
    modal2Open: boolean = false;
    pks: any[] = [];
    modals: any[] = [];
+   defAccount: any;
 
    constructor(
       public router: Router,
@@ -59,6 +61,7 @@ export class BcAccountPage implements OnInit {
    ionViewDidEnter() {
       //v6 load rename to enter as load is not getting called : check
       this.getAccountsFromStorage();
+      this.getDefault();
       //this.getMainAccounts();
    }
 
@@ -94,9 +97,14 @@ export class BcAccountPage implements OnInit {
 
    async getAccountsFromStorage() {
       await this.presentLoading();
-      this.modals = [];
+      //this.modals = [];
       let mnemonic = await this.storageService.getMnemonic();
       let rst = await this.storageService.getAllMnemonicProfiles();
+      await this.getDefault();
+      console.log(this.defAccount);
+      if (!this.defAccount) {
+         this.defAccount = 0;
+      }
       let i = 0;
       for (const account of rst) {
          let stellarkeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, account.value, mnemonic) as StellerKeyPair;
@@ -198,14 +206,14 @@ export class BcAccountPage implements OnInit {
       this.form.get('password').setValue('');
    }
 
-   async presentAlert(title: string, message: string) {
+   async presentAlert(title: string, message: string, okFn?: any) {
       let alert = await this.alertCtrl.create({
          header: title,
          message: message,
          buttons: [
             {
                text: 'OK',
-               handler: data => {},
+               handler: okFn,
             },
          ],
       });
@@ -221,5 +229,42 @@ export class BcAccountPage implements OnInit {
       this.form.get('password').setValue('');
       this.passwordType = 'password';
       this.passwordIcon = 'eye-off';
+   }
+
+   public async setDefault(acc: any, index: any) {
+      await this.presentLoading();
+      this.storageService
+         .setDefaultAccount(index)
+         .then(async res => {
+            this.dissmissLoading();
+            const text = await this.translate.get(['SET_DEF_SUCCESS']).toPromise();
+            await this.presentAlert('', `${acc.accountName} ${text['SET_DEF_SUCCESS']}`, () => {
+               this.getAccountsFromStorage();
+            });
+         })
+         .catch(async () => {
+            this.dissmissLoading();
+            const text = await this.translate.get(['SET_DEF_ERROR']).toPromise();
+            await this.presentToast(`${text['SET_DEF_ERROR']}`);
+         });
+   }
+
+   public async getDefault() {
+      await this.storageService
+         .getDefaultAccount()
+         .then(acc => {
+            this.defAccount = acc;
+         })
+         .catch(() => {
+            this.defAccount = false;
+         });
+   }
+
+   public async writeToClipboard(text: string) {
+      await Clipboard.write({
+         string: text,
+      });
+      /* const msg = await this.translate.get(['PK_COPIED']).toPromise();
+      await this.presentToast(`${msg['PK_COPIED']}`); */
    }
 }

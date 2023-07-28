@@ -342,5 +342,9 @@
 
    "NFTS": "Minted NFTs",
    "NO_NFTS": "You do not have any minted NFTs.",
-   "FAILED_ADD_ACCOUNTS": "Failed to add account please try again"
+   "FAILED_ADD_ACCOUNTS": "Failed to add account please try again",
+
+   "SET_DEF_SUCCESS": "was set as the default account",
+   "SET_DEF_ERROR": "Failed to set default account please try again",
+   "PK_COPIED": "Public key was copied to the clipboard"
 }
