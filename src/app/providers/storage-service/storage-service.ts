@@ -313,6 +313,19 @@ export class StorageServiceProvider {
       return profiles;
    }
 
+   public async getMnemonicProfile(index: string): Promise<any> {
+      return new Promise((resolve, reject) => {
+         this.mnemonicProfiles
+            .getItem(index)
+            .then(accName => {
+               resolve(accName);
+            })
+            .catch(err => {
+               reject(null);
+            });
+      });
+   }
+
    public getMnemonic(): Promise<any> {
       return new Promise((resolve, reject) => {
          this.deviceMnemonic

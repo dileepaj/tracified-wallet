@@ -149,6 +149,7 @@ h3 {
    }
 
    .card-action {
+      cursor: pointer;
       color: #fff;
       font-size: 14px;
       --margin: 0px !important;
@@ -282,4 +283,99 @@ input.check-toggle-round-flat:checked + label {
 
 input.check-toggle-round-flat:checked + label:after {
    margin-left: 86px;
+}
+
+.modal-1 {
+   align-items: start;
+   padding: 70px 15px 0px 15px;
+   --height: 320px !important;
+   --border-radius: 16px;
+}
+
+.modal-2 {
+   align-items: start;
+   padding: 70px 15px 0px 15px;
+   --height: 270px !important;
+   --border-radius: 16px;
+}
+
+.modal-3 {
+   align-items: start;
+   padding: 70px 15px 0px 15px;
+   --height: 380px !important;
+   --border-radius: 16px;
+}
+
+ion-modal::part(backdrop) {
+   background: rgba(0, 0, 0, 0.8);
+   opacity: 0.699999988079071;
+}
+
+ion-modal ion-toolbar {
+   --background: #fff;
+   --color: #343a40;
+}
+
+ion-toolbar ion-button {
+   --color: #343a40 !important;
+}
+
+ion-toolbar ion-title {
+   position: absolute;
+   top: 15px;
+   left: 0;
+   right: 0;
+   text-align: center;
+}
+
+.modal-content {
+   padding: 0px 20px 0px 20px;
+}
+
+.key-container {
+   background: #eaeaea !important;
+   width: 100% !important;
+   /* max-height: 48px !important; */
+   margin-top: 10px;
+   border-radius: 10px;
+   padding: 10px;
+   height: fit-content;
+   color: #000;
+   font-size: 16px;
+   font-style: normal;
+   font-weight: 600;
+   line-height: normal;
+   word-break: break-all;
+}
+
+.desc {
+   color: #000;
+   text-align: center;
+
+   font-size: 16px;
+   font-style: normal;
+   font-weight: 400;
+   line-height: 145.523%;
+   margin-bottom: 15px;
+   width: 100%;
+}
+
+.pk {
+   color: #000;
+   text-align: center;
+
+   font-size: 16px;
+   font-style: normal;
+   font-weight: 600;
+   line-height: 145.523%;
+}
+
+.pk-row {
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+   margin-bottom: 15px;
+   column-gap: 10px;
 }

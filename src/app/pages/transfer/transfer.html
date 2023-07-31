@@ -77,11 +77,11 @@
                            <div class="card-actions">
                               <div class="ion-activatable ripple-parent card-action" (click)="getSVG(item.nftcontent)">
                                  <ion-ripple-effect></ion-ripple-effect>
-                                 <ion-icon slot="icon-only" name="eye"></ion-icon>
+                                 <ion-icon slot="icon-only" name="eye" style="cursor: pointer"></ion-icon>
                               </div>
-                              <div class="ion-activatable ripple-parent card-action">
+                              <div class="ion-activatable ripple-parent card-action" id="open-modal" (click)="openModal(item)">
                                  <ion-ripple-effect></ion-ripple-effect>
-                                 <ion-icon slot="icon-only" name="send"></ion-icon>
+                                 <ion-icon slot="icon-only" name="send" style="cursor: pointer"></ion-icon>
                               </div>
                            </div>
                         </div>
@@ -124,7 +124,7 @@
                            <div class="card-actions">
                               <div class="ion-activatable ripple-parent card-action">
                                  <ion-ripple-effect></ion-ripple-effect>
-                                 <ion-icon slot="icon-only" name="send"></ion-icon>
+                                 <ion-icon slot="icon-only" name="send" style="cursor: pointer"></ion-icon>
                               </div>
                            </div>
                         </div>
@@ -133,6 +133,80 @@
                </ion-row>
             </ion-grid>
          </div>
+
+         <ion-modal
+            [class.modal-1]="modalTab == 0"
+            [class.modal-2]="modalTab == 1"
+            [class.modal-3]="modalTab == 2"
+            #modal1
+            [trigger]="'open-modal'"
+            [isOpen]="isRequestModalOpened"
+            (didDismiss)="onDismiss()">
+            <ng-template>
+               <ion-content>
+                  <ion-toolbar>
+                     <ion-title>{{'NFT_TRNSFR_REQ' | translate}}</ion-title>
+                     <ion-buttons slot="end">
+                        <ion-button color="dark" (click)="modal1.dismiss()"><ion-icon slot="icon-only" name="close"></ion-icon></ion-button>
+                     </ion-buttons>
+                  </ion-toolbar>
+
+                  <form [formGroup]="form" class="modal-content" *ngIf="modalTab == 0">
+                     <ion-row>
+                        <ion-label style="margin-top: 10px" class="desc">{{'NFT_TRNSFR_REQ_DESC_1' | translate}}</ion-label>
+                     </ion-row>
+                     <ion-row>
+                        <ion-label style="margin-top: 10px" class="input-label">{{'RECEIVER_ADDRESS' | translate}}</ion-label>
+                     </ion-row>
+                     <ion-row>
+                        <ion-item class="input-item" lines="full">
+                           <ion-input formControlName="receiverAddr" name="receiverAddr" type="text" clearInput="false"></ion-input>
+                        </ion-item>
+                     </ion-row>
+                     <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+                        <ion-button class="btn" color="dark" [disabled]="!form.valid" (click)="nextTab()">{{'SEND_TRNSFR_REQ' | translate}}</ion-button>
+                     </ion-row>
+                  </form>
+
+                  <form [formGroup]="pwdForm" class="modal-content" *ngIf="modalTab == 1">
+                     <ion-row>
+                        <ion-label style="margin-top: 10px" class="desc">{{'CONFIRM_TRNSFR_REQ' | translate}}</ion-label>
+                     </ion-row>
+                     <ion-row>
+                        <ion-label style="margin-top: 10px" class="input-label">{{'ENTER_PWD' | translate}}</ion-label>
+                     </ion-row>
+                     <ion-row>
+                        <ion-item class="input-item" lines="full">
+                           <ion-input formControlName="password" name="password" [type]="passwordType" clearInput="false"></ion-input>
+                           <ion-icon slot="end" [name]="passwordIcon" class="passwordIcon gray-color" (click)="hideShowPassword()"> </ion-icon>
+                        </ion-item>
+                     </ion-row>
+                     <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+                        <ion-button class="btn" color="dark" [disabled]="!pwdForm.valid" (click)="sendTransferRequest()">{{'CONFIRM' | translate}}</ion-button>
+                     </ion-row>
+                  </form>
+
+                  <div class="modal-content" *ngIf="modalTab == 2">
+                     <ion-row style="justify-content: center">
+                        <ion-img src="../../../assets/imgs/nft_transfer.png"></ion-img>
+                     </ion-row>
+                     <ion-row>
+                        <ion-label style="margin-top: 10px" class="desc">{{'NFT_TRNSFR_REQ_DESC_2' | translate}}</ion-label>
+                     </ion-row>
+                     <ion-row>
+                        <ion-label style="margin-top: 10px; margin-bottom: 0px" class="desc">{{'RECEIVER' | translate}}:</ion-label>
+                     </ion-row>
+                     <ion-row class="pk-row">
+                        <ion-label class="pk"><b>{{this.receiverPk.substring(0, 4) + "..." + this.receiverPk.substring(this.receiverPk.length - 4, this.receiverPk.length)}}</b></ion-label>
+                        <ion-icon name="eye" color="black" style="font-size: 24px; cursor: pointer" (click)="presentAlert('', this.receiverPk)"></ion-icon>
+                     </ion-row>
+                     <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
+                        <ion-button class="btn" color="dark" (click)="modal1.dismiss()">{{'DONE_BUTTON' | translate}}</ion-button>
+                     </ion-row>
+                  </div>
+               </ion-content>
+            </ng-template>
+         </ion-modal>
       </div>
 
       <!-- <div *ngIf="currentItems.length > 0" class="content-start padding-width">

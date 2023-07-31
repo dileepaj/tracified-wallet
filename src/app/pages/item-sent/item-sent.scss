@@ -78,6 +78,9 @@ accordion-list {
 
 .nft-svg::part(image) {
    width: 100%;
+   max-width: 150px;
+   height: 150px;
+   object-fit: cover;
    border-radius: 12px !important;
 }
 
