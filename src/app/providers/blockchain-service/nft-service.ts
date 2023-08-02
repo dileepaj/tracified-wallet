@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BlockchainType, SeedPhraseService } from '../seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from '../storage-service/storage-service';
-import { Asset, Memo, Networks, Operation, Server, TimeoutInfinite, TransactionBuilder } from 'stellar-sdk';
+import { Asset, Memo, Networks, Operation, Server, TimeoutInfinite, TransactionBuilder, Keypair } from 'stellar-sdk';
 import { blockchainNet, blockchainNetType } from 'src/app/shared/config';
 import { ENV } from 'src/environments/environment';
 import { Keypair as StellarKeyPair } from 'stellar-base';
@@ -53,14 +53,17 @@ export class NFTServiceProvider {
                      Operation.changeTrust({
                         asset: assetToTransfer,
                         limit: '1',
-                        source: senderPublicKey,
+                        source: this.stellarKey.publicKey().toString(),
                      })
                   )
                   .addMemo(Memo.text('NFT Ready to be received'))
                   .setTimeout(TimeoutInfinite)
                   .build();
                console.log(this.stellarKey);
-               transaction.sign(this.stellarKey);
+               const pair = Keypair.fromSecret(this.stellarKey.secret().toString());
+               console.log('sk', pair.secret());
+               transaction.sign(pair);
+               //console.log('xdr', transaction.toXDR());
 
                server
                   .submitTransaction(transaction)
@@ -91,27 +94,41 @@ export class NFTServiceProvider {
       this.stellarKey = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, senderAccountIndex, mnemonic) as StellarKeyPair;
       const asset = new Asset(assetCode, issuerPublicKey);
       let server = new Server(blockchainNet);
-      server
-         .loadAccount(this.stellarKey.publicKey())
-         .then(async account => {
-            var transaction = new TransactionBuilder(account, { fee: ENV.STELLAR_BASE_FEE, networkPassphrase: this.getNetwork() })
-               .addOperation(
-                  Operation.payment({
-                     destination: receiverPublicKey,
-                     asset: asset,
-                     amount: '1',
-                     source: this.stellarKey.publicKey(),
+      return new Promise((resolve, reject) => {
+         server
+            .loadAccount(this.stellarKey.publicKey())
+            .then(async account => {
+               var transaction = new TransactionBuilder(account, { fee: ENV.STELLAR_BASE_FEE, networkPassphrase: this.getNetwork() })
+                  .addOperation(
+                     Operation.payment({
+                        destination: receiverPublicKey,
+                        asset: asset,
+                        amount: '1',
+                        source: this.stellarKey.publicKey(),
+                     })
+                  )
+                  .addMemo(Memo.text('NFT Transferred'))
+                  .setTimeout(TimeoutInfinite)
+                  .build();
+               console.log(this.stellarKey);
+               const pair = Keypair.fromSecret(this.stellarKey.secret().toString());
+               console.log('sk', pair.secret());
+               transaction.sign(pair);
+               server
+                  .submitTransaction(transaction)
+                  .then(() => {
+                     resolve(true);
                   })
-               )
-               .addMemo(Memo.text('NFT Transferred'))
-               .setTimeout(TimeoutInfinite)
-               .build();
-            transaction.sign(this.stellarKey);
-            return server.submitTransaction(transaction);
-         })
-         .catch(async error => {
-            console.log(`Something went wrong : ${error}`);
-         });
+                  .catch(error => {
+                     console.log(error);
+                     reject(false);
+                  });
+            })
+            .catch(async error => {
+               console.log(`Something went wrong : ${error}`);
+               reject(false);
+            });
+      });
    }
    /**
     * Saves the NFT state to the server.

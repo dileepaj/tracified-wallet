@@ -135,3 +135,17 @@ accordion-list {
 .warning {
    color: var(--ion-color-warning);
 }
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 992px) {
+   /*  .action-btn {
+      width: 30%;
+      max-width: 240px;
+   } */
+
+   .action-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end !important;
+   }
+}

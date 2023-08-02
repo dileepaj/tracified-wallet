@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, ModalController, LoadingController, AlertController } from '@ionic/angular';
+import { NavController, ModalController, LoadingController, AlertController, Platform } from '@ionic/angular';
 import { Server, Transaction, Networks } from 'stellar-sdk';
 import { Properties } from '../../shared/properties';
 import { blockchainNet } from '../../shared/config';
@@ -12,7 +12,7 @@ import { ApiServiceProvider } from 'src/app/providers/api-service/api-service';
 import { Keypair as StellerKeyPair } from 'stellar-base';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NFTServiceProvider } from 'src/app/providers/blockchain-service/nft-service';
-import { NFT, NFTState, NFTTransfer } from 'src/app/shared/nft';
+import { NFT, NFTState, NFTStatus, NFTTransfer } from 'src/app/shared/nft';
 
 @Component({
    selector: 'page-transfer',
@@ -64,8 +64,10 @@ export class TransferPage {
       private properties: Properties,
       private alertCtrl: AlertController,
       private translate: TranslateService,
-      private nftService: NFTServiceProvider
+      private nftService: NFTServiceProvider,
+      public platform: Platform
    ) {
+      this.InitiatePlatformIfReady();
       this.form = new FormGroup({
          receiverAddr: new FormControl('', Validators.compose([Validators.required])),
       });
@@ -170,7 +172,7 @@ export class TransferPage {
       this.itemsTabOpened = event.target.checked;
    }
 
-   private async createItemsGrid() {
+   private checkScreenWidth() {
       let width = window.innerWidth;
       if (width <= 430) {
          this.itemColumCount = 2;
@@ -185,7 +187,10 @@ export class TransferPage {
          this.itemColumCount = 12;
          this.itemColSize = 1;
       }
+   }
 
+   private async createItemsGrid() {
+      this.checkScreenWidth();
       this.getBalance();
       this.loadNfts();
    }
@@ -335,7 +340,7 @@ export class TransferPage {
                      nftname: this.nftToTransfer.nftname,
                      nftrequested: receiverAddr,
                      currentowner: this.keypair.publicKey().toString(),
-                     nftstatus: 1,
+                     nftstatus: NFTStatus.TrustLineToBeCreated,
                      timestamp: this.nftToTransfer.timestamp,
                      shopid: this.nftToTransfer.shopid,
                      thumbnail: this.nftToTransfer.thumbnail,
@@ -392,5 +397,19 @@ export class TransferPage {
       });
 
       alert.present();
+   }
+
+   InitiatePlatformIfReady() {
+      this.platform.ready().then(() => {
+         console.log('before subscribe');
+         this.platform.resize.subscribe(() => {
+            this.checkScreenWidth();
+            this.nftRowlist = [];
+            this.splitImage(this.searchedNfts);
+
+            this.itemRowlist = [];
+            this.splitItems(this.Searcheditems);
+         });
+      });
    }
 }

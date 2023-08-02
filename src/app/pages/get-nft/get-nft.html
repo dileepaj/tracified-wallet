@@ -25,7 +25,23 @@
    <ion-grid>
       <ion-row *ngFor="let row of imgrowlist">
          <ion-col [size]="colSize" style="display: flex" *ngFor="let img of row">
-            <ion-card style="margin: 0px; background-color: #2d2d2d; height: 200px">
+            <div class="card item-card">
+               <div class="card-icon">
+                  <img class="nft-svg" [src]="img.thumbnail" (click)="getSVG(img.nftcontent)" />
+               </div>
+               <div class="card-footer">
+                  <div class="card-info">
+                     <label class="card-title">{{img.nftname}}</label>
+                     <label class="card-subtitle">{{img.collection}}</label>
+                  </div>
+                  <div class="card-actions">
+                     <div class="ion-activatable ripple-parent card-action">
+                        <ion-img (click)="goToStellar(img.txnhash)" src="../../../assets/icon/stellar.svg"></ion-img>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- <ion-card style="margin: 0px; background-color: #2d2d2d; height: 200px">
                <img [src]="img.thumbnail" style="cursor: pointer; height: 140px" (click)="getSVG(img.nftcontent)" />
                <ion-card-header>
                   <ion-row style="display: flex; justify-content: space-between">
@@ -33,14 +49,14 @@
                         <ion-row class="header"> {{img.nftname}} </ion-row>
                         <ion-row style="padding-top: 5px" class="subHeader"> {{img.collection}} </ion-row>
                      </ion-col>
-                     <ion-col size="3" style="display: flex; justify-content: end; padding: 8px">
+                     <ion-col size="3" style="display: flex; justify-content: end; padding: 8px; background-color: red">
                         <div>
                            <ion-img (click)="goToStellar(img.txnhash)" src="../../../assets/icon/stellar.svg"></ion-img>
                         </div>
                      </ion-col>
                   </ion-row>
                </ion-card-header>
-            </ion-card>
+            </ion-card> -->
          </ion-col>
       </ion-row>
    </ion-grid>

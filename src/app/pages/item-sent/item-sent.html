@@ -44,7 +44,12 @@
                      </ion-col>
                      <ion-col size="6">
                         <ion-row class="tag-cont">
-                           <label class="cancel-btn" *ngIf="item.nftstatus === 1 || item.nftstatus === 2 " (click)="cancelRequest(item.issuerpublickey)">Cancel</label>
+                           <label
+                              class="cancel-btn"
+                              *ngIf="item.nftstatus === statusNumber.TrustLineToBeCreated || item.nftstatus === statusNumber.TrustLineCreated "
+                              (click)="cancelRequest(item.issuerpublickey)"
+                              >Cancel</label
+                           >
                            <h5 class="tag">NFT Transfer</h5>
                         </ion-row>
                      </ion-col>
@@ -68,7 +73,7 @@
                            </ion-col>
                            <ion-col size="12" class="padding-top-cancel" style="display: flex; flex-direction: row; flex-wrap: nowrap; column-gap: 2px; justify-content: flex-end">
                               <h1 class="primary-font text-right-align-horizontally font-sm" style="width: 80%">{{item.nftrequested}}</h1>
-                              <ion-icon class="primary-font text-right-align-horizontally font-sm" name="eye" (click)="showPublicKey(item.nftrequested)"></ion-icon>
+                              <ion-icon class="primary-font text-right-align-horizontally font-sm show-key-icon" name="eye" (click)="showPublicKey(item.nftrequested)"></ion-icon>
                            </ion-col>
                         </ion-row>
                         <ion-row>
@@ -78,16 +83,18 @@
                            <ion-col size="12" class="padding-top-cancel">
                               <h1
                                  class="primary-font text-right-align-horizontally font-sm success"
-                                 [class.success]="item.nftstatus === 4"
-                                 [class.warning]="item.nftstatus === 1 || item.nftstatus === 2 ">
+                                 [class.success]="item.nftstatus === statusNumber.nftTransferAccepted"
+                                 [class.warning]="item.nftstatus === statusNumber.TrustLineToBeCreated || item.nftstatus === statusNumber.TrustLineCreated ">
                                  {{getNftStatusText(item.nftstatus)}}
                               </h1>
                            </ion-col>
                         </ion-row>
                      </ion-col>
                   </ion-row>
-                  <ion-row *ngIf="item.nftstatus === 2">
-                     <ion-button color="primary" style="width: 100%; margin-top: 10px" (click)="sentNftConfirmation(item.issuerpublickey)">{{"SEND_NFT" | translate }}</ion-button>
+                  <ion-row class="action-row" *ngIf="item.nftstatus === statusNumber.TrustLineCreated">
+                     <ion-col size="12" size-lg="2">
+                        <ion-button color="primary" style="width: 100%; margin-top: 10px" (click)="sendNftConfirmation(item)">{{"SEND_NFT" | translate }}</ion-button>
+                     </ion-col>
                   </ion-row>
                </div>
 
@@ -169,7 +176,12 @@
                      </ion-col>
                      <ion-col size="6">
                         <ion-row class="tag-cont">
-                           <label class="cancel-btn" *ngIf="item.nftstatus === 1 || item.nftstatus === 2 " (click)="cancelRequestConfirmation(item.issuerpublickey)">Cancel</label>
+                           <label
+                              class="cancel-btn"
+                              *ngIf="item.nftstatus === statusNumber.TrustLineToBeCreated || item.nftstatus === statusNumber.TrustLineCreated"
+                              (click)="cancelRequestConfirmation(item.issuerpublickey)"
+                              >Cancel</label
+                           >
                            <h5 class="tag">NFT Transfer</h5>
                         </ion-row>
                      </ion-col>
@@ -193,7 +205,7 @@
                            </ion-col>
                            <ion-col size="12" class="padding-top-cancel" style="display: flex; flex-direction: row; flex-wrap: nowrap; column-gap: 2px; justify-content: flex-end">
                               <h1 class="primary-font text-right-align-horizontally font-sm" style="width: 80%">{{item.nftrequested}}</h1>
-                              <ion-icon class="primary-font text-right-align-horizontally font-sm" name="eye" (click)="showPublicKey(item.nftrequested)"></ion-icon>
+                              <ion-icon class="primary-font text-right-align-horizontally font-sm show-key-icon" name="eye" (click)="showPublicKey(item.nftrequested)"></ion-icon>
                            </ion-col>
                         </ion-row>
                         <ion-row>
@@ -203,16 +215,18 @@
                            <ion-col size="12" class="padding-top-cancel">
                               <h1
                                  class="primary-font text-right-align-horizontally font-sm success"
-                                 [class.success]="item.nftstatus === 4"
-                                 [class.warning]="item.nftstatus === 1 || item.nftstatus === 2 ">
+                                 [class.success]="item.nftstatus === statusNumber.nftTransferAccepted"
+                                 [class.warning]="item.nftstatus === statusNumber.TrustLineToBeCreated || item.nftstatus === statusNumber.TrustLineCreated ">
                                  {{getNftStatusText(item.nftstatus)}}
                               </h1>
                            </ion-col>
                         </ion-row>
                      </ion-col>
                   </ion-row>
-                  <ion-row *ngIf="item.nftstatus === 2">
-                     <ion-button color="primary" style="width: 100%; margin-top: 10px" (click)="sentNftConfirmation(item.issuerpublickey)">{{"SEND_NFT" | translate }}</ion-button>
+                  <ion-row class="action-row" *ngIf="item.nftstatus === statusNumber.TrustLineCreated">
+                     <ion-col size="12" size-lg="2">
+                        <ion-button color="primary" style="width: 100%; margin-top: 10px" (click)="sendNftConfirmation(item)">{{"SEND_NFT" | translate }}</ion-button>
+                     </ion-col>
                   </ion-row>
                </div>
 

@@ -14,7 +14,7 @@ import { TOAST_TIMER } from 'src/environments/environment';
 import { NFTServiceProvider } from 'src/app/providers/blockchain-service/nft-service';
 import { SeedPhraseService, BlockchainType } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
-import { NFTTransfer } from 'src/app/shared/nft';
+import { NFTStatus, NFTTransfer } from 'src/app/shared/nft';
 import { Keypair as StellerKeyPair } from 'stellar-base';
 
 @Component({
@@ -57,6 +57,7 @@ export class ItemReceivedPage {
    cocReceived = new Array();
 
    statusText: any;
+   statusNumber = NFTStatus;
 
    constructor(
       public navCtrl: NavController,
@@ -102,6 +103,7 @@ export class ItemReceivedPage {
       };
       this.list.push(item);
       this.list.push(nft); */
+      this.resetAll();
       this.theLastItem?.changes.subscribe(d => {
          if (d.last) this.observer.observe(d.last.nativeElement);
       });
@@ -110,18 +112,14 @@ export class ItemReceivedPage {
    }
 
    ionViewDidLeave() {
-      this.currentPage = 1;
-      this.nextPage = 0;
-      this.list = [];
+      this.resetAll();
    }
 
    async handleRefresh(event) {
       /* this.mainAccount = this.properties.defaultAccount;
       this.getAllCoCs();
       await event.target.complete(); */
-      this.currentPage = 1;
-      this.nextPage = 0;
-      this.list = [];
+      this.resetAll();
       this.theLastItem?.changes.subscribe(d => {
          if (d.last) this.observer.observe(d.last.nativeElement);
       });
@@ -415,7 +413,7 @@ export class ItemReceivedPage {
       } */
 
       await this.getKeyPair();
-      this.nftService.getPendingNFTRequestByReceiver('stellar', 'GBNRN2QSXLPODX62O4CUKTDVO3SG2ULESLX6WDJBQLMPKOLCRWHWPXUU', this.currentPage, 5).subscribe({
+      this.nftService.getPendingNFTRequestByReceiver('stellar', this.keypair.publicKey().toString(), this.currentPage, 5).subscribe({
          next: (res: any) => {
             console.log(res.Response.walletnft);
             res.Response.walletcontent.map((data: NFTTransfer) => {
@@ -431,6 +429,7 @@ export class ItemReceivedPage {
          },
          error: () => {
             this.dissmissLoading();
+            this.resetAll();
          },
       });
    }
@@ -477,16 +476,16 @@ export class ItemReceivedPage {
     */
    public getNftStatusText(status: number): string {
       switch (status) {
-         case 1:
+         case NFTStatus.TrustLineToBeCreated:
             return this.statusText['REQ_RCVD'];
 
-         case 2:
+         case NFTStatus.TrustLineCreated:
             return this.statusText['REQ_ACCPTD'];
 
-         case 3:
+         case NFTStatus.RequestForTrustLineRejected:
             return this.statusText['REQ_REJTD'];
 
-         case 4:
+         case NFTStatus.nftTransferAccepted:
             return this.statusText['RECEIVED'];
 
          default:
@@ -524,9 +523,9 @@ export class ItemReceivedPage {
    public async acceptRequest(nft: any) {
       await this.presentLoading();
       this.nftService
-         .createTrustLineForNFTTransfer(nft.issuerpublickey, 1, nft.currentowner, nft.nftname)
+         .createTrustLineForNFTTransfer(nft.issuerpublickey, this.defAccount, nft.currentowner, nft.nftname)
          .then(() => {
-            this.nftService.UpdateNFTState(nft.issuerpublickey, 2).subscribe({
+            this.nftService.UpdateNFTState(nft.issuerpublickey, NFTStatus.TrustLineCreated).subscribe({
                next: async () => {
                   this.dissmissLoading();
                   const text = await this.translate.get(['TRANSFER_REQ_ACCEPT', 'TRANSFER_REQ_ACCEPT_SUCCESS']).toPromise();
@@ -569,7 +568,7 @@ export class ItemReceivedPage {
     */
    public async rejectRequest(issuerPk: string) {
       await this.presentLoading();
-      this.nftService.UpdateNFTState(issuerPk, 3).subscribe({
+      this.nftService.UpdateNFTState(issuerPk, NFTStatus.RequestForTrustLineRejected).subscribe({
          next: async () => {
             this.dissmissLoading();
             const text = await this.translate.get(['TRANSFER_REQ_REJECT', 'TRANSFER_REQ_REJECT_SUCCESS']).toPromise();
@@ -586,5 +585,11 @@ export class ItemReceivedPage {
             await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_REJECT_ERROR']);
          },
       });
+   }
+
+   private resetAll() {
+      this.currentPage = 1;
+      this.nextPage = 0;
+      this.list = [];
    }
 }

@@ -13,7 +13,7 @@ import { blockchainNetType } from 'src/app/shared/config';
 import { NFTServiceProvider } from 'src/app/providers/blockchain-service/nft-service';
 import { SeedPhraseService, BlockchainType } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { Keypair as StellerKeyPair } from 'stellar-base';
-import { NFTTransfer } from 'src/app/shared/nft';
+import { NFTStatus, NFTTransfer } from 'src/app/shared/nft';
 
 interface Item {
    assetCode: string;
@@ -66,6 +66,7 @@ export class ItemSentPage {
    nextPage: number = 0;
 
    statusText: any;
+   statusNumber = NFTStatus;
 
    constructor(
       public navCtrl: NavController,
@@ -111,6 +112,7 @@ export class ItemSentPage {
       this.cocSent.push(item); */
       //this.getAllCoCs();
 
+      this.resetAll();
       this.theLastItem?.changes.subscribe(d => {
          if (d.last) this.observer.observe(d.last.nativeElement);
       });
@@ -119,9 +121,7 @@ export class ItemSentPage {
    }
 
    ionViewDidLeave() {
-      this.currentPage = 1;
-      this.nextPage = 0;
-      this.list = [];
+      this.resetAll();
    }
 
    doRefresh(refresher) {
@@ -131,9 +131,7 @@ export class ItemSentPage {
    async handleRefresh(event) {
       /* await this.getAllCoCs();
       await event.target.complete(); */
-      this.currentPage = 1;
-      this.nextPage = 0;
-      this.list = [];
+      this.resetAll();
       this.theLastItem?.changes.subscribe(d => {
          if (d.last) this.observer.observe(d.last.nativeElement);
       });
@@ -323,6 +321,7 @@ export class ItemSentPage {
          },
          error: () => {
             this.dissmissLoading();
+            this.resetAll();
          },
       });
    }
@@ -369,16 +368,16 @@ export class ItemSentPage {
     */
    public getNftStatusText(status: number): string {
       switch (status) {
-         case 1:
+         case NFTStatus.TrustLineToBeCreated:
             return this.statusText['REQ_SENT'];
 
-         case 2:
+         case NFTStatus.TrustLineCreated:
             return this.statusText['REQ_ACCPTD'];
 
-         case 3:
+         case NFTStatus.RequestForTrustLineRejected:
             return this.statusText['REQ_REJTD'];
 
-         case 4:
+         case NFTStatus.nftTransferAccepted:
             return this.statusText['SENT'];
 
          default:
@@ -434,10 +433,10 @@ export class ItemSentPage {
       });
    }
 
-   public async sentNftConfirmation(issuerPk: string) {
+   public async sendNftConfirmation(nft: any) {
       const text = await this.translate.get(['SEND_NFT_TITLE', 'SEND_NFT_DESC']).toPromise();
       await this.presentAlert(text['SEND_NFT_TITLE'], text['SEND_NFT_DESC'], () => {
-         this.sentNftRequest(issuerPk);
+         this.sendNftRequest(nft);
       });
    }
 
@@ -445,24 +444,40 @@ export class ItemSentPage {
     * Send nft
     * @param issuerPk issuer public key
     */
-   public async sentNftRequest(issuerPk: string) {
+   public async sendNftRequest(nft: any) {
       await this.presentLoading();
-      this.nftService.UpdateNFTState(issuerPk, 4).subscribe({
-         next: async () => {
-            this.dissmissLoading();
-            const text = await this.translate.get(['SEND_NFT_TITLE', 'SEND_NFT_SUCCESS']).toPromise();
-            await this.presentAlert(text['SEND_NFT_TITLE'], text['SEND_NFT_SUCCESS'], () => {
-               this.currentPage = 1;
-               this.nextPage = 0;
-               this.list = [];
-               this.getSentNfts();
+      this.nftService
+         .createPaymentOperationForNFTTransfer(nft.issuerpublickey, this.defAccount, nft.nftrequested, nft.nftname)
+         .then(() => {
+            this.nftService.UpdateNFTState(nft.issuerpublickey, NFTStatus.nftTransferAccepted).subscribe({
+               next: async () => {
+                  this.dissmissLoading();
+                  const text = await this.translate.get(['SEND_NFT_TITLE', 'SEND_NFT_SUCCESS']).toPromise();
+                  await this.presentAlert(text['SEND_NFT_TITLE'], text['SEND_NFT_SUCCESS'], () => {
+                     this.currentPage = 1;
+                     this.nextPage = 0;
+                     this.list = [];
+                     this.getSentNfts();
+                  });
+               },
+               error: async () => {
+                  this.dissmissLoading();
+                  const text = await this.translate.get(['ERROR', 'SEND_NFT_ERROR']).toPromise();
+                  await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR']);
+               },
             });
-         },
-         error: async () => {
+         })
+         .catch(async err => {
+            console.log(err);
             this.dissmissLoading();
             const text = await this.translate.get(['ERROR', 'SEND_NFT_ERROR']).toPromise();
             await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR']);
-         },
-      });
+         });
+   }
+
+   private resetAll() {
+      this.currentPage = 1;
+      this.nextPage = 0;
+      this.list = [];
    }
 }

@@ -65,7 +65,7 @@
                            </ion-col>
                            <ion-col size="12" class="padding-top-cancel" style="display: flex; flex-direction: row; flex-wrap: nowrap; column-gap: 2px; justify-content: flex-end">
                               <h1 class="primary-font text-right-align-horizontally font-sm" style="width: 80%">{{item.currentowner}}</h1>
-                              <ion-icon class="primary-font text-right-align-horizontally font-sm" name="eye" (click)="showPublicKey(item.currentowner)"></ion-icon>
+                              <ion-icon class="primary-font text-right-align-horizontally font-sm show-key-icon" name="eye" (click)="showPublicKey(item.currentowner)"></ion-icon>
                            </ion-col>
                         </ion-row>
                         <ion-row>
@@ -75,22 +75,20 @@
                            <ion-col size="12" class="padding-top-cancel">
                               <h1
                                  class="primary-font text-right-align-horizontally font-sm success"
-                                 [class.success]="item.nftstatus === 4"
-                                 [class.warning]="item.nftstatus === 1 || item.nftstatus === 2 ">
+                                 [class.success]="item.nftstatus === statusNumber.nftTransferAccepted"
+                                 [class.warning]="item.nftstatus === statusNumber.TrustLineToBeCreated || item.nftstatus === statusNumber.TrustLineCreated ">
                                  {{getNftStatusText(item.nftstatus)}}
                               </h1>
                            </ion-col>
                         </ion-row>
                      </ion-col>
                   </ion-row>
-                  <ion-row *ngIf="item.nftstatus === 1">
-                     <ion-col size="6">
-                        <ion-button color="dark" fill="outline" style="width: 100%; margin-top: 10px" (click)="rejectRequestConfirmation(item.issuerpublickey)"
-                           >{{"REJECT_REQ" | translate }}</ion-button
-                        >
+                  <ion-row class="action-row" *ngIf="item.nftstatus === statusNumber.TrustLineToBeCreated">
+                     <ion-col size="6" size-xs="6" size-sm="6" size-lg="2">
+                        <ion-button color="dark" fill="outline" class="action-btn" (click)="rejectRequestConfirmation(item.issuerpublickey)">{{"REJECT_REQ" | translate }}</ion-button>
                      </ion-col>
-                     <ion-col size="6">
-                        <ion-button color="primary" style="width: 100%; margin-top: 10px" (click)="acceptRequestConfirmation(item)">{{"ACCEPT_REQ" | translate }}</ion-button>
+                     <ion-col size="6" size-xs="6" size-sm="6" size-lg="2">
+                        <ion-button color="primary" class="action-btn" (click)="acceptRequestConfirmation(item)">{{"ACCEPT_REQ" | translate }}</ion-button>
                      </ion-col>
                   </ion-row>
                </div>
@@ -196,7 +194,7 @@
                            </ion-col>
                            <ion-col size="12" class="padding-top-cancel" style="display: flex; flex-direction: row; flex-wrap: nowrap; column-gap: 2px; justify-content: flex-end">
                               <h1 class="primary-font text-right-align-horizontally font-sm" style="width: 80%">{{item.currentowner}}</h1>
-                              <ion-icon class="primary-font text-right-align-horizontally font-sm" name="eye" (click)="showPublicKey(item.currentowner)"></ion-icon>
+                              <ion-icon class="primary-font text-right-align-horizontally font-sm show-key-icon" name="eye" (click)="showPublicKey(item.currentowner)"></ion-icon>
                            </ion-col>
                         </ion-row>
                         <ion-row>
@@ -206,22 +204,20 @@
                            <ion-col size="12" class="padding-top-cancel">
                               <h1
                                  class="primary-font text-right-align-horizontally font-sm success"
-                                 [class.success]="item.nftstatus === 4"
-                                 [class.warning]="item.nftstatus === 1 || item.nftstatus === 2 ">
+                                 [class.success]="item.nftstatus === statusNumber.nftTransferAccepted"
+                                 [class.warning]="item.nftstatus === statusNumber.TrustLineToBeCreated || item.nftstatus === statusNumber.TrustLineCreated ">
                                  {{getNftStatusText(item.nftstatus)}}
                               </h1>
                            </ion-col>
                         </ion-row>
                      </ion-col>
                   </ion-row>
-                  <ion-row *ngIf="item.nftstatus === 1">
-                     <ion-col size="6">
-                        <ion-button color="dark" fill="outline" style="width: 100%; margin-top: 10px" (click)="rejectRequestConfirmation(item.issuerpublickey)"
-                           >{{"REJECT_REQ" | translate }}</ion-button
-                        >
+                  <ion-row class="action-row" *ngIf="item.nftstatus === statusNumber.TrustLineToBeCreated">
+                     <ion-col size="6" size-xs="6" size-sm="6" size-lg="2">
+                        <ion-button color="dark" fill="outline" class="action-btn" (click)="rejectRequestConfirmation(item.issuerpublickey)">{{"REJECT_REQ" | translate }}</ion-button>
                      </ion-col>
-                     <ion-col size="6">
-                        <ion-button color="primary" style="width: 100%; margin-top: 10px" (click)="acceptRequestConfirmation(item)">{{"ACCEPT_REQ" | translate }}</ion-button>
+                     <ion-col size="6" size-xs="6" size-sm="6" size-lg="2">
+                        <ion-button color="primary" class="action-btn" (click)="acceptRequestConfirmation(item)">{{"ACCEPT_REQ" | translate }}</ion-button>
                      </ion-col>
                   </ion-row>
                </div>

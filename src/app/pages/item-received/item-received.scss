@@ -176,3 +176,22 @@ ion-content.has-refresher > .scroll-content {
    object-fit: cover;
    border-radius: 12px !important;
 }
+
+.action-btn {
+   width: 100%;
+   margin-top: 10px;
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 992px) {
+   /*  .action-btn {
+      width: 30%;
+      max-width: 240px;
+   } */
+
+   .action-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end !important;
+   }
+}
