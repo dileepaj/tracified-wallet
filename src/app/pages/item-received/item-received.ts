@@ -203,7 +203,7 @@ export class ItemReceivedPage {
                   .catch(async err => {
                      await this.dissmissLoading();
                      this.translate.get(['ERROR', 'FAILED_TO_FETCH_ACCOUNT']).subscribe(text => {
-                        this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_ACCOUNT']);
+                        this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_ACCOUNT'], true);
                      });
                      this.logger.error('Could not get the account names: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                   });
@@ -215,7 +215,7 @@ export class ItemReceivedPage {
             await this.dissmissLoading();
             if (err.status != 400) {
                this.translate.get(['ERROR', 'FAILED_TO_FETCH_RECEIVED']).subscribe(text => {
-                  this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_RECEIVED']);
+                  this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_RECEIVED'], true);
                });
             }
             this.logger.error('Could not load CoCs: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -227,7 +227,7 @@ export class ItemReceivedPage {
 
       if (count > 0) {
          this.translate.get(['ERROR', 'ACC_REJECT_PENDING_COC']).subscribe(text => {
-            this.presentAlert(text['ERROR'], text['ACC_REJECT_PENDING_COC']);
+            this.presentAlert(text['ERROR'], text['ACC_REJECT_PENDING_COC'], true);
          });
          return;
       }
@@ -250,11 +250,11 @@ export class ItemReceivedPage {
                         await this.dissmissLoading();
                         if (status == 'accept') {
                            this.translate.get(['SUCCESS', 'SUCCESS_ACCEPTED', 'UPDATED_RESULTS_TRANSFER']).subscribe(text => {
-                              this.presentAlert(text['SUCCESS'], text['UPDATED_RESULTS_TRANSFER']);
+                              this.presentAlert(text['SUCCESS'], text['UPDATED_RESULTS_TRANSFER'], true);
                            });
                         } else if (status == 'reject') {
                            this.translate.get(['SUCCESS', 'SUCCESS_REJECTED', 'ASSET_NOT_CHANGE']).subscribe(text => {
-                              this.presentAlert(text['SUCCESS'], text['ASSET_NOT_CHANGE']);
+                              this.presentAlert(text['SUCCESS'], text['ASSET_NOT_CHANGE'], true);
                            });
                         }
                      })
@@ -262,7 +262,7 @@ export class ItemReceivedPage {
                         await this.dissmissLoading();
                         coc.cocOriginal.Status = 'pending';
                         this.translate.get(['ERROR', 'COULD_NOT_PROCEED']).subscribe(text => {
-                           this.presentAlert(text['ERROR'], text['COULD_NOT_PROCEED']);
+                           this.presentAlert(text['ERROR'], text['COULD_NOT_PROCEED'], true);
                         });
                         this.logger.error('Failed to update the CoC: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                      });
@@ -270,14 +270,14 @@ export class ItemReceivedPage {
                .catch(async err => {
                   await this.dissmissLoading();
                   this.translate.get(['ERROR', 'INVALID_PASSWORD']).subscribe(text => {
-                     this.presentAlert(text['ERROR'], text['INVALID_PASSWORD']);
+                     this.presentAlert(text['ERROR'], text['INVALID_PASSWORD'], true);
                   });
                   this.logger.error('Validating password failed: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                });
          })
          .catch(err => {
             this.translate.get(['ERROR', 'INVALID_PASSWORD']).subscribe(text => {
-               this.presentAlert(text['ERROR'], text['INVALID_PASSWORD']);
+               this.presentAlert(text['ERROR'], text['INVALID_PASSWORD'], true);
             });
             this.logger.error('Invalid password: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
          });
@@ -354,18 +354,28 @@ export class ItemReceivedPage {
       await toast.present();
    }
 
-   async presentAlert(title, message, okFn?) {
+   async presentAlert(title, message, hideCancel: boolean, okFn?) {
+      let buttons = [
+         {
+            text: 'OK',
+            role: 'confirm',
+            handler: okFn,
+         },
+      ];
+
+      if (!hideCancel) {
+         buttons.push({
+            text: 'CANCEL',
+            role: 'cancel',
+            handler: () => {},
+         });
+      }
       const alert = await this.alertCtrl.create({
          header: title,
          message: message,
-         buttons: [
-            {
-               text: 'OK',
-               role: 'confirm',
-               handler: okFn,
-            },
-         ],
+         buttons,
       });
+
       alert.present();
    }
 
@@ -511,7 +521,7 @@ export class ItemReceivedPage {
     */
    public async acceptRequestConfirmation(issuerPk: string) {
       const text = await this.translate.get(['TRANSFER_REQ_ACCEPT', 'TRANSFER_REQ_ACCEPT_DESC']).toPromise();
-      await this.presentAlert(text['TRANSFER_REQ_ACCEPT'], text['TRANSFER_REQ_ACCEPT_DESC'], () => {
+      await this.presentAlert(text['TRANSFER_REQ_ACCEPT'], text['TRANSFER_REQ_ACCEPT_DESC'], false, () => {
          this.acceptRequest(issuerPk);
       });
    }
@@ -529,7 +539,7 @@ export class ItemReceivedPage {
                next: async () => {
                   this.dissmissLoading();
                   const text = await this.translate.get(['TRANSFER_REQ_ACCEPT', 'TRANSFER_REQ_ACCEPT_SUCCESS']).toPromise();
-                  await this.presentAlert(text['TRANSFER_REQ_ACCEPT'], text['TRANSFER_REQ_ACCEPT_SUCCESS'], () => {
+                  await this.presentAlert(text['TRANSFER_REQ_ACCEPT'], text['TRANSFER_REQ_ACCEPT_SUCCESS'], true, () => {
                      this.currentPage = 1;
                      this.nextPage = 0;
                      this.list = [];
@@ -539,7 +549,7 @@ export class ItemReceivedPage {
                error: async () => {
                   this.dissmissLoading();
                   const text = await this.translate.get(['ERROR', 'TRANSFER_REQ_ACCEPT_ERROR']).toPromise();
-                  await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_ACCEPT_ERROR']);
+                  await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_ACCEPT_ERROR'], true);
                },
             });
          })
@@ -547,7 +557,7 @@ export class ItemReceivedPage {
             console.log('error', err);
             this.dissmissLoading();
             const text = await this.translate.get(['ERROR', 'TRANSFER_REQ_ACCEPT_ERROR']).toPromise();
-            await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_ACCEPT_ERROR']);
+            await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_ACCEPT_ERROR'], true);
          });
    }
 
@@ -557,7 +567,7 @@ export class ItemReceivedPage {
     */
    public async rejectRequestConfirmation(issuerPk: string) {
       const text = await this.translate.get(['TRANSFER_REQ_REJECT', 'TRANSFER_REQ_REJECT_DESC']).toPromise();
-      await this.presentAlert(text['TRANSFER_REQ_REJECT'], text['TRANSFER_REQ_REJECT_DESC'], () => {
+      await this.presentAlert(text['TRANSFER_REQ_REJECT'], text['TRANSFER_REQ_REJECT_DESC'], false, () => {
          this.rejectRequest(issuerPk);
       });
    }
@@ -572,7 +582,7 @@ export class ItemReceivedPage {
          next: async () => {
             this.dissmissLoading();
             const text = await this.translate.get(['TRANSFER_REQ_REJECT', 'TRANSFER_REQ_REJECT_SUCCESS']).toPromise();
-            await this.presentAlert(text['TRANSFER_REQ_REJECT'], text['TRANSFER_REQ_REJECT_SUCCESS'], () => {
+            await this.presentAlert(text['TRANSFER_REQ_REJECT'], text['TRANSFER_REQ_REJECT_SUCCESS'], true, () => {
                this.currentPage = 1;
                this.nextPage = 0;
                this.list = [];
@@ -582,7 +592,7 @@ export class ItemReceivedPage {
          error: async () => {
             this.dissmissLoading();
             const text = await this.translate.get(['ERROR', 'TRANSFER_REQ_REJECT_ERROR']).toPromise();
-            await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_REJECT_ERROR']);
+            await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_REJECT_ERROR'], true);
          },
       });
    }

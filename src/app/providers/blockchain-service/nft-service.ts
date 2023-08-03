@@ -236,4 +236,15 @@ export class NFTServiceProvider {
       const url = `${this.nftStateURL}/${issuerPublicKey}`;
       return this.http.delete(url, { body: { issuerpublickey: issuerPublicKey } });
    }
+
+   /**
+    * Change the NFT's owner property to the new owner's address after a successful transfer.
+    * @param id Object id fetched from db
+    * @param ownerPublicKey New owner's public key
+    * @returns An Observable that resolves with the server response.
+    */
+   public updateNFTOwner(id: string, ownerPublicKey: string): Observable<any> {
+      const url = `${this.baseURLNFTBackend}/walletnfts/owner`;
+      return this.http.put(url, { Id: id, nftowner: ownerPublicKey });
+   }
 }

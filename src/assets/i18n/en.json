@@ -382,5 +382,7 @@
    "REQ_SENT": "Request Sent",
    "REQ_RCVD": "Request Received",
    "REQ_ACCPTD": "Request Accepted",
-   "REQ_REJTD": "Request Rejected"
+   "REQ_REJTD": "Request Rejected",
+   "NO_ITEMS": "No items assigned to your account at the moment",
+   "ITEMS": "Items"
 }

@@ -60,4 +60,5 @@ export interface NFTTransfer {
    timestamp: string;
    shopid: string;
    thumbnail: string;
+   nftid: string;
 }

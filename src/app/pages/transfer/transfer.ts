@@ -344,6 +344,7 @@ export class TransferPage {
                      timestamp: this.nftToTransfer.timestamp,
                      shopid: this.nftToTransfer.shopid,
                      thumbnail: this.nftToTransfer.thumbnail,
+                     nftid: this.nftToTransfer.Id,
                   };
                   this.nftService.SaveNFTState(nft).subscribe({
                      next: async res => {

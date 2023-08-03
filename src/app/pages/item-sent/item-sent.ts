@@ -213,7 +213,7 @@ export class ItemSentPage {
                   .catch(async err => {
                      await this.dissmissLoading();
                      this.translate.get(['ERROR', 'FAILED_TO_FETCH_ACCOUNT_SENT']).subscribe(text => {
-                        this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_ACCOUNT_SENT']);
+                        this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_ACCOUNT_SENT'], true);
                      });
                      this.logger.error('Could not get the account names: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
                   });
@@ -225,7 +225,7 @@ export class ItemSentPage {
             await this.dissmissLoading();
             if (err.status != 400) {
                this.translate.get(['ERROR', 'FAILED_TO_FETCH_SENT']).subscribe(text => {
-                  this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_SENT']);
+                  this.presentAlert(text['ERROR'], text['FAILED_TO_FETCH_SENT'], true);
                });
             }
             this.logger.error('Could not load CoCs: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -246,17 +246,26 @@ export class ItemSentPage {
       await this.loading.dismiss();
    }
 
-   async presentAlert(title, message, okFn?: any) {
+   async presentAlert(title, message, hideCancel: boolean, okFn?: any) {
+      let buttons = [
+         {
+            text: 'OK',
+            role: 'confirm',
+            handler: okFn,
+         },
+      ];
+
+      if (!hideCancel) {
+         buttons.push({
+            text: 'CANCEL',
+            role: 'cancel',
+            handler: () => {},
+         });
+      }
       const alert = await this.alertCtrl.create({
          header: title,
          message: message,
-         buttons: [
-            {
-               text: 'OK',
-               role: 'confirm',
-               handler: okFn,
-            },
-         ],
+         buttons,
       });
       alert.present();
    }
@@ -316,6 +325,7 @@ export class ItemSentPage {
                });
             });
             this.filteredList = this.list;
+            console.log(this.filteredList);
             this.nextPage = res.Response.PaginationInfo.nextpage;
             this.dissmissLoading();
          },
@@ -403,7 +413,7 @@ export class ItemSentPage {
 
    public async cancelRequestConfirmation(issuerPk: string) {
       const text = await this.translate.get(['TRANSFER_REQ_CANCEL', 'TRANSFER_REQ_CANCEL_DESC']).toPromise();
-      await this.presentAlert(text['TRANSFER_REQ_CANCEL'], text['TRANSFER_REQ_CANCEL_DESC'], () => {
+      await this.presentAlert(text['TRANSFER_REQ_CANCEL'], text['TRANSFER_REQ_CANCEL_DESC'], false, () => {
          this.cancelRequest(issuerPk);
       });
    }
@@ -418,7 +428,7 @@ export class ItemSentPage {
          next: async () => {
             this.dissmissLoading();
             const text = await this.translate.get(['TRANSFER_REQ_CANCEL', 'TRANSFER_REQ_CANCEL_SUCCESS']).toPromise();
-            await this.presentAlert(text['TRANSFER_REQ_CANCEL'], text['TRANSFER_REQ_CANCEL_SUCCESS'], () => {
+            await this.presentAlert(text['TRANSFER_REQ_CANCEL'], text['TRANSFER_REQ_CANCEL_SUCCESS'], true, () => {
                this.currentPage = 1;
                this.nextPage = 0;
                this.list = [];
@@ -428,42 +438,52 @@ export class ItemSentPage {
          error: async () => {
             this.dissmissLoading();
             const text = await this.translate.get(['ERROR', 'TRANSFER_REQ_CANCEL_ERROR']).toPromise();
-            await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_CANCEL_ERROR']);
+            await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_CANCEL_ERROR'], true);
          },
       });
    }
 
    public async sendNftConfirmation(nft: any) {
       const text = await this.translate.get(['SEND_NFT_TITLE', 'SEND_NFT_DESC']).toPromise();
-      await this.presentAlert(text['SEND_NFT_TITLE'], text['SEND_NFT_DESC'], () => {
+      await this.presentAlert(text['SEND_NFT_TITLE'], text['SEND_NFT_DESC'], false, () => {
          this.sendNftRequest(nft);
       });
    }
 
    /**
     * Send nft
-    * @param issuerPk issuer public key
+    * @param nft nft to be transferred
     */
    public async sendNftRequest(nft: any) {
       await this.presentLoading();
+
       this.nftService
          .createPaymentOperationForNFTTransfer(nft.issuerpublickey, this.defAccount, nft.nftrequested, nft.nftname)
          .then(() => {
-            this.nftService.UpdateNFTState(nft.issuerpublickey, NFTStatus.nftTransferAccepted).subscribe({
+            this.nftService.updateNFTOwner(nft.nftid, nft.nftrequested).subscribe({
                next: async () => {
-                  this.dissmissLoading();
-                  const text = await this.translate.get(['SEND_NFT_TITLE', 'SEND_NFT_SUCCESS']).toPromise();
-                  await this.presentAlert(text['SEND_NFT_TITLE'], text['SEND_NFT_SUCCESS'], () => {
-                     this.currentPage = 1;
-                     this.nextPage = 0;
-                     this.list = [];
-                     this.getSentNfts();
+                  await this.nftService.UpdateNFTState(nft.issuerpublickey, NFTStatus.nftTransferAccepted).subscribe({
+                     next: async () => {
+                        this.dissmissLoading();
+                        const text = await this.translate.get(['SEND_NFT_TITLE', 'SEND_NFT_SUCCESS']).toPromise();
+                        await this.presentAlert(text['SEND_NFT_TITLE'], text['SEND_NFT_SUCCESS'], true, () => {
+                           this.currentPage = 1;
+                           this.nextPage = 0;
+                           this.list = [];
+                           this.getSentNfts();
+                        });
+                     },
+                     error: async () => {
+                        this.dissmissLoading();
+                        const text = await this.translate.get(['ERROR', 'SEND_NFT_ERROR']).toPromise();
+                        await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR'], true);
+                     },
                   });
                },
                error: async () => {
                   this.dissmissLoading();
                   const text = await this.translate.get(['ERROR', 'SEND_NFT_ERROR']).toPromise();
-                  await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR']);
+                  await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR'], true);
                },
             });
          })
@@ -471,7 +491,7 @@ export class ItemSentPage {
             console.log(err);
             this.dissmissLoading();
             const text = await this.translate.get(['ERROR', 'SEND_NFT_ERROR']).toPromise();
-            await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR']);
+            await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR'], true);
          });
    }
 
