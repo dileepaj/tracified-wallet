@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
-import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { AES, enc } from 'crypto-js';
 import { ApiServiceProvider } from 'src/app/providers/api-service/api-service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
@@ -29,7 +29,8 @@ export class RequestOtpPage implements OnInit {
       private storageService: StorageServiceProvider,
       private apiService: ApiServiceProvider,
       public alertCtrl: AlertController,
-      public toastCtrl: ToastController
+      public toastCtrl: ToastController,
+      private navCtrl: NavController
    ) {
       this.bcAccount = this.router.getCurrentNavigation().extras.state.bcAccount;
       this.shopId = this.router.getCurrentNavigation().extras.queryParams.shopId;
@@ -101,7 +102,7 @@ export class RequestOtpPage implements OnInit {
                };
                this.router.navigate(['/otp-nft'], option2);
             } else if (error.error.message === 'NFT already minted') {
-               this.router.navigate(['/get-nft'], { replaceUrl: true });
+               this.navCtrl.navigateRoot('/get-nft');
             }
             this.presentToast(error.error.message);
          });

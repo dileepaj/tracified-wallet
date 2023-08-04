@@ -32,7 +32,7 @@ export class TabsPage implements OnInit {
             },
             replaceUrl: true,
          };
-         this.router.navigate(['otp-bc-account'], option);
+         this.navCtrl.navigateRoot('otp-bc-account', option);
       });
    }
 }
