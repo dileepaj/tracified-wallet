@@ -2,7 +2,7 @@ import { Component, NgZone, ViewChild } from '@angular/core';
 // import { SplashScreen } from '@ionic-native/splash-screen';
 // import { StatusBar } from '@ionic-native/status-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { Config, Platform, AlertController, LoadingController } from '@ionic/angular';
+import { Config, Platform, AlertController, LoadingController, NavController } from '@ionic/angular';
 import { NavigationExtras, Router } from '@angular/router';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 
@@ -56,7 +56,8 @@ export class AppComponent {
       private loadingCtrl: LoadingController,
       private router: Router,
       private zone: NgZone,
-      public connectivity: ConnectivityServiceProvider
+      public connectivity: ConnectivityServiceProvider,
+      private navCtrl: NavController
    ) {
       this.authService.authorizeLocalProfile().then(res => {
          if (res) {
@@ -306,7 +307,7 @@ export class AppComponent {
                text: 'Yes',
                handler: () => {
                   this.storageService.clearAllLocalStores();
-                  this.router.navigate(['/login']);
+                  this.navCtrl.navigateRoot('/login');
                },
             },
          ],

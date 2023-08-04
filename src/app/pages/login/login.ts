@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 // Shared Services
@@ -46,7 +46,8 @@ export class LoginPage {
       private logger: LoggerService,
       private dataService: DataServiceProvider,
       private router: Router,
-      private storageService: StorageServiceProvider
+      private storageService: StorageServiceProvider,
+      private navCtrl: NavController
    ) {
       this.form = new FormGroup({
          username: new FormControl('', Validators.compose([Validators.minLength(6), Validators.required])),
@@ -85,7 +86,7 @@ export class LoginPage {
                                  if (data == null) {
                                     this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
                                  } else {
-                                    this.router.navigate(['tabs'], { state: { navigation: 'initial' } });
+                                    this.navCtrl.navigateRoot('tabs', { state: { navigation: 'initial' }, replaceUrl: true });
                                  }
                                  this.dissmissLoading();
                               })
