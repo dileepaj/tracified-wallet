@@ -64,6 +64,7 @@ import { BcAccountCreatedPage } from './pages/bc-account-created/bc-account-crea
 import { OtpBcAccountPage } from './pages/otp-bc-account/otp-bc-account.page';
 import { RequestOtpPage } from './pages/request-otp/request-otp.page';
 import { MintCompletedPage } from './pages/mint-completed/mint-completed.page';
+import { ItemCardComponent } from './pages/item-card/item-card.component';
 
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -103,6 +104,7 @@ export function createTranslateLoader(http: HttpClient) {
       OtpBcAccountPage,
       RequestOtpPage,
       MintCompletedPage,
+      ItemCardComponent,
       // TransferPage,
       // ItemReceivedPage,
       // ItemSentPage,

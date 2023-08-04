@@ -31,3 +31,110 @@ ion-card {
    width: 100%;
    height: 90%;
 }
+
+//////nft card
+.card {
+   height: 172px;
+   border-radius: 12px;
+   background: #343a40;
+   padding: 0px !important;
+   overflow: hidden;
+}
+
+.card-icon {
+   position: relative;
+   height: 123px;
+   border-radius: 12px 12px 0px 0px;
+   background: #d3e5db;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+
+   ion-img {
+      height: 75px;
+      width: 60px;
+   }
+
+   .nft-svg {
+      height: 123px;
+      width: 100%;
+   }
+
+   .tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #fff;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      padding: 3px 5px 3px 5px;
+      background-color: #343a40;
+      border-radius: 5px;
+   }
+}
+
+.card-footer {
+   height: 49px;
+   border-radius: 0px 0px 12px 12px;
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+
+   .card-info {
+      padding-left: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex-grow: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+
+   .card-title {
+      color: #fff;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+   .card-subtitle {
+      color: #fff;
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+
+   .card-actions {
+      display: flex;
+      flex-direction: row;
+   }
+
+   .card-action {
+      cursor: pointer;
+      color: #fff;
+      font-size: 14px;
+      --margin: 0px !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0px 10px 0px 10px;
+
+      ion-img {
+         width: 30px;
+      }
+   }
+}

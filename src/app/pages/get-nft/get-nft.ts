@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, Platform } from '@ionic/angular';
 import { LoggerService } from 'src/app/providers/logger-service/logger.service';
 // import { Logger } from 'ionic-logger-new';
 import { ApiServiceProvider } from '../../providers/api-service/api-service';
@@ -35,6 +35,7 @@ export class GetNftPage implements OnInit {
    pubKey: any;
    mnemonic: any;
 
+   reversedArray: any = [];
    constructor(
       private properties: Properties,
       private loadCtrl: LoadingController,
@@ -42,15 +43,17 @@ export class GetNftPage implements OnInit {
       private translate: TranslateService,
       private logger: LoggerService,
       private router: Router,
-      private storage: StorageServiceProvider
-   ) {}
+      private storage: StorageServiceProvider,
+      public platform: Platform
+   ) {
+      this.InitiatePlatformIfReady();
+   }
    ngOnInit() {
-      this.checkScreenWidth();
+      this.getAllnfts();
       this.mainAccount = this.properties.defaultAccount;
    }
 
-   async checkScreenWidth() {
-      await this.startloading();
+   checkScreenWidth() {
       let width = window.innerWidth;
       if (width <= 430) {
          this.columCount = 2;
@@ -65,6 +68,11 @@ export class GetNftPage implements OnInit {
          this.columCount = 12;
          this.colSize = 1;
       }
+   }
+
+   async getAllnfts() {
+      await this.startloading();
+      this.checkScreenWidth();
 
       this.storage
          .getMnemonic()
@@ -99,6 +107,7 @@ export class GetNftPage implements OnInit {
          .then(async (res: any) => {
             if (res) {
                let reverseArray = await this.reverseArray(res.Response);
+               this.reversedArray = reverseArray;
                this.splitImage(reverseArray);
             } else {
                await this.dissmissLoading();
@@ -149,5 +158,15 @@ export class GetNftPage implements OnInit {
          let url = 'https://stellar.expert/explorer/testnet/tx/' + hash;
          window.open(url, '_blank');
       }
+   }
+   InitiatePlatformIfReady() {
+      this.platform.ready().then(() => {
+         console.log('before subscribe');
+         this.platform.resize.subscribe(() => {
+            this.checkScreenWidth();
+            this.imgrowlist = [];
+            this.splitImage(this.reversedArray);
+         });
+      });
    }
 }

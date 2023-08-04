@@ -5,7 +5,7 @@ ion-card {
 
 .notification-icon {
    display: flex;
-   margin-top: 20vh;
+   margin-top: 10vh;
    margin-left: auto;
    margin-right: auto;
    height: 100%;
@@ -55,4 +55,327 @@ h3 {
    font-size: 1.6rem !important;
    font-weight: 400;
    margin: 0;
+}
+
+//////
+
+.card {
+   height: 172px;
+   border-radius: 12px;
+   background: #343a40;
+   padding: 0px !important;
+   overflow: hidden;
+}
+
+.card-icon {
+   position: relative;
+   height: 123px;
+   border-radius: 12px 12px 0px 0px;
+   background: #d3e5db;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+
+   ion-img {
+      height: 75px;
+      width: 60px;
+   }
+
+   .nft-svg {
+      height: 123px;
+      width: 100%;
+   }
+
+   .tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: #fff;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      padding: 3px 5px 3px 5px;
+      background-color: #343a40;
+      border-radius: 5px;
+   }
+}
+
+.card-footer {
+   height: 49px;
+   border-radius: 0px 0px 12px 12px;
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+
+   .card-info {
+      padding-left: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex-grow: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+
+   .card-title {
+      color: #fff;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+   .card-subtitle {
+      color: #fff;
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+
+   .card-actions {
+      display: flex;
+      flex-direction: row;
+   }
+
+   .card-action {
+      cursor: pointer;
+      color: #fff;
+      font-size: 14px;
+      --margin: 0px !important;
+      border-left: 1px solid #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0px 10px 0px 10px;
+   }
+}
+
+.ripple-parent {
+   position: relative;
+   overflow: hidden;
+}
+
+///
+.switch-wrapper {
+   cursor: pointer;
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   margin-bottom: 20px;
+}
+
+.switch {
+   position: relative;
+   display: inline-block;
+   margin: 0 5px;
+}
+
+.switch > span {
+   position: absolute;
+   top: 18px;
+   pointer-events: none;
+   font-weight: bold;
+   font-size: 16px;
+   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+   width: 50%;
+   text-align: center;
+}
+
+input.check-toggle-round-flat:checked ~ .off {
+   color: #343a40;
+}
+
+input.check-toggle-round-flat:checked ~ .on {
+   color: #fff;
+}
+
+.switch > span.on {
+   left: 0;
+   padding-left: 2px;
+   color: #343a40;
+}
+
+.switch > span.off {
+   right: 0;
+   padding-right: 2px;
+   color: #fff;
+}
+
+.check-toggle {
+   position: absolute;
+   margin-left: -9999px;
+   visibility: hidden;
+}
+.check-toggle + label {
+   display: block;
+   position: relative;
+   cursor: pointer;
+   outline: none;
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
+input.check-toggle-round-flat + label {
+   width: 185px;
+   height: 56px;
+   background-color: #343a40;
+   -webkit-border-radius: 60px;
+   -moz-border-radius: 60px;
+   -ms-border-radius: 60px;
+   -o-border-radius: 60px;
+   border-radius: 60px;
+}
+input.check-toggle-round-flat + label:before,
+input.check-toggle-round-flat + label:after {
+   display: block;
+   position: absolute;
+   content: '';
+}
+
+input.check-toggle-round-flat + label:before {
+   top: 2px;
+   left: 2px;
+   bottom: 2px;
+   right: 2px;
+
+   background-color: #343a40;
+   -webkit--moz-border-radius: 60px;
+   -ms-border-radius: 60px;
+   -o-border-radius: 60px;
+   border-radius: 60px;
+}
+input.check-toggle-round-flat + label:after {
+   top: 12px;
+   left: 12px;
+   right: 12px;
+   bottom: 12px;
+   width: 75px;
+   height: 32px;
+   background-color: #fff;
+   -webkit-border-radius: 52px;
+   -moz-border-radius: 52px;
+   -ms-border-radius: 52px;
+   -o-border-radius: 52px;
+   border-radius: 52px;
+   -webkit-transition: margin 0.2s;
+   -moz-transition: margin 0.2s;
+   -o-transition: margin 0.2s;
+   transition: margin 0.2s;
+}
+
+input.check-toggle-round-flat:checked + label {
+}
+
+input.check-toggle-round-flat:checked + label:after {
+   margin-left: 86px;
+}
+
+.modal-1 {
+   align-items: start;
+   padding: 70px 15px 0px 15px;
+   --height: 320px !important;
+   --border-radius: 16px;
+}
+
+.modal-2 {
+   align-items: start;
+   padding: 70px 15px 0px 15px;
+   --height: 270px !important;
+   --border-radius: 16px;
+}
+
+.modal-3 {
+   align-items: start;
+   padding: 70px 15px 0px 15px;
+   --height: 380px !important;
+   --border-radius: 16px;
+}
+
+ion-modal::part(backdrop) {
+   background: rgba(0, 0, 0, 0.8);
+   opacity: 0.699999988079071;
+}
+
+ion-modal ion-toolbar {
+   --background: #fff;
+   --color: #343a40;
+}
+
+ion-toolbar ion-button {
+   --color: #343a40 !important;
+}
+
+ion-toolbar ion-title {
+   position: absolute;
+   top: 15px;
+   left: 0;
+   right: 0;
+   text-align: center;
+}
+
+.modal-content {
+   padding: 0px 20px 0px 20px;
+}
+
+.key-container {
+   background: #eaeaea !important;
+   width: 100% !important;
+   /* max-height: 48px !important; */
+   margin-top: 10px;
+   border-radius: 10px;
+   padding: 10px;
+   height: fit-content;
+   color: #000;
+   font-size: 16px;
+   font-style: normal;
+   font-weight: 600;
+   line-height: normal;
+   word-break: break-all;
+}
+
+.desc {
+   color: #000;
+   text-align: center;
+
+   font-size: 16px;
+   font-style: normal;
+   font-weight: 400;
+   line-height: 145.523%;
+   margin-bottom: 15px;
+   width: 100%;
+}
+
+.pk {
+   color: #000;
+   text-align: center;
+
+   font-size: 16px;
+   font-style: normal;
+   font-weight: 600;
+   line-height: 145.523%;
+}
+
+.pk-row {
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+   margin-bottom: 15px;
+   column-gap: 10px;
 }

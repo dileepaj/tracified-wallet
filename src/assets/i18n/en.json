@@ -332,6 +332,11 @@
    "CLAIM_NFT": "Claim your NFT",
    "CLAIM_NFT_DESC": "Enter the following details which will be added to your NFT",
 
+   "NFTS": "Minted NFTs",
+   "NO_NFTS": "You do not have any minted NFTs.",
+   "SEND_NFT": "Send NFT",
+   "ACCEPT_REQ": "Accept Request",
+   "REJECT_REQ": "Reject",
    "PROFILE": "Profile",
    "IMPORTED": "Imported",
    "DEFAULT": "Default",
@@ -340,5 +345,44 @@
 
    "ENTER_PWD": "Enter Password",
 
-   "FAILED_ADD_ACCOUNTS": "Failed to add account please try again"
+   "FAILED_ADD_ACCOUNTS": "Failed to add account please try again",
+
+   "SET_DEF_SUCCESS": "was set as the default account",
+   "SET_DEF_ERROR": "Failed to set default account please try again",
+   "PK_COPIED": "Public key was copied to the clipboard",
+
+   "NFT_TRNSFR_REQ": "NFT Transfer Request",
+   "NFT_TRNSFR_REQ_DESC_1": "Before sending the NFT you need to send a transfer request to the receiver. Once accepted you can proceed with sending the NFT.",
+   "RECEIVER_ADDRESS": "Enter Receiver's Address",
+   "SEND_TRNSFR_REQ": "Send Transfer Request",
+   "CONFIRM_TRNSFR_REQ": "Confirm transfer request.",
+   "NFT_TRNSFR_REQ_DESC_2": "Transfer request sent successfully. After the receiver accepts the request you may  proceed with the transfer. Please check the “Sent” tab for updates ",
+   "NFT_TRNSFR_ERROR": "Failed send transfer request please try again later",
+
+   "TRANSFER_REQ_CANCEL": "Cancel Transfer Request",
+   "TRANSFER_REQ_CANCEL_DESC": "Are you sure you want to cancel the request?",
+   "TRANSFER_REQ_CANCEL_SUCCESS": "Transfer request has been canceled.",
+   "TRANSFER_REQ_CANCEL_ERROR": "Failed to cancel transfer request please try again later.",
+
+   "TRANSFER_REQ_REJECT": "Reject Transfer Request",
+   "TRANSFER_REQ_REJECT_DESC": "Are you sure you want to reject the request?",
+   "TRANSFER_REQ_REJECT_SUCCESS": "Transfer request has been rejected.",
+   "TRANSFER_REQ_REJECT_ERROR": "Failed to reject transfer request please try again later.",
+
+   "TRANSFER_REQ_ACCEPT": "Accept Transfer Request",
+   "TRANSFER_REQ_ACCEPT_DESC": "Are you sure you want to accept the request?",
+   "TRANSFER_REQ_ACCEPT_SUCCESS": "Transfer request has been accepted.",
+   "TRANSFER_REQ_ACCEPT_ERROR": "Failed to accept transfer request please try again later.",
+
+   "SEND_NFT_TITLE": "Send NFT",
+   "SEND_NFT_DESC": "Are you sure you want to send the NFT?",
+   "SEND_NFT_SUCCESS": "NFT has been sent.",
+   "SEND_NFT_ERROR": "Failed to send NFT please try again later.",
+
+   "REQ_SENT": "Request Sent",
+   "REQ_RCVD": "Request Received",
+   "REQ_ACCPTD": "Request Accepted",
+   "REQ_REJTD": "Request Rejected",
+   "NO_ITEMS": "No items assigned to your account at the moment",
+   "ITEMS": "Items"
 }

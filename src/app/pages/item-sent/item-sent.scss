@@ -32,7 +32,7 @@ ion-icon {
    margin: 1em 0;
    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
    background-color: white;
-   padding: 0.6em;
+   padding: 0.6em 0em 0.6em 0em;
 }
 
 ion-content.has-refresher > .scroll-content {
@@ -63,4 +63,89 @@ accordion-list {
 #reject {
    border-color: #ccc;
    color: red;
+}
+
+.primary-font {
+   font-weight: 600;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+
+.font-sm {
+   font-size: 1.4rem !important;
+}
+
+.nft-svg::part(image) {
+   width: 100%;
+   max-width: 150px;
+   height: 150px;
+   object-fit: cover;
+   border-radius: 12px !important;
+}
+
+.nft-cont {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: flex-start;
+}
+
+.tag-cont {
+   display: flex;
+   flex-direction: row;
+   justify-content: flex-end;
+   align-items: center;
+   flex-wrap: nowrap;
+   column-gap: 5px;
+}
+
+.tag {
+   border-radius: 5px;
+   background: #2d2d2d;
+   color: #fff;
+   text-align: center;
+
+   font-style: normal;
+   font-weight: 500;
+   line-height: normal;
+   padding: 2px 5px 2px 5px;
+   max-width: 100px;
+}
+
+.cancel-btn {
+   cursor: pointer;
+   color: #000;
+   text-align: right;
+
+   font-size: 12px;
+   font-style: normal;
+   font-weight: 500;
+   line-height: normal;
+}
+
+.cancel-btn:hover {
+   color: #2d2d2d;
+}
+
+.success {
+   color: var(--ion-color-primary);
+}
+
+.warning {
+   color: var(--ion-color-warning);
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 992px) {
+   /*  .action-btn {
+      width: 30%;
+      max-width: 240px;
+   } */
+
+   .action-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end !important;
+   }
 }

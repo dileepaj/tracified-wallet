@@ -192,7 +192,7 @@ export class StorageServiceProvider {
                      })
                      .catch(err => {
                         this.logger.error('Storage get default account failed: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                        reject(err);
+                        reject(false);
                      });
                } else {
                   this.logger.error('No default account found.', this.properties.skipConsoleLogs, this.properties.writeToFile);
@@ -201,7 +201,7 @@ export class StorageServiceProvider {
             })
             .catch(err => {
                this.logger.error('Storage check length failed: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-               reject(err);
+               reject(false);
             });
       });
    }
@@ -277,7 +277,7 @@ export class StorageServiceProvider {
                resolve(true);
             })
             .catch(pwdSetErr => {
-               rejects(pwdSetErr);  
+               rejects(pwdSetErr);
             });
       });
    }
@@ -289,7 +289,7 @@ export class StorageServiceProvider {
             .getItem(index)
             .then(accName => {
                this.ProfilesPassword.getItem(index).then(Storepassword => {
-                  let decryptedPassword =JSON.parse(AES.decrypt(Storepassword.toString(), this.key).toString(enc.Utf8))
+                  let decryptedPassword = JSON.parse(AES.decrypt(Storepassword.toString(), this.key).toString(enc.Utf8));
                   if (username == accName && password == decryptedPassword) {
                      resolve(true);
                      return;
@@ -311,6 +311,19 @@ export class StorageServiceProvider {
          profiles.push({ key, value });
       });
       return profiles;
+   }
+
+   public async getMnemonicProfile(index: string): Promise<any> {
+      return new Promise((resolve, reject) => {
+         this.mnemonicProfiles
+            .getItem(index)
+            .then(accName => {
+               resolve(accName);
+            })
+            .catch(err => {
+               reject(null);
+            });
+      });
    }
 
    public getMnemonic(): Promise<any> {

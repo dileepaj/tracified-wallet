@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction, Networks, TimeoutInfinite } from 'stellar-sdk';
+import { Operation, Keypair, TransactionBuilder, Server, Account, Asset, AccountResponse, Transaction, Networks, TimeoutInfinite, Memo } from 'stellar-sdk';
 
 import { Properties } from '../../shared/properties';
 import { blockchainNet } from '../../shared/config';
@@ -17,6 +17,7 @@ import { ENV } from 'src/environments/environment';
 })
 export class BlockchainServiceProvider {
    reqOpts: { observe: string; headers: any };
+   stellarKey: Keypair;
    constructor(
       public http: HttpClient,
       private logger: LoggerService,
@@ -704,4 +705,6 @@ export class BlockchainServiceProvider {
          );
       });
    }
+
+
 }

@@ -7,13 +7,14 @@
    </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding cusContent">
+   <ion-searchbar show-clear-button="always" [(ngModel)]="searchTerm" (ionChange)="setFilteredItems($event)"></ion-searchbar>
    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
       <ion-refresher-content></ion-refresher-content>
    </ion-refresher>
 
    <ion-grid class="ion-padding">
-      <div *ngIf="cocSent.length === 0">
+      <div *ngIf="filteredList.length === 0">
          <ion-row>
             <ion-img class="notification-icon" src="../../assets/imgs/emptystatus-04.png"></ion-img>
          </ion-row>
@@ -28,55 +29,273 @@
             </div>
          </ion-row>
       </div>
-      <div class="padding-width" *ngIf="cocSent.length > 0">
-         <ion-row class="item-card" *ngFor="let item of cocSent; let index = index">
-            <ion-row>
-               <ion-icon name="time-outline"></ion-icon>
-               <h5 class="primary-font margin-fix">{{item.sentDate}}</h5>
+
+      <div *ngIf="filteredList.length > 0">
+         <div *ngFor="let item of filteredList; let index = index">
+            <!--nft-->
+            <ion-row class="item-card" *ngIf="index != filteredList.length - 1">
+               <div style="width: 100%" *ngIf="item.type === 'nft'">
+                  <ion-row>
+                     <ion-col size="6">
+                        <ion-row>
+                           <ion-icon name="time-outline"></ion-icon>
+                           <h5 class="primary-font margin-fix">{{item.timestamp}}</h5>
+                        </ion-row>
+                     </ion-col>
+                     <ion-col size="6">
+                        <ion-row class="tag-cont">
+                           <label
+                              class="cancel-btn"
+                              *ngIf="item.nftstatus === statusNumber.TrustLineToBeCreated || item.nftstatus === statusNumber.TrustLineCreated "
+                              (click)="cancelRequest(item.issuerpublickey)"
+                              >Cancel</label
+                           >
+                           <h5 class="tag">NFT Transfer</h5>
+                        </ion-row>
+                     </ion-col>
+                  </ion-row>
+                  <ion-row>
+                     <ion-col size="6" class="nft-cont">
+                        <ion-img class="left-align-horizontally nft-svg" [src]="item.thumbnail" />
+                     </ion-col>
+                     <ion-col size="6">
+                        <ion-row>
+                           <ion-col size="12" class="padding-bottom-cancel">
+                              <h4 class="secondary-font text-right-align-horizontally">{{'ITEM' | translate}}</h4>
+                           </ion-col>
+                           <ion-col size="12" class="padding-top-cancel">
+                              <h1 class="primary-font first-capital text-right-align-horizontally">{{item.nftname}}</h1>
+                           </ion-col>
+                        </ion-row>
+                        <ion-row>
+                           <ion-col size="12" class="padding-bottom-cancel">
+                              <h4 class="secondary-font text-right-align-horizontally">{{'RECEIVER' | translate}}</h4>
+                           </ion-col>
+                           <ion-col size="12" class="padding-top-cancel" style="display: flex; flex-direction: row; flex-wrap: nowrap; column-gap: 2px; justify-content: flex-end">
+                              <h1 class="primary-font text-right-align-horizontally font-sm" style="width: 80%">{{item.nftrequested}}</h1>
+                              <ion-icon class="primary-font text-right-align-horizontally font-sm show-key-icon" name="eye" (click)="showPublicKey(item.nftrequested)"></ion-icon>
+                           </ion-col>
+                        </ion-row>
+                        <ion-row>
+                           <ion-col size="12" class="padding-bottom-cancel">
+                              <h4 class="secondary-font text-right-align-horizontally">{{'STATUS' | translate}}</h4>
+                           </ion-col>
+                           <ion-col size="12" class="padding-top-cancel">
+                              <h1
+                                 class="primary-font text-right-align-horizontally font-sm success"
+                                 [class.success]="item.nftstatus === statusNumber.nftTransferAccepted"
+                                 [class.warning]="item.nftstatus === statusNumber.TrustLineToBeCreated || item.nftstatus === statusNumber.TrustLineCreated ">
+                                 {{getNftStatusText(item.nftstatus)}}
+                              </h1>
+                           </ion-col>
+                        </ion-row>
+                     </ion-col>
+                  </ion-row>
+                  <ion-row class="action-row" *ngIf="item.nftstatus === statusNumber.TrustLineCreated">
+                     <ion-col size="12" size-lg="2">
+                        <ion-button color="primary" style="width: 100%; margin-top: 10px" (click)="sendNftConfirmation(item)">{{"SEND_NFT" | translate }}</ion-button>
+                     </ion-col>
+                  </ion-row>
+               </div>
+
+               <!--item-->
+               <div style="width: 100%" *ngIf="item.type === 'item'">
+                  <ion-row>
+                     <ion-col size="6">
+                        <ion-row>
+                           <ion-icon name="time-outline"></ion-icon>
+                           <h5 class="primary-font margin-fix">{{item.sentDate}}</h5>
+                        </ion-row>
+                     </ion-col>
+                     <ion-col size="6">
+                        <ion-row class="tag-cont">
+                           <label class="cancel-btn" *ngIf="item.status === 'sent'">Cancel</label>
+                           <h5 class="tag">Item Transfer</h5>
+                        </ion-row>
+                     </ion-col>
+                  </ion-row>
+                  <ion-row>
+                     <ion-col size="8" class="padding-bottom-cancel">
+                        <h4 class="secondary-font">{{'ITEM' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="4" class="padding-bottom-cancel">
+                        <h4 class="secondary-font text-right-align-horizontally">{{'QUANTITY' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="9" class="padding-top-cancel">
+                        <h1 class="primary-font first-capital">{{item.assetCode}}</h1>
+                     </ion-col>
+                     <ion-col size="3" class="padding-top-cancel">
+                        <h1 class="primary-font text-right-align-horizontally">{{item.quantity | number:'1.0-0'}}</h1>
+                     </ion-col>
+                  </ion-row>
+                  <ion-row>
+                     <ion-col size="6" class="padding-bottom-cancel">
+                        <h4 class="secondary-font">{{ 'IDENTIFIER' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="6" class="padding-bottom-cancel">
+                        <h4 class="secondary-font text-right-align-horizontally">{{'RECEIVER' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="6" class="padding-top-cancel">
+                        <h4 class="primary-font">{{item.Identifier}}</h4>
+                     </ion-col>
+                     <ion-col size="6" class="padding-top-cancel">
+                        <h4 class="primary-font text-right-align-horizontally">{{item.receiver}}</h4>
+                     </ion-col>
+                  </ion-row>
+                  <ion-row>
+                     <ion-col size="7" class="padding-bottom-cancel">
+                        <h4 class="secondary-font">{{'VALID_TILL' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="5" class="padding-bottom-cancel">
+                        <h4 class="secondary-font text-right-align-horizontally">{{'STATUS' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="7" class="padding-top-cancel">
+                        <h4 class="primary-font">{{item.validTill}}</h4>
+                     </ion-col>
+                     <ion-col size="5" class="padding-top-cancel">
+                        <h4
+                           class="primary-font text-right-align-horizontally first-capital"
+                           [class.success]="item.status === 'Sent'"
+                           [class.warning]="item.status === 'Request Sent' || item.status === 'Request Approved' ">
+                           {{item.Status}}
+                        </h4>
+                     </ion-col>
+                  </ion-row>
+               </div>
             </ion-row>
-            <ion-row>
-               <ion-col size="8" class="padding-bottom-cancel">
-                  <h4 class="secondary-font">{{'ITEM' | translate}}</h4>
-               </ion-col>
-               <ion-col size="4" class="padding-bottom-cancel">
-                  <h4 class="secondary-font text-right-align-horizontally">{{'QUANTITY' | translate}}</h4>
-               </ion-col>
-               <ion-col size="9" class="padding-top-cancel">
-                  <h1 class="primary-font first-capital">{{item.assetCode}}</h1>
-               </ion-col>
-               <ion-col size="3" class="padding-top-cancel">
-                  <h1 class="primary-font text-right-align-horizontally">{{item.quantity | number:'1.0-0'}}</h1>
-               </ion-col>
+
+            <!--last item-->
+            <ion-row #theLastItem class="item-card" *ngIf="index == filteredList.length - 1">
+               <div style="width: 100%" *ngIf="item.type === 'nft'">
+                  <ion-row>
+                     <ion-col size="6">
+                        <ion-row>
+                           <ion-icon name="time-outline"></ion-icon>
+                           <h5 class="primary-font margin-fix">{{item.timestamp}}</h5>
+                        </ion-row>
+                     </ion-col>
+                     <ion-col size="6">
+                        <ion-row class="tag-cont">
+                           <label
+                              class="cancel-btn"
+                              *ngIf="item.nftstatus === statusNumber.TrustLineToBeCreated || item.nftstatus === statusNumber.TrustLineCreated"
+                              (click)="cancelRequestConfirmation(item.issuerpublickey)"
+                              >Cancel</label
+                           >
+                           <h5 class="tag">NFT Transfer</h5>
+                        </ion-row>
+                     </ion-col>
+                  </ion-row>
+                  <ion-row>
+                     <ion-col size="6" class="nft-cont">
+                        <ion-img class="left-align-horizontally nft-svg" [src]="item.thumbnail" />
+                     </ion-col>
+                     <ion-col size="6">
+                        <ion-row>
+                           <ion-col size="12" class="padding-bottom-cancel">
+                              <h4 class="secondary-font text-right-align-horizontally">{{'ITEM' | translate}}</h4>
+                           </ion-col>
+                           <ion-col size="12" class="padding-top-cancel">
+                              <h1 class="primary-font first-capital text-right-align-horizontally">{{item.nftname}}</h1>
+                           </ion-col>
+                        </ion-row>
+                        <ion-row>
+                           <ion-col size="12" class="padding-bottom-cancel">
+                              <h4 class="secondary-font text-right-align-horizontally">{{'RECEIVER' | translate}}</h4>
+                           </ion-col>
+                           <ion-col size="12" class="padding-top-cancel" style="display: flex; flex-direction: row; flex-wrap: nowrap; column-gap: 2px; justify-content: flex-end">
+                              <h1 class="primary-font text-right-align-horizontally font-sm" style="width: 80%">{{item.nftrequested}}</h1>
+                              <ion-icon class="primary-font text-right-align-horizontally font-sm show-key-icon" name="eye" (click)="showPublicKey(item.nftrequested)"></ion-icon>
+                           </ion-col>
+                        </ion-row>
+                        <ion-row>
+                           <ion-col size="12" class="padding-bottom-cancel">
+                              <h4 class="secondary-font text-right-align-horizontally">{{'STATUS' | translate}}</h4>
+                           </ion-col>
+                           <ion-col size="12" class="padding-top-cancel">
+                              <h1
+                                 class="primary-font text-right-align-horizontally font-sm success"
+                                 [class.success]="item.nftstatus === statusNumber.nftTransferAccepted"
+                                 [class.warning]="item.nftstatus === statusNumber.TrustLineToBeCreated || item.nftstatus === statusNumber.TrustLineCreated ">
+                                 {{getNftStatusText(item.nftstatus)}}
+                              </h1>
+                           </ion-col>
+                        </ion-row>
+                     </ion-col>
+                  </ion-row>
+                  <ion-row class="action-row" *ngIf="item.nftstatus === statusNumber.TrustLineCreated">
+                     <ion-col size="12" size-lg="2">
+                        <ion-button color="primary" style="width: 100%; margin-top: 10px" (click)="sendNftConfirmation(item)">{{"SEND_NFT" | translate }}</ion-button>
+                     </ion-col>
+                  </ion-row>
+               </div>
+
+               <!--item-->
+               <div style="width: 100%" *ngIf="item.type === 'item'">
+                  <ion-row>
+                     <ion-col size="6">
+                        <ion-row>
+                           <ion-icon name="time-outline"></ion-icon>
+                           <h5 class="primary-font margin-fix">{{item.sentDate}}</h5>
+                        </ion-row>
+                     </ion-col>
+                     <ion-col size="6">
+                        <ion-row class="tag-cont">
+                           <label class="cancel-btn" *ngIf="item.status === 'sent'">Cancel</label>
+                           <h5 class="tag">Item Transfer</h5>
+                        </ion-row>
+                     </ion-col>
+                  </ion-row>
+                  <ion-row>
+                     <ion-col size="8" class="padding-bottom-cancel">
+                        <h4 class="secondary-font">{{'ITEM' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="4" class="padding-bottom-cancel">
+                        <h4 class="secondary-font text-right-align-horizontally">{{'QUANTITY' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="9" class="padding-top-cancel">
+                        <h1 class="primary-font first-capital">{{item.assetCode}}</h1>
+                     </ion-col>
+                     <ion-col size="3" class="padding-top-cancel">
+                        <h1 class="primary-font text-right-align-horizontally">{{item.quantity | number:'1.0-0'}}</h1>
+                     </ion-col>
+                  </ion-row>
+                  <ion-row>
+                     <ion-col size="6" class="padding-bottom-cancel">
+                        <h4 class="secondary-font">{{ 'IDENTIFIER' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="6" class="padding-bottom-cancel">
+                        <h4 class="secondary-font text-right-align-horizontally">{{'RECEIVER' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="6" class="padding-top-cancel">
+                        <h4 class="primary-font">{{item.Identifier}}</h4>
+                     </ion-col>
+                     <ion-col size="6" class="padding-top-cancel">
+                        <h4 class="primary-font text-right-align-horizontally">{{item.receiver}}</h4>
+                     </ion-col>
+                  </ion-row>
+                  <ion-row>
+                     <ion-col size="7" class="padding-bottom-cancel">
+                        <h4 class="secondary-font">{{'VALID_TILL' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="5" class="padding-bottom-cancel">
+                        <h4 class="secondary-font text-right-align-horizontally">{{'STATUS' | translate}}</h4>
+                     </ion-col>
+                     <ion-col size="7" class="padding-top-cancel">
+                        <h4 class="primary-font">{{item.validTill}}</h4>
+                     </ion-col>
+                     <ion-col size="5" class="padding-top-cancel">
+                        <h4
+                           class="primary-font text-right-align-horizontally first-capital"
+                           [class.success]="item.status === 'Sent'"
+                           [class.warning]="item.status === 'Request Sent' || item.status === 'Request Approved' ">
+                           {{item.Status}}
+                        </h4>
+                     </ion-col>
+                  </ion-row>
+               </div>
             </ion-row>
-            <ion-row>
-               <ion-col size="6" class="padding-bottom-cancel">
-                  <h4 class="secondary-font">{{ 'IDENTIFIER' | translate}}</h4>
-               </ion-col>
-               <ion-col size="6" class="padding-bottom-cancel">
-                  <h4 class="secondary-font text-right-align-horizontally">{{'RECEIVER' | translate}}</h4>
-               </ion-col>
-               <ion-col size="6" class="padding-top-cancel">
-                  <h4 class="primary-font">{{item.Identifier}}</h4>
-               </ion-col>
-               <ion-col size="6" class="padding-top-cancel">
-                  <h4 class="primary-font text-right-align-horizontally">{{item.receiver}}</h4>
-               </ion-col>
-            </ion-row>
-            <ion-row>
-               <ion-col size="7" class="padding-bottom-cancel">
-                  <h4 class="secondary-font">{{'VALID_TILL' | translate}}</h4>
-               </ion-col>
-               <ion-col size="5" class="padding-bottom-cancel">
-                  <h4 class="secondary-font text-right-align-horizontally">{{'STATUS' | translate}}</h4>
-               </ion-col>
-               <ion-col size="7" class="padding-top-cancel">
-                  <h4 class="primary-font">{{item.validTill}}</h4>
-               </ion-col>
-               <ion-col size="5" class="padding-top-cancel">
-                  <h4 class="primary-font text-right-align-horizontally first-capital">{{item.Status}}</h4>
-               </ion-col>
-            </ion-row>
-         </ion-row>
+         </div>
       </div>
    </ion-grid>
 </ion-content>
