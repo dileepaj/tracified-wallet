@@ -3,6 +3,7 @@ import { NavigationExtras, Router } from '@angular/router';
 // import { TranslateService } from '@ngx-translate/core';
 import { NavController } from '@ionic/angular';
 import { AuthServiceProvider } from 'src/app/providers/auth-service/auth-service';
+import { TransferPageService } from 'src/app/providers/transfer-page.service';
 
 @Component({
    selector: 'page-tabs',
@@ -13,11 +14,13 @@ export class TabsPage implements OnInit {
    tab1Title = ' ';
    tab2Title = ' ';
    tab3Title = ' ';
+   didLoadOnce: boolean = false;
 
    constructor(
       public navCtrl: NavController, // public translateService: TranslateService
       private authService: AuthServiceProvider,
-      private router: Router
+      private router: Router,
+      private transferPageService: TransferPageService
    ) {
       this.tab1Title = 'Items';
       this.tab2Title = 'Sent';
@@ -34,5 +37,15 @@ export class TabsPage implements OnInit {
          };
          this.navCtrl.navigateRoot('otp-bc-account', option);
       });
+   }
+
+   ionViewDidEnter() {
+      this.didLoadOnce = true;
+   }
+
+   ionViewWillEnter() {
+      if (this.didLoadOnce) {
+         this.transferPageService.updateTransferPage(true);
+      }
    }
 }

@@ -13,6 +13,7 @@ import { Keypair as StellerKeyPair } from 'stellar-base';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NFTServiceProvider } from 'src/app/providers/blockchain-service/nft-service';
 import { NFT, NFTState, NFTStatus, NFTTransfer } from 'src/app/shared/nft';
+import { TransferPageService } from 'src/app/providers/transfer-page.service';
 
 @Component({
    selector: 'page-transfer',
@@ -56,6 +57,8 @@ export class TransferPage {
    nftToTransfer: any = null;
    receiverPk: string = '';
 
+   isFirstTime: boolean = true;
+
    constructor(
       public apiService: ApiServiceProvider,
       private storage: StorageServiceProvider,
@@ -65,7 +68,8 @@ export class TransferPage {
       private alertCtrl: AlertController,
       private translate: TranslateService,
       private nftService: NFTServiceProvider,
-      public platform: Platform
+      public platform: Platform,
+      private transferPageService: TransferPageService
    ) {
       this.InitiatePlatformIfReady();
       this.form = new FormGroup({
@@ -76,8 +80,20 @@ export class TransferPage {
       });
    }
 
+   ngOnInit() {
+      this.transferPageService.loadNfts.subscribe(data => {
+         if (data && !this.isFirstTime) {
+            this.createItemsGrid();
+         }
+      });
+   }
+
    ionViewDidEnter() {
-      this.createItemsGrid();
+      console.log('called enter');
+      if (this.isFirstTime) {
+         this.createItemsGrid();
+         this.isFirstTime = false;
+      }
    }
 
    async handleRefresh(event) {
@@ -228,10 +244,17 @@ export class TransferPage {
          .getAllNft(pk)
          .then(async (res: any) => {
             if (res) {
-               let reverseArray = await this.reverseArray(res.Response);
-               this.currentNfts = reverseArray;
-               this.searchedNfts = this.currentNfts;
-               this.splitImage(reverseArray);
+               if (res.Response) {
+                  let reverseArray = await this.reverseArray(res.Response);
+                  this.currentNfts = reverseArray;
+                  this.searchedNfts = this.currentNfts;
+                  this.splitImage(reverseArray);
+               } else {
+                  this.currentNfts = [];
+                  this.searchedNfts = [];
+                  this.nftRowlist = [];
+               }
+               await this.dissmissLoading();
             } else {
                await this.dissmissLoading();
             }
