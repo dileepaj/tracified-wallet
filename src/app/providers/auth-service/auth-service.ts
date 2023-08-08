@@ -203,6 +203,7 @@ export class AuthServiceProvider {
       this.properties.displayImage = decodedToken['displayImage'];
       this.events.publish('dislayName', this.properties.firstName);
       this.events.publish('company', this.properties.company);
+      this.events.publish('walletUsername',`${this.properties.firstName} ${this.properties.lastName}`)
       this.setDisplayImagetoStorage();
    }
 

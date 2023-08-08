@@ -67,7 +67,9 @@ export class AppComponent {
          }
       });
       this.initDeepLink();
-
+      this.events.subscribe('walletUsername', name => {
+         this.userType = name;
+      });
       // platform.ready().then(() => {
       //    // this.statusBar.styleLightContent();
       //    // this.splashScreen.hide();
