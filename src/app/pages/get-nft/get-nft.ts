@@ -34,6 +34,7 @@ export class GetNftPage implements OnInit {
    colSize;
    pubKey: any;
    mnemonic: any;
+   defAccount: any;
 
    reversedArray: any = [];
    constructor(
@@ -49,8 +50,11 @@ export class GetNftPage implements OnInit {
       this.InitiatePlatformIfReady();
    }
    ngOnInit() {
-      this.getAllnfts();
       this.mainAccount = this.properties.defaultAccount;
+   }
+
+   ionViewDidEnter() {
+      this.getAllnfts();
    }
 
    checkScreenWidth() {
@@ -70,15 +74,34 @@ export class GetNftPage implements OnInit {
       }
    }
 
+   /**
+    * get default bc account index
+    */
+   public async getDefault() {
+      await this.storage
+         .getDefaultAccount()
+         .then(acc => {
+            this.defAccount = acc;
+         })
+         .catch(() => {
+            this.defAccount = false;
+         });
+   }
+
    async getAllnfts() {
       await this.startloading();
       this.checkScreenWidth();
 
       this.storage
          .getMnemonic()
-         .then(data => {
+         .then(async data => {
             this.mnemonic = data;
-            this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, this.mnemonic) as StellerKeyPair;
+            await this.getDefault();
+            console.log(this.defAccount);
+            if (!this.defAccount) {
+               this.defAccount = 0;
+            }
+            this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, this.defAccount, this.mnemonic) as StellerKeyPair;
             this.claimNft(this.keypair.publicKey().toString());
          })
          .catch(error => {
@@ -106,9 +129,15 @@ export class GetNftPage implements OnInit {
          .getAllNft(pk)
          .then(async (res: any) => {
             if (res) {
-               let reverseArray = await this.reverseArray(res.Response);
-               this.reversedArray = reverseArray;
-               this.splitImage(reverseArray);
+               if (res.Response) {
+                  let reverseArray = await this.reverseArray(res.Response);
+                  this.reversedArray = reverseArray;
+                  this.splitImage(reverseArray);
+               } else {
+                  this.reversedArray = [];
+                  this.imgrowlist = [];
+               }
+               await this.dissmissLoading();
             } else {
                await this.dissmissLoading();
             }

@@ -62,7 +62,7 @@ export class ItemSentPage {
    mnemonic: any;
 
    observer: any;
-   currentPage: number = 1;
+   currentPage: number = 0;
    nextPage: number = 0;
 
    statusText: any;
@@ -294,7 +294,7 @@ export class ItemSentPage {
       this.observer = new IntersectionObserver(entries => {
          if (entries[0].isIntersecting) {
             if (this.nextPage != 0 && this.searchTerm === '') {
-               this.currentPage++;
+               this.currentPage = this.nextPage;
                console.log('page', this.currentPage);
                this.getSentNfts();
             }
@@ -312,18 +312,23 @@ export class ItemSentPage {
       /*  if (this.currentPage == 0) {
          this.list = [];
       } */
-
+      console.log(this.currentPage);
       await this.getKeyPair();
       this.nftService.getNFTByPublicKey('stellar', this.keypair.publicKey().toString(), this.currentPage, 5).subscribe({
          next: (res: any) => {
             console.log(res.Response.walletnft);
-            res.Response.walletcontent.map((data: NFTTransfer) => {
-               this.list.push({
-                  ...data,
-                  type: 'nft',
-                  timestamp: new Date(data.timestamp).toLocaleString(),
+            if (res.Response.walletcontent) {
+               res.Response.walletcontent.map((data: NFTTransfer) => {
+                  this.list.push({
+                     ...data,
+                     type: 'nft',
+                     timestamp: new Date(data.timestamp).toLocaleString(),
+                  });
                });
-            });
+            } else {
+               this.list = [];
+            }
+
             this.filteredList = this.list;
             console.log(this.filteredList);
             this.nextPage = res.Response.PaginationInfo.nextpage;
@@ -496,7 +501,7 @@ export class ItemSentPage {
    }
 
    private resetAll() {
-      this.currentPage = 1;
+      this.currentPage = 0;
       this.nextPage = 0;
       this.list = [];
    }
