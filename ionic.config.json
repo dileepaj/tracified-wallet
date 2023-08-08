@@ -1,7 +1,15 @@
 {
-  "name": "walletV6",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
+   "name": "walletV6",
+   "integrations": {
+      "capacitor": {
+         "plugins": {
+            "Keyboard": {
+               "resize": "body",
+               "style": "DEFAULT",
+               "resizeOnFullScreen": true
+            }
+         }
+      }
+   },
+   "type": "angular"
 }
