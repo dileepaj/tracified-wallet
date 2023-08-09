@@ -17,7 +17,9 @@ import { EventsService } from './providers/event-service/events.service';
 import { DataServiceProvider } from './providers/data-service/data-service';
 import { BlockchainServiceProvider } from './providers/blockchain-service/blockchain-service';
 import { ConnectivityServiceProvider } from './providers/connectivity-service/connectivity-service';
+import { Keyboard } from '@capacitor/keyboard';
 import { pushNotificationProvider } from './providers/push-notifcation/push-notifcaiton.service';
+
 @Component({
    selector: 'app-root',
    templateUrl: 'app.component.html',
@@ -61,6 +63,11 @@ export class AppComponent {
       private navCtrl: NavController,
       private pushNotificationService : pushNotificationProvider
    ) {
+      Keyboard.addListener('keyboardDidShow', () => {
+         if (document.activeElement) {
+            document.activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+         }
+      });
       this.authService.authorizeLocalProfile().then(res => {
          if (res) {
             this.menuconfig();
