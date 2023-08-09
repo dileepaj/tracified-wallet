@@ -65,7 +65,7 @@ import { OtpBcAccountPage } from './pages/otp-bc-account/otp-bc-account.page';
 import { RequestOtpPage } from './pages/request-otp/request-otp.page';
 import { MintCompletedPage } from './pages/mint-completed/mint-completed.page';
 import { ItemCardComponent } from './pages/item-card/item-card.component';
-
+import {pushNotificationProvider} from './providers/push-notifcation/push-notifcaiton.service'
 export function createTranslateLoader(http: HttpClient) {
    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -149,6 +149,7 @@ export function createTranslateLoader(http: HttpClient) {
       Items,
       Properties,
       SeedPhraseService,
+      pushNotificationProvider
    ],
    bootstrap: [AppComponent],
    exports: [MintNftPage],

@@ -18,6 +18,8 @@ import { DataServiceProvider } from './providers/data-service/data-service';
 import { BlockchainServiceProvider } from './providers/blockchain-service/blockchain-service';
 import { ConnectivityServiceProvider } from './providers/connectivity-service/connectivity-service';
 import { Keyboard } from '@capacitor/keyboard';
+import { pushNotificationProvider } from './providers/push-notifcation/push-notifcaiton.service';
+
 @Component({
    selector: 'app-root',
    templateUrl: 'app.component.html',
@@ -58,7 +60,8 @@ export class AppComponent {
       private router: Router,
       private zone: NgZone,
       public connectivity: ConnectivityServiceProvider,
-      private navCtrl: NavController
+      private navCtrl: NavController,
+      private pushNotificationService : pushNotificationProvider
    ) {
       Keyboard.addListener('keyboardDidShow', () => {
          if (document.activeElement) {
@@ -68,12 +71,15 @@ export class AppComponent {
       this.authService.authorizeLocalProfile().then(res => {
          if (res) {
             this.menuconfig();
+            this.pushNotificationService.registerNotifications()
          } else {
             this.router.navigate(['/login']);
          }
       });
       this.initDeepLink();
-
+      this.events.subscribe('walletUsername', name => {
+         this.userType = name;
+      });
       // platform.ready().then(() => {
       //    // this.statusBar.styleLightContent();
       //    // this.splashScreen.hide();
