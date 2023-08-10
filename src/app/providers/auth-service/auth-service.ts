@@ -13,7 +13,7 @@ import { ApiServiceProvider } from '../api-service/api-service';
 import { ConnectivityServiceProvider } from '../connectivity-service/connectivity-service';
 import { StorageServiceProvider } from '../storage-service/storage-service';
 import { MappingServiceProvider } from '../mapping-service/mapping-service';
-import { TOAST_TIMER } from 'src/environments/environment';
+import { TOAST_TIMER, USER_SETTING } from 'src/environments/environment';
 import { resolve } from 'dns';
 import { rejects } from 'assert';
 
@@ -36,7 +36,7 @@ export class AuthServiceProvider {
       private storageService: StorageServiceProvider,
       private mappingService: MappingServiceProvider,
       private logger: LoggerService
-   ) {}
+   ) { }
 
    validateUser(authmodel): Promise<any> {
       var user = {
@@ -58,7 +58,18 @@ export class AuthServiceProvider {
                         const decoded: any = jwt.decode(this.properties.token);
                         this.storageService.setUser(authmodel.userName, AES.encrypt(this.properties.token, this.key).toString());
                         this.setProperties(decoded);
-                        resolve(res);
+                        if (
+                           !!decoded.permissions &&
+                           !!decoded.permissions[0] &&
+                           !!decoded.tenantID &&
+                           !!decoded.username &&
+                           USER_SETTING.USER_TYPE.includes(decoded.type)
+                        ){
+                           resolve(res)
+                        }
+                        else {
+                           reject()
+                        }
                      } else {
                         resolve(res);
                      }
@@ -203,7 +214,7 @@ export class AuthServiceProvider {
       this.properties.displayImage = decodedToken['displayImage'];
       this.events.publish('dislayName', this.properties.firstName);
       this.events.publish('company', this.properties.company);
-      this.events.publish('walletUsername',`${this.properties.firstName} ${this.properties.lastName}`)
+      this.events.publish('walletUsername', `${this.properties.firstName} ${this.properties.lastName}`)
       this.setDisplayImagetoStorage();
    }
 
