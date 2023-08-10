@@ -21,6 +21,7 @@ export const USER_SETTING={
    PERMISSION: [1,2,3,4,5,6,7,8,9],
    STAGES: ["00201","00202","00203","00203","00204","00205","00206","00207","00208","00209"],
    TYPE: "WalletUser",
+   USER_TYPE:["TraceabilityAdvocate","Admin","FieldOfficer","WalletUser","Driver"],
    STAGE_PERMISSION:"U2FsdGVkX1+aCgSVkCaP3G85+exsMbckMPswjs0LH8+dc7m+4T5vGV72wc4SNAhJ",
    TENANT_ID:'ee863d20-2171-11ee-9d9e-5b593f9505c2',
    TENANT_EMAIL:'info+walletsignup@tracified.com',
