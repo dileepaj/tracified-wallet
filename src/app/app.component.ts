@@ -61,9 +61,10 @@ export class AppComponent {
       private zone: NgZone,
       public connectivity: ConnectivityServiceProvider,
       private navCtrl: NavController,
-      private pushNotificationService : pushNotificationProvider
+      private pushNotificationService: pushNotificationProvider
    ) {
       Keyboard.addListener('keyboardDidShow', () => {
+         Keyboard.setScroll({ isDisabled: false });
          if (document.activeElement) {
             document.activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
          }
@@ -71,7 +72,7 @@ export class AppComponent {
       this.authService.authorizeLocalProfile().then(res => {
          if (res) {
             this.menuconfig();
-            this.pushNotificationService.registerNotifications()
+            this.pushNotificationService.registerNotifications();
          } else {
             this.router.navigate(['/login']);
          }
