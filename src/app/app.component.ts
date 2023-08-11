@@ -58,9 +58,10 @@ export class AppComponent {
       private router: Router,
       private zone: NgZone,
       public connectivity: ConnectivityServiceProvider,
-      private navCtrl: NavController
+      private navCtrl: NavController,
    ) {
       Keyboard.addListener('keyboardDidShow', () => {
+         Keyboard.setScroll({ isDisabled: false });
          if (document.activeElement) {
             document.activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
          }
