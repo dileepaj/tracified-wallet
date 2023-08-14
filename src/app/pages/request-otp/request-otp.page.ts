@@ -104,7 +104,12 @@ export class RequestOtpPage implements OnInit {
             } else if (error.error.message === 'NFT already minted') {
                this.navCtrl.navigateRoot('/get-nft');
             }
-            this.presentToast(error.error.message);
+
+            if (error.status === 502) {
+               this.presentToast('Something went wrong please try again');
+            } else {
+               this.presentToast(error.error.message);
+            }
          });
    }
 
