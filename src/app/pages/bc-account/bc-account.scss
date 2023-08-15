@@ -78,6 +78,10 @@ ion-app.md [padding] .scroll-content {
    font-size: 20px;
    font-weight: 600;
    line-height: normal;
+   max-width: 100%;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 }
 
 .btn {

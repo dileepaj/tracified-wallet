@@ -190,6 +190,19 @@ export class TransferPage {
 
    private checkScreenWidth() {
       let width = window.innerWidth;
+      const colCount = Math.floor(width / 200);
+      const colSize = 12 / colCount;
+
+      if (colCount < 2) {
+         this.itemColumCount = 2;
+         this.itemColSize = 6;
+      } else {
+         this.itemColumCount = colCount;
+         this.itemColSize = colSize;
+      }
+
+      console.log('col count & col size', this.itemColumCount, this.itemColSize);
+      /* let width = window.innerWidth;
       if (width <= 430) {
          this.itemColumCount = 2;
          this.itemColSize = 6;
@@ -202,7 +215,7 @@ export class TransferPage {
       } else if (1800 < width) {
          this.itemColumCount = 12;
          this.itemColSize = 1;
-      }
+      } */
    }
 
    private async createItemsGrid() {
@@ -282,8 +295,8 @@ export class TransferPage {
       return arr;
    }
 
-   async getSVG(hash: any) {
-      this.router.navigate(['/svg-preview'], { state: hash });
+   async getSVG(hash: any, title: string) {
+      this.router.navigate(['/svg-preview'], { state: { hash, title } });
    }
 
    /**

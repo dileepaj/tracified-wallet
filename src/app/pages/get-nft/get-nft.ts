@@ -57,21 +57,37 @@ export class GetNftPage implements OnInit {
       this.getAllnfts();
    }
 
+   ionViewDidLeave() {
+      this.getAllnfts();
+   }
+
    checkScreenWidth() {
       let width = window.innerWidth;
-      if (width <= 430) {
+      const colCount = Math.floor(width / 200);
+      const colSize = 12 / colCount;
+
+      if (colCount < 2) {
+         this.columCount = 2;
+         this.colSize = 6;
+      } else {
+         this.columCount = colCount;
+         this.colSize = colSize;
+      }
+
+      console.log('col count & col size', this.columCount, this.colSize);
+      /*  if (width <= 430) {
          this.columCount = 2;
          this.colSize = 6;
       } else if (430 < width && width <= 820) {
-         this.columCount = 4;
-         this.colSize = 3;
+         this.columCount = 3;
+         this.colSize = 4;
       } else if (820 < width && width <= 1800) {
          this.columCount = 6;
          this.colSize = 2;
       } else if (1800 < width) {
          this.columCount = 12;
          this.colSize = 1;
-      }
+      } */
    }
 
    /**
@@ -89,6 +105,8 @@ export class GetNftPage implements OnInit {
    }
 
    async getAllnfts() {
+      this.reversedArray = [];
+      this.imgrowlist = [];
       await this.startloading();
       this.checkScreenWidth();
 
@@ -175,8 +193,8 @@ export class GetNftPage implements OnInit {
       await this.loading.dismiss();
    }
 
-   async getSVG(hash: any) {
-      this.router.navigate(['/svg-preview'], { state: hash });
+   async getSVG(hash: any, title: string) {
+      this.router.navigate(['/svg-preview'], { state: { hash, title } });
    }
 
    goToStellar(hash) {
@@ -192,6 +210,7 @@ export class GetNftPage implements OnInit {
       this.platform.ready().then(() => {
          console.log('before subscribe');
          this.platform.resize.subscribe(() => {
+            console.log(window.innerWidth);
             this.checkScreenWidth();
             this.imgrowlist = [];
             this.splitImage(this.reversedArray);
