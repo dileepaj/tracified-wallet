@@ -7,7 +7,8 @@ export const ENV: any = {
    APPCENTER_DEPLOYMENT_KEY: 'hzVMQ0zGn2fVTOMpj5EnsIcV35dxZKxY9FfzP',
    BLOCKCHAIN_NETWORK: 'https://horizon-testnet.stellar.org',
    NETWORK_TYPE: 'test',
-   STELLAR_BASE_FEE:'50000' 
+   STELLAR_BASE_FEE:'50000',
+   STELLAR_BASE_RESERVE : 0.5
 };
 
 export const TOAST_TIMER: any ={

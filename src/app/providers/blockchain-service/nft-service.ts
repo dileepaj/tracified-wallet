@@ -8,8 +8,7 @@ import { Keypair as StellarKeyPair } from 'stellar-base';
 import { NFT, NFTState, NFTStatus, NFTTransfer } from 'src/app/shared/nft';
 import { Observable, observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { resolve } from 'dns';
-import { rejects } from 'assert';
+import { BlockchainServiceProvider } from './blockchain-service';
 
 @Injectable({
    providedIn: 'root',
@@ -20,7 +19,10 @@ export class NFTServiceProvider {
    private readonly nftTxnState = this.baseURLNFTBackend + '/walletnft/txns';
    private readonly NFTGetURLBase = this.baseURLNFTBackend + '/walletnft';
    stellarKey: StellarKeyPair;
-   constructor(private storageService: StorageServiceProvider, private http: HttpClient) {}
+   constructor(
+      private storageService: StorageServiceProvider,
+      private http: HttpClient,
+      private blockchainServiceProvider: BlockchainServiceProvider) { }
 
    /**
     * Gets the Stellar network passphrase based on the current blockchainNetType.
@@ -130,6 +132,38 @@ export class NFTServiceProvider {
             });
       });
    }
+
+   /**
+    * Checks the account status and balance for a given publicKey.
+    * @param publicKey The public key of the account to check.
+    * @returns A Promise that resolves to the account balance or rejects with an error message.
+    */
+   public checkAccountStatusAndBalance(publicKey: string): Promise<any> {
+      return new Promise((resolve, reject) => {
+         // Call the blockchainServiceProvider to check the account status.
+         this.blockchainServiceProvider.checkBCAccountStatus(publicKey).then((res: any) => {
+            // Extract the account balance from the response.
+            let accountBalance = res.balances[(res.balances.length) - 1].balance;
+
+            // Get the minimum balance required for the account based on subentry count.
+            let minimumBalance = this.blockchainServiceProvider.getMinimumBalanceForAccount(res.subentry_count);
+
+            // Compare the account balance with the minimum required balance.
+            if (parseFloat(accountBalance) <= minimumBalance) {
+               // If the balance is too low, reject the Promise with an error message.
+               reject(`Low Balance: Account should have at least ${minimumBalance} XLM`);
+            }
+
+            // If the balance is sufficient, resolve the Promise with the account balance.
+            resolve(parseFloat(accountBalance));
+         }).catch(err => {
+            // If there's an error (account not funded), reject the Promise with an appropriate error message.
+            reject("Account is not funded");
+         });
+      });
+   }
+
+
    /**
     * Saves the NFT state to the server.
     * @param nft The NFT object to be saved.

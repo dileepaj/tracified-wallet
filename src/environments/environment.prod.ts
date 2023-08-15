@@ -8,7 +8,8 @@ export const ENV: any = {
    BLOCKCHAIN_NETWORK: 'https://horizon.stellar.org',
    NETWORK_TYPE: 'live',
    NFT_BACKEND: 'https://api.nft.tracified.com',
-   STELLAR_BASE_FEE:'50000' 
+   STELLAR_BASE_FEE:'50000',
+   STELLAR_BASE_RESERVE : 0.5
 
 };
 
