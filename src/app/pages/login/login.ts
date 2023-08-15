@@ -74,17 +74,18 @@ export class LoginPage {
                   if (res.status === 200) {
                      this.storageService
                         .clearMnemonic(authmodel.userName)
-                        .then(() => {
+                        .then(async () => {
+                           await this.storageService.clearDefaultAccount();
                            this.dissmissLoading();
                            this.logger.info('cleared device storage', this.properties.skipConsoleLogs, this.properties.writeToFile);
-                           this.router.navigate(['/create-import-bc-account'], { queryParams: { navigation: 'initial' } });
+                           this.router.navigate(['/create-import-bc-account'], { queryParams: { navigation: 'initial' }, replaceUrl: true });
                         })
                         .catch(error => {
                            this.storageService
                               .getMnemonic()
                               .then(data => {
                                  if (data == null) {
-                                    this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' } });
+                                    this.router.navigate(['/create-import-bc-account'], { state: { navigation: 'initial' }, replaceUrl: true });
                                  } else {
                                     this.navCtrl.navigateRoot('tabs', { state: { navigation: 'initial' }, replaceUrl: true });
                                  }

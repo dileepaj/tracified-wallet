@@ -203,8 +203,9 @@ export class CreateImportBcAccountPage implements OnInit {
       if (pwd.toString() == confirmPwd.toString()) {
          await this.localForageService.setMnemonic(selectedSeed.replace(/,/g, ' '), this.properties.userName);
          await this.localForageService.setMnemonicPassword(pwd.toString());
-         await this.localForageService.addSeedPhraseAccount('0', accName.toString(),pwd.toString());
-         this.router.navigate(['bc-account-created']);
+         await this.localForageService.addSeedPhraseAccount('0', accName.toString(), pwd.toString());
+         await this.localForageService.setDefaultAccount(0);
+         this.router.navigate(['bc-account-created'], { replaceUrl: true });
       } else {
          this.toastInstance = await this.toastService.create({
             message: 'Passwords do not match please try again!',

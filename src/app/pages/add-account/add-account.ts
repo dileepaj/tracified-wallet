@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ToastController, LoadingController, AlertController, ModalController } from '@ionic/angular';
+import { ToastController, LoadingController, AlertController, ModalController, NavController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Keypair } from 'stellar-sdk';
 import { AES, enc } from 'crypto-js';
@@ -57,7 +57,8 @@ export class AddAccountPage {
       private mappingService: MappingServiceProvider,
       private translate: TranslateService,
       private storageService: StorageServiceProvider,
-      private modalCtrl: ModalController
+      private modalCtrl: ModalController,
+      private navCtrl: NavController
    ) {
       this.form = new FormGroup(
          {
@@ -101,7 +102,7 @@ export class AddAccountPage {
          .addSeedPhraseAccount(index.toString(), accName, password)
          .then(res => {
             if (res) {
-               this.router.navigate(['bc-account-created'], { queryParams: { index, redirect: true } });
+               this.navCtrl.navigateRoot('bc-account-created', { queryParams: { index, redirect: true }, replaceUrl: true });
             } else {
                this.translate.get(['ERROR', 'FAILED_ADD_ACCOUNTS']).subscribe(text => {
                   this.presentAlert(text['ERROR'], text['FAILED_ADD_ACCOUNTS']);
