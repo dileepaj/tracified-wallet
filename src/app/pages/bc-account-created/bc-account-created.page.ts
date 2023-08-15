@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Clipboard } from '@capacitor/clipboard';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import { Wallet } from 'ethers';
 import { BlockchainType, SeedPhraseService, SolKeys } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
@@ -44,7 +44,8 @@ export class BcAccountCreatedPage implements OnInit {
       private forageService: StorageServiceProvider,
       private toastService: ToastController,
       private router: Router,
-      private loadingCtrl: LoadingController
+      private loadingCtrl: LoadingController,
+      private navCtrl: NavController
    ) {}
 
    ngOnInit() {
@@ -123,9 +124,9 @@ export class BcAccountCreatedPage implements OnInit {
 
    public continue() {
       if (this.redirectToAccs) {
-         this.router.navigate(['/bc-account'], { state: { navigation: 'initial' } });
+         this.navCtrl.navigateRoot('/bc-account', { state: { navigation: 'initial' }, replaceUrl: true });
       } else {
-         this.router.navigate(['/tabs'], { state: { navigation: 'initial' } });
+         this.navCtrl.navigateRoot('/tabs', { state: { navigation: 'initial' }, replaceUrl: true });
       }
    }
 

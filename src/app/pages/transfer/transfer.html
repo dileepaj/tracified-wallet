@@ -60,14 +60,14 @@
             </div>
             <ion-grid>
                <ion-row *ngFor="let row of nftRowlist">
-                  <ion-col [size]="itemColSize" style="display: flex" *ngFor="let item of row">
+                  <ion-col [size]="itemColSize" style="display: flex; flex-direction: row; justify-content: center; align-items: center" *ngFor="let item of row">
                      <div class="card item-card">
-                        <div class="card-icon">
+                        <div class="card-icon" (click)="getSVG(item.nftcontent, item.nftname)">
                            <label class="tag">
                               <img src="../../../assets/icon/stellar-xlm-white.svg" />
                               NFT
                            </label>
-                           <img class="nft-svg" [src]="item.thumbnail" />
+                           <img class="nft-svg" [src]="item.thumbnail" onerror="this.onerror=null; this.style.objectFit='contain'; this.src='../../../assets/imgs/default_nft.png'" />
                         </div>
                         <div class="card-footer">
                            <div class="card-info">
@@ -75,7 +75,7 @@
                               <label class="card-subtitle">{{item.collection}}</label>
                            </div>
                            <div class="card-actions">
-                              <div class="ion-activatable ripple-parent card-action" (click)="getSVG(item.nftcontent)">
+                              <div class="ion-activatable ripple-parent card-action" (click)="getSVG(item.nftcontent, item.nftname)">
                                  <ion-ripple-effect></ion-ripple-effect>
                                  <ion-icon slot="icon-only" name="eye" style="cursor: pointer"></ion-icon>
                               </div>

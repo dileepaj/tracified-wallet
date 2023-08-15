@@ -26,6 +26,15 @@ img {
    height: 70%;
 }
 
+.item-card {
+   width: 100%;
+   max-width: 200px;
+   margin: 1em 0;
+   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+   background-color: white;
+   padding: 0.6em;
+}
+
 ion-card {
    border-radius: 15px;
    width: 100%;
@@ -59,6 +68,7 @@ ion-card {
    .nft-svg {
       height: 123px;
       width: 100%;
+      object-fit: cover;
    }
 
    .tag {

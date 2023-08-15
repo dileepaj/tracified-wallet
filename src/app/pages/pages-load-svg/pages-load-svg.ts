@@ -15,10 +15,12 @@ export class PagesLoadSvgPage {
    hash: any;
    SVG: any;
    loading: any;
+   title: string;
    @ViewChild('myImage', { static: false }) myImage: ElementRef;
 
    constructor(private loadCtrl: LoadingController, public apiService: ApiServiceProvider, public router: Router, private _sanitizer: DomSanitizer, public http: HttpClient) {
-      this.hash = this.router.getCurrentNavigation().extras.state;
+      this.hash = this.router.getCurrentNavigation().extras.state.hash;
+      this.title = this.router.getCurrentNavigation().extras.state.title;
    }
 
    ngOnInit() {}

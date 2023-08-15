@@ -3,7 +3,7 @@
       <ion-buttons slot="start">
          <ion-menu-button menu="main-menu"></ion-menu-button>
       </ion-buttons>
-      <ion-title>Minted NFTs!</ion-title>
+      <ion-title>Minted NFTs</ion-title>
    </ion-toolbar>
 </ion-header>
 
@@ -24,10 +24,14 @@
 
    <ion-grid>
       <ion-row *ngFor="let row of imgrowlist">
-         <ion-col [size]="colSize" style="display: flex" *ngFor="let img of row">
+         <ion-col [size]="colSize" style="display: flex; flex-direction: row; justify-content: center; align-items: center" *ngFor="let img of row">
             <div class="card item-card">
                <div class="card-icon">
-                  <img class="nft-svg" [src]="img.thumbnail" (click)="getSVG(img.nftcontent)" />
+                  <img
+                     class="nft-svg"
+                     [src]="img.thumbnail"
+                     (click)="getSVG(img.nftcontent, img.nftname)"
+                     onerror="this.onerror=null; this.style.objectFit='contain'; this.src='../../../assets/imgs/default_nft.png'" />
                </div>
                <div class="card-footer">
                   <div class="card-info">
@@ -41,22 +45,6 @@
                   </div>
                </div>
             </div>
-            <!-- <ion-card style="margin: 0px; background-color: #2d2d2d; height: 200px">
-               <img [src]="img.thumbnail" style="cursor: pointer; height: 140px" (click)="getSVG(img.nftcontent)" />
-               <ion-card-header>
-                  <ion-row style="display: flex; justify-content: space-between">
-                     <ion-col size="9">
-                        <ion-row class="header"> {{img.nftname}} </ion-row>
-                        <ion-row style="padding-top: 5px" class="subHeader"> {{img.collection}} </ion-row>
-                     </ion-col>
-                     <ion-col size="3" style="display: flex; justify-content: end; padding: 8px; background-color: red">
-                        <div>
-                           <ion-img (click)="goToStellar(img.txnhash)" src="../../../assets/icon/stellar.svg"></ion-img>
-                        </div>
-                     </ion-col>
-                  </ion-row>
-               </ion-card-header>
-            </ion-card> -->
          </ion-col>
       </ion-row>
    </ion-grid>
