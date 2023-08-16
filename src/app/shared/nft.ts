@@ -41,9 +41,11 @@ export enum NFTStatus {
    nftTransferAccepted = 4,
 }
 export class NFTState {
+   id: string;
    issuerpublickey: string;
    nftstatus: NFTStatus;
-   constructor(issuerpublickey: string, nftstatus: NFTStatus) {
+   constructor(id: string, issuerpublickey: string, nftstatus: NFTStatus) {
+      this.id = id;
       this.issuerpublickey = issuerpublickey;
       this.nftstatus = nftstatus;
    }

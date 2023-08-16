@@ -7,8 +7,9 @@ import { ENV } from 'src/environments/environment';
 import { Keypair as StellarKeyPair } from 'stellar-base';
 import { NFT, NFTState, NFTStatus, NFTTransfer } from 'src/app/shared/nft';
 import { Observable, observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BlockchainServiceProvider } from './blockchain-service';
+import { Properties } from 'src/app/shared/properties';
 
 @Injectable({
    providedIn: 'root',
@@ -19,10 +20,7 @@ export class NFTServiceProvider {
    private readonly nftTxnState = this.baseURLNFTBackend + '/walletnft/txns';
    private readonly NFTGetURLBase = this.baseURLNFTBackend + '/walletnft';
    stellarKey: StellarKeyPair;
-   constructor(
-      private storageService: StorageServiceProvider,
-      private http: HttpClient,
-      private blockchainServiceProvider: BlockchainServiceProvider) { }
+   constructor(private storageService: StorageServiceProvider, private http: HttpClient, private blockchainServiceProvider: BlockchainServiceProvider, private properties: Properties) {}
 
    /**
     * Gets the Stellar network passphrase based on the current blockchainNetType.
@@ -141,28 +139,30 @@ export class NFTServiceProvider {
    public checkAccountStatusAndBalance(publicKey: string): Promise<any> {
       return new Promise((resolve, reject) => {
          // Call the blockchainServiceProvider to check the account status.
-         this.blockchainServiceProvider.checkBCAccountStatus(publicKey).then((res: any) => {
-            // Extract the account balance from the response.
-            let accountBalance = res.balances[(res.balances.length) - 1].balance;
+         this.blockchainServiceProvider
+            .checkBCAccountStatus(publicKey)
+            .then((res: any) => {
+               // Extract the account balance from the response.
+               let accountBalance = res.balances[res.balances.length - 1].balance;
 
-            // Get the minimum balance required for the account based on subentry count.
-            let minimumBalance = this.blockchainServiceProvider.getMinimumBalanceForAccount(res.subentry_count);
+               // Get the minimum balance required for the account based on subentry count.
+               let minimumBalance = this.blockchainServiceProvider.getMinimumBalanceForAccount(res.subentry_count);
 
-            // Compare the account balance with the minimum required balance.
-            if (parseFloat(accountBalance) <= minimumBalance) {
-               // If the balance is too low, reject the Promise with an error message.
-               reject(`Low Balance: Account should have at least ${minimumBalance} XLM`);
-            }
+               // Compare the account balance with the minimum required balance.
+               if (parseFloat(accountBalance) <= minimumBalance) {
+                  // If the balance is too low, reject the Promise with an error message.
+                  reject(`Low Balance: Account should have at least ${minimumBalance} XLM`);
+               }
 
-            // If the balance is sufficient, resolve the Promise with the account balance.
-            resolve(parseFloat(accountBalance));
-         }).catch(err => {
-            // If there's an error (account not funded), reject the Promise with an appropriate error message.
-            reject("Account is not funded");
-         });
+               // If the balance is sufficient, resolve the Promise with the account balance.
+               resolve(parseFloat(accountBalance));
+            })
+            .catch(err => {
+               // If there's an error (account not funded), reject the Promise with an appropriate error message.
+               reject('Account is not funded');
+            });
       });
    }
-
 
    /**
     * Saves the NFT state to the server.
@@ -170,7 +170,14 @@ export class NFTServiceProvider {
     * @returns An Observable that resolves with the server response.
     */
    public SaveNFTState(nft: NFTTransfer): Observable<any> {
-      return this.http.post(this.nftStateURL, nft);
+      let opts = {
+         headers: new HttpHeaders({
+            Accept: 'application/json',
+            'Content-Type': 'Application/json',
+            Authorization: `Bearer ${this.properties.token}`,
+         }),
+      };
+      return this.http.post(this.nftStateURL, nft, opts);
    }
 
    /**
@@ -189,9 +196,16 @@ export class NFTServiceProvider {
     * @param nftStatus The new status of the NFT.
     * @returns An Observable that resolves with the server response.
     */
-   public UpdateNFTState(issuerPublicKey: string, nftStatus: NFTStatus): Observable<any> {
-      let nftState = new NFTState(issuerPublicKey, nftStatus);
-      return this.http.put(this.nftStateURL, nftState);
+   public UpdateNFTState(id: string, issuerPublicKey: string, nftStatus: NFTStatus): Observable<any> {
+      let opts = {
+         headers: new HttpHeaders({
+            Accept: 'application/json',
+            'Content-Type': 'Application/json',
+            Authorization: `Bearer ${this.properties.token}`,
+         }),
+      };
+      let nftState = new NFTState(id, issuerPublicKey, nftStatus);
+      return this.http.put(this.nftStateURL, nftState, opts);
    }
 
    /**
@@ -280,5 +294,23 @@ export class NFTServiceProvider {
    public updateNFTOwner(id: string, ownerPublicKey: string): Observable<any> {
       const url = `${this.baseURLNFTBackend}/walletnfts/owner`;
       return this.http.put(url, { Id: id, nftowner: ownerPublicKey });
+   }
+
+   public getNFTStateByNFTId(nftid: string): Promise<any> {
+      return new Promise((resolve, reject) => {
+         const url = `${this.baseURLNFTBackend}/nftstate/info/${nftid}`;
+         this.http.get(url).subscribe({
+            next: res => {
+               resolve(res);
+            },
+            error: error => {
+               if (error.status == 400) {
+                  resolve(false);
+               } else {
+                  reject(error);
+               }
+            },
+         });
+      });
    }
 }

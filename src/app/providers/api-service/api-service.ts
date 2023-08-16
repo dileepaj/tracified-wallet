@@ -582,6 +582,7 @@ export class ApiServiceProvider {
             headers: new HttpHeaders({
                Accept: 'application/json',
                'Content-Type': 'Application/json',
+               Authorization: `Bearer ${this.properties.token}`,
             }),
          };
 

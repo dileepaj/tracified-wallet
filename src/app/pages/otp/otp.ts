@@ -23,6 +23,7 @@ export class OtpPage {
    timer: any;
    timeoutText: string = '';
    resendEnabled: boolean = false;
+   bcAccount: any;
 
    verifyForm = new FormGroup({
       OTP: new FormControl('', Validators.required),
@@ -38,6 +39,7 @@ export class OtpPage {
    ) {
       this.email = this.router.getCurrentNavigation().extras.queryParams.email;
       this.shopId = this.router.getCurrentNavigation().extras.queryParams.shopId;
+      this.bcAccount = this.router.getCurrentNavigation().extras.state.bcAccount;
 
       //this.storageService.clearOTPTimeout();
 
@@ -65,6 +67,7 @@ export class OtpPage {
                      ShopId: res.body.Response.ShopID,
                      otp: otp,
                      email: this.email,
+                     bcAccount: this.bcAccount,
                   },
                };
                this.router.navigate(['/otp-nft'], option);
@@ -84,6 +87,7 @@ export class OtpPage {
                      ShopId: this.shopId,
                      otp: otp,
                      email: this.email,
+                     bcAccount: this.bcAccount,
                   },
                };
                this.router.navigate(['/otp-nft'], option);

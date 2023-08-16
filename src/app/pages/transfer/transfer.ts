@@ -90,6 +90,7 @@ export class TransferPage {
 
    ionViewDidEnter() {
       console.log('called enter');
+
       if (this.isFirstTime) {
          this.createItemsGrid();
          this.isFirstTime = false;
@@ -382,6 +383,7 @@ export class TransferPage {
                      thumbnail: this.nftToTransfer.thumbnail,
                      nftid: this.nftToTransfer.Id,
                   };
+
                   this.nftService.SaveNFTState(nft).subscribe({
                      next: async res => {
                         console.log(res);

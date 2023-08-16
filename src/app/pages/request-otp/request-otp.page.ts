@@ -81,6 +81,9 @@ export class RequestOtpPage implements OnInit {
             shopId: this.shopId,
             email: this.email,
          },
+         state: {
+            bcAccount: this.bcAccount,
+         },
       };
       this.presentLoading();
       this.apiService
@@ -98,6 +101,7 @@ export class RequestOtpPage implements OnInit {
                      ShopId: this.shopId,
                      otp: '',
                      email: this.email,
+                     bcAccount: this.bcAccount,
                   },
                };
                this.router.navigate(['/otp-nft'], option2);

@@ -85,7 +85,7 @@
                   </ion-row>
                   <ion-row class="action-row" *ngIf="item.nftstatus === statusNumber.TrustLineToBeCreated">
                      <ion-col size="6" size-xs="6" size-sm="6" size-lg="2">
-                        <ion-button color="dark" fill="outline" class="action-btn" (click)="rejectRequestConfirmation(item.issuerpublickey)">{{"REJECT_REQ" | translate }}</ion-button>
+                        <ion-button color="dark" fill="outline" class="action-btn" (click)="rejectRequestConfirmation(item.Id,item.issuerpublickey)">{{"REJECT_REQ" | translate }}</ion-button>
                      </ion-col>
                      <ion-col size="6" size-xs="6" size-sm="6" size-lg="2">
                         <ion-button color="primary" class="action-btn" (click)="acceptRequestConfirmation(item)">{{"ACCEPT_REQ" | translate }}</ion-button>
@@ -214,7 +214,7 @@
                   </ion-row>
                   <ion-row class="action-row" *ngIf="item.nftstatus === statusNumber.TrustLineToBeCreated">
                      <ion-col size="6" size-xs="6" size-sm="6" size-lg="2">
-                        <ion-button color="dark" fill="outline" class="action-btn" (click)="rejectRequestConfirmation(item.issuerpublickey)">{{"REJECT_REQ" | translate }}</ion-button>
+                        <ion-button color="dark" fill="outline" class="action-btn" (click)="rejectRequestConfirmation(item.Id, item.issuerpublickey)">{{"REJECT_REQ" | translate }}</ion-button>
                      </ion-col>
                      <ion-col size="6" size-xs="6" size-sm="6" size-lg="2">
                         <ion-button color="primary" class="action-btn" (click)="acceptRequestConfirmation(item)">{{"ACCEPT_REQ" | translate }}</ion-button>
