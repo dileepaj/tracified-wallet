@@ -74,7 +74,6 @@ export class GetNftPage implements OnInit {
          this.colSize = colSize;
       }
 
-      console.log('col count & col size', this.columCount, this.colSize);
       /*  if (width <= 430) {
          this.columCount = 2;
          this.colSize = 6;
@@ -115,7 +114,7 @@ export class GetNftPage implements OnInit {
          .then(async data => {
             this.mnemonic = data;
             await this.getDefault();
-            console.log(this.defAccount);
+
             if (!this.defAccount) {
                this.defAccount = 0;
             }
@@ -208,9 +207,7 @@ export class GetNftPage implements OnInit {
    }
    InitiatePlatformIfReady() {
       this.platform.ready().then(() => {
-         console.log('before subscribe');
          this.platform.resize.subscribe(() => {
-            console.log(window.innerWidth);
             this.checkScreenWidth();
             this.imgrowlist = [];
             this.splitImage(this.reversedArray);

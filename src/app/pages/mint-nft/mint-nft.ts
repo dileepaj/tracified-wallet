@@ -107,7 +107,7 @@ export class MintNftPage {
       this.CustomMsg = this.router.getCurrentNavigation().extras.state.CustomMsg;
       this.reciverName = this.router.getCurrentNavigation().extras.state.ReciverName;
       this.bcAccount = this.router.getCurrentNavigation().extras.state.bcAccount;
-      console.log('account', this.bcAccount);
+
       this.getSVG();
 
       // this.account = this.properties.defaultAccount;

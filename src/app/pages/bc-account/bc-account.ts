@@ -101,7 +101,7 @@ export class BcAccountPage implements OnInit {
       let mnemonic = await this.storageService.getMnemonic();
       let rst = await this.storageService.getAllMnemonicProfiles();
       await this.getDefault();
-      console.log(this.defAccount);
+
       if (!this.defAccount) {
          this.defAccount = 0;
       }
@@ -126,7 +126,6 @@ export class BcAccountPage implements OnInit {
          i++;
       }
       this.dissmissLoading();
-      console.log('userAcc', this.userAcc);
    }
 
    async userError(title, message) {
@@ -222,7 +221,6 @@ export class BcAccountPage implements OnInit {
    }
 
    public onWillDismiss(index: number) {
-      console.log('called');
       this.modals[index].pwdVerified = false;
       this.modals[index].pk = '';
       this.modals[index].sk = '';

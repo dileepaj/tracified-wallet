@@ -404,7 +404,7 @@ export class ItemReceivedPage {
          if (entries[0].isIntersecting) {
             if (this.nextPage != 0 && this.searchTerm === '') {
                this.currentPage = this.nextPage;
-               console.log('page', this.currentPage);
+
                this.getSentNfts();
             }
 
@@ -425,7 +425,6 @@ export class ItemReceivedPage {
       await this.getKeyPair();
       this.nftService.getPendingNFTRequestByReceiver('stellar', this.keypair.publicKey().toString(), this.currentPage, 5).subscribe({
          next: (res: any) => {
-            console.log(res.Response.walletnft);
             if (res.Response.walletcontent) {
                res.Response.walletcontent.map((data: NFTTransfer) => {
                   this.list.push({
@@ -458,12 +457,11 @@ export class ItemReceivedPage {
          .then(async data => {
             this.mnemonic = data;
             await this.getDefault();
-            console.log(this.defAccount);
+
             if (!this.defAccount) {
                this.defAccount = 0;
             }
             this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, this.defAccount, this.mnemonic) as StellerKeyPair;
-            console.log(this.keypair);
          })
          .catch(error => {
             // this.presentToast("You don't have an account.");
@@ -562,14 +560,12 @@ export class ItemReceivedPage {
                   });
                })
                .catch(async err => {
-                  console.log('error', err);
                   this.dissmissLoading();
                   const text = await this.translate.get(['ERROR', 'TRANSFER_REQ_ACCEPT_ERROR']).toPromise();
                   await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_ACCEPT_ERROR'], true);
                });
          })
          .catch(async err => {
-            console.log('error', err);
             this.dissmissLoading();
             const text = await this.translate.get(['ERROR', 'TRANSFER_REQ_ACCEPT_ERROR']).toPromise();
             await this.presentAlert(text['ERROR'], err, true);

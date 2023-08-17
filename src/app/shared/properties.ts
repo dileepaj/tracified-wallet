@@ -40,7 +40,7 @@ export class Properties {
 //       if (!PropertiesSingleton.instance) {
 //          PropertiesSingleton.instance = new PropertiesSingleton();
 //       }
-//       console.log("instance : ",PropertiesSingleton.instance)
+//
 //       return PropertiesSingleton.instance;
 //    }
 // }

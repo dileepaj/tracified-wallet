@@ -59,11 +59,11 @@ export class NFTServiceProvider {
                   .addMemo(Memo.text('NFT Ready to be received'))
                   .setTimeout(TimeoutInfinite)
                   .build();
-               console.log(this.stellarKey);
+
                const pair = Keypair.fromSecret(this.stellarKey.secret().toString());
-               console.log('sk', pair.secret());
+
                transaction.sign(pair);
-               //console.log('xdr', transaction.toXDR());
+               //
 
                server
                   .submitTransaction(transaction)
@@ -71,7 +71,6 @@ export class NFTServiceProvider {
                      resolve(true);
                   })
                   .catch(error => {
-                     console.log(error);
                      reject(false);
                   });
             })
@@ -110,9 +109,9 @@ export class NFTServiceProvider {
                   .addMemo(Memo.text('NFT Transferred'))
                   .setTimeout(TimeoutInfinite)
                   .build();
-               console.log(this.stellarKey);
+
                const pair = Keypair.fromSecret(this.stellarKey.secret().toString());
-               console.log('sk', pair.secret());
+
                transaction.sign(pair);
                server
                   .submitTransaction(transaction)
@@ -120,12 +119,10 @@ export class NFTServiceProvider {
                      resolve(true);
                   })
                   .catch(error => {
-                     console.log(error);
                      reject(false);
                   });
             })
             .catch(async error => {
-               console.log(`Something went wrong : ${error}`);
                reject(false);
             });
       });

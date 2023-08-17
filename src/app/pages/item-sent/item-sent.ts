@@ -295,7 +295,7 @@ export class ItemSentPage {
          if (entries[0].isIntersecting) {
             if (this.nextPage != 0 && this.searchTerm === '') {
                this.currentPage = this.nextPage;
-               console.log('page', this.currentPage);
+
                this.getSentNfts();
             }
 
@@ -312,11 +312,10 @@ export class ItemSentPage {
       /*  if (this.currentPage == 0) {
          this.list = [];
       } */
-      console.log(this.currentPage);
+
       await this.getKeyPair();
       this.nftService.getNFTByPublicKey('stellar', this.keypair.publicKey().toString(), this.currentPage, 5).subscribe({
          next: (res: any) => {
-            console.log(res.Response.walletnft);
             if (res.Response.walletcontent) {
                res.Response.walletcontent.map((data: NFTTransfer) => {
                   this.list.push({
@@ -330,7 +329,7 @@ export class ItemSentPage {
             }
 
             this.filteredList = this.list;
-            console.log(this.filteredList);
+
             this.nextPage = res.Response.PaginationInfo.nextpage;
             this.dissmissLoading();
          },
@@ -350,12 +349,11 @@ export class ItemSentPage {
          .then(async data => {
             this.mnemonic = data;
             await this.getDefault();
-            console.log(this.defAccount);
+
             if (!this.defAccount) {
                this.defAccount = 0;
             }
             this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, this.defAccount, this.mnemonic) as StellerKeyPair;
-            console.log(this.keypair);
          })
          .catch(error => {
             // this.presentToast("You don't have an account.");
@@ -495,7 +493,6 @@ export class ItemSentPage {
                   });
                })
                .catch(async err => {
-                  console.log(err);
                   this.dissmissLoading();
                   const text = await this.translate.get(['ERROR', 'SEND_NFT_ERROR']).toPromise();
                   await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR'], true);
