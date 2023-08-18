@@ -295,7 +295,7 @@ export class ItemSentPage {
          if (entries[0].isIntersecting) {
             if (this.nextPage != 0 && this.searchTerm === '') {
                this.currentPage = this.nextPage;
-               console.log('page', this.currentPage);
+
                this.getSentNfts();
             }
 
@@ -312,11 +312,10 @@ export class ItemSentPage {
       /*  if (this.currentPage == 0) {
          this.list = [];
       } */
-      console.log(this.currentPage);
+
       await this.getKeyPair();
       this.nftService.getNFTByPublicKey('stellar', this.keypair.publicKey().toString(), this.currentPage, 5).subscribe({
          next: (res: any) => {
-            console.log(res.Response.walletnft);
             if (res.Response.walletcontent) {
                res.Response.walletcontent.map((data: NFTTransfer) => {
                   this.list.push({
@@ -330,7 +329,7 @@ export class ItemSentPage {
             }
 
             this.filteredList = this.list;
-            console.log(this.filteredList);
+
             this.nextPage = res.Response.PaginationInfo.nextpage;
             this.dissmissLoading();
          },
@@ -350,12 +349,11 @@ export class ItemSentPage {
          .then(async data => {
             this.mnemonic = data;
             await this.getDefault();
-            console.log(this.defAccount);
+
             if (!this.defAccount) {
                this.defAccount = 0;
             }
             this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, this.defAccount, this.mnemonic) as StellerKeyPair;
-            console.log(this.keypair);
          })
          .catch(error => {
             // this.presentToast("You don't have an account.");
@@ -461,21 +459,30 @@ export class ItemSentPage {
     */
    public async sendNftRequest(nft: any) {
       await this.presentLoading();
-
       this.nftService
-         .createPaymentOperationForNFTTransfer(nft.issuerpublickey, this.defAccount, nft.nftrequested, nft.nftname)
+         .checkAccountStatusAndBalance(this.keypair.publicKey().toString())
          .then(() => {
-            this.nftService.updateNFTOwner(nft.nftid, nft.nftrequested).subscribe({
-               next: async () => {
-                  await this.nftService.UpdateNFTState(nft.issuerpublickey, NFTStatus.nftTransferAccepted).subscribe({
+            this.nftService
+               .createPaymentOperationForNFTTransfer(nft.issuerpublickey, this.defAccount, nft.nftrequested, nft.nftname)
+               .then(() => {
+                  this.nftService.updateNFTOwner(nft.nftid, nft.nftrequested).subscribe({
                      next: async () => {
-                        this.dissmissLoading();
-                        const text = await this.translate.get(['SEND_NFT_TITLE', 'SEND_NFT_SUCCESS']).toPromise();
-                        await this.presentAlert(text['SEND_NFT_TITLE'], text['SEND_NFT_SUCCESS'], true, () => {
-                           this.currentPage = 1;
-                           this.nextPage = 0;
-                           this.list = [];
-                           this.getSentNfts();
+                        await this.nftService.UpdateNFTState(nft.Id, nft.issuerpublickey, NFTStatus.nftTransferAccepted).subscribe({
+                           next: async () => {
+                              this.dissmissLoading();
+                              const text = await this.translate.get(['SEND_NFT_TITLE', 'SEND_NFT_SUCCESS']).toPromise();
+                              await this.presentAlert(text['SEND_NFT_TITLE'], text['SEND_NFT_SUCCESS'], true, () => {
+                                 this.currentPage = 1;
+                                 this.nextPage = 0;
+                                 this.list = [];
+                                 this.getSentNfts();
+                              });
+                           },
+                           error: async () => {
+                              this.dissmissLoading();
+                              const text = await this.translate.get(['ERROR', 'SEND_NFT_ERROR']).toPromise();
+                              await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR'], true);
+                           },
                         });
                      },
                      error: async () => {
@@ -484,19 +491,17 @@ export class ItemSentPage {
                         await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR'], true);
                      },
                   });
-               },
-               error: async () => {
+               })
+               .catch(async err => {
                   this.dissmissLoading();
                   const text = await this.translate.get(['ERROR', 'SEND_NFT_ERROR']).toPromise();
                   await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR'], true);
-               },
-            });
+               });
          })
          .catch(async err => {
-            console.log(err);
             this.dissmissLoading();
             const text = await this.translate.get(['ERROR', 'SEND_NFT_ERROR']).toPromise();
-            await this.presentAlert(text['ERROR'], text['SEND_NFT_ERROR'], true);
+            await this.presentAlert(text['ERROR'], err, true);
          });
    }
 

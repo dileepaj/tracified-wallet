@@ -70,7 +70,6 @@ export class BcAccountCreatedPage implements OnInit {
    }
 
    public async getBCAccounts() {
-      console.log('index & redirectTo', this.index, this.redirectToAccs);
       await this.presentLoading();
       if (this.seedPhrase !== null) {
          await this.forageService

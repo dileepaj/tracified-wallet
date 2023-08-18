@@ -582,6 +582,7 @@ export class ApiServiceProvider {
             headers: new HttpHeaders({
                Accept: 'application/json',
                'Content-Type': 'Application/json',
+               Authorization: `Bearer ${this.properties.token}`,
             }),
          };
 
@@ -602,7 +603,7 @@ export class ApiServiceProvider {
             Successfull: transactionResultSuccessful,
             TrustLineCreatedAt: created_at,
          };
-         this.http.post(gatewayUrl + '/nft/mintStellar', NFTModel, this.reqOpts).subscribe(
+         this.http.post(gatewayUrl + '/nft/wallet/mintStellar', NFTModel, this.reqOpts).subscribe(
             response => {
                resolve(response);
             },

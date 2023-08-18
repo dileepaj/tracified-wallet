@@ -81,6 +81,8 @@ export class MintNftPage {
    mnemonic: any;
    subscription: any = new Subscription();
    disableBackButton: boolean = false;
+   defAccount: any;
+   bcAccount: any;
 
    constructor(
       private alertCtrl: AlertController,
@@ -104,6 +106,7 @@ export class MintNftPage {
       this.otp = this.router.getCurrentNavigation().extras.state.otp;
       this.CustomMsg = this.router.getCurrentNavigation().extras.state.CustomMsg;
       this.reciverName = this.router.getCurrentNavigation().extras.state.ReciverName;
+      this.bcAccount = this.router.getCurrentNavigation().extras.state.bcAccount;
 
       this.getSVG();
 
@@ -183,9 +186,10 @@ export class MintNftPage {
 
       this.storage
          .getMnemonic()
-         .then(data => {
+         .then(async data => {
             this.mnemonic = data;
-            this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, 0, this.mnemonic) as StellerKeyPair;
+
+            this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, parseInt(this.bcAccount.index), this.mnemonic) as StellerKeyPair;
 
             this.blockchainService
                .checkBCAccountStatus(this.keypair.publicKey().toString())
@@ -503,5 +507,19 @@ export class MintNftPage {
          position: 'bottom',
       });
       await toast.present();
+   }
+
+   /**
+    * get default bc account index
+    */
+   public async getDefault() {
+      await this.storage
+         .getDefaultAccount()
+         .then(acc => {
+            this.defAccount = acc;
+         })
+         .catch(() => {
+            this.defAccount = false;
+         });
    }
 }

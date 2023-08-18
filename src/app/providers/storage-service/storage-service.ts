@@ -258,7 +258,6 @@ export class StorageServiceProvider {
       });
    }
    public addSeedPhraseAccount(index: string, accName: string, password: string) {
-      console.log(index, accName, password);
       return new Promise((resolve, reject) => {
          this.mnemonicProfiles
             .setItem(index, accName)
@@ -291,7 +290,6 @@ export class StorageServiceProvider {
    }
 
    public validateSeedPhraseAccount(index: string, username: string, password: string) {
-      console.log(password);
       return new Promise((resolve, reject) => {
          this.mnemonicProfiles
             .getItem(index)

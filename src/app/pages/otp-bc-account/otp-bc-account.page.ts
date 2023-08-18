@@ -23,6 +23,7 @@ export class OtpBcAccountPage implements OnInit {
 
    loading: any;
    shopId: any;
+   defAccount: any;
 
    constructor(
       private router: Router,
@@ -79,21 +80,40 @@ export class OtpBcAccountPage implements OnInit {
    async ngOnInit() {
       // this.presentLoading();
       this.mnemonic = await this.storageService.getMnemonic();
+      await this.getDefault();
+      if (!this.defAccount) {
+         this.defAccount = 0;
+      }
       let rst = await this.storageService.getAllMnemonicProfiles();
       for (const account of rst) {
          this.stellarkeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, account.value, this.mnemonic) as StellerKeyPair;
 
          const bcAccount = {
+            index: account.value,
             name: account.key,
             publicKey: this.stellarkeyPair.publicKey(),
          };
          this.bcAccList.push(bcAccount);
 
-         if (account.value == 0) {
+         if (account.value == this.defAccount) {
             this.selectedBcAcc = bcAccount;
          }
       }
       // this.dissmissLoading();
+   }
+
+   /**
+    * get default bc account index
+    */
+   public async getDefault() {
+      await this.storageService
+         .getDefaultAccount()
+         .then(acc => {
+            this.defAccount = acc;
+         })
+         .catch(() => {
+            this.defAccount = false;
+         });
    }
 
    async onClickNext() {

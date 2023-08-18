@@ -89,7 +89,6 @@ export class TransferPage {
    }
 
    ionViewDidEnter() {
-      console.log('called enter');
       if (this.isFirstTime) {
          this.createItemsGrid();
          this.isFirstTime = false;
@@ -201,7 +200,6 @@ export class TransferPage {
          this.itemColSize = colSize;
       }
 
-      console.log('col count & col size', this.itemColumCount, this.itemColSize);
       /* let width = window.innerWidth;
       if (width <= 430) {
          this.itemColumCount = 2;
@@ -240,7 +238,7 @@ export class TransferPage {
          .then(async data => {
             this.mnemonic = data;
             await this.getDefault();
-            console.log(this.defAccount);
+
             if (!this.defAccount) {
                this.defAccount = 0;
             }
@@ -347,7 +345,6 @@ export class TransferPage {
     * @param nft nft to be transferred
     */
    public openModal(nft: any) {
-      console.log(nft);
       this.nftToTransfer = nft;
       this.isRequestModalOpened = true;
    }
@@ -361,7 +358,6 @@ export class TransferPage {
       const receiverAddr = this.form.get('receiverAddr').value;
       let username = '';
       await this.storage.getMnemonicProfile(this.defAccount.toString()).then(acc => {
-         console.log(acc);
          username = acc;
       });
       try {
@@ -382,9 +378,9 @@ export class TransferPage {
                      thumbnail: this.nftToTransfer.thumbnail,
                      nftid: this.nftToTransfer.Id,
                   };
+
                   this.nftService.SaveNFTState(nft).subscribe({
                      next: async res => {
-                        console.log(res);
                         this.receiverPk = receiverAddr;
                         await this.dissmissLoading();
                         this.nextTab();
@@ -438,7 +434,6 @@ export class TransferPage {
 
    InitiatePlatformIfReady() {
       this.platform.ready().then(() => {
-         console.log('before subscribe');
          this.platform.resize.subscribe(() => {
             this.checkScreenWidth();
             this.nftRowlist = [];

@@ -404,7 +404,7 @@ export class ItemReceivedPage {
          if (entries[0].isIntersecting) {
             if (this.nextPage != 0 && this.searchTerm === '') {
                this.currentPage = this.nextPage;
-               console.log('page', this.currentPage);
+
                this.getSentNfts();
             }
 
@@ -425,7 +425,6 @@ export class ItemReceivedPage {
       await this.getKeyPair();
       this.nftService.getPendingNFTRequestByReceiver('stellar', this.keypair.publicKey().toString(), this.currentPage, 5).subscribe({
          next: (res: any) => {
-            console.log(res.Response.walletnft);
             if (res.Response.walletcontent) {
                res.Response.walletcontent.map((data: NFTTransfer) => {
                   this.list.push({
@@ -458,12 +457,11 @@ export class ItemReceivedPage {
          .then(async data => {
             this.mnemonic = data;
             await this.getDefault();
-            console.log(this.defAccount);
+
             if (!this.defAccount) {
                this.defAccount = 0;
             }
             this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, this.defAccount, this.mnemonic) as StellerKeyPair;
-            console.log(this.keypair);
          })
          .catch(error => {
             // this.presentToast("You don't have an account.");
@@ -538,31 +536,39 @@ export class ItemReceivedPage {
    public async acceptRequest(nft: any) {
       await this.presentLoading();
       this.nftService
-         .createTrustLineForNFTTransfer(nft.issuerpublickey, this.defAccount, nft.currentowner, nft.nftname)
+         .checkAccountStatusAndBalance(this.keypair.publicKey().toString())
          .then(() => {
-            this.nftService.UpdateNFTState(nft.issuerpublickey, NFTStatus.TrustLineCreated).subscribe({
-               next: async () => {
-                  this.dissmissLoading();
-                  const text = await this.translate.get(['TRANSFER_REQ_ACCEPT', 'TRANSFER_REQ_ACCEPT_SUCCESS']).toPromise();
-                  await this.presentAlert(text['TRANSFER_REQ_ACCEPT'], text['TRANSFER_REQ_ACCEPT_SUCCESS'], true, () => {
-                     this.currentPage = 1;
-                     this.nextPage = 0;
-                     this.list = [];
-                     this.getSentNfts();
+            this.nftService
+               .createTrustLineForNFTTransfer(nft.issuerpublickey, this.defAccount, nft.currentowner, nft.nftname)
+               .then(() => {
+                  this.nftService.UpdateNFTState(nft.Id, nft.issuerpublickey, NFTStatus.TrustLineCreated).subscribe({
+                     next: async () => {
+                        this.dissmissLoading();
+                        const text = await this.translate.get(['TRANSFER_REQ_ACCEPT', 'TRANSFER_REQ_ACCEPT_SUCCESS']).toPromise();
+                        await this.presentAlert(text['TRANSFER_REQ_ACCEPT'], text['TRANSFER_REQ_ACCEPT_SUCCESS'], true, () => {
+                           this.currentPage = 1;
+                           this.nextPage = 0;
+                           this.list = [];
+                           this.getSentNfts();
+                        });
+                     },
+                     error: async () => {
+                        this.dissmissLoading();
+                        const text = await this.translate.get(['ERROR', 'TRANSFER_REQ_ACCEPT_ERROR']).toPromise();
+                        await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_ACCEPT_ERROR'], true);
+                     },
                   });
-               },
-               error: async () => {
+               })
+               .catch(async err => {
                   this.dissmissLoading();
                   const text = await this.translate.get(['ERROR', 'TRANSFER_REQ_ACCEPT_ERROR']).toPromise();
                   await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_ACCEPT_ERROR'], true);
-               },
-            });
+               });
          })
          .catch(async err => {
-            console.log('error', err);
             this.dissmissLoading();
             const text = await this.translate.get(['ERROR', 'TRANSFER_REQ_ACCEPT_ERROR']).toPromise();
-            await this.presentAlert(text['ERROR'], text['TRANSFER_REQ_ACCEPT_ERROR'], true);
+            await this.presentAlert(text['ERROR'], err, true);
          });
    }
 
@@ -570,10 +576,10 @@ export class ItemReceivedPage {
     * confirmation before rejecting a request
     * @param issuerPk issuer public key
     */
-   public async rejectRequestConfirmation(issuerPk: string) {
+   public async rejectRequestConfirmation(id: string, issuerPk: string) {
       const text = await this.translate.get(['TRANSFER_REQ_REJECT', 'TRANSFER_REQ_REJECT_DESC']).toPromise();
       await this.presentAlert(text['TRANSFER_REQ_REJECT'], text['TRANSFER_REQ_REJECT_DESC'], false, () => {
-         this.rejectRequest(issuerPk);
+         this.rejectRequest(id, issuerPk);
       });
    }
 
@@ -581,9 +587,9 @@ export class ItemReceivedPage {
     * Reject request
     * @param issuerPk issuer public key
     */
-   public async rejectRequest(issuerPk: string) {
+   public async rejectRequest(id: string, issuerPk: string) {
       await this.presentLoading();
-      this.nftService.UpdateNFTState(issuerPk, NFTStatus.RequestForTrustLineRejected).subscribe({
+      this.nftService.UpdateNFTState(id, issuerPk, NFTStatus.RequestForTrustLineRejected).subscribe({
          next: async () => {
             this.dissmissLoading();
             const text = await this.translate.get(['TRANSFER_REQ_REJECT', 'TRANSFER_REQ_REJECT_SUCCESS']).toPromise();

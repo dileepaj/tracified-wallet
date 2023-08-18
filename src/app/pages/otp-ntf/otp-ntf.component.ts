@@ -19,6 +19,7 @@ export class OtpNtfComponent {
    email;
    otp;
    shopId;
+   bcAccount: any;
 
    customCounterFormatter(inputLength: number, maxLength: number) {
       return `${maxLength - inputLength} characters remaining`;
@@ -27,6 +28,7 @@ export class OtpNtfComponent {
       this.shopId = this.router.getCurrentNavigation().extras.state.ShopId;
       this.email = this.router.getCurrentNavigation().extras.state.email;
       this.otp = this.router.getCurrentNavigation().extras.state.otp;
+      this.bcAccount = this.router.getCurrentNavigation().extras.state.bcAccount;
    }
 
    nftForm = new FormGroup({
@@ -46,6 +48,7 @@ export class OtpNtfComponent {
             NFTname: this.nftForm.get('nftName').value,
 
             otp: this.otp,
+            bcAccount: this.bcAccount,
          },
          replaceUrl: true,
       };

@@ -8,7 +8,8 @@ export const ENV: any = {
    BLOCKCHAIN_NETWORK: 'https://horizon-testnet.stellar.org',
    NETWORK_TYPE: 'test',
    NFT_BACKEND: 'https://qa.api.nft.tracified.com',
-   STELLAR_BASE_FEE:'50000'
+   STELLAR_BASE_FEE:'50000',
+   STELLAR_BASE_RESERVE : 0.5
 };
 
 export const TOAST_TIMER: any ={

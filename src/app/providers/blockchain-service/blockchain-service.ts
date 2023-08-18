@@ -25,7 +25,7 @@ export class BlockchainServiceProvider {
       private mappingService: MappingServiceProvider,
       private apiService: ApiServiceProvider,
       private storageService: StorageServiceProvider
-   ) {}
+   ) { }
 
    removeFoAccount(accounts) {
       let otherAccounts = [];
@@ -88,7 +88,7 @@ export class BlockchainServiceProvider {
       });
    }
 
-   validateFundTransfer(sendingAcc, amount) {}
+   validateFundTransfer(sendingAcc, amount) { }
 
    transferFundsForNewAccounts(sendingAccSk, receivingAccPk, amount): Promise<any> {
       return new Promise((resolve, reject) => {
@@ -705,6 +705,36 @@ export class BlockchainServiceProvider {
          );
       });
    }
+
+   /**
+    * Calculates the minimum balance required for an account based on its subentry count.
+    * @param subEntryCount The number of subentries in the account.
+    * @returns The minimum balance required for the account.
+    */
+   public getMinimumBalanceForAccount(subEntryCount: number): number {
+      // Start with twice the base reserve as the minimum balance.
+      let minimumBalance = ENV.STELLAR_BASE_RESERVE * 2;
+
+      // Add base reserve for each subentry to the minimum balance.
+      for (let i = 1; i <= subEntryCount; i++) {
+         minimumBalance += ENV.STELLAR_BASE_RESERVE;
+      }
+
+      return minimumBalance;
+   }
+
+   /**
+    * Calculates the maximum amount of native tokens (XLM) that can be transferred from an account,
+    * considering the account balance and minimum required balance.
+    * @param accountBalance The current balance of the account.
+    * @param minimumBalance The minimum balance required for the account.
+    * @returns The maximum amount of native tokens that can be transferred.
+    */
+   public getMaximumNativeTokenTransferableAmount(accountBalance: number, minimumBalance: number): number {
+      // Subtract the minimum balance from the account balance to get the transferable amount.
+      return accountBalance - minimumBalance;
+   }
+
 
 
 }
