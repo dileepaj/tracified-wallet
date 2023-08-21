@@ -603,7 +603,7 @@ export class ApiServiceProvider {
             Successfull: transactionResultSuccessful,
             TrustLineCreatedAt: created_at,
          };
-         this.http.post(gatewayUrl + '/nft/wallet/mintStellar', NFTModel, this.reqOpts).subscribe(
+         this.http.post(gatewayUrl + '/nft/wallet/mint-stellar', NFTModel, this.reqOpts).subscribe(
             response => {
                resolve(response);
             },
