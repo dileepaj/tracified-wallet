@@ -370,9 +370,15 @@ export class MintNftPage {
             .catch(async error => {
                await this.dissmissLoading();
 
-               this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
-                  this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
-               });
+               if (error.status === 401) {
+                  this.translate.get(['ERROR', 'NO_MINT_PERMISSION']).subscribe(text => {
+                     this.presentAlert(text['ERROR'], text['NO_MINT_PERMISSION']);
+                  });
+               } else {
+                  this.translate.get(['ERROR', 'INCORRECT_TRANSACTION']).subscribe(text => {
+                     this.presentAlert(text['ERROR'], text['INCORRECT_TRANSACTION']);
+                  });
+               }
             });
       } else {
          await this.dissmissLoading();

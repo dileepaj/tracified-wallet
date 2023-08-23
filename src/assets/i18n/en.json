@@ -384,5 +384,7 @@
    "REQ_ACCPTD": "Request Accepted",
    "REQ_REJTD": "Request Rejected",
    "NO_ITEMS": "No items assigned to your account at the moment",
-   "ITEMS": "Items"
+   "ITEMS": "Items",
+
+   "NO_MINT_PERMISSION": "User does not have permission to mint"
 }
