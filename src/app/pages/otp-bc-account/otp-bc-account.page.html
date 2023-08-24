@@ -24,7 +24,7 @@
             <ion-item class="input-item" lines="full">
                <ion-select style="width: 100%" label="Default label" placeholder="{{'SELECT_IMPORT_LABEL' | translate}}" (ionChange)="selectBcAccount($event)" [(ngModel)]="selectedBcAcc" appNoArrow>
                   <ion-select-option *ngFor="let acc of bcAccList" [value]="acc"
-                     >{{acc.name + " (" + acc.publicKey.substring(0,4) + "..." + acc.publicKey.substring(acc.publicKey.length-4, acc.publicKey.length) + ")"}}</ion-select-option
+                     >{{acc.name + " (" + acc.publicKey.substring(0,3) + ".." + acc.publicKey.substring(acc.publicKey.length-3, acc.publicKey.length) + ")"}}</ion-select-option
                   >
                </ion-select>
                <ion-icon slot="end" name="caret-forward-outline" class="caret"></ion-icon>
