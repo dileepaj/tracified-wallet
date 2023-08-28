@@ -27,17 +27,17 @@ pipeline {
             }
         }
 
-        stage('Deploy to Staging') {
-            when {
-                branch 'master'
-            }
-            steps {
-                sh 'npm run build-staging'
-                script {
-                    scriptModule.uploadToGCB('gs://staging.wallet.tracified.com')
-                }
-            }
-        }
+        //stage('Deploy to Staging') {
+        //    when {
+        //        branch 'master'
+        //    }
+        //    steps {
+        //        sh 'npm run build-staging'
+        //        script {
+        //            scriptModule.uploadToGCB('gs://staging.wallet.tracified.com')
+        //        }
+        //    }
+        //}
 
     }
     post {
