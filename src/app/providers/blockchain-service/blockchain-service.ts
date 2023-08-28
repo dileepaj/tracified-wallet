@@ -707,20 +707,22 @@ export class BlockchainServiceProvider {
    }
 
    /**
-    * Calculates the minimum balance required for an account based on its subentry count.
-    * @param subEntryCount The number of subentries in the account.
-    * @returns The minimum balance required for the account.
-    */
-   public getMinimumBalanceForAccount(subEntryCount: number): number {
+   * Calculates the minimum balance required for an account based on its subentry count and sponsorship information.
+   * @param subEntryCount The number of subentries in the account.
+   * @param numberOfSponsoring The number of accounts this account sponsors (default is 0).
+   * @param numOfSponsored The number of accounts that sponsor this account (default is 0).
+   * @param selling_liabilities The selling liabilities of the account (default is 0).
+   * @returns The minimum balance required for the account.
+   */
+   public getMinimumBalanceForAccount(
+      subEntryCount: number,
+      numberOfSponsoring: number = 0,
+      numOfSponsored: number = 0,
+      selling_liabilities: number = 0): number {
       // Start with twice the base reserve as the minimum balance.
-      let minimumBalance = ENV.STELLAR_BASE_RESERVE * 2;
+      let mandatory_minimumBalance = ENV.STELLAR_BASE_RESERVE * 2;
 
-      // Add base reserve for each subentry to the minimum balance.
-      for (let i = 1; i <= subEntryCount; i++) {
-         minimumBalance += ENV.STELLAR_BASE_RESERVE;
-      }
-
-      return minimumBalance;
+      return (mandatory_minimumBalance + subEntryCount + numberOfSponsoring - numOfSponsored) * ENV.STELLAR_BASE_RESERVE + selling_liabilities
    }
 
    /**

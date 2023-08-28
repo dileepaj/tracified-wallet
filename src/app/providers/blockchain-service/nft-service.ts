@@ -141,9 +141,12 @@ export class NFTServiceProvider {
             .then((res: any) => {
                // Extract the account balance from the response.
                let accountBalance = res.balances[res.balances.length - 1].balance;
-
+               let subEntryCount = res.subentry_count;
+               let numberOfSponsors = res.num_sponsoring;
+               let numberOfSponsored = res.num_sponsored
+               let selling_liabilities = res.balances[res.balances.length - 1].selling_liabilities;
                // Get the minimum balance required for the account based on subentry count.
-               let minimumBalance = this.blockchainServiceProvider.getMinimumBalanceForAccount(res.subentry_count);
+               let minimumBalance = this.blockchainServiceProvider.getMinimumBalanceForAccount(subEntryCount,numberOfSponsors,numberOfSponsored,selling_liabilities);
 
                // Compare the account balance with the minimum required balance.
                if (parseFloat(accountBalance) <= minimumBalance) {
