@@ -24,7 +24,7 @@ export const USER_SETTING={
    STAGES: ["00201","00202","00203","00203","00204","00205","00206","00207","00208","00209"],
    TYPE: "WalletUser",
    USER_TYPE:["TraceabilityAdvocate","Admin","FieldOfficer","WalletUser","Driver"],
-   STAGE_PERMISSION:"U2FsdGVkX1+aCgSVkCaP3G85+exsMbckMPswjs0LH8+dc7m+4T5vGV72wc4SNAhJ",
+   STAGE_PERMISSION:"U2FsdGVkX1/GY2vmSWFEsEHIR5NGK/doMwdQi3rNaj0SEfoFX0qk8nSZOLWzCCQwimDfNVCI7Cc0cpHcQ/5sDw==",
    TENANT_ID:'ee863d20-2171-11ee-9d9e-5b593f9505c2',
    TENANT_EMAIL:'info+walletsignup@tracified.com',
 }
