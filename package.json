@@ -7,6 +7,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ionic build",
+    "build-qa": "ionic build --configuration qa",
+    "build-staging": "ionic build --configuration staging",
+    "build-prod": "ionic build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
