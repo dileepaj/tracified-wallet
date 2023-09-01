@@ -676,4 +676,26 @@ export class ApiServiceProvider {
          );
       });
    }
+
+   /**
+    * Check whether an OTP is already generated or validated for the user and the gem
+    * @param email user's email
+    * @param shopID shop id of the gem
+    * @returns response from the server
+    */
+   checkOTPStatus(email: string, shopID: string) {
+      let headers = {
+         observe: 'response',
+         headers: new HttpHeaders({
+            Accept: 'application/json',
+            'Content-Type': 'Application/json',
+            Authorization: 'Bearer ' + this.properties.token,
+         }),
+      };
+      let OTP = {
+         email: email,
+         productID: shopID,
+      };
+      return this.postN(nftbackUrl + '/otp-state', OTP, headers);
+   }
 }

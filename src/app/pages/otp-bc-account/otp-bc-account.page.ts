@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
+import { ApiServiceProvider } from 'src/app/providers/api-service/api-service';
 import { AuthServiceProvider } from 'src/app/providers/auth-service/auth-service';
 import { BlockchainType, SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
@@ -24,6 +25,7 @@ export class OtpBcAccountPage implements OnInit {
    loading: any;
    shopId: any;
    defAccount: any;
+   email: any;
 
    constructor(
       private router: Router,
@@ -33,7 +35,10 @@ export class OtpBcAccountPage implements OnInit {
       private toastService: ToastController,
       private loadingCtrl: LoadingController,
       private route: ActivatedRoute,
-      private authService: AuthServiceProvider
+      private authService: AuthServiceProvider,
+      private apiService: ApiServiceProvider,
+      public toastCtrl: ToastController,
+      private navCtrl: NavController
    ) {
       this.shopId = this.route.snapshot.queryParamMap.get('shopId');
       let gemName = this.route.snapshot.queryParamMap.get('gemName');
@@ -79,6 +84,9 @@ export class OtpBcAccountPage implements OnInit {
 
    async ngOnInit() {
       // this.presentLoading();
+      this.storageService.profile.key(0).then(d => {
+         this.email = d;
+      });
       this.mnemonic = await this.storageService.getMnemonic();
       await this.getDefault();
       if (!this.defAccount) {
@@ -118,6 +126,7 @@ export class OtpBcAccountPage implements OnInit {
 
    async onClickNext() {
       if (this.selectedBcAcc) {
+         this.presentLoading();
          const option: NavigationExtras = {
             state: {
                bcAccount: this.selectedBcAcc,
@@ -126,7 +135,47 @@ export class OtpBcAccountPage implements OnInit {
                shopId: this.shopId,
             },
          };
-         this.router.navigate(['request-otp'], option);
+         this.apiService
+            .checkOTPStatus(this.email, this.shopId)
+            .then(async res => {
+               this.dissmissLoading();
+               console.log('success', res);
+               if (res.status == 204) {
+                  this.router.navigate(['request-otp'], option);
+               } else if (res.status == 200) {
+                  //console.log(res.body.Response.Message);
+                  //this.router.navigate(['request-otp'], option);
+                  this.presentToast(res.body.Response.Message);
+                  if (res.body.Response.IsOTPValidated) {
+                     const option2: NavigationExtras = {
+                        state: {
+                           ShopId: this.shopId,
+                           otp: '',
+                           email: this.email,
+                           bcAccount: this.selectedBcAcc,
+                        },
+                     };
+                     this.router.navigate(['/otp-nft'], option2);
+                  } else {
+                     const option3: NavigationExtras = {
+                        queryParams: {
+                           shopId: this.shopId,
+                           email: this.email,
+                        },
+                        state: {
+                           bcAccount: this.selectedBcAcc,
+                        },
+                     };
+                     this.router.navigate(['/otp-page'], option3);
+                  }
+               }
+            })
+            .catch(error => {
+               this.dissmissLoading();
+
+               this.presentToast(error.error.message);
+               this.navCtrl.navigateRoot('/get-nft');
+            });
       } else {
          const toastInstance = await this.toastService.create({
             message: 'Please select a blockchain account!',
@@ -167,6 +216,15 @@ export class OtpBcAccountPage implements OnInit {
          message: 'Please Wait',
       });
       this.loading.present();
+   }
+
+   async presentToast(msg) {
+      const toast = await this.toastCtrl.create({
+         message: msg,
+         duration: TOAST_TIMER.SHORT_TIMER,
+         position: 'bottom',
+      });
+      await toast.present();
    }
 
    async dissmissLoading() {
