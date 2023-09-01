@@ -95,7 +95,7 @@ export class RequestOtpPage implements OnInit {
          })
          .catch(async error => {
             this.dissmissLoading();
-            if (error.error.message === 'OTP already validated' || error.error.message === 'OTP for this email already exists') {
+            if (error.error.message === 'OTP already validated') {
                const option2: NavigationExtras = {
                   state: {
                      ShopId: this.shopId,
@@ -105,6 +105,8 @@ export class RequestOtpPage implements OnInit {
                   },
                };
                this.router.navigate(['/otp-nft'], option2);
+            } else if (error.error.message === 'OTP for this email already exists') {
+               this.router.navigate(['/otp-page'], option);
             } else if (error.error.message === 'NFT already minted') {
                this.navCtrl.navigateRoot('/get-nft');
             }
