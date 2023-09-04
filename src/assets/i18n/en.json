@@ -386,5 +386,8 @@
    "NO_ITEMS": "No items assigned to your account at the moment",
    "ITEMS": "Items",
 
-   "NO_MINT_PERMISSION": "User does not have permission to mint"
+   "NO_MINT_PERMISSION": "User does not have permission to mint",
+
+   "VALIDATE_OTP": "Validate OTP",
+   "VALIDATE_OTP_DESC": "Enter the One-Time Password that has been sent to "
 }
