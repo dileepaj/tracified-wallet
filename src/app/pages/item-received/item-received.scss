@@ -169,7 +169,8 @@ ion-content.has-refresher > .scroll-content {
    color: var(--ion-color-warning);
 }
 
-.nft-svg::part(image) {
+.nft-svg {
+   background: #d3e5db;
    width: 100%;
    max-width: 150px;
    height: 150px;
