@@ -105,6 +105,13 @@ export class NFTServiceProvider {
                         amount: '1',
                         source: this.stellarKey.publicKey(),
                      })
+                  )  //deletes the users trust line to the asset as it is no longer needed
+                  .addOperation(
+                     Operation.changeTrust({
+                        asset: asset,
+                        limit: '0',
+                        source: this.stellarKey.publicKey(),
+                     })
                   )
                   .addMemo(Memo.text('NFT Transferred'))
                   .setTimeout(TimeoutInfinite)
