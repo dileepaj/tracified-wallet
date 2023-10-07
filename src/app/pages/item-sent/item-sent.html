@@ -56,7 +56,10 @@
                   </ion-row>
                   <ion-row>
                      <ion-col size="6" class="nft-cont">
-                        <ion-img class="left-align-horizontally nft-svg" [src]="item.thumbnail" />
+                        <img
+                           class="left-align-horizontally nft-svg"
+                           [src]="item.thumbnail"
+                           onerror="this.onerror=null; this.style.objectFit='contain'; this.src='../../../assets/imgs/default_nft.png'" />
                      </ion-col>
                      <ion-col size="6">
                         <ion-row>
@@ -188,7 +191,10 @@
                   </ion-row>
                   <ion-row>
                      <ion-col size="6" class="nft-cont">
-                        <ion-img class="left-align-horizontally nft-svg" [src]="item.thumbnail" />
+                        <img
+                           class="left-align-horizontally nft-svg"
+                           [src]="item.thumbnail"
+                           onerror="this.onerror=null; this.style.objectFit='contain'; this.src='../../../assets/imgs/default_nft.png'" />
                      </ion-col>
                      <ion-col size="6">
                         <ion-row>

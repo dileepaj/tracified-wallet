@@ -76,7 +76,8 @@ accordion-list {
    font-size: 1.4rem !important;
 }
 
-.nft-svg::part(image) {
+.nft-svg {
+   background: #d3e5db;
    width: 100%;
    max-width: 150px;
    height: 150px;
