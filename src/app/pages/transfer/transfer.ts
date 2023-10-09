@@ -10,10 +10,13 @@ import { SeedPhraseService, BlockchainType } from 'src/app/providers/seedPhraseS
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
 import { ApiServiceProvider } from 'src/app/providers/api-service/api-service';
 import { Keypair as StellerKeyPair } from 'stellar-base';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import StellarBase from 'stellar-base';
+import { FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { NFTServiceProvider } from 'src/app/providers/blockchain-service/nft-service';
 import { NFT, NFTState, NFTStatus, NFTTransfer } from 'src/app/shared/nft';
 import { TransferPageService } from 'src/app/providers/transfer-page.service';
+import { title } from 'process';
+import { async } from 'rxjs';
 
 @Component({
    selector: 'page-transfer',
@@ -59,6 +62,9 @@ export class TransferPage {
 
    isFirstTime: boolean = true;
 
+   isValidPK: boolean = true;
+   validationError: string = '';
+
    constructor(
       public apiService: ApiServiceProvider,
       private storage: StorageServiceProvider,
@@ -73,7 +79,7 @@ export class TransferPage {
    ) {
       this.InitiatePlatformIfReady();
       this.form = new FormGroup({
-         receiverAddr: new FormControl('', Validators.compose([Validators.required])),
+         receiverAddr: new FormControl('', Validators.compose([Validators.required, this.publickeyValidator()])),
       });
       this.pwdForm = new FormGroup({
          password: new FormControl('', Validators.compose([Validators.required])),
@@ -336,8 +342,32 @@ export class TransferPage {
    /**
     * move to next tab in the nft transfer request modal
     */
-   public nextTab() {
-      if (this.modalTab != 2) this.modalTab++;
+   public async nextTab() {
+      const isValidPK = StellarBase.StrKey.isValidEd25519PublicKey(this.form.get('receiverAddr').value);
+
+      if (this.modalTab != 2 && isValidPK) {
+         this.modalTab++;
+      } else if (!isValidPK) {
+         const text = await this.translate.get(['PK_INVALID']).toPromise();
+
+         //this.presentAlert(text['ERROR'], text['PK_INVALID']);
+
+         this.validationError = text['PK_INVALID'];
+         this.isValidPK = false;
+      }
+   }
+
+   /** A hero's name can't match the given regular expression */
+   private publickeyValidator(): ValidatorFn {
+      return (control: AbstractControl): ValidationErrors | null => {
+         const isValidPK = StellarBase.StrKey.isValidEd25519PublicKey(control.value);
+         if (!isValidPK && control.value.toString().length > 0) {
+            this.isValidPK = false;
+         } else {
+            this.isValidPK = true;
+         }
+         return !isValidPK ? { invalidPk: { value: control.value } } : null;
+      };
    }
 
    /**
@@ -356,6 +386,7 @@ export class TransferPage {
       await this.presentLoading();
       const password = this.pwdForm.get('password').value;
       const receiverAddr = this.form.get('receiverAddr').value;
+
       let username = '';
       await this.storage.getMnemonicProfile(this.defAccount.toString()).then(acc => {
          username = acc;
