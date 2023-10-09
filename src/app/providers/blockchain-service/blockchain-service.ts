@@ -721,8 +721,7 @@ export class BlockchainServiceProvider {
       selling_liabilities: number = 0): number {
       // Start with twice the base reserve as the minimum balance.
       let mandatory_minimumBalance = ENV.STELLAR_BASE_RESERVE * 2;
-
-      return (mandatory_minimumBalance + subEntryCount + numberOfSponsoring - numOfSponsored) * ENV.STELLAR_BASE_RESERVE + selling_liabilities
+      return ((mandatory_minimumBalance + subEntryCount + numberOfSponsoring - numOfSponsored) * ENV.STELLAR_BASE_RESERVE) + selling_liabilities
    }
 
    /**
