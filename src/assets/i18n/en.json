@@ -389,5 +389,7 @@
    "NO_MINT_PERMISSION": "User does not have permission to mint",
 
    "VALIDATE_OTP": "Validate OTP",
-   "VALIDATE_OTP_DESC": "Enter the One-Time Password that has been sent to "
+   "VALIDATE_OTP_DESC": "Enter the One-Time Password that has been sent to ",
+
+   "PK_INVALID": "Please enter a valid public key"
 }

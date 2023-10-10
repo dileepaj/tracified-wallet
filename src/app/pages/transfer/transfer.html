@@ -135,7 +135,8 @@
          </div>
 
          <ion-modal
-            [class.modal-1]="modalTab == 0"
+            [class.modal-1]="modalTab == 0 && isValidPK"
+            [class.modal-1-invalid]="modalTab == 0 && !isValidPK"
             [class.modal-2]="modalTab == 1"
             [class.modal-3]="modalTab == 2"
             #modal1
@@ -157,6 +158,9 @@
                      </ion-row>
                      <ion-row>
                         <ion-label style="margin-top: 10px" class="input-label">{{'RECEIVER_ADDRESS' | translate}}</ion-label>
+                     </ion-row>
+                     <ion-row *ngIf="!isValidPK">
+                        <ion-label style="margin-top: 10px" class="input-error">{{'PK_INVALID' | translate}}</ion-label>
                      </ion-row>
                      <ion-row>
                         <ion-item class="input-item" lines="full">

@@ -287,10 +287,22 @@ input.check-toggle-round-flat:checked + label:after {
    margin-left: 86px;
 }
 
+.input-error {
+   color: var(--ion-color-danger);
+   font-size: 14px;
+}
+
 .modal-1 {
    align-items: start;
    padding: 70px 15px 0px 15px;
    --height: 320px !important;
+   --border-radius: 16px;
+}
+
+.modal-1-invalid {
+   align-items: start;
+   padding: 70px 15px 0px 15px;
+   --height: 350px !important;
    --border-radius: 16px;
 }
 
