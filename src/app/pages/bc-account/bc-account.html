@@ -79,13 +79,23 @@
                               <label class="secondary-text">{{ 'STELLAR' | translate}}</label>
                            </ion-row>
                            <ion-row>
-                              <ion-label style="margin-top: 10px" class="input-label">{{'PRIVATE_KEY' | translate}}</ion-label>
-                           </ion-row>
-                           <ion-row><div class="key-container">{{this.modals[i].sk}}</div></ion-row>
-                           <ion-row>
                               <ion-label style="margin-top: 10px" class="input-label">{{'PUBLIC_KEY' | translate}}</ion-label>
                            </ion-row>
-                           <ion-row><div class="key-container">{{this.modals[i].pk}}</div></ion-row>
+                           <ion-row>
+                              <div class="key-container-wrapper">
+                                 <div class="key-container">{{this.modals[i].pk}}</div>
+                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].pk)"></ion-icon>
+                              </div>
+                           </ion-row>
+                           <ion-row>
+                              <ion-label style="margin-top: 10px" class="input-label sk-label">{{'PRIVATE_KEY' | translate}}</ion-label>
+                           </ion-row>
+                           <ion-row>
+                              <div class="key-container-wrapper">
+                                 <div class="key-container">{{this.modals[i].sk}}</div>
+                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].sk)"></ion-icon>
+                              </div>
+                           </ion-row>
                            <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
                               <ion-button class="btn" color="dark" (click)="modal1.dismiss()">{{'DONE_BUTTON' | translate}}</ion-button>
                            </ion-row>
@@ -150,13 +160,21 @@
                               <label class="secondary-text">{{ 'STELLAR' | translate}}</label>
                            </ion-row>
                            <ion-row>
-                              <ion-label style="margin-top: 10px" class="input-label">{{'PRIVATE_KEY' | translate}}</ion-label>
-                           </ion-row>
-                           <ion-row><div class="key-container">{{this.modals[i].sk}}</div></ion-row>
-                           <ion-row>
                               <ion-label style="margin-top: 10px" class="input-label">{{'PUBLIC_KEY' | translate}}</ion-label>
                            </ion-row>
-                           <ion-row><div class="key-container">{{this.modals[i].pk}}</div></ion-row>
+                           <ion-row
+                              ><div class="key-container-wrapper">
+                                 <div class="key-container">{{this.modals[i].pk}}</div>
+                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].pk)"></ion-icon></div
+                           ></ion-row>
+                           <ion-row>
+                              <ion-label style="margin-top: 10px" class="input-label sk-label">{{'PRIVATE_KEY' | translate}}</ion-label>
+                           </ion-row>
+                           <ion-row
+                              ><div class="key-container-wrapper">
+                                 <div class="key-container">{{this.modals[i].sk}}</div>
+                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].sk)"></ion-icon></div
+                           ></ion-row>
                            <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
                               <ion-button class="btn" color="dark" (click)="modal1.dismiss()">{{'DONE_BUTTON' | translate}}</ion-button>
                            </ion-row>

@@ -185,3 +185,24 @@ ion-toolbar ion-title {
    line-height: normal;
    word-break: break-all;
 }
+
+.key-container-wrapper {
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+}
+
+.copy-key-icon {
+   margin: 10px;
+}
+
+.sk-label {
+   color: var(--ion-color-danger);
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 430px) {
+   .modal-2 {
+      --height: 390px !important;
+   }
+}
