@@ -43,7 +43,7 @@
                </div>
                <div class="col-line">
                   <label class="secondary-text bold">{{acc.pk.substring(0, 4) + "..." + acc.pk.substring(acc.pk.length - 4, acc.pk.length)}}</label>
-                  <ion-icon name="copy-outline" class="copy-icon" color="primary" (click)="writeToClipboard(acc.pk)"></ion-icon>
+                  <ion-icon name="copy-outline" class="copy-icon" color="primary" (click)="writeToClipboard(acc.pk, 0)"></ion-icon>
                </div>
             </ion-col>
             <ion-col size="4">
@@ -84,7 +84,7 @@
                            <ion-row>
                               <div class="key-container-wrapper">
                                  <div class="key-container">{{this.modals[i].pk}}</div>
-                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].pk)"></ion-icon>
+                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].pk, 0)"></ion-icon>
                               </div>
                            </ion-row>
                            <ion-row>
@@ -93,7 +93,7 @@
                            <ion-row>
                               <div class="key-container-wrapper">
                                  <div class="key-container">{{this.modals[i].sk}}</div>
-                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].sk)"></ion-icon>
+                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].sk, 1)"></ion-icon>
                               </div>
                            </ion-row>
                            <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
@@ -124,7 +124,7 @@
                </div>
                <div class="col-line">
                   <label class="secondary-text bold">{{acc.pk.substring(0, 4) + "..." + acc.pk.substring(acc.pk.length - 4, acc.pk.length)}}</label>
-                  <ion-icon name="copy-outline" class="copy-icon" color="primary" (click)="writeToClipboard(acc.pk)"></ion-icon>
+                  <ion-icon name="copy-outline" class="copy-icon" color="primary" (click)="writeToClipboard(acc.pk, 0)"></ion-icon>
                </div>
             </ion-col>
             <ion-col size="4">
@@ -165,7 +165,7 @@
                            <ion-row
                               ><div class="key-container-wrapper">
                                  <div class="key-container">{{this.modals[i].pk}}</div>
-                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].pk)"></ion-icon></div
+                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].pk, 0)"></ion-icon></div
                            ></ion-row>
                            <ion-row>
                               <ion-label style="margin-top: 10px" class="input-label sk-label">{{'PRIVATE_KEY' | translate}}</ion-label>
@@ -173,7 +173,7 @@
                            <ion-row
                               ><div class="key-container-wrapper">
                                  <div class="key-container">{{this.modals[i].sk}}</div>
-                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].sk)"></ion-icon></div
+                                 <ion-icon name="copy-outline" class="copy-icon copy-key-icon" color="primary" (click)="writeToClipboard(this.modals[i].sk, 1)"></ion-icon></div
                            ></ion-row>
                            <ion-row style="display: flex; justify-content: center; margin: 10px 0px 10px 0px">
                               <ion-button class="btn" color="dark" (click)="modal1.dismiss()">{{'DONE_BUTTON' | translate}}</ion-button>

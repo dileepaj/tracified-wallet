@@ -7,6 +7,7 @@ import { BlockchainType, SeedPhraseService, SolKeys } from 'src/app/providers/se
 import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
 import { TOAST_TIMER } from 'src/environments/environment';
 import { Keypair as StellerKeyPair } from 'stellar-base';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
    selector: 'app-bc-account-created',
    templateUrl: './bc-account-created.page.html',
@@ -45,7 +46,9 @@ export class BcAccountCreatedPage implements OnInit {
       private toastService: ToastController,
       private router: Router,
       private loadingCtrl: LoadingController,
-      private navCtrl: NavController
+      private navCtrl: NavController,
+      public toastCtrl: ToastController,
+      private translate: TranslateService
    ) {}
 
    ngOnInit() {
@@ -63,10 +66,21 @@ export class BcAccountCreatedPage implements OnInit {
       });
    }
 
+   async presentToast(message) {
+      let toast = await this.toastCtrl.create({
+         message: message,
+         duration: TOAST_TIMER.LONG_TIMER,
+         position: 'bottom',
+      });
+      await toast.present();
+   }
+
    public async writeToClipboard(text: string) {
       await Clipboard.write({
          string: text,
       });
+      const msg = await this.translate.get(['PK_COPIED']).toPromise();
+      await this.presentToast(`${msg['PK_COPIED']}`);
    }
 
    public async getBCAccounts() {
