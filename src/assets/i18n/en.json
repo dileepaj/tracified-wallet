@@ -350,6 +350,7 @@
    "SET_DEF_SUCCESS": "was set as the default account",
    "SET_DEF_ERROR": "Failed to set default account please try again",
    "PK_COPIED": "Public key was copied to the clipboard",
+   "SK_COPIED": "Private key was copied to the clipboard",
 
    "NFT_TRNSFR_REQ": "NFT Transfer Request",
    "NFT_TRNSFR_REQ_DESC_1": "Before sending the NFT you need to send a transfer request to the receiver. Once accepted you can proceed with sending the NFT.",

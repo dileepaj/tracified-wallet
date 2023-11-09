@@ -17,6 +17,7 @@ import { Keypair } from 'stellar-sdk';
 import { MappingServiceProvider } from 'src/app/providers/mapping-service/mapping-service';
 import { TranslateService } from '@ngx-translate/core';
 import { Clipboard } from '@capacitor/clipboard';
+
 @Component({
    selector: 'page-bc-account',
    templateUrl: 'bc-account.html',
@@ -160,7 +161,7 @@ export class BcAccountPage implements OnInit {
       let toast = await this.toastCtrl.create({
          message: message,
          duration: TOAST_TIMER.LONG_TIMER,
-         position: 'middle',
+         position: 'bottom',
       });
       await toast.present();
    }
@@ -258,11 +259,17 @@ export class BcAccountPage implements OnInit {
          });
    }
 
-   public async writeToClipboard(text: string) {
+   public async writeToClipboard(text: string, type: number) {
       await Clipboard.write({
          string: text,
       });
-      /* const msg = await this.translate.get(['PK_COPIED']).toPromise();
-      await this.presentToast(`${msg['PK_COPIED']}`); */
+
+      if (type == 0) {
+         const msg = await this.translate.get(['PK_COPIED']).toPromise();
+         await this.presentToast(`${msg['PK_COPIED']}`);
+      } else if (type == 1) {
+         const msg = await this.translate.get(['SK_COPIED']).toPromise();
+         await this.presentToast(`${msg['SK_COPIED']}`);
+      }
    }
 }
