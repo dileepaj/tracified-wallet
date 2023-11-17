@@ -65,6 +65,8 @@ export class TransferPage {
    isValidPK: boolean = true;
    validationError: string = '';
 
+   isAssetRequestModalOpened: boolean = false;
+
    constructor(
       public apiService: ApiServiceProvider,
       private storage: StorageServiceProvider,
@@ -128,38 +130,86 @@ export class TransferPage {
    }
 
    async getBalance() {
-      await this.presentLoading();
-      this.mainAccount = await this.properties.defaultAccount;
-      try {
-         let assets = [];
-         if (blockchainNetType === 'live') {
-            Networks.PUBLIC;
-         } else {
-            Networks.TESTNET;
-         }
-         let server = new Server(blockchainNet);
-         server
-            .loadAccount(this.mainAccount.pk)
-            .then(account => {
-               account.balances.forEach((balance: any) => {
-                  let bal: number = parseFloat(balance.balance);
-                  assets.push({ asset_code: balance.asset_code, balance: bal.toFixed(0) });
-               });
-               assets.pop();
-               this.currentItems = assets;
-               this.Searcheditems = this.currentItems;
-               this.splitItems(this.Searcheditems);
-               if (this.isLoadingPresent) {
-                  this.dissmissLoading();
+      this.storage
+         .getMnemonic()
+         .then(async data => {
+            this.mnemonic = data;
+            await this.getDefault();
+
+            if (!this.defAccount) {
+               this.defAccount = 0;
+            }
+            this.keypair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, this.defAccount, this.mnemonic) as StellerKeyPair;
+            //this.claimNft(this.keypair.publicKey().toString());
+            try {
+               let assets = [];
+               if (blockchainNetType === 'live') {
+                  Networks.PUBLIC;
+               } else {
+                  Networks.TESTNET;
                }
-            })
-            .catch(err => {
-               console.error(err);
-               this.dissmissLoading();
-            });
-      } catch (error) {
-         await this.dissmissLoading();
-      }
+               let server = new Server(blockchainNet);
+               server
+                  .loadAccount(this.keypair.publicKey().toString())
+                  .then(account => {
+                     console.log('this.keypair.publicKey().toString()', this.keypair.publicKey().toString())
+                     account.balances.forEach((balance: any) => {
+                        let bal: number = parseFloat(balance.balance);
+                        assets.push({ asset_code: balance.asset_code, balance: bal.toFixed(0) });
+                     });
+                     assets.pop();
+                     this.currentItems = assets;
+                     this.Searcheditems = this.currentItems;
+                     this.splitItems(this.Searcheditems);
+                     if (this.isLoadingPresent) {
+                        this.dissmissLoading();
+                     }
+                  })
+                  .catch(err => {
+                     console.error(err);
+                     this.dissmissLoading();
+                  });
+            } catch (error) {
+               await this.dissmissLoading();
+            }
+         })
+         .catch(error => {
+            this.dissmissLoading();
+         });
+      console.log('first')
+      // await this.presentLoading();
+      // this.mainAccount = await this.properties.defaultAccount;
+      // try {
+      //    let assets = [];
+      //    if (blockchainNetType === 'live') {
+      //       Networks.PUBLIC;
+      //    } else {
+      //       Networks.TESTNET;
+      //    }
+      //    let server = new Server(blockchainNet);
+      //    server
+      //       .loadAccount(this.mainAccount.pk)
+      //       .then(account => {
+      //          console.log('this.mainAccount.pk', this.mainAccount.pk)
+      //          account.balances.forEach((balance: any) => {
+      //             let bal: number = parseFloat(balance.balance);
+      //             assets.push({ asset_code: balance.asset_code, balance: bal.toFixed(0) });
+      //          });
+      //          assets.pop();
+      //          this.currentItems = assets;
+      //          this.Searcheditems = this.currentItems;
+      //          this.splitItems(this.Searcheditems);
+      //          if (this.isLoadingPresent) {
+      //             this.dissmissLoading();
+      //          }
+      //       })
+      //       .catch(err => {
+      //          console.error(err);
+      //          this.dissmissLoading();
+      //       });
+      // } catch (error) {
+      //    await this.dissmissLoading();
+      // }
    }
 
    async presentLoading() {
@@ -182,7 +232,7 @@ export class TransferPage {
          buttons: [
             {
                text: 'Close',
-               handler: data => {},
+               handler: data => { },
             },
          ],
       });
@@ -239,6 +289,7 @@ export class TransferPage {
     * load nfts minted using default account
     */
    async loadNfts() {
+      console.log('first1')
       this.storage
          .getMnemonic()
          .then(async data => {
@@ -371,12 +422,17 @@ export class TransferPage {
    }
 
    /**
-    * open nft transfer request modal
-    * @param nft nft to be transferred
+    * open nft and assert transfer request modal
+    * @param assert to be transferred
     */
-   public openModal(nft: any) {
-      this.nftToTransfer = nft;
-      this.isRequestModalOpened = true;
+   public openModal(data: any, isNft: boolean = true) {
+      if (isNft) {
+         this.nftToTransfer = data;
+         this.isRequestModalOpened = true;
+      } else {
+         this.nftToTransfer = data;
+         this.isAssetRequestModalOpened = true
+      }
    }
 
    /**
