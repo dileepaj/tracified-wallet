@@ -276,7 +276,7 @@ export class StorageServiceProvider {
       });
    }
 
-   private addSeedPhraseAccountPassword(index: string, password: string) {
+   public addSeedPhraseAccountPassword(index: string, password: string) {
       return new Promise((resolve, rejects) => {
          let encryptedPassword = AES.encrypt(JSON.stringify(password), this.key).toString();
          this.ProfilesPassword.setItem(index, encryptedPassword)

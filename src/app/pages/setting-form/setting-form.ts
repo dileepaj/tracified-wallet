@@ -12,6 +12,7 @@ import { LoginPage } from '../../pages/login/login';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { TOAST_TIMER } from 'src/environments/environment';
+import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
 
 @Component({
    selector: 'page-setting-form',
@@ -30,6 +31,7 @@ export class SettingFormPage {
    passwordIconO: string = 'eye-off';
    passwordIconN: string = 'eye-off';
    passwordIconC: string = 'eye-off';
+   keys: any;
 
    constructor(
       public router: Router,
@@ -41,9 +43,12 @@ export class SettingFormPage {
       private toastCtrl: ToastController,
       private connectivityService: ConnectivityServiceProvider,
       private loadingCtrl: LoadingController,
-      private translate: TranslateService
+      private translate: TranslateService,
+      private storageService: StorageServiceProvider
    ) {
       this.formType = this.router.getCurrentNavigation().extras.state.type;
+      if (this.formType === 'transactionPassword')
+         this.keys = this.router.getCurrentNavigation().extras.state.data;
       this.prepareForm();
    }
 
@@ -78,7 +83,7 @@ export class SettingFormPage {
             { validator: this.passwordMatchValidator }
          );
 
-         this.transactionPassword.setValue({ accName: this.properties.defaultAccount.accountName, pubKey: this.properties.defaultAccount.pk, oPassword: '', nPassword: '', cPassword: '' });
+         this.transactionPassword.setValue({ accName: this.properties.userName, pubKey: this.keys.pk, oPassword: '', nPassword: '', cPassword: '' });
       }
    }
 
@@ -193,7 +198,7 @@ export class SettingFormPage {
                      }
                   });
             })
-            .catch(() => {});
+            .catch(() => { });
       } else {
          this.translate.get(['ERROR', 'NO_INTERNET']).subscribe(text => {
             this.presentAlert(text['ERROR'], text['NO_INTERNET']);
@@ -219,54 +224,24 @@ export class SettingFormPage {
                      return;
                   }
 
-                  let transactionModel = {
-                     oldPassword: oPassword,
-                     newPassword: nPassword,
-                     publicKey: this.properties.defaultAccount.pk,
-                     encSecretKey: this.properties.defaultAccount.sk,
-                     accountName: this.properties.defaultAccount.accountName,
-                  };
-
-                  this.dataService
-                     .changeTransactionAccPassword(transactionModel)
-                     .then(res => {
-                        if (res.status == 200) {
-                           this.dissmissLoading();
-                           this.translate.get(['SUCCESSFUL', 'TRANS_SUCCESS_CHANGE']).subscribe(text => {
-                              this.presentAlert(text['SUCCESSFUL'], text['TRANS_SUCCESS_CHANGE']);
-                           });
-                           this.logger.info('Transaction password changed.', this.properties.skipConsoleLogs, this.properties.writeToFile);
-                           this.dataService.clearLocalData();
-                           this.router.navigate(['/login'], { replaceUrl: true });
-                        } else {
-                           this.dissmissLoading();
-                           this.translate.get(['ERROR', 'CANNOT_CHANGE_TRAS_PASSWORD']).subscribe(text => {
-                              this.presentAlert(text['ERROR'], text['CANNOT_CHANGE_TRAS_PASSWORD']);
-                           });
-                           this.logger.info('Account password change failed.', this.properties.skipConsoleLogs, this.properties.writeToFile);
-                        }
+                  let defaultAccIndex = await this.storageService.getDefaultAccount()
+                  let defaultUser = await this.storageService.getMnemonicProfile(defaultAccIndex.toString())
+                  this.storageService.validateSeedPhraseAccount(defaultAccIndex.toString(), defaultUser, oPassword).then(async () => {
+                     this.storageService.addSeedPhraseAccountPassword(defaultAccIndex.toString(), nPassword).then(() => {
+                        this.translate.get(['SUCCESSFUL', 'TRANS_SUCCESS_CHANGE']).subscribe(text => {
+                           this.presentAlert(text['SUCCESSFUL'], text['TRANS_SUCCESS_CHANGE']);
+                        });
+                        this.dissmissLoading();
+                        this.router.navigate(['/setting'], { replaceUrl: true });
                      })
-                     .catch(err => {
-                        if (err.status == 10) {
-                           this.dissmissLoading();
-                           this.presentAlert('Error', err.error);
-                           this.logger.error('Account password change failed: ' + err.error, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                        } else if (err.status == 11) {
-                           this.dissmissLoading();
-                           this.translate.get(['ERROR']).subscribe(text => {
-                              this.presentAlert(text['ERROR'], err.error);
-                           });
-                           this.logger.error('Account password change failed: ' + err.error, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                        } else {
-                           this.dissmissLoading();
-                           this.translate.get(['ERROR', 'CANNOT_CHANGE_TRAS_PASSWORD']).subscribe(text => {
-                              this.presentAlert(text['ERROR'], text['CANNOT_CHANGE_TRAS_PASSWORD']);
-                           });
-                           this.logger.error('Account password change failed: ' + err, this.properties.skipConsoleLogs, this.properties.writeToFile);
-                        }
-                     });
+                  }).catch(async () => {
+                     const text = await this.translate.get(['ERROR', 'INCORRECT_PASSWORD']).toPromise();
+                     this.presentAlert(text['ERROR'], text['INCORRECT_PASSWORD']);
+                     this.dissmissLoading();
+                  })
+
                })
-               .catch(() => {});
+               .catch(() => { });
          });
       } else {
          this.translate.get(['ERROR', 'NO_INTERNET']).subscribe(text => {
@@ -282,7 +257,7 @@ export class SettingFormPage {
          buttons: [
             {
                text: 'OK',
-               handler: data => {},
+               handler: data => { },
             },
          ],
       });
