@@ -4,6 +4,9 @@ import { Properties } from '../../shared/properties';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { DataServiceProvider } from 'src/app/providers/data-service/data-service';
+import { StorageServiceProvider } from 'src/app/providers/storage-service/storage-service';
+import { BlockchainType, SeedPhraseService } from 'src/app/providers/seedPhraseService/seedPhrase.service';
+import { Keypair as StellerKeyPair } from 'stellar-base';
 
 @Component({
    selector: 'page-settings',
@@ -12,7 +15,7 @@ import { DataServiceProvider } from 'src/app/providers/data-service/data-service
 })
 export class SettingsPage {
    constructor(public router: Router, private properties: Properties, private alertCtrl: AlertController, private translate: TranslateService,
-      private dataService:DataServiceProvider) {}
+      private dataService: DataServiceProvider, private storageService: StorageServiceProvider) { }
 
    changeDisplayImage() {
       this.translate.get(['PROFILE_PHOTO', 'CHANGING_PHOTO_UNAVAILABLE']).subscribe(text => {
@@ -40,7 +43,7 @@ export class SettingsPage {
          buttons: [
             {
                text: 'OK',
-               handler: data => {},
+               handler: data => { },
             },
          ],
       });
@@ -73,13 +76,32 @@ export class SettingsPage {
       alert.present();
    }
 
-   privateKeyCheck(privateKey) {
-      const publicKey=this.properties.defaultAccount.pk;
-      if (this.dataService.validateSecretKey(privateKey,publicKey)) {
-         this.presentAlert('key ','Private key entered is correct');
-         this.router.navigate(['/setting-form'], { state: { type: 'transactionPassword' } });
+   async privateKeyCheck(privateKey) {
+      let secret = await this.checkKey()
+      if (secret.sk === privateKey) {
+         this.router.navigate(['/setting-form'], { state: { type: 'transactionPassword', data: secret } });
       } else {
-         this.presentAlert('key ','Private key entered is incorrect. Please try again.');
+         this.presentAlert('key ', 'Private key entered is incorrect. Please try again.');
       }
+   }
+
+   async checkKey() {
+      let mnemonic = await this.storageService.getMnemonic();
+      let defAccount = await this.getDefault();
+      let stellarKeyPair = SeedPhraseService.generateAccountsFromMnemonic(BlockchainType.Stellar, defAccount, mnemonic) as StellerKeyPair;
+      let privetKey = stellarKeyPair.secret().toString()
+      let publicKey = stellarKeyPair.publicKey().toString()
+      return ({ sk: privetKey, pk: publicKey })
+   }
+
+   public async getDefault() {
+      return this.storageService
+         .getDefaultAccount()
+         .then(acc => {
+            return acc.toString();
+         })
+         .catch((error) => {
+            console.log(error)
+         });
    }
 }
