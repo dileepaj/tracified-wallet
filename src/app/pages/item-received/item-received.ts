@@ -355,13 +355,7 @@ export class ItemReceivedPage {
    }
 
    async presentAlert(title, message, hideCancel: boolean, okFn?) {
-      let buttons = [
-         {
-            text: 'OK',
-            role: 'confirm',
-            handler: okFn,
-         },
-      ];
+      let buttons = [];
 
       if (!hideCancel) {
          buttons.push({
@@ -370,6 +364,12 @@ export class ItemReceivedPage {
             handler: () => {},
          });
       }
+
+      buttons.push({
+         text: 'OK',
+         role: 'confirm',
+         handler: okFn,
+      });
       const alert = await this.alertCtrl.create({
          header: title,
          message: message,
