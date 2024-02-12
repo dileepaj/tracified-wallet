@@ -15,13 +15,13 @@
                <p>{{"CREATE_BC_ACC_DESC" | translate}}</p>
             </ion-label>
          </ion-row>
-         <form [formGroup]="form">
+         <form [formGroup]="form" autofill="off" autocomplete="off webauthn">
             <ion-row>
                <ion-label style="margin-top: 36px" class="input-label">{{'ACC_NAME' | translate}}</ion-label>
             </ion-row>
             <ion-row>
                <ion-item class="input-item" lines="full">
-                  <ion-input #accName formControlName="accName" type="text" name="accName" keyNext></ion-input>
+                  <ion-input #accName formControlName="accName" type="text" name="accName" autocomplete="off webauthn" keyNext></ion-input>
                </ion-item>
             </ion-row>
 
@@ -30,7 +30,7 @@
             </ion-row>
             <ion-row>
                <ion-item class="input-item" lines="full">
-                  <ion-input formControlName="password" name="password" [type]="passwordType" clearInput="false"></ion-input>
+                  <ion-input formControlName="password" name="password" [type]="passwordType" clearInput="false" autocomplete="off webauthn"></ion-input>
                   <ion-icon slot="end" [name]="passwordIcon" class="passwordIcon gray-color" (click)="hideShowPassword(1)"> </ion-icon>
                </ion-item>
             </ion-row>
@@ -43,7 +43,7 @@
             </ion-row>
             <ion-row>
                <ion-item class="input-item" lines="full">
-                  <ion-input formControlName="confirmPassword" name="confirmPassword" [type]="confirmPasswordType" clearInput="false"></ion-input>
+                  <ion-input formControlName="confirmPassword" name="confirmPassword" [type]="confirmPasswordType" clearInput="false" autocomplete="off webauthn"></ion-input>
                   <ion-icon slot="end" [name]="confirmPasswordIcon" class="passwordIcon gray-color" (click)="hideShowPassword(2)"> </ion-icon>
                </ion-item>
             </ion-row>

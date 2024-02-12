@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToastController, LoadingController, AlertController, ModalController, NavController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { Keypair } from 'stellar-sdk';
@@ -27,7 +27,7 @@ import { StorageServiceProvider } from 'src/app/providers/storage-service/storag
    templateUrl: 'add-account.html',
    styleUrls: ['./add-account.scss'],
 })
-export class AddAccountPage {
+export class AddAccountPage implements OnInit {
    key: string = 'ejHu3Gtucptt93py1xS4qWvIrweMBaO';
    adminKey: string = 'hackerkaidagalbanisbaby'.split('').reverse().join('');
 
@@ -71,6 +71,9 @@ export class AddAccountPage {
       );
 
       this.navigation = this.router.getCurrentNavigation().extras.state?.navigation;
+   }
+   ngOnInit(): void {
+      this.form;
    }
 
    ionViewDidEnter() {}
